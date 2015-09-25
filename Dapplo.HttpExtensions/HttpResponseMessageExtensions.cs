@@ -19,7 +19,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
- using System;
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Threading;
@@ -51,12 +51,12 @@ namespace Dapplo.HttpExtensions
 		/// <param name="response"></param>
 		/// <param name="throwErrorOnNonSuccess"></param>
 		/// <returns>dynamic (DyanmicJson)</returns>
-		public static async Task<dynamic> GetAsDynamicJsonAsync(this HttpResponseMessage response, CancellationToken token = default(CancellationToken), bool throwErrorOnNonSuccess = true)
+		public static async Task<dynamic> GetJsonAsync(this HttpResponseMessage response, CancellationToken token = default(CancellationToken), bool throwErrorOnNonSuccess = true)
 		{
 			if (response.IsSuccessStatusCode)
 			{
 				var jsonString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-				return DynamicJson.Parse(jsonString);
+				return SimpleJson.DeserializeObject(jsonString);
 			}
 			await response.HandleErrorAsync(token, throwErrorOnNonSuccess).ConfigureAwait(false);
 			return null;

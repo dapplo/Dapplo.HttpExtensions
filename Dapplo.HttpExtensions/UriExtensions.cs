@@ -224,6 +224,19 @@ namespace Dapplo.HttpExtensions
 				return await client.GetAsync(uri, token).ConfigureAwait(false);
 			}
 		}
+		/// <summary>
+		/// Download a Json response
+		/// </summary>
+		/// <param name="uri">An Uri to specify the download location</param>
+		/// <returns>dynamic</returns>
+		public static async Task<dynamic> GetJsonAsync(this Uri uri, CancellationToken token = default(CancellationToken))
+		{
+			using (var reponse = await uri.GetAsync(token).ConfigureAwait(false))
+			{
+				return await reponse.GetJsonAsync(token).ConfigureAwait(false);
+            }
+		}
+
 
 		/// <summary>
 		/// Create a HttpClient with default, configured, settings

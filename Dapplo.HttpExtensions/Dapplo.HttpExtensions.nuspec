@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>Dapplo.HttpExtensions</id>
+        <version>$version$</version>
+        <title>Dapplo.HttpExtensions</title>
+        <authors>Robin Krom</authors>
+        <owners>dapplo</owners>
+        <licenseUrl>https://en.wikipedia.org/wiki/GNU_General_Public_License</licenseUrl>
+        <projectUrl>http://www.dapplo.net/blocks/Dapplo.HttpExtensions.html</projectUrl>
+        <iconUrl>http://www.dapplo.net/favicon.ico</iconUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Dapplo.HttpExtensions contains extensions which help with Http communication.</description>
+		<summary>A library with code to quickly add a e.g. JSon Rest Service to your project.</summary>
+        <language>en-us</language>
+		<copyright>Dapplo</copyright>
+		<tags>rest http</tags>
+    </metadata>
+</package>

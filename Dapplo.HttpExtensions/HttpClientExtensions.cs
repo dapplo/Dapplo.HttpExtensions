@@ -29,7 +29,7 @@ using System.Threading.Tasks;
 namespace Dapplo.HttpExtensions
 {
 	/// <summary>
-	/// Extensions for the HttpClient
+	/// Extensions for the HttpClient class
 	/// </summary>
 	public static class HttpClientExtensions
 	{
@@ -73,6 +73,7 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="scheme">name</param>
 		/// <param name="authorization">value</param>
+		/// <returns>HttpClient for fluent usage</returns>
 		public static HttpClient AddDefaultRequestHeader(this HttpClient client, string name, string value)
 		{
 			client.DefaultRequestHeaders.TryAddWithoutValidation(name, value);
@@ -80,7 +81,7 @@ namespace Dapplo.HttpExtensions
 		}
 
 		/// <summary>
-		/// Post method
+		/// Method to post without content
 		/// </summary>
 		/// <param name="client">HttpClient</param>
 		/// <param name="uri"></param>

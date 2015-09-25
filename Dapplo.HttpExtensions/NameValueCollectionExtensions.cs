@@ -24,6 +24,9 @@ using System.Text;
 
 namespace Dapplo.HttpExtensions
 {
+	/// <summary>
+	/// Extensions for the NameValueCollection class
+	/// </summary>
 	public static class NameValueCollectionExtensions
 	{
 		/// <summary>

@@ -19,7 +19,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
- using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
@@ -34,6 +34,9 @@ using System.Web;
 
 namespace Dapplo.HttpExtensions
 {
+	/// <summary>
+	/// Extensions for the Uri class
+	/// </summary>
 	public static class UriExtensions
 	{
 		/// <summary>
@@ -168,10 +171,10 @@ namespace Dapplo.HttpExtensions
 		}
 
 		/// <summary>
-		/// Head method
+		/// Retrieve only the content headers, by using the HTTP HEAD method
 		/// </summary>
 		/// <param name="uri"></param>
-		/// <returns></returns>
+		/// <returns>HttpContentHeaders</returns>
 		public static async Task<HttpContentHeaders> HeadAsync(this Uri uri, CancellationToken token = default(CancellationToken))
 		{
 			using (var client = uri.CreateHttpClient())
@@ -184,7 +187,7 @@ namespace Dapplo.HttpExtensions
 		}
 
 		/// <summary>
-		/// Post method
+		/// Method to Post without content
 		/// </summary>
 		/// <param name="uri"></param>
 		/// <returns>HttpResponseMessage</returns>
@@ -205,7 +208,7 @@ namespace Dapplo.HttpExtensions
 		/// <returns>HttpResponseMessage</returns>
 		public static async Task<HttpResponseMessage> PostFormUrlEncodedAsync(this Uri uri, IDictionary<string, string> formContent, CancellationToken token = default(CancellationToken))
 		{
-			var content = new FormUrlEncodedContent(formContent);
+			using (var content = new FormUrlEncodedContent(formContent))
 			using (var client = uri.CreateHttpClient())
 			{
 				return await client.PostAsync(uri, content);
@@ -228,12 +231,12 @@ namespace Dapplo.HttpExtensions
 		/// Download a Json response
 		/// </summary>
 		/// <param name="uri">An Uri to specify the download location</param>
-		/// <returns>dynamic</returns>
-		public static async Task<dynamic> GetJsonAsync(this Uri uri, CancellationToken token = default(CancellationToken))
+		/// <returns>dynamic created with SimpleJson</returns>
+		public static async Task<dynamic> GetJsonAsync(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
 		{
 			using (var reponse = await uri.GetAsync(token).ConfigureAwait(false))
 			{
-				return await reponse.GetJsonAsync(token).ConfigureAwait(false);
+				return await reponse.GetJsonAsync(throwErrorOnNonSuccess, token).ConfigureAwait(false);
             }
 		}
 
@@ -269,37 +272,39 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="uri">An Uri to specify the download location</param>
 		/// <returns>string with the content</returns>
-		public static async Task<string> GetAsStringAsync(this Uri uri, bool throwError = true, CancellationToken token = default(CancellationToken))
+		public static async Task<string> GetAsStringAsync(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
 		{
 			using (var client = uri.CreateHttpClient())
 			using (var response = await client.GetAsync(uri, HttpCompletionOption.ResponseContentRead, token).ConfigureAwait(false))
 			{
-				return await response.GetAsStringAsync(token, throwError).ConfigureAwait(false);
+				return await response.GetAsStringAsync(throwErrorOnNonSuccess, token).ConfigureAwait(false);
 			}
 		}
 
 		/// <summary>
-		/// Simple append segment for a base Uri
-		/// NOTE: Currently does NOT take the query parameters into account
+		/// Append path segment(s) to the specified Uri
 		/// </summary>
 		/// <param name="uri">Uri to extend</param>
-		/// <param name="segments"></param>
-		/// <returns>Uri</returns>
+		/// <param name="segments">array of objects which will be converter to strings to </param>
+		/// <returns>new Uri with segments added to the path</returns>
 		public static Uri AppendSegments(this Uri uri, params object[] segments)
 		{
 			var uriBuilder = new UriBuilder(uri);
 
-			var sb = new StringBuilder(uriBuilder.Path);
-			foreach (var segment in segments)
+			if (segments != null)
 			{
-				if (sb.Length > 0)
+				var sb = new StringBuilder(uriBuilder.Path);
+				foreach (var segment in segments)
 				{
-					sb.Append("/");
+					if (sb.Length > 0)
+					{
+						sb.Append("/");
 
+					}
+					sb.Append(segment);
 				}
-				sb.Append(segment);
+				uriBuilder.Path = sb.ToString();
 			}
-			uriBuilder.Path = sb.ToString();
 			return uriBuilder.Uri;
 		}
 	}

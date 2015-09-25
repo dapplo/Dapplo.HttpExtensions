@@ -27,6 +27,9 @@ using System.Threading.Tasks;
 
 namespace Dapplo.HttpExtensions
 {
+	/// <summary>
+	/// Extensions for the HttpResponseMessage class
+	/// </summary>
 	public static class HttpResponseMessageExtensions
 	{
 		/// <summary>
@@ -34,14 +37,14 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="response"></param>
 		/// <param name="throwErrorOnNonSuccess"></param>
-		/// <returns></returns>
-		public static async Task<string> GetAsStringAsync(this HttpResponseMessage response, CancellationToken token = default(CancellationToken), bool throwErrorOnNonSuccess = true)
+		/// <returns>string</returns>
+		public static async Task<string> GetAsStringAsync(this HttpResponseMessage response, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
 		{
 			if (response.IsSuccessStatusCode)
 			{
 				return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 			}
-			await response.HandleErrorAsync(token, throwErrorOnNonSuccess).ConfigureAwait(false);
+			await response.HandleErrorAsync(throwErrorOnNonSuccess, token).ConfigureAwait(false);
 			return null;
 		}
 
@@ -50,23 +53,23 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="response"></param>
 		/// <param name="throwErrorOnNonSuccess"></param>
-		/// <returns>dynamic (DyanmicJson)</returns>
-		public static async Task<dynamic> GetJsonAsync(this HttpResponseMessage response, CancellationToken token = default(CancellationToken), bool throwErrorOnNonSuccess = true)
+		/// <returns>dynamic created with SimpleJson</returns>
+		public static async Task<dynamic> GetJsonAsync(this HttpResponseMessage response, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
 		{
 			if (response.IsSuccessStatusCode)
 			{
 				var jsonString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 				return SimpleJson.DeserializeObject(jsonString);
 			}
-			await response.HandleErrorAsync(token, throwErrorOnNonSuccess).ConfigureAwait(false);
+			await response.HandleErrorAsync(throwErrorOnNonSuccess, token).ConfigureAwait(false);
 			return null;
 		}
 
 		/// <summary>
 		/// Get the content as a MemoryStream
 		/// </summary>
-		/// <param name="response"></param>
-		/// <param name="throwErrorOnNonSuccess"></param>
+		/// <param name="response">HttpResponseMessage</param>
+		/// <param name="throwErrorOnNonSuccess">bool</param>
 		/// <returns>MemoryStream</returns>
 		public static async Task<MemoryStream> GetAsMemoryStreamAsync(this HttpResponseMessage response, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
 		{
@@ -80,15 +83,18 @@ namespace Dapplo.HttpExtensions
 					return memoryStream;
 				}
 			}
-			await response.HandleErrorAsync(token, throwErrorOnNonSuccess).ConfigureAwait(false);
+			await response.HandleErrorAsync(throwErrorOnNonSuccess, token).ConfigureAwait(false);
 			return null;
 		}
 
 		/// <summary>
 		/// Simplified error handling, this makes sure the uri & response are logged
 		/// </summary>
-		/// <param name="responseMessage"></param>
-		public static async Task<string> HandleErrorAsync(this HttpResponseMessage responseMessage, CancellationToken token = default(CancellationToken), bool throwErrorOnNonSuccess = true)
+		/// <param name="responseMessage">HttpResponseMessage</param>
+		/// <param name="token">CancellationToken</param>
+		/// <param name="throwErrorOnNonSuccess">bool</param>
+		/// <returns>string with the error content if throwErrorOnNonSuccess = false</returns>
+		public static async Task<string> HandleErrorAsync(this HttpResponseMessage responseMessage, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
 		{
 			Exception throwException = null;
 			string errorContent = null;
@@ -126,5 +132,4 @@ namespace Dapplo.HttpExtensions
 			return errorContent;
 		}
 	}
-
 }

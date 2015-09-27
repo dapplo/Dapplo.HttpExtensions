@@ -37,6 +37,7 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="response"></param>
 		/// <param name="throwErrorOnNonSuccess"></param>
+		/// <param name="token"></param>
 		/// <returns>string</returns>
 		public static async Task<string> GetAsStringAsync(this HttpResponseMessage response, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
 		{
@@ -53,6 +54,7 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="response"></param>
 		/// <param name="throwErrorOnNonSuccess"></param>
+		/// <param name="token"></param>
 		/// <returns>dynamic created with SimpleJson</returns>
 		public static async Task<dynamic> GetJsonAsync(this HttpResponseMessage response, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
 		{
@@ -70,6 +72,7 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="response">HttpResponseMessage</param>
 		/// <param name="throwErrorOnNonSuccess">bool</param>
+		/// <param name="token"></param>
 		/// <returns>MemoryStream</returns>
 		public static async Task<MemoryStream> GetAsMemoryStreamAsync(this HttpResponseMessage response, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
 		{

@@ -47,7 +47,7 @@ namespace Dapplo.HttpExtensions
 		/// <returns>IWebProxy filled with all the proxy details or null if none is set/wanted</returns>
 		public static IWebProxy CreateProxy(this Uri uri)
 		{
-			IWebProxy proxyToUse = null;
+			IWebProxy proxyToUse;
 			proxyToUse = WebRequest.DefaultWebProxy;
 			if (proxyToUse != null)
 			{
@@ -73,7 +73,7 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// QueryToDictionary creates a IDictionary with name-values without using System.Web
 		/// </summary>
-		/// <param name="queryString"></param>
+		/// <param name="uri"></param>
 		/// <returns>IDictionary string, string</returns>
 		public static IDictionary<string, string> QueryToDictionary(this Uri uri)
 		{
@@ -120,7 +120,7 @@ namespace Dapplo.HttpExtensions
 			var queryCollection = uri.QueryToNameValues();
 			foreach (var kvp in uri.QueryToDictionary())
 			{
-				queryCollection[kvp.Key] = kvp.Value.ToString();
+				queryCollection[kvp.Key] = kvp.Value;
 			}
 
 			var uriBuilder = new UriBuilder(uri);
@@ -151,6 +151,7 @@ namespace Dapplo.HttpExtensions
 		/// Get LastModified for a URI
 		/// </summary>
 		/// <param name="uri">Uri</param>
+		/// <param name="token">CancellationToken</param>
 		/// <returns>DateTime</returns>
 		public static async Task<DateTimeOffset> LastModifiedAsync(this Uri uri, CancellationToken token = default(CancellationToken))
 		{
@@ -174,6 +175,7 @@ namespace Dapplo.HttpExtensions
 		/// Retrieve only the content headers, by using the HTTP HEAD method
 		/// </summary>
 		/// <param name="uri"></param>
+		/// <param name="token">CancellationToken</param>
 		/// <returns>HttpContentHeaders</returns>
 		public static async Task<HttpContentHeaders> HeadAsync(this Uri uri, CancellationToken token = default(CancellationToken))
 		{
@@ -190,6 +192,7 @@ namespace Dapplo.HttpExtensions
 		/// Method to Post without content
 		/// </summary>
 		/// <param name="uri"></param>
+		/// <param name="token">CancellationToken</param>
 		/// <returns>HttpResponseMessage</returns>
 		public static async Task<HttpResponseMessage> PostAsync(this Uri uri, CancellationToken token = default(CancellationToken))
 		{
@@ -211,7 +214,7 @@ namespace Dapplo.HttpExtensions
 			using (var content = new FormUrlEncodedContent(formContent))
 			using (var client = uri.CreateHttpClient())
 			{
-				return await client.PostAsync(uri, content);
+				return await client.PostAsync(uri, content, token);
 			}
 		}
 
@@ -219,6 +222,7 @@ namespace Dapplo.HttpExtensions
 		/// Download a uri response as string
 		/// </summary>
 		/// <param name="uri">An Uri to specify the download location</param>
+		/// <param name="token">CancellationToken</param>
 		/// <returns>HttpResponseMessage</returns>
 		public static async Task<HttpResponseMessage> GetAsync(this Uri uri, CancellationToken token = default(CancellationToken))
 		{
@@ -227,10 +231,13 @@ namespace Dapplo.HttpExtensions
 				return await client.GetAsync(uri, token).ConfigureAwait(false);
 			}
 		}
+
 		/// <summary>
 		/// Download a Json response
 		/// </summary>
 		/// <param name="uri">An Uri to specify the download location</param>
+		/// <param name="throwErrorOnNonSuccess"></param>
+		/// <param name="token">CancellationToken</param>
 		/// <returns>dynamic created with SimpleJson</returns>
 		public static async Task<dynamic> GetJsonAsync(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
 		{
@@ -245,6 +252,8 @@ namespace Dapplo.HttpExtensions
 		/// Create a HttpClient with default, configured, settings
 		/// </summary>
 		/// <param name="uri">Uri needed for the Proxy logic</param>
+		/// <param name="useProxy"></param>
+		/// <param name="connectionTimeout"></param>
 		/// <returns>HttpClient</returns>
 		public static HttpClient CreateHttpClient(this Uri uri, bool useProxy = true, int connectionTimeout = 60)
 		{
@@ -271,6 +280,8 @@ namespace Dapplo.HttpExtensions
 		/// Download a uri response as string
 		/// </summary>
 		/// <param name="uri">An Uri to specify the download location</param>
+		/// <param name="throwErrorOnNonSuccess"></param>
+		/// <param name="token">CancellationToken</param>
 		/// <returns>string with the content</returns>
 		public static async Task<string> GetAsStringAsync(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
 		{

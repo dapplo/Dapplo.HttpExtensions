@@ -33,7 +33,7 @@ namespace Dapplo.HttpExtensions
 		/// Create a query string from a NameValueCollection
 		/// </summary>
 		/// <param name="nameValueCollection"></param>
-		/// <returns>?name1=value1&name2=value2 etc...</returns>
+		/// <returns>?name1=value1&amp;name2=value2 etc...</returns>
 		public static string ToQueryString(this NameValueCollection nameValueCollection)
 		{
 			var queryBuilder = new StringBuilder();

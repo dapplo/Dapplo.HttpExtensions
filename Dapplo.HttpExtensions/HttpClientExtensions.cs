@@ -36,20 +36,21 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// Set Basic Authentication for the current client
 		/// </summary>
+		/// <param name="client"></param>
 		/// <param name="user">username</param>
 		/// <param name="password">password</param>
 		/// <returns>HttpClient for fluent usage</returns>
 		public static HttpClient SetBasicAuthorization(this HttpClient client, string user, string password)
 		{
-			string credentials = Convert.ToBase64String(UTF8Encoding.UTF8.GetBytes(string.Format("{0}:{1}", user, password)));
+			string credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Format("{0}:{1}", user, password)));
 			return client.SetAuthorization("Basic", credentials);
 		}
 
 		/// <summary>
 		/// Set Bearer "Authentication" for the current client
 		/// </summary>
-		/// <param name="user">username</param>
-		/// <param name="password">password</param>
+		/// <param name="client"></param>
+		/// <param name="bearer">Bearer for the authorization</param>
 		/// <returns>HttpClient for fluent usage</returns>
 		public static HttpClient SetBearer(this HttpClient client, string bearer)
 		{
@@ -59,6 +60,7 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// Set Authorization for the current client
 		/// </summary>
+		/// <param name="client"></param>
 		/// <param name="scheme">scheme</param>
 		/// <param name="authorization">value</param>
 		/// <returns>HttpClient for fluent usage</returns>
@@ -71,8 +73,9 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// Add default request header without validation
 		/// </summary>
-		/// <param name="scheme">name</param>
-		/// <param name="authorization">value</param>
+		/// <param name="client"></param>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
 		/// <returns>HttpClient for fluent usage</returns>
 		public static HttpClient AddDefaultRequestHeader(this HttpClient client, string name, string value)
 		{
@@ -85,6 +88,7 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="client">HttpClient</param>
 		/// <param name="uri"></param>
+		/// <param name="token"></param>
 		/// <returns>HttpResponseMessage</returns>
 		public static async Task<HttpResponseMessage> PostAsync(this HttpClient client, Uri uri, CancellationToken token = default(CancellationToken))
 		{

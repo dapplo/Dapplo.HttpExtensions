@@ -15,5 +15,8 @@
         <language>en-us</language>
 		<copyright>Dapplo</copyright>
 		<tags>rest http</tags>
+		<frameworkAssemblies>
+			<frameworkAssembly assemblyName="System.Net.Http" targetFramework="net45" />
+		</frameworkAssemblies>
     </metadata>
 </package>

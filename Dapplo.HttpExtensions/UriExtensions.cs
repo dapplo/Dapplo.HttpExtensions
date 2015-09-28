@@ -239,40 +239,87 @@ namespace Dapplo.HttpExtensions
 		/// <param name="throwErrorOnNonSuccess"></param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>dynamic created with SimpleJson</returns>
-		public static async Task<dynamic> GetJsonAsync(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
+		public static async Task<dynamic> GetAsJsonAsync(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
 		{
 			using (var reponse = await uri.GetAsync(token).ConfigureAwait(false))
 			{
-				return await reponse.GetJsonAsync(throwErrorOnNonSuccess, token).ConfigureAwait(false);
+				return await reponse.GetAsJsonAsync(throwErrorOnNonSuccess, token).ConfigureAwait(false);
             }
+		}
+
+		/// <summary>
+		/// Download a Json response
+		/// </summary>
+		/// <typeparam name="T">Type to deserialize into</typeparam>
+		/// <param name="uri">An Uri to specify the download location</param>
+		/// <param name="throwErrorOnNonSuccess"></param>
+		/// <param name="token">CancellationToken</param>
+		/// <returns>T created with SimpleJson</returns>
+		public static async Task<T> GetAsJsonAsync<T>(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
+		{
+			using (var reponse = await uri.GetAsync(token).ConfigureAwait(false))
+			{
+				return await reponse.GetAsJsonAsync<T>(throwErrorOnNonSuccess, token).ConfigureAwait(false);
+			}
 		}
 
 
 		/// <summary>
-		/// Create a HttpClient with default, configured, settings
+		/// Method to post JSON
+		/// </summary>
+		/// <typeparam name="T">Type to post</typeparam>
+		/// <param name="uri"></param>
+		/// <param name="postData">T</param>
+		/// <param name="token"></param>
+		/// <returns>HttpResponseMessage</returns>
+		public static async Task<HttpResponseMessage> PostJsonAsync<T>(this Uri uri, T jsonContent, CancellationToken token = default(CancellationToken))
+		{
+			using (var client = uri.CreateHttpClient())
+			{
+				return await client.PostJsonAsync<T>(uri, jsonContent, token).ConfigureAwait(false);
+			}
+		}
+
+		/// <summary>
+		/// Method to post with JSON, and get JSON
+		/// </summary>
+		/// <typeparam name="T1">Type to post</typeparam>
+		/// <typeparam name="T2">Type to read from the response</typeparam>
+		/// <param name="uri"></param>
+		/// <param name="postData">T1</param>
+		/// <param name="throwErrorOnNonSuccess"></param>
+		/// <param name="token"></param>
+		/// <returns>T2</returns>
+		public static async Task<T2> PostJsonAsync<T1, T2>(this Uri uri, T1 jsonContent, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
+		{
+			using (var client = uri.CreateHttpClient())
+			{
+				return await client.PostJsonAsync<T1, T2>(uri, jsonContent, throwErrorOnNonSuccess, token).ConfigureAwait(false);
+			}
+		}
+
+
+		/// <summary>
+		/// Create a HttpClient with default, in the HttpClientExtensions configured, settings
 		/// </summary>
 		/// <param name="uri">Uri needed for the Proxy logic</param>
-		/// <param name="useProxy"></param>
-		/// <param name="connectionTimeout"></param>
 		/// <returns>HttpClient</returns>
-		public static HttpClient CreateHttpClient(this Uri uri, bool useProxy = true, int connectionTimeout = 60)
+		public static HttpClient CreateHttpClient(this Uri uri)
 		{
-			var cookies = new CookieContainer();
-
 			var handler = new HttpClientHandler
 			{
-				CookieContainer = cookies,
-				UseCookies = true,
-				UseDefaultCredentials = true,
-				Credentials = CredentialCache.DefaultCredentials,
-				AllowAutoRedirect = true,
-				AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
-				Proxy = useProxy ? uri.CreateProxy() : null,
-				UseProxy = useProxy
+				CookieContainer = HttpClientExtensions.UseCookies ? new CookieContainer() : null,
+				UseCookies = HttpClientExtensions.UseCookies,
+				UseDefaultCredentials = HttpClientExtensions.UseDefaultCredentials,
+				Credentials = HttpClientExtensions.UseDefaultCredentials? CredentialCache.DefaultCredentials: null,
+				AllowAutoRedirect = HttpClientExtensions.AllowAutoRedirect,
+				AutomaticDecompression = HttpClientExtensions.DefaultDecompressionMethods,
+				Proxy = HttpClientExtensions.UseProxy ? uri.CreateProxy() : null,
+				UseProxy = HttpClientExtensions.UseProxy
 			};
 
 			var client = new HttpClient(handler);
-			client.Timeout = TimeSpan.FromSeconds(connectionTimeout);
+			client.Timeout = TimeSpan.FromSeconds(HttpClientExtensions.ConnectionTimeout);
 			return client;
 		}
 

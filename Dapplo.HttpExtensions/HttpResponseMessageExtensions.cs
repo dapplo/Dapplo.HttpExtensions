@@ -56,7 +56,7 @@ namespace Dapplo.HttpExtensions
 		/// <param name="throwErrorOnNonSuccess"></param>
 		/// <param name="token"></param>
 		/// <returns>dynamic created with SimpleJson</returns>
-		public static async Task<dynamic> GetJsonAsync(this HttpResponseMessage response, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
+		public static async Task<dynamic> GetAsJsonAsync(this HttpResponseMessage response, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
 		{
 			if (response.IsSuccessStatusCode)
 			{
@@ -65,6 +65,25 @@ namespace Dapplo.HttpExtensions
 			}
 			await response.HandleErrorAsync(throwErrorOnNonSuccess, token).ConfigureAwait(false);
 			return null;
+		}
+
+		/// <summary>
+		/// GetAsJsonAsync&lt;T&gt; will use DataMember / DataContract to parse the object into
+		/// </summary>
+		/// <typeparam name="T">Type to parse to</typeparam>
+		/// <param name="response"></param>
+		/// <param name="throwErrorOnNonSuccess"></param>
+		/// <param name="token"></param>
+		/// <returns>T created with SimpleJson</returns>
+		public static async Task<T> GetAsJsonAsync<T>(this HttpResponseMessage response, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
+		{
+			if (response.IsSuccessStatusCode)
+			{
+				var jsonString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+				return SimpleJson.DeserializeObject<T>(jsonString);
+			}
+			await response.HandleErrorAsync(throwErrorOnNonSuccess, token).ConfigureAwait(false);
+			return default(T);
 		}
 
 		/// <summary>

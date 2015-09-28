@@ -20,6 +20,7 @@
  */
 
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -33,6 +34,36 @@ namespace Dapplo.HttpExtensions
 	/// </summary>
 	public static class HttpClientExtensions
 	{
+		/// <summary>
+		/// Configuration for deciding if a Proxy is used when creating the HttpClient in the extensions.
+		/// </summary>
+		public static bool UseProxy { get; set; } = true;
+
+		/// <summary>
+		/// Configuration for deciding if a cookie-container is used when creating the HttpClient in the extensions.
+		/// </summary>
+		public static bool UseCookies { get; set; } = true;
+
+		/// <summary>
+		/// Configuration for deciding if the default credentials are used when creating the HttpClient in the extensions.
+		/// </summary>
+		public static bool UseDefaultCredentials { get; set; } = true;
+
+		/// <summary>
+		/// Configuration for the connection timeout for each HttpClient used by the extensions.
+		/// </summary>
+		public static int ConnectionTimeout { get; set; } = 60;
+
+		/// <summary>
+		/// Configuration for setting the allow auto redirect when creating the HttpClient in the extensions.
+		/// </summary>
+		public static bool AllowAutoRedirect { get; set; } = true;
+
+		/// <summary>
+		/// Configure the decompression methods for the connection
+		/// </summary>
+		public static DecompressionMethods DefaultDecompressionMethods { get; set; } = DecompressionMethods.Deflate | DecompressionMethods.GZip;
+
 		/// <summary>
 		/// Set Basic Authentication for the current client
 		/// </summary>
@@ -94,9 +125,44 @@ namespace Dapplo.HttpExtensions
 		{
 			using (var request = new HttpRequestMessage(HttpMethod.Post, uri))
 			{
-				var responseMessage = await client.SendAsync(request, token).ConfigureAwait(false);
-				responseMessage.EnsureSuccessStatusCode();
-				return responseMessage;
+				return await client.SendAsync(request, token).ConfigureAwait(false);
+			}
+		}
+
+		/// <summary>
+		/// Method to post with JSON
+		/// </summary>
+		/// <param name="client">HttpClient</param>
+		/// <param name="uri"></param>
+		/// <param name="postData"></param>
+		/// <param name="throwErrorOnNonSuccess"></param>
+		/// <param name="token"></param>
+		/// <returns>HttpResponseMessage</returns>
+		public static async Task<HttpResponseMessage> PostJsonAsync<T>(this HttpClient client, Uri uri, T postData, CancellationToken token = default(CancellationToken))
+		{
+			using (var content = new StringContent(SimpleJson.SerializeObject(postData), Encoding.UTF8, "application/json"))
+			{
+				return await client.PostAsync(uri, content, token).ConfigureAwait(false);
+			}
+		}
+
+		/// <summary>
+		/// Method to post with JSON, and get JSON
+		/// </summary>
+		/// <typeparam name="T1">Type to post</typeparam>
+		/// <typeparam name="T2">Type to read from the response</typeparam>
+		/// <param name="client">HttpClient</param>
+		/// <param name="uri"></param>
+		/// <param name="postData">T1</param>
+		/// <param name="throwErrorOnNonSuccess"></param>
+		/// <param name="token"></param>
+		/// <returns>T2</returns>
+		public static async Task<T2> PostJsonAsync<T1, T2>(this HttpClient client, Uri uri, T1 postData, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
+		{
+			using (var content = new StringContent(SimpleJson.SerializeObject(postData), Encoding.UTF8, "application/json"))
+			{
+				var response = await client.PostAsync(uri, content, token).ConfigureAwait(false);
+				return await response.GetAsJsonAsync<T2>(throwErrorOnNonSuccess, token).ConfigureAwait(false);
 			}
 		}
 	}

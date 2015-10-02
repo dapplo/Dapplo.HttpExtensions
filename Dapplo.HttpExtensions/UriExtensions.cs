@@ -204,6 +204,20 @@ namespace Dapplo.HttpExtensions
 		}
 
 		/// <summary>
+		/// Method to Post content
+		/// </summary>
+		/// <param name="uri"></param>
+		/// <param name="token">CancellationToken</param>
+		/// <returns>HttpResponseMessage</returns>
+		public static async Task<HttpResponseMessage> PostAsync(this Uri uri, HttpContent content, CancellationToken token = default(CancellationToken))
+		{
+			using (var client = uri.CreateHttpClient())
+			{
+				return await client.PostAsync(uri, content, token);
+			}
+		}
+
+		/// <summary>
 		/// Simple extension to post Form-URLEncoded Content
 		/// </summary>
 		/// <param name="uri">Uri to post to</param>

@@ -136,7 +136,6 @@ namespace Dapplo.HttpExtensions
 			}
 		}
 
-
 		/// <summary>
 		/// Get the content as a MemoryStream
 		/// </summary>
@@ -151,6 +150,39 @@ namespace Dapplo.HttpExtensions
 			{
 				return await response.GetAsMemoryStreamAsync(throwErrorOnNonSuccess, token);
             }
+		}
+
+		/// <summary>
+		/// Get the content as JSON
+		/// </summary>
+		/// <param name="client">HttpClient</param>
+		/// <param name="uri">Uri</param>
+		/// <param name="throwErrorOnNonSuccess">bool</param>
+		/// <param name="token"></param>
+		/// <returns>dynamic (JSON)</returns>
+		public static async Task<dynamic> GetAsJsonAsync(this HttpClient client, Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
+		{
+			using (var response = await client.GetAsync(uri, token))
+			{
+				return await response.GetAsJsonAsync(throwErrorOnNonSuccess, token);
+			}
+		}
+
+		/// <summary>
+		/// Get the content as JSON
+		/// </summary>
+		/// <param name="client">HttpClient</param>
+		/// <param name="uri">Uri</param>
+		/// <param name="throwErrorOnNonSuccess">bool</param>
+		/// <param name="token"></param>
+		/// <typeparam name="T">Type to use in the JSON parsing</typeparam>
+		/// <returns>dynamic (json)</returns>
+		public static async Task<T> GetAsJsonAsync<T>(this HttpClient client, Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
+		{
+			using (var response = await client.GetAsync(uri, token))
+			{
+				return await response.GetAsJsonAsync<T>(throwErrorOnNonSuccess, token);
+			}
 		}
 	}
 }

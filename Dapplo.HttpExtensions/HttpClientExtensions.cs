@@ -20,7 +20,7 @@
  */
 
 using System;
-using System.Net;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -34,36 +34,6 @@ namespace Dapplo.HttpExtensions
 	/// </summary>
 	public static class HttpClientExtensions
 	{
-		/// <summary>
-		/// Configuration for deciding if a Proxy is used when creating the HttpClient in the extensions.
-		/// </summary>
-		public static bool UseProxy { get; set; } = true;
-
-		/// <summary>
-		/// Configuration for deciding if a cookie-container is used when creating the HttpClient in the extensions.
-		/// </summary>
-		public static bool UseCookies { get; set; } = true;
-
-		/// <summary>
-		/// Configuration for deciding if the default credentials are used when creating the HttpClient in the extensions.
-		/// </summary>
-		public static bool UseDefaultCredentials { get; set; } = true;
-
-		/// <summary>
-		/// Configuration for the connection timeout for each HttpClient used by the extensions.
-		/// </summary>
-		public static int ConnectionTimeout { get; set; } = 60;
-
-		/// <summary>
-		/// Configuration for setting the allow auto redirect when creating the HttpClient in the extensions.
-		/// </summary>
-		public static bool AllowAutoRedirect { get; set; } = true;
-
-		/// <summary>
-		/// Configure the decompression methods for the connection
-		/// </summary>
-		public static DecompressionMethods DefaultDecompressionMethods { get; set; } = DecompressionMethods.Deflate | DecompressionMethods.GZip;
-
 		/// <summary>
 		/// Set Basic Authentication for the current client
 		/// </summary>
@@ -164,6 +134,23 @@ namespace Dapplo.HttpExtensions
 				var response = await client.PostAsync(uri, content, token).ConfigureAwait(false);
 				return await response.GetAsJsonAsync<T2>(throwErrorOnNonSuccess, token).ConfigureAwait(false);
 			}
+		}
+
+
+		/// <summary>
+		/// Get the content as a MemoryStream
+		/// </summary>
+		/// <param name="client">HttpClient</param>
+		/// <param name="uri">Uri</param>
+		/// <param name="throwErrorOnNonSuccess">bool</param>
+		/// <param name="token"></param>
+		/// <returns>MemoryStream</returns>
+		public static async Task<MemoryStream> GetAsMemoryStreamAsync(this HttpClient client, Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
+		{
+			using (var response = await client.GetAsync(uri, token))
+			{
+				return await response.GetAsMemoryStreamAsync(throwErrorOnNonSuccess, token);
+            }
 		}
 	}
 }

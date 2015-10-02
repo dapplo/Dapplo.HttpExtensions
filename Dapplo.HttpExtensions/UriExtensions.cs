@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -153,11 +154,11 @@ namespace Dapplo.HttpExtensions
 		/// <param name="uri">Uri</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>DateTime</returns>
-		public static async Task<DateTimeOffset> LastModifiedAsync(this Uri uri, CancellationToken token = default(CancellationToken))
+		public static async Task<DateTimeOffset> LastModifiedAsync(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
 		{
 			try
 			{
-				var headers = await uri.HeadAsync(token).ConfigureAwait(false);
+				var headers = await uri.HeadAsync(throwErrorOnNonSuccess, token).ConfigureAwait(false);
 				if (headers.LastModified.HasValue)
 				{
 					return headers.LastModified.Value;
@@ -177,13 +178,13 @@ namespace Dapplo.HttpExtensions
 		/// <param name="uri"></param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>HttpContentHeaders</returns>
-		public static async Task<HttpContentHeaders> HeadAsync(this Uri uri, CancellationToken token = default(CancellationToken))
+		public static async Task<HttpContentHeaders> HeadAsync(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
 		{
 			using (var client = uri.CreateHttpClient())
 			using (var request = new HttpRequestMessage(HttpMethod.Head, uri))
 			{
 				var responseMessage = await client.SendAsync(request, token).ConfigureAwait(false);
-				responseMessage.EnsureSuccessStatusCode();
+				await responseMessage.HandleErrorAsync(throwErrorOnNonSuccess, token);
 				return responseMessage.Content.Headers;
 			}
 		}
@@ -308,18 +309,18 @@ namespace Dapplo.HttpExtensions
 		{
 			var handler = new HttpClientHandler
 			{
-				CookieContainer = HttpClientExtensions.UseCookies ? new CookieContainer() : null,
-				UseCookies = HttpClientExtensions.UseCookies,
-				UseDefaultCredentials = HttpClientExtensions.UseDefaultCredentials,
-				Credentials = HttpClientExtensions.UseDefaultCredentials? CredentialCache.DefaultCredentials: null,
-				AllowAutoRedirect = HttpClientExtensions.AllowAutoRedirect,
-				AutomaticDecompression = HttpClientExtensions.DefaultDecompressionMethods,
-				Proxy = HttpClientExtensions.UseProxy ? uri.CreateProxy() : null,
-				UseProxy = HttpClientExtensions.UseProxy
+				CookieContainer = Settings.UseCookies ? new CookieContainer() : null,
+				UseCookies = Settings.UseCookies,
+				UseDefaultCredentials = Settings.UseDefaultCredentials,
+				Credentials = Settings.UseDefaultCredentials? CredentialCache.DefaultCredentials: null,
+				AllowAutoRedirect = Settings.AllowAutoRedirect,
+				AutomaticDecompression = Settings.DefaultDecompressionMethods,
+				Proxy = Settings.UseProxy ? uri.CreateProxy() : null,
+				UseProxy = Settings.UseProxy
 			};
 
 			var client = new HttpClient(handler);
-			client.Timeout = TimeSpan.FromSeconds(HttpClientExtensions.ConnectionTimeout);
+			client.Timeout = TimeSpan.FromSeconds(Settings.ConnectionTimeout);
 			return client;
 		}
 
@@ -336,6 +337,21 @@ namespace Dapplo.HttpExtensions
 			using (var response = await client.GetAsync(uri, HttpCompletionOption.ResponseContentRead, token).ConfigureAwait(false))
 			{
 				return await response.GetAsStringAsync(throwErrorOnNonSuccess, token).ConfigureAwait(false);
+			}
+		}
+
+		/// <summary>
+		/// Get the content as a MemoryStream
+		/// </summary>
+		/// <param name="uri">Uri</param>
+		/// <param name="throwErrorOnNonSuccess">bool</param>
+		/// <param name="token"></param>
+		/// <returns>MemoryStream</returns>
+		public static async Task<MemoryStream> GetAsMemoryStreamAsync(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
+		{
+			using (var client = uri.CreateHttpClient())
+			{
+				return await client.GetAsMemoryStreamAsync(uri, throwErrorOnNonSuccess, token);
 			}
 		}
 

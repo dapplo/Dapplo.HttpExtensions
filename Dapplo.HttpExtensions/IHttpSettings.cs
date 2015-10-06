@@ -51,13 +51,13 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// The Uri for the proxy to use, when the UseDefaultProxy is set to false
 		/// </summary>
-		[Description("When true the configured proxy will used the default user credentials"), DataMember(EmitDefaultValue = true)]
+		[Description("When true the configured proxy will used the default user credentials"), DataMember(EmitDefaultValue = false)]
 		Uri ProxyUri { get; set; }
 
 		/// <summary>
 		/// See: https://msdn.microsoft.com/en-us/library/system.net.webproxy.credentials.aspx
 		/// </summary>
-		[Description("The credentials for the proxy, only used when UseDefaultCredentialsForProy is set to false"), DataMember(EmitDefaultValue = true)]
+		[Description("The credentials for the proxy, only used when UseDefaultCredentialsForProy is set to false"), DataMember(EmitDefaultValue = false)]
 		ICredentials ProxyCredentials { get; set; }
 
 		/// <summary>
@@ -97,33 +97,33 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.automaticdecompression.aspx
 		/// </summary>
-		[DefaultValue(DecompressionMethods.Deflate | DecompressionMethods.GZip), Description("Decompression methods used"), DataMember(EmitDefaultValue = true)]
+		[DefaultValue(DecompressionMethods.Deflate | DecompressionMethods.GZip), Description("Decompression methods used"), DataMember(EmitDefaultValue = false)]
         DecompressionMethods DefaultDecompressionMethods { get; set; }
 
 		/// <summary>
 		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.preauthenticate.aspx
 		/// And: http://weblog.west-wind.com/posts/2010/Feb/18/NET-WebRequestPreAuthenticate-not-quite-what-it-sounds-like
 		/// </summary>
-		[DefaultValue(false), Description("When true the request is directly send with a HTTP Authorization header."), DataMember(EmitDefaultValue = true)]
+		[DefaultValue(false), Description("When true the request is directly send with a HTTP Authorization header."), DataMember(EmitDefaultValue = false)]
         bool PreAuthenticate { get; set; }
 
 		/// <summary>
 		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.maxautomaticredirections.aspx
 		/// And: https://msdn.microsoft.com/en-us/library/system.net.httpwebrequest.allowautoredirect.aspx
 		/// </summary>
-		[DefaultValue(50), Description("The maximum amount of redirections that are followed"), DataMember(EmitDefaultValue = true)]
+		[DefaultValue(50), Description("The maximum amount of redirections that are followed"), DataMember(EmitDefaultValue = false)]
         int MaxAutomaticRedirections { get; set; }
 
 		/// <summary>
 		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.maxrequestcontentbuffersize.aspx
 		/// </summary>
-		[DefaultValue(2 * 1024 * 1024 * 1024L), Description("Max request content buffer size"), DataMember(EmitDefaultValue = true)]
+		[DefaultValue(2 * 1024 * 1024 * 1024L), Description("Max request content buffer size"), DataMember(EmitDefaultValue = false)]
         long MaxRequestContentBufferSize { get; set; }
 
 		/// <summary>
 		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.httpclient.maxresponsecontentbuffersize.aspx
 		/// </summary>
-		[DefaultValue(2 * 1024 * 1024 * 1024L), Description("Max response content buffer size"), DataMember(EmitDefaultValue = true)]
+		[DefaultValue(2 * 1024 * 1024 * 1024L), Description("Max response content buffer size"), DataMember(EmitDefaultValue = false)]
 		long MaxResponseContentBufferSize { get; set; }
 
 		/// <summary>
@@ -135,7 +135,7 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.allowpipelining.aspx
 		/// </summary>
-		[DefaultValue(true), Description("When true, pipelined connections are allowed."), DataMember(EmitDefaultValue = true)]
+		[DefaultValue(true), Description("When true, pipelined connections are allowed."), DataMember(EmitDefaultValue = false)]
         bool AllowPipelining { get; set; }
 
 		/// <summary>
@@ -143,14 +143,14 @@ namespace Dapplo.HttpExtensions
 		/// For more information about authentication protocols, see Internet Authentication: https://msdn.microsoft.com/en-us/library/47zhdx9d.aspx
 		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.authenticationlevel.aspx
 		/// </summary>
-		[DefaultValue(AuthenticationLevel.MutualAuthRequested), DataMember(EmitDefaultValue = true),
+		[DefaultValue(AuthenticationLevel.MutualAuthRequested), DataMember(EmitDefaultValue = false),
 		 Description("The level of authentication and impersonation used for every request")]
         AuthenticationLevel AuthenticationLevel { get; set; }
 
 		/// <summary>
 		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.continuetimeout.aspx
 		/// </summary>
-		[DefaultValue("0.350"), DataMember(EmitDefaultValue = true),
+		[DefaultValue("0:0:0.350"), DataMember(EmitDefaultValue = false),
 		 Description("The amount of time, in milliseconds, the application will wait for 100-continue from the server before uploading data.")]
 		TimeSpan ContinueTimeout { get; set; }
 
@@ -158,7 +158,7 @@ namespace Dapplo.HttpExtensions
 		/// The impersonation level determines how the server can use the client's credentials.
 		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.impersonationlevel(v=vs.110).aspx
 		/// </summary>
-		[DefaultValue(TokenImpersonationLevel.Delegation), DataMember(EmitDefaultValue = true),
+		[DefaultValue(TokenImpersonationLevel.Delegation), DataMember(EmitDefaultValue = false),
          Description("The impersonation level determines how the server can use the client's credentials.")]
 		TokenImpersonationLevel ImpersonationLevel { get; set; }
 

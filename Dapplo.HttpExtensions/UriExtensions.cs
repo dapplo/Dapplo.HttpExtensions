@@ -41,23 +41,6 @@ namespace Dapplo.HttpExtensions
 	public static class UriExtensions
 	{
 		/// <summary>
-		/// Create a IWebProxy Object which can be used to access the Internet
-		/// This method will check the configuration if the proxy is allowed to be used.
-		/// </summary>
-		/// <param name="uri"></param>
-		/// <returns>IWebProxy filled with all the proxy details or null if none is set/wanted</returns>
-		public static IWebProxy CreateProxy(this Uri uri)
-		{
-			IWebProxy proxyToUse;
-			proxyToUse = WebRequest.DefaultWebProxy;
-			if (proxyToUse != null)
-			{
-				proxyToUse.Credentials = CredentialCache.DefaultCredentials;
-			}
-			return proxyToUse;
-		}
-
-		/// <summary>
 		/// Create a NameValueCollection from the query part of the uri
 		/// </summary>
 		/// <param name="uri"></param>
@@ -180,7 +163,7 @@ namespace Dapplo.HttpExtensions
 		/// <returns>HttpContentHeaders</returns>
 		public static async Task<HttpContentHeaders> HeadAsync(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
 		{
-			using (var client = uri.CreateHttpClient())
+			using (var client = HttpClientFactory.CreateHttpClient())
 			using (var request = new HttpRequestMessage(HttpMethod.Head, uri))
 			{
 				var responseMessage = await client.SendAsync(request, token).ConfigureAwait(false);
@@ -197,7 +180,7 @@ namespace Dapplo.HttpExtensions
 		/// <returns>HttpResponseMessage</returns>
 		public static async Task<HttpResponseMessage> PostAsync(this Uri uri, CancellationToken token = default(CancellationToken))
 		{
-			using (var client = uri.CreateHttpClient())
+			using (var client = HttpClientFactory.CreateHttpClient())
 			{
 				return await client.PostAsync(uri, token);
 			}
@@ -211,7 +194,7 @@ namespace Dapplo.HttpExtensions
 		/// <returns>HttpResponseMessage</returns>
 		public static async Task<HttpResponseMessage> PostAsync(this Uri uri, HttpContent content, CancellationToken token = default(CancellationToken))
 		{
-			using (var client = uri.CreateHttpClient())
+			using (var client = HttpClientFactory.CreateHttpClient())
 			{
 				return await client.PostAsync(uri, content, token);
 			}
@@ -227,7 +210,7 @@ namespace Dapplo.HttpExtensions
 		public static async Task<HttpResponseMessage> PostFormUrlEncodedAsync(this Uri uri, IDictionary<string, string> formContent, CancellationToken token = default(CancellationToken))
 		{
 			using (var content = new FormUrlEncodedContent(formContent))
-			using (var client = uri.CreateHttpClient())
+			using (var client = HttpClientFactory.CreateHttpClient())
 			{
 				return await client.PostAsync(uri, content, token);
 			}
@@ -241,7 +224,7 @@ namespace Dapplo.HttpExtensions
 		/// <returns>HttpResponseMessage</returns>
 		public static async Task<HttpResponseMessage> GetAsync(this Uri uri, CancellationToken token = default(CancellationToken))
 		{
-			using (var client = uri.CreateHttpClient())
+			using (var client = HttpClientFactory.CreateHttpClient())
 			{
 				return await client.GetAsync(uri, token).ConfigureAwait(false);
 			}
@@ -289,7 +272,7 @@ namespace Dapplo.HttpExtensions
 		/// <returns>HttpResponseMessage</returns>
 		public static async Task<HttpResponseMessage> PostJsonAsync<T>(this Uri uri, T jsonContent, CancellationToken token = default(CancellationToken))
 		{
-			using (var client = uri.CreateHttpClient())
+			using (var client = HttpClientFactory.CreateHttpClient())
 			{
 				return await client.PostJsonAsync<T>(uri, jsonContent, token).ConfigureAwait(false);
 			}
@@ -307,35 +290,10 @@ namespace Dapplo.HttpExtensions
 		/// <returns>T2</returns>
 		public static async Task<T2> PostJsonAsync<T1, T2>(this Uri uri, T1 jsonContent, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
 		{
-			using (var client = uri.CreateHttpClient())
+			using (var client = HttpClientFactory.CreateHttpClient())
 			{
 				return await client.PostJsonAsync<T1, T2>(uri, jsonContent, throwErrorOnNonSuccess, token).ConfigureAwait(false);
 			}
-		}
-
-
-		/// <summary>
-		/// Create a HttpClient with default, in the HttpClientExtensions configured, settings
-		/// </summary>
-		/// <param name="uri">Uri needed for the Proxy logic</param>
-		/// <returns>HttpClient</returns>
-		public static HttpClient CreateHttpClient(this Uri uri)
-		{
-			var handler = new HttpClientHandler
-			{
-				CookieContainer = Settings.UseCookies ? new CookieContainer() : null,
-				UseCookies = Settings.UseCookies,
-				UseDefaultCredentials = Settings.UseDefaultCredentials,
-				Credentials = Settings.UseDefaultCredentials? CredentialCache.DefaultCredentials: null,
-				AllowAutoRedirect = Settings.AllowAutoRedirect,
-				AutomaticDecompression = Settings.DefaultDecompressionMethods,
-				Proxy = Settings.UseProxy ? uri.CreateProxy() : null,
-				UseProxy = Settings.UseProxy
-			};
-
-			var client = new HttpClient(handler);
-			client.Timeout = TimeSpan.FromSeconds(Settings.ConnectionTimeout);
-			return client;
 		}
 
 		/// <summary>
@@ -347,7 +305,7 @@ namespace Dapplo.HttpExtensions
 		/// <returns>string with the content</returns>
 		public static async Task<string> GetAsStringAsync(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
 		{
-			using (var client = uri.CreateHttpClient())
+			using (var client = HttpClientFactory.CreateHttpClient())
 			using (var response = await client.GetAsync(uri, HttpCompletionOption.ResponseContentRead, token).ConfigureAwait(false))
 			{
 				return await response.GetAsStringAsync(throwErrorOnNonSuccess, token).ConfigureAwait(false);
@@ -363,7 +321,7 @@ namespace Dapplo.HttpExtensions
 		/// <returns>MemoryStream</returns>
 		public static async Task<MemoryStream> GetAsMemoryStreamAsync(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
 		{
-			using (var client = uri.CreateHttpClient())
+			using (var client = HttpClientFactory.CreateHttpClient())
 			{
 				return await client.GetAsMemoryStreamAsync(uri, throwErrorOnNonSuccess, token);
 			}

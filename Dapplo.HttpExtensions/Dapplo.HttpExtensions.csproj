@@ -48,16 +48,13 @@
     <Compile Include="HttpClientFactory.cs" />
     <Compile Include="HttpMessageHandlerFactory.cs" />
     <Compile Include="HttpResponseMessageExtensions.cs" />
-    <Compile Include="ISettings.cs" />
+    <Compile Include="HttpSettings.cs" />
+    <Compile Include="IHttpSettings.cs" />
     <Compile Include="NameValueCollectionExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProxyFactory.cs" />
-    <Compile Include="Settings.cs" />
     <Compile Include="SimpleJson.cs" />
     <Compile Include="UriExtensions.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

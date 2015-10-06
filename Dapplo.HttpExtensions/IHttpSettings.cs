@@ -38,26 +38,84 @@ namespace Dapplo.HttpExtensions
 	/// </summary>
 	public interface IHttpSettings
 	{
+		/// <summary>
+		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.allowautoredirect.aspx
+		/// </summary>
+		[DefaultValue(true), Description("When true a connection would automatically redirect, if the server says so."), DataMember(EmitDefaultValue = true)]
+		bool AllowAutoRedirect { get; set; }
 
-		[DefaultValue(true), Description("If true, every request is made via the configured or default proxy.")]
-		bool UseProxy { get; set; }
+		/// <summary>
+		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.allowpipelining.aspx
+		/// </summary>
+		[DefaultValue(true), Description("When true, pipelined connections are allowed.")]
+		bool AllowPipelining { get; set; }
 
-		[DefaultValue(true), Description("When true the default system proxy is used")]
-		bool UseDefaultProxy { get; set; }
+		/// <summary>
+		/// In mutual authentication, both the client and server present credentials to establish their identity. The MutualAuthRequired and MutualAuthRequested values are relevant for Kerberos authentication. Kerberos authentication can be supported directly, or can be used if the Negotiate security protocol is used to select the actual security protocol.
+		/// For more information about authentication protocols, see Internet Authentication: https://msdn.microsoft.com/en-us/library/47zhdx9d.aspx
+		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.authenticationlevel.aspx
+		/// </summary>
+		[DefaultValue(AuthenticationLevel.MutualAuthRequested),
+		 Description("The level of authentication and impersonation used for every request")]
+		AuthenticationLevel AuthenticationLevel { get; set; }
 
-		[DefaultValue(true), Description("When true the configured proxy will used the default user credentials")]
-		bool UseDefaultCredentialsForProy { get; set; }
+		/// <summary>
+		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.continuetimeout.aspx
+		/// </summary>
+		[DefaultValue("0:0:0.350"), DataMember(EmitDefaultValue = true),
+		 Description("The amount of time (with milliseconds) the application will wait for 100-continue from the server before uploading data.")]
+		TimeSpan ContinueTimeout { get; set; }
+
+		/// <summary>
+		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.automaticdecompression.aspx
+		/// </summary>
+		[DefaultValue(DecompressionMethods.Deflate | DecompressionMethods.GZip), Description("Decompression methods used")]
+		DecompressionMethods DefaultDecompressionMethods { get; set; }
+
+		/// <summary>
+		/// The impersonation level determines how the server can use the client's credentials.
+		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.impersonationlevel(v=vs.110).aspx
+		/// </summary>
+		[DefaultValue(TokenImpersonationLevel.Delegation),
+		 Description("The impersonation level determines how the server can use the client's credentials.")]
+		TokenImpersonationLevel ImpersonationLevel { get; set; }
+
+		/// <summary>
+		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.maxautomaticredirections.aspx
+		/// And: https://msdn.microsoft.com/en-us/library/system.net.httpwebrequest.allowautoredirect.aspx
+		/// </summary>
+		[DefaultValue(50), Description("The maximum amount of redirections that are followed")]
+		int MaxAutomaticRedirections { get; set; }
+
+		/// <summary>
+		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.maxrequestcontentbuffersize.aspx
+		/// </summary>
+		[DefaultValue(2 * 1024 * 1024 * 1024L), Description("Max request content buffer size")]
+		long MaxRequestContentBufferSize { get; set; }
+
+		/// <summary>
+		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.httpclient.maxresponsecontentbuffersize.aspx
+		/// </summary>
+		[DefaultValue(2 * 1024 * 1024 * 1024L), Description("Max response content buffer size")]
+		long MaxResponseContentBufferSize { get; set; }
+
+		/// <summary>
+		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.maxresponseheaderslength.aspx
+		/// Default would have been 64, this is increased to 256
+		/// </summary>
+		[DefaultValue(256), Description("The max length, in kilobytes (1024 bytes), of the response headers.")]
+		int MaxResponseHeadersLength { get; set; }
 
 		/// <summary>
 		/// The Uri for the proxy to use, when the UseDefaultProxy is set to false
 		/// </summary>
-		[Description("When true the configured proxy will used the default user credentials"), DataMember(EmitDefaultValue = false)]
+		[Description("When true the configured proxy will used the default user credentials")]
 		Uri ProxyUri { get; set; }
 
 		/// <summary>
 		/// See: https://msdn.microsoft.com/en-us/library/system.net.webproxy.credentials.aspx
 		/// </summary>
-		[Description("The credentials for the proxy, only used when UseDefaultCredentialsForProy is set to false"), DataMember(EmitDefaultValue = false)]
+		[Description("The credentials for the proxy, only used when UseDefaultCredentialsForProy is set to false")]
 		ICredentials ProxyCredentials { get; set; }
 
 		/// <summary>
@@ -73,101 +131,43 @@ namespace Dapplo.HttpExtensions
         string[] ProxyBypassList { get; set; }
 
 		/// <summary>
-		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.usecookies.aspx
-		/// And: https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.cookiecontainer.aspx
+		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.preauthenticate.aspx
+		/// And: http://weblog.west-wind.com/posts/2010/Feb/18/NET-WebRequestPreAuthenticate-not-quite-what-it-sounds-like
 		/// </summary>
-		[DefaultValue(true), Description("Should all requests via one Httpclient store & resend cookies?")]
-        bool UseCookies { get; set; }
-
-		[DefaultValue(true), Description("When true every http request will supply the default user credentials when the server asks for them")]
-		bool UseDefaultCredentials { get; set; }
+		[DefaultValue(false), Description("When true the request is directly send with a HTTP Authorization header.")]
+		bool PreAuthenticate { get; set; }
 
 		/// <summary>
 		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.httpclient.timeout.aspx
 		/// </summary>
-		[DefaultValue("0:01:40"), Description("Request timeout")]
+		[DefaultValue("0:01:40"), Description("Request timeout"), DataMember(EmitDefaultValue = true)]
         TimeSpan RequestTimeout { get; set; }
-
-		/// <summary>
-		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.allowautoredirect.aspx
-		/// </summary>
-		[DefaultValue(true), Description("When true a connection would automatically redirect, if the server says so.")]
-		bool AllowAutoRedirect { get; set; }
-
-		/// <summary>
-		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.automaticdecompression.aspx
-		/// </summary>
-		[DefaultValue(DecompressionMethods.Deflate | DecompressionMethods.GZip), Description("Decompression methods used"), DataMember(EmitDefaultValue = false)]
-        DecompressionMethods DefaultDecompressionMethods { get; set; }
-
-		/// <summary>
-		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.preauthenticate.aspx
-		/// And: http://weblog.west-wind.com/posts/2010/Feb/18/NET-WebRequestPreAuthenticate-not-quite-what-it-sounds-like
-		/// </summary>
-		[DefaultValue(false), Description("When true the request is directly send with a HTTP Authorization header."), DataMember(EmitDefaultValue = false)]
-        bool PreAuthenticate { get; set; }
-
-		/// <summary>
-		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.maxautomaticredirections.aspx
-		/// And: https://msdn.microsoft.com/en-us/library/system.net.httpwebrequest.allowautoredirect.aspx
-		/// </summary>
-		[DefaultValue(50), Description("The maximum amount of redirections that are followed"), DataMember(EmitDefaultValue = false)]
-        int MaxAutomaticRedirections { get; set; }
-
-		/// <summary>
-		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.maxrequestcontentbuffersize.aspx
-		/// </summary>
-		[DefaultValue(2 * 1024 * 1024 * 1024L), Description("Max request content buffer size"), DataMember(EmitDefaultValue = false)]
-        long MaxRequestContentBufferSize { get; set; }
-
-		/// <summary>
-		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.httpclient.maxresponsecontentbuffersize.aspx
-		/// </summary>
-		[DefaultValue(2 * 1024 * 1024 * 1024L), Description("Max response content buffer size"), DataMember(EmitDefaultValue = false)]
-		long MaxResponseContentBufferSize { get; set; }
-
+		
 		/// <summary>
 		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.readwritetimeout.aspx
 		/// </summary>
-		[DefaultValue(300000), Description("The number of milliseconds before the writing or reading times out.")]
+		[DefaultValue(300000), Description("The number of milliseconds before the writing or reading times out."), DataMember(EmitDefaultValue = true)]
         int ReadWriteTimeout { get; set; }
 
 		/// <summary>
-		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.allowpipelining.aspx
+		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.usecookies.aspx
+		/// And: https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.cookiecontainer.aspx
 		/// </summary>
-		[DefaultValue(true), Description("When true, pipelined connections are allowed."), DataMember(EmitDefaultValue = false)]
-        bool AllowPipelining { get; set; }
+		[DefaultValue(true), Description("Should all requests via one Httpclient store & resend cookies?"), DataMember(EmitDefaultValue = true)]
+		bool UseCookies { get; set; }
 
-		/// <summary>
-		/// In mutual authentication, both the client and server present credentials to establish their identity. The MutualAuthRequired and MutualAuthRequested values are relevant for Kerberos authentication. Kerberos authentication can be supported directly, or can be used if the Negotiate security protocol is used to select the actual security protocol.
-		/// For more information about authentication protocols, see Internet Authentication: https://msdn.microsoft.com/en-us/library/47zhdx9d.aspx
-		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.authenticationlevel.aspx
-		/// </summary>
-		[DefaultValue(AuthenticationLevel.MutualAuthRequested), DataMember(EmitDefaultValue = false),
-		 Description("The level of authentication and impersonation used for every request")]
-        AuthenticationLevel AuthenticationLevel { get; set; }
+		[DefaultValue(true), Description("When true every http request will supply the default user credentials when the server asks for them"), DataMember(EmitDefaultValue = true)]
+		bool UseDefaultCredentials { get; set; }
 
-		/// <summary>
-		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.continuetimeout.aspx
-		/// </summary>
-		[DefaultValue("0:0:0.350"), DataMember(EmitDefaultValue = false),
-		 Description("The amount of time, in milliseconds, the application will wait for 100-continue from the server before uploading data.")]
-		TimeSpan ContinueTimeout { get; set; }
+		[DefaultValue(true), Description("If true, every request is made via the configured or default proxy."), DataMember(EmitDefaultValue = true)]
+		bool UseProxy { get; set; }
 
-		/// <summary>
-		/// The impersonation level determines how the server can use the client's credentials.
-		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.impersonationlevel(v=vs.110).aspx
-		/// </summary>
-		[DefaultValue(TokenImpersonationLevel.Delegation), DataMember(EmitDefaultValue = false),
-         Description("The impersonation level determines how the server can use the client's credentials.")]
-		TokenImpersonationLevel ImpersonationLevel { get; set; }
+		[DefaultValue(true), Description("When true the default system proxy is used"), DataMember(EmitDefaultValue = true)]
+		bool UseDefaultProxy { get; set; }
 
-		/// <summary>
-		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.maxresponseheaderslength.aspx
-		/// Default would have been 64, this is increased to 256
-		/// </summary>
-		[DefaultValue(256), Description("The max length, in kilobytes (1024 bytes), of the response headers."), DataMember(EmitDefaultValue = true)]
-		int MaxResponseHeadersLength { get; set; }
+		[DefaultValue(true), Description("When true the configured proxy will used the default user credentials"), DataMember(EmitDefaultValue = true)]
+		bool UseDefaultCredentialsForProy { get; set; }
+
 
 	}
 }

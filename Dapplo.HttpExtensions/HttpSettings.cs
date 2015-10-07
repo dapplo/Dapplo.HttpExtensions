@@ -72,9 +72,9 @@ namespace Dapplo.HttpExtensions
 
 		public int MaxAutomaticRedirections { get; set; } = 50;
 
-		public long MaxRequestContentBufferSize { get; set; } = 2 * Gb;
+		public long MaxRequestContentBufferSize { get; set; } = (2 * Gb) - 1;
 
-		public long MaxResponseContentBufferSize { get; set; } = 2 * Gb;
+		public long MaxResponseContentBufferSize { get; set; } = (2 * Gb) - 1;
 		
 		public int ReadWriteTimeout { get; set; } = 300000;
 

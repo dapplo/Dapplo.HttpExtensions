@@ -90,13 +90,13 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.maxrequestcontentbuffersize.aspx
 		/// </summary>
-		[DefaultValue(2 * 1024 * 1024 * 1024L), Description("Max request content buffer size")]
+		[DefaultValue((2 * 1024 * 1024 * 1024L) - 1L), Description("Max request content buffer size")]
 		long MaxRequestContentBufferSize { get; set; }
 
 		/// <summary>
 		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.httpclient.maxresponsecontentbuffersize.aspx
 		/// </summary>
-		[DefaultValue(2 * 1024 * 1024 * 1024L), Description("Max response content buffer size")]
+		[DefaultValue((2 * 1024 * 1024 * 1024L) - 1L), Description("Max response content buffer size")]
 		long MaxResponseContentBufferSize { get; set; }
 
 		/// <summary>

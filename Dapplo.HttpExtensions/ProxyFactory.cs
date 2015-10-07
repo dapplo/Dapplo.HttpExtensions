@@ -32,34 +32,38 @@ namespace Dapplo.HttpExtensions
 		/// Create a IWebProxy Object which can be used to access the Internet
 		/// This method will create a proxy according to the properties in the Settings class
 		/// </summary>
+		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		/// <returns>IWebProxy filled with all the proxy details or null if none is set/wanted</returns>
-		public static IWebProxy CreateProxy()
+		public static IWebProxy CreateProxy(IHttpSettings httpSettings = null)
 		{
+
+			var settings = httpSettings ?? HttpSettings.Instance;
+
 			// This is already checked in the HttpClientFactory, but should be checked if this call is used elsewhere.
-			if (!HttpSettings.Instance.UseProxy)
+			if (!httpSettings.UseProxy)
 			{
 				return null;
 			}
 			IWebProxy proxyToUse;
-			if (HttpSettings.Instance.UseDefaultProxy)
+			if (httpSettings.UseDefaultProxy)
 			{
 				proxyToUse = WebRequest.GetSystemWebProxy();
 			}
 			else
 			{
-				if (HttpSettings.Instance.ProxyBypassList != null)
+				if (httpSettings.ProxyBypassList != null)
 				{
-					proxyToUse = new WebProxy(HttpSettings.Instance.ProxyUri, HttpSettings.Instance.ProxyBypassOnLocal, HttpSettings.Instance.ProxyBypassList);
+					proxyToUse = new WebProxy(httpSettings.ProxyUri, httpSettings.ProxyBypassOnLocal, httpSettings.ProxyBypassList);
 				}
 				else
 				{
-					proxyToUse = new WebProxy(HttpSettings.Instance.ProxyUri, HttpSettings.Instance.ProxyBypassOnLocal);
+					proxyToUse = new WebProxy(httpSettings.ProxyUri, httpSettings.ProxyBypassOnLocal);
 				}
 			}
 
 			if (proxyToUse != null)
 			{
-				if (HttpSettings.Instance.UseDefaultCredentialsForProy)
+				if (httpSettings.UseDefaultCredentialsForProy)
 				{
 					if (proxyToUse is WebProxy)
 					{
@@ -79,11 +83,11 @@ namespace Dapplo.HttpExtensions
 						// Read note here: https://msdn.microsoft.com/en-us/library/system.net.webproxy.credentials.aspx
 						var webProxy = proxyToUse as WebProxy;
 						webProxy.UseDefaultCredentials = false;
-						webProxy.Credentials = HttpSettings.Instance.ProxyCredentials;
+						webProxy.Credentials = httpSettings.ProxyCredentials;
 					}
 					else
 					{
-						proxyToUse.Credentials = HttpSettings.Instance.ProxyCredentials;
+						proxyToUse.Credentials = httpSettings.ProxyCredentials;
 					}
 				}
 			}

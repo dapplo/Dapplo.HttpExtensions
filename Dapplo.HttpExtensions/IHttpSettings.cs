@@ -153,7 +153,7 @@ namespace Dapplo.HttpExtensions
 		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.usecookies.aspx
 		/// And: https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.cookiecontainer.aspx
 		/// </summary>
-		[DefaultValue(true), Description("Should all requests via one Httpclient store & resend cookies?"), DataMember(EmitDefaultValue = true)]
+		[DefaultValue(true), Description("Should requests store & resend cookies?"), DataMember(EmitDefaultValue = true)]
 		bool UseCookies { get; set; }
 
 		[DefaultValue(true), Description("When true every http request will supply the default user credentials when the server asks for them"), DataMember(EmitDefaultValue = true)]
@@ -167,7 +167,5 @@ namespace Dapplo.HttpExtensions
 
 		[DefaultValue(true), Description("When true the configured proxy will used the default user credentials"), DataMember(EmitDefaultValue = true)]
 		bool UseDefaultCredentialsForProy { get; set; }
-
-
 	}
 }

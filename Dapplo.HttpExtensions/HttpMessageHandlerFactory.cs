@@ -33,44 +33,53 @@ namespace Dapplo.HttpExtensions
 		/// Apply settings on the HttpClientHandler
 		/// </summary>
 		/// <param name="httpClientHandler"></param>
-		public static void SetDefaults(HttpClientHandler httpClientHandler)
+		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
+		public static void SetDefaults(HttpClientHandler httpClientHandler, IHttpSettings httpSettings = null)
 		{
-			httpClientHandler.AllowAutoRedirect = HttpSettings.Instance.AllowAutoRedirect;
-			httpClientHandler.AutomaticDecompression = HttpSettings.Instance.DefaultDecompressionMethods;
-			httpClientHandler.CookieContainer = HttpSettings.Instance.UseCookies ? new CookieContainer() : null;
-			httpClientHandler.Credentials = HttpSettings.Instance.UseDefaultCredentials ? CredentialCache.DefaultCredentials : null;
-			httpClientHandler.MaxAutomaticRedirections = HttpSettings.Instance.MaxAutomaticRedirections;
-			httpClientHandler.MaxRequestContentBufferSize = HttpSettings.Instance.MaxRequestContentBufferSize;
-			httpClientHandler.UseCookies = HttpSettings.Instance.UseCookies;
-			httpClientHandler.UseDefaultCredentials = HttpSettings.Instance.UseDefaultCredentials;
-			httpClientHandler.Proxy = HttpSettings.Instance.UseProxy ? ProxyFactory.CreateProxy() : null;
-			httpClientHandler.UseProxy = HttpSettings.Instance.UseProxy;
-			httpClientHandler.PreAuthenticate = HttpSettings.Instance.PreAuthenticate;
+			var settings = httpSettings ?? HttpSettings.Instance;
+
+			httpClientHandler.AllowAutoRedirect = httpSettings.AllowAutoRedirect;
+			httpClientHandler.AutomaticDecompression = httpSettings.DefaultDecompressionMethods;
+			httpClientHandler.CookieContainer = httpSettings.UseCookies ? new CookieContainer() : null;
+			httpClientHandler.Credentials = httpSettings.UseDefaultCredentials ? CredentialCache.DefaultCredentials : null;
+			httpClientHandler.MaxAutomaticRedirections = httpSettings.MaxAutomaticRedirections;
+			httpClientHandler.MaxRequestContentBufferSize = httpSettings.MaxRequestContentBufferSize;
+			httpClientHandler.UseCookies = httpSettings.UseCookies;
+			httpClientHandler.UseDefaultCredentials = httpSettings.UseDefaultCredentials;
+			httpClientHandler.Proxy = httpSettings.UseProxy ? ProxyFactory.CreateProxy(httpSettings) : null;
+			httpClientHandler.UseProxy = httpSettings.UseProxy;
+			httpClientHandler.PreAuthenticate = httpSettings.PreAuthenticate;
         }
 
 		/// <summary>
 		/// Apply settings on the WebRequestHandler, this also calls the SetDefaults for the underlying HttpClientHandler
 		/// </summary>
 		/// <param name="webRequestHandler"></param>
-		public static void SetDefaults(WebRequestHandler webRequestHandler)
+		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
+		public static void SetDefaults(WebRequestHandler webRequestHandler, IHttpSettings httpSettings = null)
 		{
-			SetDefaults(webRequestHandler as HttpClientHandler);
-			webRequestHandler.AllowPipelining = HttpSettings.Instance.AllowPipelining;
-            webRequestHandler.ReadWriteTimeout = HttpSettings.Instance.ReadWriteTimeout;
-			webRequestHandler.AuthenticationLevel = HttpSettings.Instance.AuthenticationLevel;
-			webRequestHandler.ContinueTimeout = HttpSettings.Instance.ContinueTimeout;
-			webRequestHandler.ImpersonationLevel = HttpSettings.Instance.ImpersonationLevel;
-			webRequestHandler.MaxResponseHeadersLength = HttpSettings.Instance.MaxResponseHeadersLength;
+			var settings = httpSettings ?? HttpSettings.Instance;
+
+			SetDefaults(webRequestHandler as HttpClientHandler, settings);
+
+			webRequestHandler.AllowPipelining = settings.AllowPipelining;
+            webRequestHandler.ReadWriteTimeout = settings.ReadWriteTimeout;
+			webRequestHandler.AuthenticationLevel = settings.AuthenticationLevel;
+			webRequestHandler.ContinueTimeout = settings.ContinueTimeout;
+			webRequestHandler.ImpersonationLevel = settings.ImpersonationLevel;
+			webRequestHandler.MaxResponseHeadersLength = settings.MaxResponseHeadersLength;
         }
 
 		/// <summary>
 		/// This creates an HttpClientHandler, normally one should use CreateWebRequestHandler
 		/// </summary>
+		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		/// <returns>HttpMessageHandler (HttpClientHandler)</returns>
-		public static HttpMessageHandler CreateHttpClientHandler()
+		public static HttpMessageHandler CreateHttpClientHandler(IHttpSettings httpSettings = null)
 		{
+			var settings = httpSettings ?? HttpSettings.Instance;
 			var handler = new HttpClientHandler();
-			SetDefaults(handler);
+			SetDefaults(handler, settings);
 			return handler;
         }
 
@@ -78,11 +87,13 @@ namespace Dapplo.HttpExtensions
 		/// This creates an advanced HttpMessageHandler, used in desktop applications
 		/// Should be preferred
 		/// </summary>
+		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		/// <returns>HttpMessageHandler (WebRequestHandler)</returns>
-		public static HttpMessageHandler CreateWebRequestHandler()
+		public static HttpMessageHandler CreateWebRequestHandler(IHttpSettings httpSettings = null)
 		{
+			var settings = httpSettings ?? HttpSettings.Instance;
 			var handler = new WebRequestHandler();
-			SetDefaults(handler);
+			SetDefaults(handler, settings);
 			return handler;
 		}
 	}

@@ -31,12 +31,15 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// Create a HttpClient with default, in the HttpClientExtensions configured, settings
 		/// </summary>
+		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		/// <returns>HttpClient</returns>
-		public static HttpClient CreateHttpClient()
+		public static HttpClient CreateHttpClient(IHttpSettings httpSettings = null)
 		{
-			var client = new HttpClient(HttpMessageHandlerFactory.CreateWebRequestHandler());
-			client.Timeout = HttpSettings.Instance.RequestTimeout;
-			client.MaxResponseContentBufferSize = HttpSettings.Instance.MaxResponseContentBufferSize;
+			var settings = httpSettings ?? HttpSettings.Instance;
+
+			var client = new HttpClient(HttpMessageHandlerFactory.CreateWebRequestHandler(settings));
+			client.Timeout = settings.RequestTimeout;
+			client.MaxResponseContentBufferSize = settings.MaxResponseContentBufferSize;
             return client;
 		}
 	}

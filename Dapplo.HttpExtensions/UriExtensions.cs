@@ -136,12 +136,13 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="uri">Uri</param>
 		/// <param name="token">CancellationToken</param>
+		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		/// <returns>DateTime</returns>
-		public static async Task<DateTimeOffset> LastModifiedAsync(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
+		public static async Task<DateTimeOffset> LastModifiedAsync(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken), IHttpSettings httpSettings = null)
 		{
 			try
 			{
-				var headers = await uri.HeadAsync(throwErrorOnNonSuccess, token).ConfigureAwait(false);
+				var headers = await uri.HeadAsync(throwErrorOnNonSuccess, token, httpSettings).ConfigureAwait(false);
 				if (headers.LastModified.HasValue)
 				{
 					return headers.LastModified.Value;
@@ -160,10 +161,11 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="uri"></param>
 		/// <param name="token">CancellationToken</param>
+		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		/// <returns>HttpContentHeaders</returns>
-		public static async Task<HttpContentHeaders> HeadAsync(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
+		public static async Task<HttpContentHeaders> HeadAsync(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken), IHttpSettings httpSettings = null)
 		{
-			using (var client = HttpClientFactory.CreateHttpClient())
+			using (var client = HttpClientFactory.CreateHttpClient(httpSettings))
 			using (var request = new HttpRequestMessage(HttpMethod.Head, uri))
 			{
 				var responseMessage = await client.SendAsync(request, token).ConfigureAwait(false);
@@ -177,10 +179,11 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="uri"></param>
 		/// <param name="token">CancellationToken</param>
+		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		/// <returns>HttpResponseMessage</returns>
-		public static async Task<HttpResponseMessage> PostAsync(this Uri uri, CancellationToken token = default(CancellationToken))
+		public static async Task<HttpResponseMessage> PostAsync(this Uri uri, CancellationToken token = default(CancellationToken), IHttpSettings httpSettings = null)
 		{
-			using (var client = HttpClientFactory.CreateHttpClient())
+			using (var client = HttpClientFactory.CreateHttpClient(httpSettings))
 			{
 				return await client.PostAsync(uri, token);
 			}
@@ -191,10 +194,11 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="uri"></param>
 		/// <param name="token">CancellationToken</param>
+		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		/// <returns>HttpResponseMessage</returns>
-		public static async Task<HttpResponseMessage> PostAsync(this Uri uri, HttpContent content, CancellationToken token = default(CancellationToken))
+		public static async Task<HttpResponseMessage> PostAsync(this Uri uri, HttpContent content, CancellationToken token = default(CancellationToken), IHttpSettings httpSettings = null)
 		{
-			using (var client = HttpClientFactory.CreateHttpClient())
+			using (var client = HttpClientFactory.CreateHttpClient(httpSettings))
 			{
 				return await client.PostAsync(uri, content, token);
 			}
@@ -206,11 +210,12 @@ namespace Dapplo.HttpExtensions
 		/// <param name="uri">Uri to post to</param>
 		/// <param name="formContent">Dictionary with the values</param>
 		/// <param name="token">Cancellationtoken</param>
+		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		/// <returns>HttpResponseMessage</returns>
-		public static async Task<HttpResponseMessage> PostFormUrlEncodedAsync(this Uri uri, IDictionary<string, string> formContent, CancellationToken token = default(CancellationToken))
+		public static async Task<HttpResponseMessage> PostFormUrlEncodedAsync(this Uri uri, IDictionary<string, string> formContent, CancellationToken token = default(CancellationToken), IHttpSettings httpSettings = null)
 		{
 			using (var content = new FormUrlEncodedContent(formContent))
-			using (var client = HttpClientFactory.CreateHttpClient())
+			using (var client = HttpClientFactory.CreateHttpClient(httpSettings))
 			{
 				return await client.PostAsync(uri, content, token);
 			}
@@ -221,10 +226,11 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="uri">An Uri to specify the download location</param>
 		/// <param name="token">CancellationToken</param>
+		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		/// <returns>HttpResponseMessage</returns>
-		public static async Task<HttpResponseMessage> GetAsync(this Uri uri, CancellationToken token = default(CancellationToken))
+		public static async Task<HttpResponseMessage> GetAsync(this Uri uri, CancellationToken token = default(CancellationToken), IHttpSettings httpSettings = null)
 		{
-			using (var client = HttpClientFactory.CreateHttpClient())
+			using (var client = HttpClientFactory.CreateHttpClient(httpSettings))
 			{
 				return await client.GetAsync(uri, token).ConfigureAwait(false);
 			}
@@ -236,10 +242,11 @@ namespace Dapplo.HttpExtensions
 		/// <param name="uri">An Uri to specify the download location</param>
 		/// <param name="throwErrorOnNonSuccess"></param>
 		/// <param name="token">CancellationToken</param>
+		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		/// <returns>dynamic created with SimpleJson</returns>
-		public static async Task<dynamic> GetAsJsonAsync(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
+		public static async Task<dynamic> GetAsJsonAsync(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken), IHttpSettings httpSettings = null)
 		{
-			using (var reponse = await uri.GetAsync(token).ConfigureAwait(false))
+			using (var reponse = await uri.GetAsync(token, httpSettings).ConfigureAwait(false))
 			{
 				return await reponse.GetAsJsonAsync(throwErrorOnNonSuccess, token).ConfigureAwait(false);
             }
@@ -252,10 +259,11 @@ namespace Dapplo.HttpExtensions
 		/// <param name="uri">An Uri to specify the download location</param>
 		/// <param name="throwErrorOnNonSuccess"></param>
 		/// <param name="token">CancellationToken</param>
+		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		/// <returns>T created with SimpleJson</returns>
-		public static async Task<T> GetAsJsonAsync<T>(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
+		public static async Task<T> GetAsJsonAsync<T>(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken), IHttpSettings httpSettings = null)
 		{
-			using (var reponse = await uri.GetAsync(token).ConfigureAwait(false))
+			using (var reponse = await uri.GetAsync(token, httpSettings).ConfigureAwait(false))
 			{
 				return await reponse.GetAsJsonAsync<T>(throwErrorOnNonSuccess, token).ConfigureAwait(false);
 			}
@@ -269,10 +277,11 @@ namespace Dapplo.HttpExtensions
 		/// <param name="uri"></param>
 		/// <param name="postData">T</param>
 		/// <param name="token"></param>
+		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		/// <returns>HttpResponseMessage</returns>
-		public static async Task<HttpResponseMessage> PostJsonAsync<T>(this Uri uri, T jsonContent, CancellationToken token = default(CancellationToken))
+		public static async Task<HttpResponseMessage> PostJsonAsync<T>(this Uri uri, T jsonContent, CancellationToken token = default(CancellationToken), IHttpSettings httpSettings = null)
 		{
-			using (var client = HttpClientFactory.CreateHttpClient())
+			using (var client = HttpClientFactory.CreateHttpClient(httpSettings))
 			{
 				return await client.PostJsonAsync<T>(uri, jsonContent, token).ConfigureAwait(false);
 			}
@@ -287,10 +296,11 @@ namespace Dapplo.HttpExtensions
 		/// <param name="postData">T1</param>
 		/// <param name="throwErrorOnNonSuccess"></param>
 		/// <param name="token"></param>
+		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		/// <returns>T2</returns>
-		public static async Task<T2> PostJsonAsync<T1, T2>(this Uri uri, T1 jsonContent, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
+		public static async Task<T2> PostJsonAsync<T1, T2>(this Uri uri, T1 jsonContent, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken), IHttpSettings httpSettings = null)
 		{
-			using (var client = HttpClientFactory.CreateHttpClient())
+			using (var client = HttpClientFactory.CreateHttpClient(httpSettings))
 			{
 				return await client.PostJsonAsync<T1, T2>(uri, jsonContent, throwErrorOnNonSuccess, token).ConfigureAwait(false);
 			}
@@ -302,10 +312,11 @@ namespace Dapplo.HttpExtensions
 		/// <param name="uri">An Uri to specify the download location</param>
 		/// <param name="throwErrorOnNonSuccess"></param>
 		/// <param name="token">CancellationToken</param>
+		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		/// <returns>string with the content</returns>
-		public static async Task<string> GetAsStringAsync(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
+		public static async Task<string> GetAsStringAsync(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken), IHttpSettings httpSettings = null)
 		{
-			using (var client = HttpClientFactory.CreateHttpClient())
+			using (var client = HttpClientFactory.CreateHttpClient(httpSettings))
 			using (var response = await client.GetAsync(uri, HttpCompletionOption.ResponseContentRead, token).ConfigureAwait(false))
 			{
 				return await response.GetAsStringAsync(throwErrorOnNonSuccess, token).ConfigureAwait(false);
@@ -318,10 +329,11 @@ namespace Dapplo.HttpExtensions
 		/// <param name="uri">Uri</param>
 		/// <param name="throwErrorOnNonSuccess">bool</param>
 		/// <param name="token"></param>
+		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		/// <returns>MemoryStream</returns>
-		public static async Task<MemoryStream> GetAsMemoryStreamAsync(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
+		public static async Task<MemoryStream> GetAsMemoryStreamAsync(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken), IHttpSettings httpSettings = null)
 		{
-			using (var client = HttpClientFactory.CreateHttpClient())
+			using (var client = HttpClientFactory.CreateHttpClient(httpSettings))
 			{
 				return await client.GetAsMemoryStreamAsync(uri, throwErrorOnNonSuccess, token);
 			}

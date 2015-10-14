@@ -62,6 +62,8 @@ namespace Dapplo.HttpExtensions
 
 		public bool UseDefaultCredentials { get; set; } = true;
 
+		public ICredentials Credentials { get; set; }
+
 		public TimeSpan RequestTimeout { get; set; } = TimeSpan.FromSeconds(60);
 
 		public bool AllowAutoRedirect { get; set; } = true;

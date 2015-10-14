@@ -60,6 +60,12 @@ namespace Dapplo.HttpExtensions
 		AuthenticationLevel AuthenticationLevel { get; set; }
 
 		/// <summary>
+		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.credentials.aspx
+		/// </summary>
+		[Description("The credentials for the request, only used when UseDefaultCredentials is set to false")]
+		ICredentials Credentials { get; set; }
+
+		/// <summary>
 		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.continuetimeout.aspx
 		/// </summary>
 		[DefaultValue("0:0:0.350"), DataMember(EmitDefaultValue = true),

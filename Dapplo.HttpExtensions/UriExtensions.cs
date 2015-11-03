@@ -366,10 +366,18 @@ namespace Dapplo.HttpExtensions
 					}
 
 					// Add a / if the current path doesn't end with it and the segment doesn't have one
-					if (!stringBuilder.ToString().EndsWith("/") && !segment.ToString().StartsWith("/"))
+					bool hasPathTrailingSlash = stringBuilder.ToString().EndsWith("/");
+					bool hasSegmentTrailingSlash = segment.ToString().StartsWith("/");
+					if (hasPathTrailingSlash && hasSegmentTrailingSlash)
+					{
+						// Remove trailing slash
+						stringBuilder.Length -= 1;
+					}
+					else if (!hasPathTrailingSlash && !hasSegmentTrailingSlash)
 					{
 						stringBuilder.Append("/");
 					}
+
 					// Add the segment
 					stringBuilder.Append(segment);
 				}

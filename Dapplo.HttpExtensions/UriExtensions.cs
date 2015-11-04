@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -135,6 +134,7 @@ namespace Dapplo.HttpExtensions
 		/// Get LastModified for a URI
 		/// </summary>
 		/// <param name="uri">Uri</param>
+		/// <param name="throwErrorOnNonSuccess"></param>
 		/// <param name="token">CancellationToken</param>
 		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		/// <returns>DateTime</returns>
@@ -160,6 +160,7 @@ namespace Dapplo.HttpExtensions
 		/// Retrieve only the content headers, by using the HTTP HEAD method
 		/// </summary>
 		/// <param name="uri"></param>
+		/// <param name="throwErrorOnNonSuccess"></param>
 		/// <param name="token">CancellationToken</param>
 		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		/// <returns>HttpContentHeaders</returns>
@@ -193,6 +194,7 @@ namespace Dapplo.HttpExtensions
 		/// Method to Post content
 		/// </summary>
 		/// <param name="uri"></param>
+		/// <param name="content">HttpContent to post</param>
 		/// <param name="token">CancellationToken</param>
 		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		/// <returns>HttpResponseMessage</returns>
@@ -275,7 +277,7 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <typeparam name="T">Type to post</typeparam>
 		/// <param name="uri"></param>
-		/// <param name="postData">T</param>
+		/// <param name="jsonContent">T</param>
 		/// <param name="token"></param>
 		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		/// <returns>HttpResponseMessage</returns>
@@ -283,7 +285,7 @@ namespace Dapplo.HttpExtensions
 		{
 			using (var client = HttpClientFactory.CreateHttpClient(httpSettings))
 			{
-				return await client.PostJsonAsync<T>(uri, jsonContent, token).ConfigureAwait(false);
+				return await client.PostJsonAsync(uri, jsonContent, token).ConfigureAwait(false);
 			}
 		}
 
@@ -293,7 +295,7 @@ namespace Dapplo.HttpExtensions
 		/// <typeparam name="T1">Type to post</typeparam>
 		/// <typeparam name="T2">Type to read from the response</typeparam>
 		/// <param name="uri"></param>
-		/// <param name="postData">T1</param>
+		/// <param name="jsonContent">T1</param>
 		/// <param name="throwErrorOnNonSuccess"></param>
 		/// <param name="token"></param>
 		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>

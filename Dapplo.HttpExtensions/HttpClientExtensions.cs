@@ -105,7 +105,6 @@ namespace Dapplo.HttpExtensions
 		/// <param name="client">HttpClient</param>
 		/// <param name="uri"></param>
 		/// <param name="postData"></param>
-		/// <param name="throwErrorOnNonSuccess"></param>
 		/// <param name="token"></param>
 		/// <returns>HttpResponseMessage</returns>
 		public static async Task<HttpResponseMessage> PostJsonAsync<T>(this HttpClient client, Uri uri, T postData, CancellationToken token = default(CancellationToken))

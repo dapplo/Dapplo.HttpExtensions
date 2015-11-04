@@ -345,7 +345,7 @@ namespace Dapplo.HttpExtensions
 		/// Append path segment(s) to the specified Uri
 		/// </summary>
 		/// <param name="uri">Uri to extend</param>
-		/// <param name="segments">array of objects which will be converter to strings to </param>
+		/// <param name="segments">array of objects which will be added after converting them to strings</param>
 		/// <returns>new Uri with segments added to the path</returns>
 		public static Uri AppendSegments(this Uri uri, params object[] segments)
 		{
@@ -353,17 +353,37 @@ namespace Dapplo.HttpExtensions
 
 			if (segments != null)
 			{
-				var sb = new StringBuilder(uriBuilder.Path);
+				var stringBuilder = new StringBuilder();
+				// Only add the path if it contains more that just a /
+				if (!"/".Equals(uriBuilder.Path))
+				{
+					stringBuilder.Append(uriBuilder.Path);
+                }
 				foreach (var segment in segments)
 				{
-					if (sb.Length > 0)
+					// Do nothing with null segments
+					if (segment == null)
 					{
-						sb.Append("/");
-
+						continue;
 					}
-					sb.Append(segment);
+
+					// Add a / if the current path doesn't end with it and the segment doesn't have one
+					bool hasPathTrailingSlash = stringBuilder.ToString().EndsWith("/");
+					bool hasSegmentTrailingSlash = segment.ToString().StartsWith("/");
+					if (hasPathTrailingSlash && hasSegmentTrailingSlash)
+					{
+						// Remove trailing slash
+						stringBuilder.Length -= 1;
+					}
+					else if (!hasPathTrailingSlash && !hasSegmentTrailingSlash)
+					{
+						stringBuilder.Append("/");
+					}
+
+					// Add the segment
+					stringBuilder.Append(segment);
 				}
-				uriBuilder.Path = sb.ToString();
+				uriBuilder.Path = stringBuilder.ToString();
 			}
 			return uriBuilder.Uri;
 		}

@@ -1,6 +1,6 @@
 ﻿/*
  * dapplo - building blocks for desktop applications
- * Copyright (C) 2015-2016 Dapplo
+ * Copyright (C) 2015-2016 Robin Krom
  * 
  * For more information see: http://dapplo.net/
  * dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -19,32 +19,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System.Collections.Specialized;
-using System.Text;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
-namespace Dapplo.HttpExtensions
+namespace Dapplo.HttpExtensions.Test
 {
-	/// <summary>
-	/// Extensions for the NameValueCollection class
-	/// </summary>
-	public static class NameValueCollectionExtensions
+	[TestClass]
+	public class UriExtensionTests
 	{
-		/// <summary>
-		/// Create a query string from a NameValueCollection
-		/// </summary>
-		/// <param name="nameValueCollection"></param>
-		/// <returns>?name1=value1&amp;name2=value2 etc...</returns>
-		public static string ToQueryString(this NameValueCollection nameValueCollection)
+
+		[TestMethod]
+		public void TestAppendSegments()
 		{
-			var queryBuilder = new StringBuilder();
-
-			for (int i = 0; i < nameValueCollection.Count; i++)
-			{
-				var key = nameValueCollection.AllKeys[i];
-				queryBuilder.AppendFormat(i < nameValueCollection.Count - 1 ? "{0}={1}&" : "{0}={1}", key, nameValueCollection[key]);
-			}
-
-			return queryBuilder.ToString();
+			var uri = new Uri("http://jira/name/");
+			uri = uri.AppendSegments("joost");
+			Assert.IsFalse(uri.ToString().EndsWith("/"));
 		}
 	}
 }

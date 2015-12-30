@@ -1,6 +1,6 @@
 ﻿/*
  * dapplo - building blocks for desktop applications
- * Copyright (C) 2015 Robin Krom
+ * Copyright (C) 2015-2016 Dapplo
  * 
  * For more information see: http://dapplo.net/
  * dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -41,13 +41,13 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.allowautoredirect.aspx
 		/// </summary>
-		[DefaultValue(true), Description("When true a connection would automatically redirect, if the server says so."), DataMember(EmitDefaultValue = true)]
+		[DefaultValue(true), Description("When true a connection would automatically redirect, if the server says so"), DataMember(EmitDefaultValue = true)]
 		bool AllowAutoRedirect { get; set; }
 
 		/// <summary>
 		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.allowpipelining.aspx
 		/// </summary>
-		[DefaultValue(true), Description("When true, pipelined connections are allowed.")]
+		[DefaultValue(true), Description("When true, pipelined connections are allowed")]
 		bool AllowPipelining { get; set; }
 
 		/// <summary>
@@ -69,7 +69,7 @@ namespace Dapplo.HttpExtensions
 		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.continuetimeout.aspx
 		/// </summary>
 		[DefaultValue("0:0:0.350"), DataMember(EmitDefaultValue = true),
-		 Description("The amount of time (with milliseconds) the application will wait for 100-continue from the server before uploading data.")]
+		 Description("The amount of time (with milliseconds) the application will wait for 100-continue from the server before uploading data")]
 		TimeSpan ContinueTimeout { get; set; }
 
 		/// <summary>
@@ -78,12 +78,15 @@ namespace Dapplo.HttpExtensions
 		[DefaultValue(DecompressionMethods.Deflate | DecompressionMethods.GZip), Description("Decompression methods used")]
 		DecompressionMethods DefaultDecompressionMethods { get; set; }
 
+		[DefaultValue(HttpSettings.DefaultUserAgentValue), Description("The default User-Agent value to use, a lot of services don't like it when this is empty or the behaviour depends on the value")]
+		string DefaultUserAgent { get; set; }
+
 		/// <summary>
 		/// The impersonation level determines how the server can use the client's credentials.
 		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.impersonationlevel(v=vs.110).aspx
 		/// </summary>
 		[DefaultValue(TokenImpersonationLevel.Delegation),
-		 Description("The impersonation level determines how the server can use the client's credentials.")]
+		 Description("The impersonation level determines how the server can use the client's credentials")]
 		TokenImpersonationLevel ImpersonationLevel { get; set; }
 
 		/// <summary>
@@ -109,7 +112,7 @@ namespace Dapplo.HttpExtensions
 		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.maxresponseheaderslength.aspx
 		/// Default would have been 64, this is increased to 256
 		/// </summary>
-		[DefaultValue(256), Description("The max length, in kilobytes (1024 bytes), of the response headers.")]
+		[DefaultValue(256), Description("The max length, in kilobytes (1024 bytes), of the response headers")]
 		int MaxResponseHeadersLength { get; set; }
 
 		/// <summary>
@@ -152,7 +155,7 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.readwritetimeout.aspx
 		/// </summary>
-		[DefaultValue(300000), Description("The number of milliseconds before the writing or reading times out."), DataMember(EmitDefaultValue = true)]
+		[DefaultValue(300000), Description("The number of milliseconds before the writing or reading times out"), DataMember(EmitDefaultValue = true)]
         int ReadWriteTimeout { get; set; }
 
 		/// <summary>
@@ -165,7 +168,7 @@ namespace Dapplo.HttpExtensions
 		[DefaultValue(true), Description("When true every http request will supply the default user credentials when the server asks for them"), DataMember(EmitDefaultValue = true)]
 		bool UseDefaultCredentials { get; set; }
 
-		[DefaultValue(true), Description("If true, every request is made via the configured or default proxy."), DataMember(EmitDefaultValue = true)]
+		[DefaultValue(true), Description("If true, every request is made via the configured or default proxy"), DataMember(EmitDefaultValue = true)]
 		bool UseProxy { get; set; }
 
 		[DefaultValue(true), Description("When true the default system proxy is used"), DataMember(EmitDefaultValue = true)]

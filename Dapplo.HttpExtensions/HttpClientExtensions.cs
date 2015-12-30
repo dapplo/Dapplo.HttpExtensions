@@ -1,6 +1,6 @@
 ﻿/*
  * dapplo - building blocks for desktop applications
- * Copyright (C) 2015 Robin Krom
+ * Copyright (C) 2015-2016 Dapplo
  * 
  * For more information see: http://dapplo.net/
  * dapplo repositories are hosted on GitHub: https://github.com/dapplo

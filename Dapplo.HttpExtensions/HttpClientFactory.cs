@@ -1,6 +1,6 @@
 ﻿/*
  * dapplo - building blocks for desktop applications
- * Copyright (C) 2015 Robin Krom
+ * Copyright (C) 2015-2016 Dapplo
  * 
  * For more information see: http://dapplo.net/
  * dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -40,7 +40,11 @@ namespace Dapplo.HttpExtensions
 			var client = new HttpClient(HttpMessageHandlerFactory.CreateWebRequestHandler(settings));
 			client.Timeout = settings.RequestTimeout;
 			client.MaxResponseContentBufferSize = settings.MaxResponseContentBufferSize;
-            return client;
+			if (!string.IsNullOrEmpty(settings.DefaultUserAgent))
+			{
+				client.AddDefaultRequestHeader("User-Agent", settings.DefaultUserAgent);
+			}
+			return client;
 		}
 	}
 }

@@ -1,6 +1,6 @@
 ﻿/*
  * dapplo - building blocks for desktop applications
- * Copyright (C) 2015 Robin Krom
+ * Copyright (C) 2015-2016 Dapplo
  * 
  * For more information see: http://dapplo.net/
  * dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -37,6 +37,7 @@ namespace Dapplo.HttpExtensions
 		const int Kb = 1024;
 		const int Mb = Kb * 1024;
 		const long Gb = Mb * 1024;
+		public const string DefaultUserAgentValue = "Dapplo.HttpExtensions";
 
 		public static IHttpSettings Instance
 		{
@@ -89,5 +90,7 @@ namespace Dapplo.HttpExtensions
 		public TokenImpersonationLevel ImpersonationLevel { get; set; } = TokenImpersonationLevel.Delegation;
 
 		public int MaxResponseHeadersLength { get; set; } = 256;
-	}
+
+		public string DefaultUserAgent { get; set; } = DefaultUserAgentValue;
+    }
 }

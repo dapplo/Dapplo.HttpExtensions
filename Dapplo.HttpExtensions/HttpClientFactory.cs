@@ -19,6 +19,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Net.Http;
 
 namespace Dapplo.HttpExtensions
@@ -32,8 +33,9 @@ namespace Dapplo.HttpExtensions
 		/// Create a HttpClient with default, in the HttpClientExtensions configured, settings
 		/// </summary>
 		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
+		/// <param name="uriForConfiguration">If a Uri is supplied, this is used to configure the HttpClient. Currently the Uri.UserInfo is used to set the basic authorization.</param>
 		/// <returns>HttpClient</returns>
-		public static HttpClient CreateHttpClient(IHttpSettings httpSettings = null)
+		public static HttpClient CreateHttpClient(IHttpSettings httpSettings = null, Uri uriForConfiguration = null)
 		{
 			var settings = httpSettings ?? HttpSettings.Instance;
 
@@ -44,6 +46,7 @@ namespace Dapplo.HttpExtensions
 			{
 				client.AddDefaultRequestHeader("User-Agent", settings.DefaultUserAgent);
 			}
+			client.SetBasicAuthorization(uriForConfiguration);
 			return client;
 		}
 	}

@@ -37,13 +37,29 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// Set Basic Authentication for the current client
 		/// </summary>
-		/// <param name="client"></param>
+		/// <param name="client">"this" HttpClient</param>
 		/// <param name="user">username</param>
 		/// <param name="password">password</param>
 		/// <returns>HttpClient for fluent usage</returns>
 		public static HttpClient SetBasicAuthorization(this HttpClient client, string user, string password)
 		{
 			string credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Format("{0}:{1}", user, password)));
+			return client.SetAuthorization("Basic", credentials);
+		}
+
+		/// <summary>
+		/// Use the UserInfo from the Uri to set the basic authorization information
+		/// </summary>
+		/// <param name="client">"this" HttpClient</param>
+		/// <param name="uri">Uri with UserInfo</param>
+		/// <returns>HttpClient for fluent usage</returns>
+		public static HttpClient SetBasicAuthorization(this HttpClient client, Uri uri)
+		{
+			if (string.IsNullOrEmpty(uri?.UserInfo))
+			{
+				return client;
+			}
+			string credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(uri.UserInfo));
 			return client.SetAuthorization("Basic", credentials);
 		}
 

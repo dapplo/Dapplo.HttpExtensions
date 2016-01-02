@@ -39,9 +39,11 @@ namespace Dapplo.HttpExtensions
 		{
 			var settings = httpSettings ?? HttpSettings.Instance;
 
-			var client = new HttpClient(HttpMessageHandlerFactory.CreateWebRequestHandler(settings));
-			client.Timeout = settings.RequestTimeout;
-			client.MaxResponseContentBufferSize = settings.MaxResponseContentBufferSize;
+			var client = new HttpClient(HttpMessageHandlerFactory.CreateWebRequestHandler(settings))
+			{
+				Timeout = settings.RequestTimeout,
+				MaxResponseContentBufferSize = settings.MaxResponseContentBufferSize
+			};
 			if (!string.IsNullOrEmpty(settings.DefaultUserAgent))
 			{
 				client.AddDefaultRequestHeader("User-Agent", settings.DefaultUserAgent);

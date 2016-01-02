@@ -34,9 +34,9 @@ namespace Dapplo.HttpExtensions
 	/// </summary>
 	public class HttpSettings : IHttpSettings
 	{
-		const int Kb = 1024;
-		const int Mb = Kb * 1024;
-		const long Gb = Mb * 1024;
+		private const int Kb = 1024;
+		private const int Mb = Kb * 1024;
+		private const long Gb = Mb * 1024;
 		public const string DefaultUserAgentValue = "Dapplo.HttpExtensions";
 
 		public static IHttpSettings Instance
@@ -75,9 +75,9 @@ namespace Dapplo.HttpExtensions
 
 		public int MaxAutomaticRedirections { get; set; } = 50;
 
-		public long MaxRequestContentBufferSize { get; set; } = (2 * Gb) - 1;
+		public long MaxRequestContentBufferSize { get; set; } = 2 * Gb - 1;
 
-		public long MaxResponseContentBufferSize { get; set; } = (2 * Gb) - 1;
+		public long MaxResponseContentBufferSize { get; set; } = 2 * Gb - 1;
 		
 		public int ReadWriteTimeout { get; set; } = 300000;
 

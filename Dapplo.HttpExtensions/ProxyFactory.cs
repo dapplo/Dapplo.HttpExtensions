@@ -32,12 +32,11 @@ namespace Dapplo.HttpExtensions
 		/// Create a IWebProxy Object which can be used to access the Internet
 		/// This method will create a proxy according to the properties in the Settings class
 		/// </summary>
-		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
+		/// <param name="supliedHttpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		/// <returns>IWebProxy filled with all the proxy details or null if none is set/wanted</returns>
-		public static IWebProxy CreateProxy(IHttpSettings httpSettings = null)
+		public static IWebProxy CreateProxy(IHttpSettings supliedHttpSettings = null)
 		{
-
-			var settings = httpSettings ?? HttpSettings.Instance;
+			var httpSettings = supliedHttpSettings ?? HttpSettings.Instance;
 
 			// This is already checked in the HttpClientFactory, but should be checked if this call is used elsewhere.
 			if (!httpSettings.UseProxy)
@@ -61,34 +60,31 @@ namespace Dapplo.HttpExtensions
 				}
 			}
 
-			if (proxyToUse != null)
+			if (httpSettings.UseDefaultCredentialsForProy)
 			{
-				if (httpSettings.UseDefaultCredentialsForProy)
+				if (proxyToUse is WebProxy)
 				{
-					if (proxyToUse is WebProxy)
-					{
-						// Read note here: https://msdn.microsoft.com/en-us/library/system.net.webproxy.credentials.aspx
-						var webProxy = proxyToUse as WebProxy;
-						webProxy.UseDefaultCredentials = true;
-					}
-					else
-					{
-						proxyToUse.Credentials = CredentialCache.DefaultCredentials;
-					}
+					// Read note here: https://msdn.microsoft.com/en-us/library/system.net.webproxy.credentials.aspx
+					var webProxy = proxyToUse as WebProxy;
+					webProxy.UseDefaultCredentials = true;
 				}
 				else
 				{
-					if (proxyToUse is WebProxy)
-					{
-						// Read note here: https://msdn.microsoft.com/en-us/library/system.net.webproxy.credentials.aspx
-						var webProxy = proxyToUse as WebProxy;
-						webProxy.UseDefaultCredentials = false;
-						webProxy.Credentials = httpSettings.ProxyCredentials;
-					}
-					else
-					{
-						proxyToUse.Credentials = httpSettings.ProxyCredentials;
-					}
+					proxyToUse.Credentials = CredentialCache.DefaultCredentials;
+				}
+			}
+			else
+			{
+				if (proxyToUse is WebProxy)
+				{
+					// Read note here: https://msdn.microsoft.com/en-us/library/system.net.webproxy.credentials.aspx
+					var webProxy = proxyToUse as WebProxy;
+					webProxy.UseDefaultCredentials = false;
+					webProxy.Credentials = httpSettings.ProxyCredentials;
+				}
+				else
+				{
+					proxyToUse.Credentials = httpSettings.ProxyCredentials;
 				}
 			}
 			return proxyToUse;

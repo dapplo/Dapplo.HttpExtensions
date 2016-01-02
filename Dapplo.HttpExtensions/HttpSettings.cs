@@ -1,27 +1,30 @@
 ﻿/*
- * dapplo - building blocks for desktop applications
- * Copyright (C) 2015-2016 Dapplo
- * 
- * For more information see: http://dapplo.net/
- * dapplo repositories are hosted on GitHub: https://github.com/dapplo
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 1 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+	Dapplo - building blocks for desktop applications
+	Copyright (C) 2015-2016 Dapplo
+
+	For more information see: http://dapplo.net/
+	Dapplo repositories are hosted on GitHub: https://github.com/dapplo
+
+	This file is part of Dapplo.HttpExtensions.
+
+	Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Dapplo.HttpExtensions is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 using System;
 using System.Net;
 using System.Net.Security;
+using System.Reflection;
 using System.Security.Principal;
 
 namespace Dapplo.HttpExtensions
@@ -30,14 +33,13 @@ namespace Dapplo.HttpExtensions
 	/// This class contains the default settings for the proxy / httpclient
 	/// These can be modified, are on a global "application" scale.
 	/// Most have their normal defaults, which would also normally be used, some have special settings
-	/// The default values and the property descriptions are in the ISettings (which can be used by Dapplo.Config)
+	/// The default values and the property descriptions are in the IHttpSettings (which can be used by Dapplo.Config)
 	/// </summary>
 	public class HttpSettings : IHttpSettings
 	{
 		private const int Kb = 1024;
 		private const int Mb = Kb * 1024;
 		private const long Gb = Mb * 1024;
-		public const string DefaultUserAgentValue = "Dapplo.HttpExtensions";
 
 		public static IHttpSettings Instance
 		{
@@ -91,6 +93,6 @@ namespace Dapplo.HttpExtensions
 
 		public int MaxResponseHeadersLength { get; set; } = 256;
 
-		public string DefaultUserAgent { get; set; } = DefaultUserAgentValue;
+		public string DefaultUserAgent { get; set; } = "Dapplo.HttpExtensions " + Assembly.GetExecutingAssembly().GetName().Version;
     }
 }

@@ -1,22 +1,24 @@
 ﻿/*
- * dapplo - building blocks for desktop applications
- * Copyright (C) 2015-2016 Dapplo
- * 
- * For more information see: http://dapplo.net/
- * dapplo repositories are hosted on GitHub: https://github.com/dapplo
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 1 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+	Dapplo - building blocks for desktop applications
+	Copyright (C) 2015-2016 Dapplo
+
+	For more information see: http://dapplo.net/
+	Dapplo repositories are hosted on GitHub: https://github.com/dapplo
+
+	This file is part of Dapplo.HttpExtensions.
+
+	Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Dapplo.HttpExtensions is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 using System;
@@ -37,7 +39,7 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// Set Basic Authentication for the current client
 		/// </summary>
-		/// <param name="client">"this" HttpClient</param>
+		/// <param name="client">HttpClient</param>
 		/// <param name="user">username</param>
 		/// <param name="password">password</param>
 		/// <returns>HttpClient for fluent usage</returns>
@@ -50,7 +52,7 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// Use the UserInfo from the Uri to set the basic authorization information
 		/// </summary>
-		/// <param name="client">"this" HttpClient</param>
+		/// <param name="client">HttpClient</param>
 		/// <param name="uri">Uri with UserInfo</param>
 		/// <returns>HttpClient for fluent usage</returns>
 		public static HttpClient SetBasicAuthorization(this HttpClient client, Uri uri)
@@ -66,7 +68,7 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// Set Bearer "Authentication" for the current client
 		/// </summary>
-		/// <param name="client"></param>
+		/// <param name="client">HttpClient</param>
 		/// <param name="bearer">Bearer for the authorization</param>
 		/// <returns>HttpClient for fluent usage</returns>
 		public static HttpClient SetBearer(this HttpClient client, string bearer)
@@ -77,7 +79,7 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// Set Authorization for the current client
 		/// </summary>
-		/// <param name="client"></param>
+		/// <param name="client">HttpClient</param>
 		/// <param name="scheme">scheme</param>
 		/// <param name="authorization">value</param>
 		/// <returns>HttpClient for fluent usage</returns>
@@ -90,9 +92,9 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// Add default request header without validation
 		/// </summary>
-		/// <param name="client"></param>
-		/// <param name="name"></param>
-		/// <param name="value"></param>
+		/// <param name="client">HttpClient</param>
+		/// <param name="name">Header name</param>
+		/// <param name="value">Header value</param>
 		/// <returns>HttpClient for fluent usage</returns>
 		public static HttpClient AddDefaultRequestHeader(this HttpClient client, string name, string value)
 		{
@@ -104,8 +106,8 @@ namespace Dapplo.HttpExtensions
 		/// Method to post without content
 		/// </summary>
 		/// <param name="client">HttpClient</param>
-		/// <param name="uri"></param>
-		/// <param name="token"></param>
+		/// <param name="uri">Uri to post an empty request to</param>
+		/// <param name="token">CancellationToken</param>
 		/// <returns>HttpResponseMessage</returns>
 		public static async Task<HttpResponseMessage> PostAsync(this HttpClient client, Uri uri, CancellationToken token = default(CancellationToken))
 		{
@@ -119,9 +121,9 @@ namespace Dapplo.HttpExtensions
 		/// Method to post with JSON
 		/// </summary>
 		/// <param name="client">HttpClient</param>
-		/// <param name="uri"></param>
-		/// <param name="postData"></param>
-		/// <param name="token"></param>
+		/// <param name="uri">Uri to post the json to</param>
+		/// <param name="postData">data to post</param>
+		/// <param name="token">CancellationToken</param>
 		/// <returns>HttpResponseMessage</returns>
 		public static async Task<HttpResponseMessage> PostJsonAsync<T>(this HttpClient client, Uri uri, T postData, CancellationToken token = default(CancellationToken))
 		{
@@ -137,10 +139,10 @@ namespace Dapplo.HttpExtensions
 		/// <typeparam name="T1">Type to post</typeparam>
 		/// <typeparam name="T2">Type to read from the response</typeparam>
 		/// <param name="client">HttpClient</param>
-		/// <param name="uri"></param>
-		/// <param name="postData">T1</param>
-		/// <param name="throwErrorOnNonSuccess"></param>
-		/// <param name="token"></param>
+		/// <param name="uri">Uri to post the json to</param>
+		/// <param name="postData">data to post</param>
+		/// <param name="throwErrorOnNonSuccess">true to throw an exception when an error occurse, else null is returned</param>
+		/// <param name="token">CancellationToken</param>
 		/// <returns>T2</returns>
 		public static async Task<T2> PostJsonAsync<T1, T2>(this HttpClient client, Uri uri, T1 postData, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
 		{
@@ -156,8 +158,8 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="client">HttpClient</param>
 		/// <param name="uri">Uri</param>
-		/// <param name="throwErrorOnNonSuccess">bool</param>
-		/// <param name="token"></param>
+		/// <param name="throwErrorOnNonSuccess">true to throw an exception when an error occurse, else null is returned</param>
+		/// <param name="token">CancellationToken</param>
 		/// <returns>MemoryStream</returns>
 		public static async Task<MemoryStream> GetAsMemoryStreamAsync(this HttpClient client, Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
 		{
@@ -172,8 +174,8 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="client">HttpClient</param>
 		/// <param name="uri">Uri</param>
-		/// <param name="throwErrorOnNonSuccess">bool</param>
-		/// <param name="token"></param>
+		/// <param name="throwErrorOnNonSuccess">true to throw an exception when an error occurse, else null is returned</param>
+		/// <param name="token">CancellationToken</param>
 		/// <returns>dynamic (JSON)</returns>
 		public static async Task<dynamic> GetAsJsonAsync(this HttpClient client, Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
 		{
@@ -188,8 +190,8 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="client">HttpClient</param>
 		/// <param name="uri">Uri</param>
-		/// <param name="throwErrorOnNonSuccess">bool</param>
-		/// <param name="token"></param>
+		/// <param name="throwErrorOnNonSuccess">true to throw an exception when an error occurse, else null is returned</param>
+		/// <param name="token">CancellationToken</param>
 		/// <typeparam name="T">Type to use in the JSON parsing</typeparam>
 		/// <returns>dynamic (json)</returns>
 		public static async Task<T> GetAsJsonAsync<T>(this HttpClient client, Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))

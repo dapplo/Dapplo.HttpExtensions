@@ -23,16 +23,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace Dapplo.HttpExtensions
 {
@@ -42,32 +41,58 @@ namespace Dapplo.HttpExtensions
 	public static class UriExtensions
 	{
 		/// <summary>
-		/// Create a NameValueCollection from the query part of the uri
+		/// Create a query string from a list of tuples
 		/// </summary>
-		/// <param name="uri"></param>
-		/// <returns>NameValueCollection</returns>
-		public static NameValueCollection QueryToNameValues(this Uri uri)
+		/// <param name="nameValueCollection">list of tuple string,string</param>
+		/// <returns>name1=value1&amp;name2=value2 etc...</returns>
+		private static string ToQueryString(this IEnumerable<Tuple<string, string>> nameValueCollection)
 		{
-			if (!string.IsNullOrEmpty(uri.Query))
+			var queryBuilder = new StringBuilder();
+
+			foreach (var tuple in nameValueCollection)
 			{
-				return HttpUtility.ParseQueryString(uri.Query);
+				queryBuilder.AppendFormat(tuple.Item2 != null ? $"{tuple.Item1}={tuple.Item2}&" : $"{tuple.Item1}");
 			}
-			return new NameValueCollection();
+			queryBuilder.Length -= 1;
+			return queryBuilder.ToString();
 		}
 
 		/// <summary>
-		/// QueryToDictionary creates a IDictionary with name-values without using System.Web
+		/// QueryToDictionary creates a IDictionary with name-values
 		/// </summary>
-		/// <param name="uri"></param>
+		/// <param name="uri">Uri of which the query is processed</param>
 		/// <returns>IDictionary string, string</returns>
 		public static IDictionary<string, string> QueryToDictionary(this Uri uri)
 		{
 			var parameters = new SortedDictionary<string, string>();
+
+			foreach (var tuple in uri.QueryToTuples())
+			{
+				if (parameters.ContainsKey(tuple.Item1))
+				{
+					parameters[tuple.Item1] = tuple.Item2;
+				}
+				else
+				{
+					parameters.Add(tuple.Item1, tuple.Item2);
+				}
+			}
+			return parameters;
+		}
+
+		/// <summary>
+		/// QueryToTuples creates a List with Tuples which have the name-values
+		/// </summary>
+		/// <param name="uri">Uri of which the query is processed</param>
+		/// <returns>List Tuple string, string</returns>
+		public static List<Tuple<string, string>> QueryToTuples(this Uri uri)
+		{
+			var parameters = new List<Tuple<string, string>>();
 			var queryString = uri.Query;
 			// remove anything other than query string from uri
-			if (queryString.Contains("?"))
+			if (queryString.StartsWith("?"))
 			{
-				queryString = queryString.Substring(queryString.IndexOf('?') + 1);
+				queryString = queryString.Substring(1);
 			}
 			foreach (string vp in Regex.Split(queryString, "&"))
 			{
@@ -75,14 +100,21 @@ namespace Dapplo.HttpExtensions
 				{
 					continue;
 				}
-				string[] singlePair = Regex.Split(vp, "=");
-				if (parameters.ContainsKey(singlePair[0]))
-				{
-					parameters.Remove(singlePair[0]);
-				}
-				parameters.Add(singlePair[0], singlePair.Length == 2 ? singlePair[1] : string.Empty);
+				var singlePair = Regex.Split(vp, "=");
+				parameters.Add(new Tuple<string, string>(singlePair[0], singlePair.Length == 2 ? singlePair[1] : string.Empty));
 			}
 			return parameters;
+		}
+
+		/// <summary>
+		/// QueryToLookup creates a ILookup with name-values
+		/// </summary>
+		/// <param name="uri">Uri of which the query is processed</param>
+		/// <returns>ILookup string, string</returns>
+		public static ILookup<string, string> QueryToLookup(this Uri uri)
+		{
+			var parameters = uri.QueryToTuples();
+			return parameters.ToLookup(k => k.Item1, e => e.Item2);
 		}
 
 		/// <summary>
@@ -97,27 +129,85 @@ namespace Dapplo.HttpExtensions
 		///     new Uri("/test?param1=val1").ExtendQuery(new Dictionary&lt;string, string&gt; { { "param2", "val2" }, { "param3", "val3" } }); 
 		/// </code>
 		/// </example>
-		/// <param name="uri"></param>
-		/// <param name="values"></param>
-		/// <returns>Uri</returns>
-		public static Uri ExtendQuery<T>(this Uri uri, IDictionary<string, T> values)
+		/// <param name="uri">Uri to extend</param>
+		/// <param name="name">string name of value</param>
+		/// <param name="value">value</param>
+		/// <returns>Uri with extended query</returns>
+		public static Uri ExtendQuery<T>(this Uri uri, string name, T value)
 		{
-			var queryCollection = uri.QueryToNameValues();
-			foreach (var kvp in uri.QueryToDictionary())
-			{
-				queryCollection[kvp.Key] = kvp.Value;
-			}
+			var tuples = uri.QueryToTuples();
+			tuples.Add(new Tuple<string, string>(name, value?.ToString()));
 
 			var uriBuilder = new UriBuilder(uri);
-			if (queryCollection.Count > 0)
+			if (!tuples.Any())
 			{
-				uriBuilder.Query = queryCollection.ToQueryString();
+				return uri;
 			}
+			uriBuilder.Query = tuples.ToQueryString();
+			return uriBuilder.Uri;
+		}
+
+		/// <summary>
+		///     Adds query string value to an existing url, both absolute and relative URI's are supported.
+		/// </summary>
+		/// <example>
+		/// <code>
+		///     // returns "www.domain.com/test?param1=val1&amp;param2=val2&amp;param3=val3"
+		///     new Uri("www.domain.com/test?param1=val1").ExtendQuery(new Dictionary&lt;string, string&gt; { { "param2", "val2" }, { "param3", "val3" } }); 
+		/// 
+		///     // returns "/test?param1=val1&amp;param2=val2&amp;param3=val3"
+		///     new Uri("/test?param1=val1").ExtendQuery(new Dictionary&lt;string, string&gt; { { "param2", "val2" }, { "param3", "val3" } }); 
+		/// </code>
+		/// </example>
+		/// <param name="uri">Uri to extend</param>
+		/// <param name="values">IDictionary with values</param>
+		/// <returns>Uri with extended query</returns>
+		public static Uri ExtendQuery<T>(this Uri uri, IDictionary<string, T> values)
+		{
+			var tuples = uri.QueryToTuples();
+			tuples.AddRange(values.Select(nameValue => new Tuple<string, string>(nameValue.Key, nameValue.Value?.ToString())));
+
+			var uriBuilder = new UriBuilder(uri);
+			if (!tuples.Any())
+			{
+				return uri;
+			}
+			uriBuilder.Query = tuples.ToQueryString();
+			return uriBuilder.Uri;
+		}
+
+		/// <summary>
+		///     Adds query string value to an existing url, both absolute and relative URI's are supported.
+		/// </summary>
+		/// <example>
+		/// <code>
+		///     // returns "www.domain.com/test?param1=val1&amp;param2=val2&amp;param3=val3"
+		///     new Uri("www.domain.com/test?param1=val1").ExtendQuery(new Dictionary&lt;string, string&gt; { { "param2", "val2" }, { "param3", "val3" } }); 
+		/// 
+		///     // returns "/test?param1=val1&amp;param2=val2&amp;param3=val3"
+		///     new Uri("/test?param1=val1").ExtendQuery(new Dictionary&lt;string, string&gt; { { "param2", "val2" }, { "param3", "val3" } }); 
+		/// </code>
+		/// </example>
+		/// <param name="uri">Uri to extend the query for</param>
+		/// <param name="values">ILookup with values</param>
+		/// <returns>Uri with extended query</returns>
+		public static Uri ExtendQuery<T>(this Uri uri, ILookup<string, T> values)
+		{
+			var tuples = uri.QueryToTuples();
+			tuples.AddRange(from kvp in values from value in kvp select new Tuple<string, string>(kvp.Key, value?.ToString()));
+
+			var uriBuilder = new UriBuilder(uri);
+			if (!tuples.Any())
+			{
+				return uri;
+			}
+			uriBuilder.Query = tuples.ToQueryString();
 			return uriBuilder.Uri;
 		}
 
 		/// <summary>
 		/// Normalize the URI by replacing http...80 and https...443 without the port.
+		/// Is needed for OAuth 1.0(a)
 		/// </summary>
 		/// <param name="uri">Uri to normalize</param>
 		/// <returns>Uri</returns>
@@ -136,7 +226,7 @@ namespace Dapplo.HttpExtensions
 		/// Get LastModified for a URI
 		/// </summary>
 		/// <param name="uri">Uri</param>
-		/// <param name="throwErrorOnNonSuccess"></param>
+		/// <param name="throwErrorOnNonSuccess">true to throw an exception when an error is returned, else DateTimeOffset.MinValue is returned</param>
 		/// <param name="token">CancellationToken</param>
 		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		/// <returns>DateTime</returns>
@@ -161,8 +251,8 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// Retrieve only the content headers, by using the HTTP HEAD method
 		/// </summary>
-		/// <param name="uri"></param>
-		/// <param name="throwErrorOnNonSuccess"></param>
+		/// <param name="uri">Uri to get HEAD for</param>
+		/// <param name="throwErrorOnNonSuccess">true to throw an exception when an error is returned, else the headers are returned</param>
 		/// <param name="token">CancellationToken</param>
 		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		/// <returns>HttpContentHeaders</returns>
@@ -180,7 +270,7 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// Method to Post without content
 		/// </summary>
-		/// <param name="uri"></param>
+		/// <param name="uri">Uri to post to</param>
 		/// <param name="token">CancellationToken</param>
 		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		/// <returns>HttpResponseMessage</returns>
@@ -195,7 +285,7 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// Method to Post content
 		/// </summary>
-		/// <param name="uri"></param>
+		/// <param name="uri">Uri to post to</param>
 		/// <param name="content">HttpContent to post</param>
 		/// <param name="token">CancellationToken</param>
 		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
@@ -278,9 +368,9 @@ namespace Dapplo.HttpExtensions
 		/// Method to post JSON
 		/// </summary>
 		/// <typeparam name="T">Type to post</typeparam>
-		/// <param name="uri"></param>
+		/// <param name="uri">Uri to post json to</param>
 		/// <param name="jsonContent">T</param>
-		/// <param name="token"></param>
+		/// <param name="token">CancellationToken</param>
 		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		/// <returns>HttpResponseMessage</returns>
 		public static async Task<HttpResponseMessage> PostJsonAsync<T>(this Uri uri, T jsonContent, CancellationToken token = default(CancellationToken), IHttpSettings httpSettings = null)
@@ -296,10 +386,10 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <typeparam name="T1">Type to post</typeparam>
 		/// <typeparam name="T2">Type to read from the response</typeparam>
-		/// <param name="uri"></param>
+		/// <param name="uri">Uri to post to</param>
 		/// <param name="jsonContent">T1</param>
-		/// <param name="throwErrorOnNonSuccess"></param>
-		/// <param name="token"></param>
+		/// <param name="throwErrorOnNonSuccess">true to throw an exception when an error occurse, else null is returned</param>
+		/// <param name="token">CancellationToken</param>
 		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		/// <returns>T2</returns>
 		public static async Task<T2> PostJsonAsync<T1, T2>(this Uri uri, T1 jsonContent, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken), IHttpSettings httpSettings = null)
@@ -314,7 +404,7 @@ namespace Dapplo.HttpExtensions
 		/// Download a uri response as string
 		/// </summary>
 		/// <param name="uri">An Uri to specify the download location</param>
-		/// <param name="throwErrorOnNonSuccess"></param>
+		/// <param name="throwErrorOnNonSuccess">true to throw an exception when an error occurse, else null is returned</param>
 		/// <param name="token">CancellationToken</param>
 		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		/// <returns>string with the content</returns>
@@ -331,8 +421,8 @@ namespace Dapplo.HttpExtensions
 		/// Get the content as a MemoryStream
 		/// </summary>
 		/// <param name="uri">Uri</param>
-		/// <param name="throwErrorOnNonSuccess">bool</param>
-		/// <param name="token"></param>
+		/// <param name="throwErrorOnNonSuccess">true to throw an exception when an error occurse, else null is returned</param>
+		/// <param name="token">CancellationToken</param>
 		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		/// <returns>MemoryStream</returns>
 		public static async Task<MemoryStream> GetAsMemoryStreamAsync(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken), IHttpSettings httpSettings = null)

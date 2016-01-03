@@ -23,6 +23,7 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 
 namespace Dapplo.HttpExtensions.Test
 {
@@ -33,9 +34,49 @@ namespace Dapplo.HttpExtensions.Test
 		[TestMethod]
 		public void TestAppendSegments()
 		{
-			var uri = new Uri("http://jira/name/");
+			var uri = new Uri("http://jira/name?value1=1234");
 			uri = uri.AppendSegments("joost");
-			Assert.IsFalse(uri.ToString().EndsWith("/"));
+			Assert.AreEqual("http://jira/name/joost?value1=1234", uri.ToString());
+		}
+
+		[TestMethod]
+		public void TestExtendQuery()
+		{
+			var uri = new Uri("http://jira/issue?value1=4321");
+			const int key = 1234;
+			uri = uri.ExtendQuery(new Dictionary<string, object>
+			{
+				{
+					"key", key
+				}
+			});
+
+			Assert.AreEqual("http://jira/issue?value1=4321&key=1234", uri.ToString());
+		}
+
+		[TestMethod]
+		public void TestExtendQuery2()
+		{
+			var uri = new Uri("http://jira/issue?value1=4321&value1=43211");
+			const int key = 1234;
+			uri = uri.ExtendQuery(new Dictionary<string, object>
+			{
+				{
+					"key", key
+				}
+			});
+
+			Assert.AreEqual("http://jira/issue?value1=4321&value1=43211&key=1234", uri.ToString());
+		}
+
+		[TestMethod]
+		public void TestExtendQuery3()
+		{
+			var uri = new Uri("http://jira/issue?value1=4321&value1=43211");
+			const int key = 1234;
+			uri = uri.ExtendQuery("key", key);
+
+			Assert.AreEqual("http://jira/issue?value1=4321&value1=43211&key=1234", uri.ToString());
 		}
 	}
 }

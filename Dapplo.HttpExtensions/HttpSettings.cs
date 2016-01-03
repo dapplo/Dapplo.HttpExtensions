@@ -41,6 +41,8 @@ namespace Dapplo.HttpExtensions
 		private const int Mb = Kb * 1024;
 		private const long Gb = Mb * 1024;
 
+		private string _userAgent;
+
 		public static IHttpSettings Instance
 		{
 			get;
@@ -93,6 +95,21 @@ namespace Dapplo.HttpExtensions
 
 		public int MaxResponseHeadersLength { get; set; } = 256;
 
-		public string DefaultUserAgent { get; set; } = "Dapplo.HttpExtensions " + Assembly.GetExecutingAssembly().GetName().Version;
-    }
+		public string DefaultUserAgent
+		{
+			get
+			{
+				if (_userAgent == null)
+				{
+					var userAgentAssembly = Assembly.GetEntryAssembly() ?? GetType().Assembly;
+					_userAgent = $"{userAgentAssembly.GetName().Name} {userAgentAssembly.GetName().Version}";
+				}
+				return _userAgent;
+			}
+			set
+			{
+				_userAgent = value;
+			}
+		}
+	}
 }

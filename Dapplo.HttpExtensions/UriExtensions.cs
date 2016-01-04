@@ -43,15 +43,25 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// Create a query string from a list of tuples
 		/// </summary>
-		/// <param name="nameValueCollection">list of tuple string,string</param>
+		/// <param name="tuples">list of tuple string,string</param>
 		/// <returns>name1=value1&amp;name2=value2 etc...</returns>
-		private static string ToQueryString(this IEnumerable<Tuple<string, string>> nameValueCollection)
+		public static string ToQueryString<T>(this IEnumerable<Tuple<string, T>> tuples)
 		{
+			if (tuples == null)
+			{
+				throw new ArgumentNullException(nameof(tuples));
+			}
 			var queryBuilder = new StringBuilder();
 
-			foreach (var tuple in nameValueCollection)
+			foreach (var tuple in tuples)
 			{
-				queryBuilder.AppendFormat(tuple.Item2 != null ? $"{tuple.Item1}={tuple.Item2}&" : $"{tuple.Item1}");
+				queryBuilder.Append($"{tuple.Item1}");
+                if (tuple.Item2 != null)
+				{
+					var encodedValue = Uri.EscapeDataString(tuple.Item2?.ToString());
+					queryBuilder.Append($"={encodedValue}");
+				}
+                queryBuilder.Append('&');
 			}
 			queryBuilder.Length -= 1;
 			return queryBuilder.ToString();
@@ -65,8 +75,7 @@ namespace Dapplo.HttpExtensions
 		public static IDictionary<string, string> QueryToDictionary(this Uri uri)
 		{
 			var parameters = new SortedDictionary<string, string>();
-
-			foreach (var tuple in uri.QueryToTuples())
+            foreach (var tuple in uri.QueryToTuples())
 			{
 				if (parameters.ContainsKey(tuple.Item1))
 				{
@@ -87,8 +96,12 @@ namespace Dapplo.HttpExtensions
 		/// <returns>List Tuple string, string</returns>
 		public static List<Tuple<string, string>> QueryToTuples(this Uri uri)
 		{
-			var parameters = new List<Tuple<string, string>>();
 			var queryString = uri.Query;
+			var parameters = new List<Tuple<string, string>>();
+			if (string.IsNullOrEmpty(queryString))
+			{
+				return parameters;
+			}
 			// remove anything other than query string from uri
 			if (queryString.StartsWith("?"))
 			{
@@ -101,7 +114,13 @@ namespace Dapplo.HttpExtensions
 					continue;
 				}
 				var singlePair = Regex.Split(vp, "=");
-				parameters.Add(new Tuple<string, string>(singlePair[0], singlePair.Length == 2 ? singlePair[1] : string.Empty));
+				var name = singlePair[0];
+				string value = null;
+				if (singlePair.Length == 2)
+				{
+					value = Uri.UnescapeDataString(singlePair[1]);
+                }
+                parameters.Add(new Tuple<string, string>(name, value));
 			}
 			return parameters;
 		}
@@ -213,6 +232,10 @@ namespace Dapplo.HttpExtensions
 		/// <returns>Uri</returns>
 		public static Uri Normalize(this Uri uri)
 		{
+			if (uri == null)
+			{
+				throw new ArgumentNullException(nameof(uri));
+			}
 			string normalizedUrl = string.Format(CultureInfo.InvariantCulture, "{0}://{1}", uri.Scheme, uri.Host);
 			if (!((uri.Scheme == "http" && uri.Port == 80) || (uri.Scheme == "https" && uri.Port == 443)))
 			{
@@ -232,6 +255,11 @@ namespace Dapplo.HttpExtensions
 		/// <returns>DateTime</returns>
 		public static async Task<DateTimeOffset> LastModifiedAsync(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken), IHttpSettings httpSettings = null)
 		{
+			if (uri == null)
+			{
+				throw new ArgumentNullException(nameof(uri));
+			}
+
 			try
 			{
 				var headers = await uri.HeadAsync(throwErrorOnNonSuccess, token, httpSettings).ConfigureAwait(false);
@@ -258,6 +286,11 @@ namespace Dapplo.HttpExtensions
 		/// <returns>HttpContentHeaders</returns>
 		public static async Task<HttpContentHeaders> HeadAsync(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken), IHttpSettings httpSettings = null)
 		{
+			if (uri == null)
+			{
+				throw new ArgumentNullException(nameof(uri));
+			}
+
 			using (var client = HttpClientFactory.CreateHttpClient(httpSettings, uri))
 			using (var request = new HttpRequestMessage(HttpMethod.Head, uri))
 			{
@@ -276,6 +309,11 @@ namespace Dapplo.HttpExtensions
 		/// <returns>HttpResponseMessage</returns>
 		public static async Task<HttpResponseMessage> PostAsync(this Uri uri, CancellationToken token = default(CancellationToken), IHttpSettings httpSettings = null)
 		{
+			if (uri == null)
+			{
+				throw new ArgumentNullException(nameof(uri));
+			}
+
 			using (var client = HttpClientFactory.CreateHttpClient(httpSettings, uri))
 			{
 				return await client.PostAsync(uri, token);
@@ -292,6 +330,11 @@ namespace Dapplo.HttpExtensions
 		/// <returns>HttpResponseMessage</returns>
 		public static async Task<HttpResponseMessage> PostAsync(this Uri uri, HttpContent content, CancellationToken token = default(CancellationToken), IHttpSettings httpSettings = null)
 		{
+			if (uri == null)
+			{
+				throw new ArgumentNullException(nameof(uri));
+			}
+
 			using (var client = HttpClientFactory.CreateHttpClient(httpSettings, uri))
 			{
 				return await client.PostAsync(uri, content, token);
@@ -308,6 +351,14 @@ namespace Dapplo.HttpExtensions
 		/// <returns>HttpResponseMessage</returns>
 		public static async Task<HttpResponseMessage> PostFormUrlEncodedAsync(this Uri uri, IDictionary<string, string> formContent, CancellationToken token = default(CancellationToken), IHttpSettings httpSettings = null)
 		{
+			if (uri == null)
+			{
+				throw new ArgumentNullException(nameof(uri));
+			}
+			if (formContent == null)
+			{
+				throw new ArgumentNullException(nameof(formContent));
+			}
 			using (var content = new FormUrlEncodedContent(formContent))
 			using (var client = HttpClientFactory.CreateHttpClient(httpSettings, uri))
 			{
@@ -324,6 +375,10 @@ namespace Dapplo.HttpExtensions
 		/// <returns>HttpResponseMessage</returns>
 		public static async Task<HttpResponseMessage> GetAsync(this Uri uri, CancellationToken token = default(CancellationToken), IHttpSettings httpSettings = null)
 		{
+			if (uri == null)
+			{
+				throw new ArgumentNullException(nameof(uri));
+			}
 			using (var client = HttpClientFactory.CreateHttpClient(httpSettings, uri))
 			{
 				return await client.GetAsync(uri, token).ConfigureAwait(false);
@@ -375,6 +430,10 @@ namespace Dapplo.HttpExtensions
 		/// <returns>HttpResponseMessage</returns>
 		public static async Task<HttpResponseMessage> PostJsonAsync<T>(this Uri uri, T jsonContent, CancellationToken token = default(CancellationToken), IHttpSettings httpSettings = null)
 		{
+			if (uri == null)
+			{
+				throw new ArgumentNullException(nameof(uri));
+			}
 			using (var client = HttpClientFactory.CreateHttpClient(httpSettings, uri))
 			{
 				return await client.PostJsonAsync(uri, jsonContent, token).ConfigureAwait(false);
@@ -394,6 +453,10 @@ namespace Dapplo.HttpExtensions
 		/// <returns>T2</returns>
 		public static async Task<T2> PostJsonAsync<T1, T2>(this Uri uri, T1 jsonContent, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken), IHttpSettings httpSettings = null)
 		{
+			if (uri == null)
+			{
+				throw new ArgumentNullException(nameof(uri));
+			}
 			using (var client = HttpClientFactory.CreateHttpClient(httpSettings, uri))
 			{
 				return await client.PostJsonAsync<T1, T2>(uri, jsonContent, throwErrorOnNonSuccess, token).ConfigureAwait(false);
@@ -410,6 +473,10 @@ namespace Dapplo.HttpExtensions
 		/// <returns>string with the content</returns>
 		public static async Task<string> GetAsStringAsync(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken), IHttpSettings httpSettings = null)
 		{
+			if (uri == null)
+			{
+				throw new ArgumentNullException(nameof(uri));
+			}
 			using (var client = HttpClientFactory.CreateHttpClient(httpSettings, uri))
 			using (var response = await client.GetAsync(uri, HttpCompletionOption.ResponseContentRead, token).ConfigureAwait(false))
 			{
@@ -427,6 +494,10 @@ namespace Dapplo.HttpExtensions
 		/// <returns>MemoryStream</returns>
 		public static async Task<MemoryStream> GetAsMemoryStreamAsync(this Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken), IHttpSettings httpSettings = null)
 		{
+			if (uri == null)
+			{
+				throw new ArgumentNullException(nameof(uri));
+			}
 			using (var client = HttpClientFactory.CreateHttpClient(httpSettings, uri))
 			{
 				return await client.GetAsMemoryStreamAsync(uri, throwErrorOnNonSuccess, token);
@@ -441,6 +512,10 @@ namespace Dapplo.HttpExtensions
 		/// <returns>new Uri with segments added to the path</returns>
 		public static Uri AppendSegments(this Uri uri, params object[] segments)
 		{
+			if (uri == null)
+			{
+				throw new ArgumentNullException(nameof(uri));
+			}
 			var uriBuilder = new UriBuilder(uri);
 
 			if (segments != null)

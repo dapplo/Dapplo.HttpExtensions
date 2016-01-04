@@ -36,7 +36,7 @@ namespace Dapplo.HttpExtensions.Test
 		{
 			var uri = new Uri("http://jira/name?value1=1234");
 			uri = uri.AppendSegments("joost");
-			Assert.AreEqual("http://jira/name/joost?value1=1234", uri.ToString());
+			Assert.AreEqual("http://jira/name/joost?value1=1234", uri.AbsoluteUri);
 		}
 
 		[TestMethod]
@@ -51,7 +51,7 @@ namespace Dapplo.HttpExtensions.Test
 				}
 			});
 
-			Assert.AreEqual("http://jira/issue?value1=4321&key=1234", uri.ToString());
+			Assert.AreEqual("http://jira/issue?value1=4321&key=1234", uri.AbsoluteUri);
 		}
 
 		[TestMethod]
@@ -66,7 +66,7 @@ namespace Dapplo.HttpExtensions.Test
 				}
 			});
 
-			Assert.AreEqual("http://jira/issue?value1=4321&value1=43211&key=1234", uri.ToString());
+			Assert.AreEqual("http://jira/issue?value1=4321&value1=43211&key=1234", uri.AbsoluteUri);
 		}
 
 		[TestMethod]
@@ -76,7 +76,18 @@ namespace Dapplo.HttpExtensions.Test
 			const int key = 1234;
 			uri = uri.ExtendQuery("key", key);
 
-			Assert.AreEqual("http://jira/issue?value1=4321&value1=43211&key=1234", uri.ToString());
+			Assert.AreEqual("http://jira/issue?value1=4321&value1=43211&key=1234", uri.AbsoluteUri);
+		}
+
+		[TestMethod]
+		public void TestExtendQueryEncoding()
+		{
+			var uriValue = new Uri("http://jira/issue?otherval1=10&othervar2=20");
+			var encodedUri = Uri.EscapeDataString(uriValue.ToString());
+			var uri = new Uri("http://jira/issue?value1=4321&value1=43211");
+			uri = uri.ExtendQuery("url", uriValue);
+
+			Assert.AreEqual("http://jira/issue?value1=4321&value1=43211&url="+ encodedUri, uri.AbsoluteUri);
 		}
 	}
 }

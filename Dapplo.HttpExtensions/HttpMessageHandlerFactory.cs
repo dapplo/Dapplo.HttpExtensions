@@ -38,7 +38,7 @@ namespace Dapplo.HttpExtensions
 		/// <param name="suppliedHttpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		public static void SetDefaults(HttpClientHandler httpClientHandler, IHttpSettings suppliedHttpSettings = null)
 		{
-			var httpSettings = suppliedHttpSettings ?? HttpSettings.Instance;
+			var httpSettings = suppliedHttpSettings ?? HttpSettings.GlobalHttpSettings;
 
 			httpClientHandler.AllowAutoRedirect = httpSettings.AllowAutoRedirect;
 			httpClientHandler.AutomaticDecompression = httpSettings.DefaultDecompressionMethods;
@@ -60,7 +60,7 @@ namespace Dapplo.HttpExtensions
 		/// <param name="suppliedHttpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		public static void SetDefaults(WebRequestHandler webRequestHandler, IHttpSettings suppliedHttpSettings = null)
 		{
-			var httpSettings = suppliedHttpSettings ?? HttpSettings.Instance;
+			var httpSettings = suppliedHttpSettings ?? HttpSettings.GlobalHttpSettings;
 
 			SetDefaults(webRequestHandler as HttpClientHandler, httpSettings);
 
@@ -79,10 +79,10 @@ namespace Dapplo.HttpExtensions
 		/// <returns>HttpMessageHandler (HttpClientHandler)</returns>
 		public static HttpMessageHandler CreateHttpClientHandler(IHttpSettings suppliedHttpSettings = null)
 		{
-			var httpSettings = suppliedHttpSettings ?? HttpSettings.Instance;
-			var handler = new HttpClientHandler();
-			SetDefaults(handler, httpSettings);
-			return handler;
+			var httpSettings = suppliedHttpSettings ?? HttpSettings.GlobalHttpSettings;
+			var httpClientHandler = new HttpClientHandler();
+			SetDefaults(httpClientHandler, httpSettings);
+			return httpClientHandler;
 		}
 
 		/// <summary>
@@ -93,10 +93,10 @@ namespace Dapplo.HttpExtensions
 		/// <returns>HttpMessageHandler (WebRequestHandler)</returns>
 		public static HttpMessageHandler CreateWebRequestHandler(IHttpSettings suppliedHttpSettings = null)
 		{
-			var httpSettings = suppliedHttpSettings ?? HttpSettings.Instance;
-			var handler = new WebRequestHandler();
-			SetDefaults(handler, httpSettings);
-			return handler;
+			var httpSettings = suppliedHttpSettings ?? HttpSettings.GlobalHttpSettings;
+			var webRequestHandler = new WebRequestHandler();
+			SetDefaults(webRequestHandler, httpSettings);
+			return webRequestHandler;
 		}
 	}
 }

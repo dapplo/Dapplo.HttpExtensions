@@ -38,7 +38,7 @@ namespace Dapplo.HttpExtensions
 		/// <returns>IWebProxy filled with all the proxy details or null if none is set/wanted</returns>
 		public static IWebProxy CreateProxy(IHttpSettings supliedHttpSettings = null)
 		{
-			var httpSettings = supliedHttpSettings ?? HttpSettings.Instance;
+			var httpSettings = supliedHttpSettings ?? HttpSettings.GlobalHttpSettings;
 
 			// This is already checked in the HttpClientFactory, but should be checked if this call is used elsewhere.
 			if (!httpSettings.UseProxy)

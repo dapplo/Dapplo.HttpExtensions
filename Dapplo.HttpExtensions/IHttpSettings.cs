@@ -33,10 +33,10 @@ namespace Dapplo.HttpExtensions
 	/// <summary>
 	/// Interface for the global settings, as the DefaultValue attributes are set this CAN be used with Dapplo.Config.
 	/// Best example would be:
-	/// [IniSection("Network"), Description("Network / HTPP Settings")]
+	/// [IniSection("Network"), Description("Network / HTTP Settings")]
 	/// public interface IHttpConfig : ISettings, IIniSection {
 	/// }
-	/// (Yes, it's can be empty, the settings are in the ISettings interface) and than assign the generated instance to Settings.Instance
+	/// (Yes, it's can be empty, the settings are in the IHttpSettings interface) and than assign the generated instance to HttpSettings.GlobalHttpSettings
 	/// </summary>
 	public interface IHttpSettings
 	{

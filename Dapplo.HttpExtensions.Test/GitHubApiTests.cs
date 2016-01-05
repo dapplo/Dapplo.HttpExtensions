@@ -59,13 +59,24 @@ namespace Dapplo.HttpExtensions.Test
 		{
 			var githubApiUri = new Uri("https://api.github.com");
 			var releasesUri = githubApiUri.AppendSegments("repos", "dapplo", "Dapplo.HttpExtensions", "releases");
-			var releases = await releasesUri.GetAsJsonAsync<List<GitHubRelease>>();
-			var latestRelease = releases
-					.Where(x => !x.Prerelease)
-					.OrderByDescending(x => x.PublishedAt)
-					.FirstOrDefault();
-			Assert.IsNotNull(latestRelease);
-			Debug.WriteLine(latestRelease.PublishedAt);
+			try
+			{
+				var releases = await releasesUri.GetAsJsonAsync<List<GitHubRelease>>();
+				var latestRelease = releases
+						.Where(x => !x.Prerelease)
+						.OrderByDescending(x => x.PublishedAt)
+						.FirstOrDefault();
+				Assert.IsNotNull(latestRelease);
+				Debug.WriteLine(latestRelease.PublishedAt);
+			}
+			catch (Exception ex)
+			{
+				if (ex.Data.Contains("response"))
+				{
+					Debug.WriteLine(ex.Data["response"]);
+				}
+				throw;
+			}
 		}
 	}
 }

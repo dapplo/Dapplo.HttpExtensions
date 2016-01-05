@@ -34,21 +34,21 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// Create a HttpClient with default, in the HttpClientExtensions configured, settings
 		/// </summary>
-		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
+		/// <param name="suppliedHttpSettings">IHttpSettings instance or null if the global settings need to be used</param>
 		/// <param name="uriForConfiguration">If a Uri is supplied, this is used to configure the HttpClient. Currently the Uri.UserInfo is used to set the basic authorization.</param>
 		/// <returns>HttpClient</returns>
-		public static HttpClient CreateHttpClient(IHttpSettings httpSettings = null, Uri uriForConfiguration = null)
+		public static HttpClient CreateHttpClient(IHttpSettings suppliedHttpSettings = null, Uri uriForConfiguration = null)
 		{
-			var settings = httpSettings ?? HttpSettings.Instance;
+			var httpSettings = suppliedHttpSettings ?? HttpSettings.GlobalHttpSettings;
 
-			var client = new HttpClient(HttpMessageHandlerFactory.CreateWebRequestHandler(settings))
+			var client = new HttpClient(HttpMessageHandlerFactory.CreateWebRequestHandler(httpSettings))
 			{
-				Timeout = settings.RequestTimeout,
-				MaxResponseContentBufferSize = settings.MaxResponseContentBufferSize
+				Timeout = httpSettings.RequestTimeout,
+				MaxResponseContentBufferSize = httpSettings.MaxResponseContentBufferSize
 			};
-			if (!string.IsNullOrEmpty(settings.DefaultUserAgent))
+			if (!string.IsNullOrEmpty(httpSettings.DefaultUserAgent))
 			{
-				client.AddDefaultRequestHeader("User-Agent", settings.DefaultUserAgent);
+				client.DefaultRequestHeaders.UserAgent.TryParseAdd(httpSettings.DefaultUserAgent);
 			}
 			client.SetBasicAuthorization(uriForConfiguration);
 			return client;

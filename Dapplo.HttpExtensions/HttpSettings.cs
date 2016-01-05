@@ -44,7 +44,7 @@ namespace Dapplo.HttpExtensions
 
 		private string _userAgent;
 
-		public static IHttpSettings Instance
+		public static IHttpSettings GlobalHttpSettings
 		{
 			get;
 			set;

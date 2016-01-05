@@ -73,7 +73,7 @@ namespace Dapplo.HttpExtensions.Test
 			{
 				if (ex.Data.Contains("response"))
 				{
-					Debug.WriteLine(ex.Data["response"]);
+					Console.WriteLine(ex.Data["response"]);
 				}
 				throw;
 			}

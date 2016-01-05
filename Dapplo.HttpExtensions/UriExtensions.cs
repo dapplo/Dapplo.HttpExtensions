@@ -41,24 +41,25 @@ namespace Dapplo.HttpExtensions
 	public static class UriExtensions
 	{
 		/// <summary>
-		/// Create a query string from a list of tuples
+		/// Create a query string from a list of keyValuePairs
 		/// </summary>
-		/// <param name="tuples">list of tuple string,string</param>
+		/// <typeparam name="T">type for the value</typeparam>
+		/// <param name="keyValuePairs">list of keyValuePair with string,T</param>
 		/// <returns>name1=value1&amp;name2=value2 etc...</returns>
-		public static string ToQueryString<T>(this IEnumerable<Tuple<string, T>> tuples)
+		public static string ToQueryString<T>(this IEnumerable<KeyValuePair<string, T>> keyValuePairs)
 		{
-			if (tuples == null)
+			if (keyValuePairs == null)
 			{
-				throw new ArgumentNullException(nameof(tuples));
+				throw new ArgumentNullException(nameof(keyValuePairs));
 			}
 			var queryBuilder = new StringBuilder();
 
-			foreach (var tuple in tuples)
+			foreach (var keyValuePair in keyValuePairs)
 			{
-				queryBuilder.Append($"{tuple.Item1}");
-                if (tuple.Item2 != null)
+				queryBuilder.Append($"{keyValuePair.Key}");
+                if (keyValuePair.Value != null)
 				{
-					var encodedValue = Uri.EscapeDataString(tuple.Item2?.ToString());
+					var encodedValue = Uri.EscapeDataString(keyValuePair.Value?.ToString());
 					queryBuilder.Append($"={encodedValue}");
 				}
                 queryBuilder.Append('&');
@@ -75,29 +76,29 @@ namespace Dapplo.HttpExtensions
 		public static IDictionary<string, string> QueryToDictionary(this Uri uri)
 		{
 			var parameters = new SortedDictionary<string, string>();
-            foreach (var tuple in uri.QueryToTuples())
+            foreach (var keyValuePair in uri.QueryToKeyValuePairs())
 			{
-				if (parameters.ContainsKey(tuple.Item1))
+				if (parameters.ContainsKey(keyValuePair.Key))
 				{
-					parameters[tuple.Item1] = tuple.Item2;
+					parameters[keyValuePair.Key] = keyValuePair.Value;
 				}
 				else
 				{
-					parameters.Add(tuple.Item1, tuple.Item2);
+					parameters.Add(keyValuePair.Key, keyValuePair.Value);
 				}
 			}
 			return parameters;
 		}
 
 		/// <summary>
-		/// QueryToTuples creates a List with Tuples which have the name-values
+		/// QueryToTuples creates a List with KeyValuePair which have the name-values
 		/// </summary>
 		/// <param name="uri">Uri of which the query is processed</param>
-		/// <returns>List Tuple string, string</returns>
-		public static List<Tuple<string, string>> QueryToTuples(this Uri uri)
+		/// <returns>List KeyValuePair string, string</returns>
+		public static List<KeyValuePair<string, string>> QueryToKeyValuePairs(this Uri uri)
 		{
 			var queryString = uri.Query;
-			var parameters = new List<Tuple<string, string>>();
+			var parameters = new List<KeyValuePair<string, string>>();
 			if (string.IsNullOrEmpty(queryString))
 			{
 				return parameters;
@@ -120,7 +121,7 @@ namespace Dapplo.HttpExtensions
 				{
 					value = Uri.UnescapeDataString(singlePair[1]);
                 }
-                parameters.Add(new Tuple<string, string>(name, value));
+                parameters.Add(new KeyValuePair<string, string>(name, value));
 			}
 			return parameters;
 		}
@@ -132,8 +133,8 @@ namespace Dapplo.HttpExtensions
 		/// <returns>ILookup string, string</returns>
 		public static ILookup<string, string> QueryToLookup(this Uri uri)
 		{
-			var parameters = uri.QueryToTuples();
-			return parameters.ToLookup(k => k.Item1, e => e.Item2);
+			var parameters = uri.QueryToKeyValuePairs();
+			return parameters.ToLookup(k => k.Key, e => e.Value);
 		}
 
 		/// <summary>
@@ -154,15 +155,15 @@ namespace Dapplo.HttpExtensions
 		/// <returns>Uri with extended query</returns>
 		public static Uri ExtendQuery<T>(this Uri uri, string name, T value)
 		{
-			var tuples = uri.QueryToTuples();
-			tuples.Add(new Tuple<string, string>(name, value?.ToString()));
+			var keyValuePairs = uri.QueryToKeyValuePairs();
+			keyValuePairs.Add(new KeyValuePair<string, string>(name, value?.ToString()));
 
 			var uriBuilder = new UriBuilder(uri);
-			if (!tuples.Any())
+			if (!keyValuePairs.Any())
 			{
 				return uri;
 			}
-			uriBuilder.Query = tuples.ToQueryString();
+			uriBuilder.Query = keyValuePairs.ToQueryString();
 			return uriBuilder.Uri;
 		}
 
@@ -183,15 +184,15 @@ namespace Dapplo.HttpExtensions
 		/// <returns>Uri with extended query</returns>
 		public static Uri ExtendQuery<T>(this Uri uri, IDictionary<string, T> values)
 		{
-			var tuples = uri.QueryToTuples();
-			tuples.AddRange(values.Select(nameValue => new Tuple<string, string>(nameValue.Key, nameValue.Value?.ToString())));
+			var keyValuePairs = uri.QueryToKeyValuePairs();
+			keyValuePairs.AddRange(values.Select(nameValue => new KeyValuePair<string, string>(nameValue.Key, nameValue.Value?.ToString())));
 
 			var uriBuilder = new UriBuilder(uri);
-			if (!tuples.Any())
+			if (!keyValuePairs.Any())
 			{
 				return uri;
 			}
-			uriBuilder.Query = tuples.ToQueryString();
+			uriBuilder.Query = keyValuePairs.ToQueryString();
 			return uriBuilder.Uri;
 		}
 
@@ -212,15 +213,15 @@ namespace Dapplo.HttpExtensions
 		/// <returns>Uri with extended query</returns>
 		public static Uri ExtendQuery<T>(this Uri uri, ILookup<string, T> values)
 		{
-			var tuples = uri.QueryToTuples();
-			tuples.AddRange(from kvp in values from value in kvp select new Tuple<string, string>(kvp.Key, value?.ToString()));
+			var keyValuePairs = uri.QueryToKeyValuePairs();
+			keyValuePairs.AddRange(from kvp in values from value in kvp select new KeyValuePair<string, string>(kvp.Key, value?.ToString()));
 
 			var uriBuilder = new UriBuilder(uri);
-			if (!tuples.Any())
+			if (!keyValuePairs.Any())
 			{
 				return uri;
 			}
-			uriBuilder.Query = tuples.ToQueryString();
+			uriBuilder.Query = keyValuePairs.ToQueryString();
 			return uriBuilder.Uri;
 		}
 

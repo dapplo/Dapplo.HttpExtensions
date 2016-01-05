@@ -26,6 +26,7 @@ using System.Net;
 using System.Net.Security;
 using System.Reflection;
 using System.Security.Principal;
+using System.Text;
 
 namespace Dapplo.HttpExtensions
 {
@@ -101,8 +102,18 @@ namespace Dapplo.HttpExtensions
 			{
 				if (_userAgent == null)
 				{
-					var userAgentAssembly = Assembly.GetEntryAssembly() ?? GetType().Assembly;
-					_userAgent = $"{userAgentAssembly.GetName().Name} {userAgentAssembly.GetName().Version}";
+					var clientAssembly = Assembly.GetEntryAssembly() ?? Assembly.GetCallingAssembly();
+					var thisAssembly = GetType().Assembly;
+					var userAgentBuilder = new StringBuilder();
+
+					if (clientAssembly != thisAssembly)
+					{
+						var clientAssemblyName = clientAssembly.GetName();
+						userAgentBuilder.Append($"{clientAssemblyName.Name}/{clientAssemblyName.Version} ");
+					}
+					var thisAssemblyName = thisAssembly.GetName();
+					userAgentBuilder.Append($"{thisAssemblyName.Name}/{thisAssemblyName.Version}");
+					_userAgent = userAgentBuilder.ToString();
 				}
 				return _userAgent;
 			}

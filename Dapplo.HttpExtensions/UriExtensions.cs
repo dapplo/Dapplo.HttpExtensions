@@ -226,6 +226,21 @@ namespace Dapplo.HttpExtensions
 		}
 
 		/// <summary>
+		///Sets the userinfo of the Uri
+		/// </summary>
+		/// <param name="uri">Uri to extend</param>
+		/// <param name="username">username of value</param>
+		/// <param name="password">password for the user</param>
+		/// <returns>Uri with extended query</returns>
+		public static Uri SetCredentials(this Uri uri, string username, string password)
+		{
+			var uriBuilder = new UriBuilder(uri);
+			uriBuilder.UserName = username;
+			uriBuilder.Password = password;
+			return uriBuilder.Uri;
+		}
+
+		/// <summary>
 		/// Normalize the URI by replacing http...80 and https...443 without the port.
 		/// Is needed for OAuth 1.0(a)
 		/// </summary>

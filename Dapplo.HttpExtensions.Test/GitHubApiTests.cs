@@ -71,9 +71,16 @@ namespace Dapplo.HttpExtensions.Test
 		{
 			var githubApiUri = new Uri("https://api.github.com");
 			var releasesUri = githubApiUri.AppendSegments("repos", "dapplo", "Dapplo.HttpExtensions", "releases");
+
+			var password = Environment.GetEnvironmentVariable("github_token");
+			if (!string.IsNullOrEmpty(password))
+			{
+				releasesUri = releasesUri.SetCredentials("lakritzator", password);
+			}
+
 			var releases = await releasesUri.GetAsJsonAsync<List<GitHubRelease>, GitHubError>();
 			Assert.IsNotNull(releases);
-			Assert.IsFalse(releases.HasError, releases.ErrorResponse?.Message ?? "" + releases.StatusCode);
+			Assert.IsFalse(releases.HasError, $"{releases.StatusCode}: {releases.ErrorResponse?.Message} {releases.ErrorResponse?.DocumentationUrl}");
 
 			var latestRelease = releases.Response
 					.Where(x => !x.Prerelease)

@@ -26,7 +26,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
-using System.Diagnostics;
 using System.Runtime.Serialization;
 
 namespace Dapplo.HttpExtensions.Test
@@ -73,7 +72,8 @@ namespace Dapplo.HttpExtensions.Test
 			var githubApiUri = new Uri("https://api.github.com");
 			var releasesUri = githubApiUri.AppendSegments("repos", "dapplo", "Dapplo.HttpExtensions", "releases");
 			var releases = await releasesUri.GetAsJsonAsync<List<GitHubRelease>, GitHubError>();
-			Assert.IsFalse(releases.HasError, releases.ErrorResponse.Message);
+			Assert.IsNotNull(releases);
+			Assert.IsFalse(releases.HasError, releases.ErrorResponse?.Message ?? "" + releases.StatusCode);
 
 			var latestRelease = releases.Response
 					.Where(x => !x.Prerelease)

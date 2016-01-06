@@ -104,13 +104,13 @@ namespace Dapplo.HttpExtensions
 			};
 			if (httpResponseMessage.IsSuccessStatusCode)
 			{
-				var jsonString = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-				response.Response = SimpleJson.DeserializeObject<TNormal>(jsonString);
+				var jsonResponse = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+				response.Response = SimpleJson.DeserializeObject<TNormal>(jsonResponse);
 			}
 			else
 			{
-				var errorResponse = await httpResponseMessage.HandleErrorAsync(false, token).ConfigureAwait(false);
-				response.ErrorResponse = SimpleJson.DeserializeObject<TError>(errorResponse);
+				var jsonErrorResponse = await httpResponseMessage.HandleErrorAsync(false, token).ConfigureAwait(false);
+				response.ErrorResponse = SimpleJson.DeserializeObject<TError>(jsonErrorResponse);
 			}
 			return response;
 		}

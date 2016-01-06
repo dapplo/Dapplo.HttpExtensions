@@ -47,6 +47,19 @@ namespace Dapplo.HttpExtensions.Test
 		public string HtmlUrl { get; set; }
 	}
 
+	/// <summary>
+	/// Container for errors from GitHub
+	/// </summary>
+	[DataContract]
+	public class GitHubError
+	{
+		[DataMember(Name = "message")]
+		public string Message { get; set; }
+
+		[DataMember(Name = "documentation_url")]
+		public string DocumentationUrl { get; set; }
+	}
+
 	[TestClass]
 	public class GitHubApiTests
 	{
@@ -59,24 +72,14 @@ namespace Dapplo.HttpExtensions.Test
 		{
 			var githubApiUri = new Uri("https://api.github.com");
 			var releasesUri = githubApiUri.AppendSegments("repos", "dapplo", "Dapplo.HttpExtensions", "releases");
-			try
-			{
-				var releases = await releasesUri.GetAsJsonAsync<List<GitHubRelease>>();
-				var latestRelease = releases
-						.Where(x => !x.Prerelease)
-						.OrderByDescending(x => x.PublishedAt)
-						.FirstOrDefault();
-				Assert.IsNotNull(latestRelease);
-				Debug.WriteLine(latestRelease.PublishedAt);
-			}
-			catch (Exception ex)
-			{
-				if (ex.Data.Contains("response"))
-				{
-					Console.WriteLine(ex.Data["response"]);
-				}
-				throw;
-			}
+			var releases = await releasesUri.GetAsJsonAsync<List<GitHubRelease>, GitHubError>();
+			Assert.IsFalse(releases.HasError, releases.ErrorResponse.Message);
+
+			var latestRelease = releases.Response
+					.Where(x => !x.Prerelease)
+					.OrderByDescending(x => x.PublishedAt)
+					.FirstOrDefault();
+			Assert.IsNotNull(latestRelease);
 		}
 	}
 }

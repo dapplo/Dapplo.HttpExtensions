@@ -403,7 +403,7 @@ namespace Dapplo.HttpExtensions
 		}
 
 		/// <summary>
-		/// Download a Json response
+		/// Get a response as json
 		/// </summary>
 		/// <typeparam name="T">Type to deserialize into</typeparam>
 		/// <param name="uri">An Uri to specify the download location</param>
@@ -419,6 +419,24 @@ namespace Dapplo.HttpExtensions
 			}
 		}
 
+		/// <summary>
+		/// Get a response as json
+		/// The response is parsed depending on the HttpStatusCode:
+		///  TNormal is used when Ok, the TError in the other cases.
+		/// </summary>
+		/// <typeparam name="TNormal">Type to deserialize into if the response don't have an error</typeparam>
+		/// <typeparam name="TError">Type to deserialize into if the response has an error</typeparam>
+		/// <param name="uri">An Uri to specify the download location</param>
+		/// <param name="token">CancellationToken</param>
+		/// <param name="httpSettings">IHttpSettings instance or null if the global settings need to be used</param>
+		/// <returns>HttpResponse of TNormal and TError filled by SimpleJson</returns>
+		public static async Task<HttpResponse<TNormal, TError>> GetAsJsonAsync<TNormal, TError>(this Uri uri, CancellationToken token = default(CancellationToken), IHttpSettings httpSettings = null)
+		{
+			using (var reponse = await uri.GetAsync(token, httpSettings).ConfigureAwait(false))
+			{
+				return await reponse.GetAsJsonAsync<TNormal, TError>(token).ConfigureAwait(false);
+			}
+		}
 
 		/// <summary>
 		/// Method to post JSON

@@ -52,20 +52,20 @@ namespace Dapplo.HttpExtensions
 		}
 
 		/// <summary>
-		/// Get Json from the response
+		/// Get Json from the httpResponseMessage
 		/// </summary>
-		/// <param name="response">HttpResponseMessage</param>
+		/// <param name="httpResponseMessage">HttpResponseMessage</param>
 		/// <param name="throwErrorOnNonSuccess">true to throw an exception when an error occurse, else null is returned</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>dynamic created with SimpleJson</returns>
-		public static async Task<dynamic> GetAsJsonAsync(this HttpResponseMessage response, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
+		public static async Task<dynamic> GetAsJsonAsync(this HttpResponseMessage httpResponseMessage, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
 		{
-			if (response.IsSuccessStatusCode)
+			if (httpResponseMessage.IsSuccessStatusCode)
 			{
-				var jsonString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+				var jsonString = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
 				return SimpleJson.DeserializeObject(jsonString);
 			}
-			await response.HandleErrorAsync(throwErrorOnNonSuccess, token).ConfigureAwait(false);
+			await httpResponseMessage.HandleErrorAsync(throwErrorOnNonSuccess, token).ConfigureAwait(false);
 			return null;
 		}
 
@@ -73,19 +73,46 @@ namespace Dapplo.HttpExtensions
 		/// GetAsJsonAsync&lt;T&gt; will use DataMember / DataContract to parse the object into
 		/// </summary>
 		/// <typeparam name="T">Type to parse to</typeparam>
-		/// <param name="response"></param>
+		/// <param name="httpResponseMessage"></param>
 		/// <param name="throwErrorOnNonSuccess">true to throw an exception when an error occurse, else the default for T is returned</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>T created with SimpleJson</returns>
-		public static async Task<T> GetAsJsonAsync<T>(this HttpResponseMessage response, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
+		public static async Task<T> GetAsJsonAsync<T>(this HttpResponseMessage httpResponseMessage, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
 		{
-			if (response.IsSuccessStatusCode)
+			if (httpResponseMessage.IsSuccessStatusCode)
 			{
-				var jsonString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+				var jsonString = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
 				return SimpleJson.DeserializeObject<T>(jsonString);
 			}
-			await response.HandleErrorAsync(throwErrorOnNonSuccess, token).ConfigureAwait(false);
+			await httpResponseMessage.HandleErrorAsync(throwErrorOnNonSuccess, token).ConfigureAwait(false);
 			return default(T);
+		}
+
+		/// <summary>
+		/// GetAsJsonAsync will use DataMember / DataContract to parse the object into
+		/// </summary>
+		/// <typeparam name="TNormal">Type to parse to</typeparam>
+		/// <typeparam name="TError">Type to parse to if the httpResponseMessage has an error</typeparam>
+		/// <param name="httpResponseMessage"></param>
+		/// <param name="token">CancellationToken</param>
+		/// <returns>HttpResponse of TNormal and TError filled by SimpleJson</returns>
+		public static async Task<HttpResponse<TNormal, TError>> GetAsJsonAsync<TNormal, TError>(this HttpResponseMessage httpResponseMessage, CancellationToken token = default(CancellationToken))
+		{
+			var response = new HttpResponse<TNormal, TError>
+			{
+				StatusCode = httpResponseMessage.StatusCode
+			};
+			if (httpResponseMessage.IsSuccessStatusCode)
+			{
+				var jsonString = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+				response.Response = SimpleJson.DeserializeObject<TNormal>(jsonString);
+			}
+			else
+			{
+				var errorResponse = await httpResponseMessage.HandleErrorAsync(false, token).ConfigureAwait(false);
+				response.ErrorResponse = SimpleJson.DeserializeObject<TError>(errorResponse);
+			}
+			return response;
 		}
 
 		/// <summary>

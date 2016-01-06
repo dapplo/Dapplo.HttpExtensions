@@ -41,6 +41,7 @@
     <Compile Include="HttpClientExtensions.cs" />
     <Compile Include="HttpClientFactory.cs" />
     <Compile Include="HttpMessageHandlerFactory.cs" />
+    <Compile Include="HttpResponse.cs" />
     <Compile Include="HttpResponseMessageExtensions.cs" />
     <Compile Include="HttpSettings.cs" />
     <Compile Include="IHttpSettings.cs" />

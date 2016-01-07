@@ -27,13 +27,16 @@ using System.Linq;
 
 namespace Dapplo.HttpExtensions.Test
 {
+	/// <summary>
+	/// These are the tests for the UriParseExtensions
+	/// </summary>
 	[TestClass]
 	public class UriParseExtensionsTests
 	{
 		private const string TestKey = "value1";
 		private const string TestValue = "1234";
-
 		private readonly Uri _simpleTestUri = new Uri("http://jira/name?value1=1234").ExtendQuery(TestKey, TestValue);
+
 		[TestMethod]
 		public void TestQueryToDictionary()
 		{

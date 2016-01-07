@@ -27,9 +27,16 @@ using System.Collections.Generic;
 
 namespace Dapplo.HttpExtensions.Test
 {
+	/// <summary>
+	/// These are the tests for the UriModifyExtensions
+	/// </summary>
 	[TestClass]
 	public class UriModifyExtensionsTests
 	{
+		private const string Key = "key";
+		private const int Value = 1234;
+		private const string TestUriSingleValue = "http://jira/issue?value1=4321";
+		private const string TestUriDuplicateValues = "http://jira/issue?value1=4321&value1=1234";
 		[TestMethod]
 		public void TestAppendSegments()
 		{
@@ -39,54 +46,64 @@ namespace Dapplo.HttpExtensions.Test
 		}
 
 		[TestMethod]
-		public void TestExtendQuery()
+		public void TestExtendQuery_WithDictionary()
 		{
-			var uri = new Uri("http://jira/issue?value1=4321");
-			const int key = 1234;
+			var uri = new Uri(TestUriSingleValue);
 			uri = uri.ExtendQuery(new Dictionary<string, object>
 			{
 				{
-					"key", key
+					Key, Value
 				}
 			});
 
-			Assert.AreEqual("http://jira/issue?value1=4321&key=1234", uri.AbsoluteUri);
+			Assert.AreEqual($"{TestUriSingleValue}&{Key}={Value}", uri.AbsoluteUri);
 		}
 
 		[TestMethod]
-		public void TestExtendQuery2()
+		public void TestExtendQuery_WithDictionary_MultipleValuesInSource()
 		{
-			var uri = new Uri("http://jira/issue?value1=4321&value1=43211");
-			const int key = 1234;
+			var uri = new Uri(TestUriDuplicateValues);
 			uri = uri.ExtendQuery(new Dictionary<string, object>
 			{
 				{
-					"key", key
+					Key, Value
 				}
 			});
 
-			Assert.AreEqual("http://jira/issue?value1=4321&value1=43211&key=1234", uri.AbsoluteUri);
+			Assert.AreEqual($"{TestUriDuplicateValues}&{Key}={Value}", uri.AbsoluteUri);
 		}
 
 		[TestMethod]
-		public void TestExtendQuery3()
+		public void TestExtendQuery_WithNameValue()
 		{
-			var uri = new Uri("http://jira/issue?value1=4321&value1=43211");
-			const int key = 1234;
-			uri = uri.ExtendQuery("key", key);
+			var uri = new Uri(TestUriDuplicateValues);
+			uri = uri.ExtendQuery(Key, Value);
 
-			Assert.AreEqual("http://jira/issue?value1=4321&value1=43211&key=1234", uri.AbsoluteUri);
+			Assert.AreEqual($"{TestUriDuplicateValues}&{Key}={Value}", uri.AbsoluteUri);
 		}
 
 		[TestMethod]
-		public void TestExtendQueryEncoding()
+		public void TestExtendQuery_WithNameValue_EncodingNeeded()
 		{
+			var uri = new Uri(TestUriDuplicateValues);
+
 			var uriValue = new Uri("http://jira/issue?otherval1=10&othervar2=20");
-			var encodedUri = Uri.EscapeDataString(uriValue.ToString());
-			var uri = new Uri("http://jira/issue?value1=4321&value1=43211");
+			var encodedUri = Uri.EscapeDataString(uriValue.AbsoluteUri);
+
 			uri = uri.ExtendQuery("url", uriValue);
 
-			Assert.AreEqual("http://jira/issue?value1=4321&value1=43211&url="+ encodedUri, uri.AbsoluteUri);
+			Assert.AreEqual($"{TestUriDuplicateValues}&url={encodedUri}", uri.AbsoluteUri);
+		}
+
+		[TestMethod]
+		public void TestSetCredentials()
+		{
+			const string username = "myusername";
+			const string password = "mypassword";
+			var uri = new Uri(TestUriDuplicateValues);
+			uri = uri.SetCredentials(username, password);
+
+			Assert.AreEqual($"http://{username}:{password}@{TestUriDuplicateValues.Replace("http://","")}", uri.AbsoluteUri);
 		}
 	}
 }

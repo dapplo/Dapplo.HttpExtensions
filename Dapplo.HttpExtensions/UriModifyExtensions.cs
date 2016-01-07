@@ -143,27 +143,6 @@ namespace Dapplo.HttpExtensions
 		}
 
 		/// <summary>
-		/// Normalize the URI by replacing http...80 and https...443 without the port.
-		/// Is needed for OAuth 1.0(a)
-		/// </summary>
-		/// <param name="uri">Uri to normalize</param>
-		/// <returns>Uri</returns>
-		public static Uri Normalize(this Uri uri)
-		{
-			if (uri == null)
-			{
-				throw new ArgumentNullException(nameof(uri));
-			}
-			string normalizedUrl = string.Format(CultureInfo.InvariantCulture, "{0}://{1}", uri.Scheme, uri.Host);
-			if (!((uri.Scheme == "http" && uri.Port == 80) || (uri.Scheme == "https" && uri.Port == 443)))
-			{
-				normalizedUrl += ":" + uri.Port;
-			}
-			normalizedUrl += uri.AbsolutePath;
-			return new Uri(normalizedUrl);
-		}
-
-		/// <summary>
 		/// Append path segment(s) to the specified Uri
 		/// </summary>
 		/// <param name="uri">Uri to extend</param>

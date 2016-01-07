@@ -48,7 +48,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProxyFactory.cs" />
     <Compile Include="SimpleJson.cs" />
-    <Compile Include="UriExtensions.cs" />
+    <Compile Include="MiscExtensions.cs" />
+    <Compile Include="UriParseExtensions.cs" />
+    <Compile Include="UriJsonActionExtensions.cs" />
+    <Compile Include="UriActionExtensions.cs" />
+    <Compile Include="UriModifyExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -28,9 +28,8 @@ using System.Collections.Generic;
 namespace Dapplo.HttpExtensions.Test
 {
 	[TestClass]
-	public class UriExtensionTests
+	public class UriModifyExtensionsTests
 	{
-
 		[TestMethod]
 		public void TestAppendSegments()
 		{

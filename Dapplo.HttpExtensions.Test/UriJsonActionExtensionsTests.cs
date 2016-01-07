@@ -26,56 +26,29 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
-using System.Runtime.Serialization;
+using Dapplo.HttpExtensions.Test.TestEntities;
 
 namespace Dapplo.HttpExtensions.Test
 {
-	/// <summary>
-	/// Container for the release information from GitHub
-	/// </summary>
-	[DataContract]
-	public class GitHubRelease
-	{
-		[DataMember(Name = "prerelease")]
-		public bool Prerelease { get; set; }
-
-		[DataMember(Name = "published_at")]
-		public DateTime PublishedAt { get; set; }
-
-		[DataMember(Name = "html_url")]
-		public string HtmlUrl { get; set; }
-	}
-
-	/// <summary>
-	/// Container for errors from GitHub
-	/// </summary>
-	[DataContract]
-	public class GitHubError
-	{
-		[DataMember(Name = "message")]
-		public string Message { get; set; }
-
-		[DataMember(Name = "documentation_url")]
-		public string DocumentationUrl { get; set; }
-	}
-
 	[TestClass]
-	public class GitHubApiTests
+	public class UriJsonActionExtensionsTests
 	{
 		/// <summary>
 		/// To make sure we test some of the functionality, we call the GitHub API to get the releases for this project.
 		/// </summary>
 		/// <returns></returns>
 		[TestMethod]
-		public async Task TestGitHubApiReleases()
+		public async Task TestGetAsJsonAsync_GitHubApiReleases()
 		{
 			var githubApiUri = new Uri("https://api.github.com");
 			var releasesUri = githubApiUri.AppendSegments("repos", "dapplo", "Dapplo.HttpExtensions", "releases");
 
+			// This is needed when running in AppVeyor, as AppVeyor has multiple request to GitHub, the rate-limit is exceeded.
+			var username = Environment.GetEnvironmentVariable("github_username");
 			var password = Environment.GetEnvironmentVariable("github_token");
-			if (!string.IsNullOrEmpty(password))
+			if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
 			{
-				releasesUri = releasesUri.SetCredentials("lakritzator", password);
+                releasesUri = releasesUri.SetCredentials(username, password);
 			}
 
 			var releases = await releasesUri.GetAsJsonAsync<List<GitHubRelease>, GitHubError>();

@@ -10,6 +10,8 @@ assembly_info:
   assembly_file_version: '{version}'
   assembly_informational_version: '{version}'
 environment:
+  github_username:
+    secure: dGUm8ikFV7zt04Snv/YfNA==
   github_token:
     secure: eBQPtXg53XgcvdcVY3wQAw6kkwNh+QhcsTDwzyQLLh6IOPyiePEaEhJR0D2YBjAj
 build:

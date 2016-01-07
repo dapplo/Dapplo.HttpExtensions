@@ -54,7 +54,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="GitHubApiTests.cs" />
+    <Compile Include="TestEntities\GitHubError.cs" />
+    <Compile Include="TestEntities\GitHubRelease.cs" />
+    <Compile Include="UriJsonActionExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UriParseExtensionsTests.cs" />
     <Compile Include="UriModifyExtensionsTests.cs" />

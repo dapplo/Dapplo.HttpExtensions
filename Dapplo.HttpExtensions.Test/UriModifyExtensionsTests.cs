@@ -24,6 +24,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Dapplo.HttpExtensions.Test
 {
@@ -71,6 +72,23 @@ namespace Dapplo.HttpExtensions.Test
 			});
 
 			Assert.AreEqual($"{TestUriDuplicateValues}&{Key}={Value}", uri.AbsoluteUri);
+		}
+
+		[TestMethod]
+		public void TestExtendQuery_WithLookup_MultipleValuesInSource()
+		{
+			var uri = new Uri(TestUriDuplicateValues);
+			var testValues = new List<KeyValuePair<string, int>>
+			{
+				new KeyValuePair<string, int>(Key,Value),
+				new KeyValuePair<string, int>(Key,Value),
+			};
+			var lookup = testValues.ToLookup(x => x.Key, x => x.Value);
+			// Make sure we have one Key, which has multiple values
+			Assert.IsTrue(lookup.Count() == 1);
+
+			uri = uri.ExtendQuery(lookup);
+			Assert.AreEqual($"{TestUriDuplicateValues}&{Key}={Value}&{Key}={Value}", uri.AbsoluteUri);
 		}
 
 		[TestMethod]

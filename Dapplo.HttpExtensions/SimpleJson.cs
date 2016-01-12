@@ -613,7 +613,18 @@ namespace Dapplo.HttpExtensions
             return SerializeObject(json, CurrentJsonSerializerStrategy);
         }
 
-        public static string EscapeToJavascriptString(string jsonString)
+		/// <summary>
+		/// minify(compress) the JSON string.
+		/// inspired by http://stackoverflow.com/questions/8913138/minify-indented-json-string-in-net
+		/// </summary>
+		/// <param name="json">JSON string to compress</param>
+		/// <returns>minified JSON string</returns>
+		public static string Minify(string json)
+		{
+			return System.Text.RegularExpressions.Regex.Replace(json, "(\"(?:[^\"\\\\]|\\\\.)*\")|\\s+", "$1");
+		}
+
+		public static string EscapeToJavascriptString(string jsonString)
         {
             if (string.IsNullOrEmpty(jsonString))
                 return jsonString;
@@ -1010,7 +1021,9 @@ namespace Dapplo.HttpExtensions
             string stringValue = value as string;
             if (stringValue != null)
                 success = SerializeString(stringValue, builder);
-            else
+			else if (IsChar(value))
+				success = SerializeString(((char)value).ToString(), builder);
+			else
             {
                 IDictionary<string, object> dict = value as IDictionary<string, object>;
                 if (dict != null)
@@ -1158,11 +1171,20 @@ namespace Dapplo.HttpExtensions
             return true;
         }
 
-        /// <summary>
-        /// Determines if a given object is numeric in any way
-        /// (can be integer, double, null, etc).
-        /// </summary>
-        static bool IsNumeric(object value)
+		/// <summary>
+		/// Determines if a given object is a char.
+		/// </summary>
+		static bool IsChar(object value)
+		{
+			if (value is char) return true;
+			return false;
+		}
+
+		/// <summary>
+		/// Determines if a given object is numeric in any way
+		/// (can be integer, double, null, etc).
+		/// </summary>
+		static bool IsNumeric(object value)
         {
             if (value is sbyte) return true;
             if (value is byte) return true;
@@ -1251,14 +1273,15 @@ namespace Dapplo.HttpExtensions
         internal static readonly Type[] EmptyTypes = new Type[0];
         internal static readonly Type[] ArrayConstructorParameterTypes = new Type[] { typeof(int) };
 
-        private static readonly string[] Iso8601Format = new string[]
-                                                             {
-                                                                 @"yyyy-MM-dd\THH:mm:ss.FFFFFFF\Z",
-                                                                 @"yyyy-MM-dd\THH:mm:ss\Z",
-                                                                 @"yyyy-MM-dd\THH:mm:ssK"
-                                                             };
+		private static readonly string[] Iso8601Format = new string[] {
+			@"yyyy-MM-dd\THH:mm:ss.FFFFFFFK",
+			@"yyyy-MM-dd\THH:mm:ss.FFFFFFF\Z",
+			@"yyyy-MM-dd\THH:mm:ss\Z",
+			@"yyyy-MM-dd\THH:mm:ssK",
+			@"yyyy-MM-dd\THH:mm:ss.FFFFFFF"
+		};
 
-        public PocoJsonSerializerStrategy()
+		public PocoJsonSerializerStrategy()
         {
             ConstructorCache = new ReflectionUtils.ThreadSafeDictionary<Type, ReflectionUtils.ConstructorDelegate>(ContructorDelegateFactory);
             GetCache = new ReflectionUtils.ThreadSafeDictionary<Type, IDictionary<string, ReflectionUtils.GetDelegate>>(GetterValueFactory);
@@ -1356,13 +1379,18 @@ namespace Dapplo.HttpExtensions
                         if (isValid && Uri.TryCreate(str, UriKind.RelativeOrAbsolute, out result))
                             return result;
 
-												return null;
+						return null;
                     }
-                  
-									if (type == typeof(string))  
-										return str;
 
-									return Convert.ChangeType(str, type, CultureInfo.InvariantCulture);
+					if (type.IsEnum || (ReflectionUtils.IsNullableType(type) && Nullable.GetUnderlyingType(type).IsEnum))
+					{
+						return Enum.Parse(ReflectionUtils.IsNullableType(type) ? Nullable.GetUnderlyingType(type) : type, str, true);
+					}
+
+					if (type == typeof(string))  
+						return str;
+
+					return Convert.ChangeType(str, type, CultureInfo.InvariantCulture);
                 }
                 else
                 {
@@ -1466,8 +1494,8 @@ namespace Dapplo.HttpExtensions
 
         protected virtual object SerializeEnum(Enum p)
         {
-            return Convert.ToDouble(p, CultureInfo.InvariantCulture);
-        }
+			return p.ToString();
+		}
 
         [SuppressMessage("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate", Justification="Need to support .NET 2")]
         protected virtual bool TrySerializeKnownTypes(object input, out object output)

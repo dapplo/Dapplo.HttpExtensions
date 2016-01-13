@@ -60,7 +60,7 @@ namespace Dapplo.HttpExtensions
 
 				if (behaviour.ValidateResponseContentType && httpResponseMessage.Content.Headers.ContentType.MediaType != MediaTypes.Json.EnumValueOf())
 				{
-					throw new InvalidOperationException($"Expected content-type of ${MediaTypes.Json.EnumValueOf()} got {httpResponseMessage.Content.Headers.ContentType.MediaType}");
+					throw new InvalidOperationException($"Expected response with Content-Type {MediaTypes.Json.EnumValueOf()} got {httpResponseMessage.Content.Headers.ContentType.MediaType}");
 				}
 				return true;
 			}

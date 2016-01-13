@@ -38,13 +38,17 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HttpBehaviour.cs" />
+    <Compile Include="HttpClientJsonExtensions.cs" />
     <Compile Include="HttpClientExtensions.cs" />
     <Compile Include="HttpClientFactory.cs" />
     <Compile Include="HttpMessageHandlerFactory.cs" />
     <Compile Include="HttpResponse.cs" />
+    <Compile Include="HttpResponseMessageJsonExtensions.cs" />
     <Compile Include="HttpResponseMessageExtensions.cs" />
     <Compile Include="HttpSettings.cs" />
     <Compile Include="IHttpSettings.cs" />
+    <Compile Include="MediaTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProxyFactory.cs" />
     <Compile Include="SimpleJson.cs" />

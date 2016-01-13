@@ -34,11 +34,12 @@ namespace Dapplo.HttpExtensions
 		/// Create a IWebProxy Object which can be used to access the Internet
 		/// This method will create a proxy according to the properties in the Settings class
 		/// </summary>
-		/// <param name="supliedHttpSettings">IHttpSettings instance or null if the global settings need to be used</param>
+		/// <param name="behaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <returns>IWebProxy filled with all the proxy details or null if none is set/wanted</returns>
-		public static IWebProxy CreateProxy(IHttpSettings supliedHttpSettings = null)
+		public static IWebProxy CreateProxy(HttpBehaviour behaviour = null)
 		{
-			var httpSettings = supliedHttpSettings ?? HttpSettings.GlobalHttpSettings;
+			behaviour = behaviour ?? HttpBehaviour.GlobalHttpBehaviour;
+			var httpSettings = behaviour.HttpSettings ?? HttpSettings.GlobalHttpSettings;
 
 			// This is already checked in the HttpClientFactory, but should be checked if this call is used elsewhere.
 			if (!httpSettings.UseProxy)

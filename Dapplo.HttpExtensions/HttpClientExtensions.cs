@@ -118,88 +118,19 @@ namespace Dapplo.HttpExtensions
 		}
 
 		/// <summary>
-		/// Method to post with JSON
-		/// </summary>
-		/// <param name="client">HttpClient</param>
-		/// <param name="uri">Uri to post the json to</param>
-		/// <param name="postData">data to post</param>
-		/// <param name="token">CancellationToken</param>
-		/// <returns>HttpResponseMessage</returns>
-		public static async Task<HttpResponseMessage> PostJsonAsync<T>(this HttpClient client, Uri uri, T postData, CancellationToken token = default(CancellationToken))
-		{
-			using (var content = new StringContent(SimpleJson.SerializeObject(postData), Encoding.UTF8, "application/json"))
-			{
-				return await client.PostAsync(uri, content, token).ConfigureAwait(false);
-			}
-		}
-
-		/// <summary>
-		/// Method to post with JSON, and get JSON
-		/// </summary>
-		/// <typeparam name="T1">Type to post</typeparam>
-		/// <typeparam name="T2">Type to read from the response</typeparam>
-		/// <param name="client">HttpClient</param>
-		/// <param name="uri">Uri to post the json to</param>
-		/// <param name="postData">data to post</param>
-		/// <param name="throwErrorOnNonSuccess">true to throw an exception when an error occurse, else null is returned</param>
-		/// <param name="token">CancellationToken</param>
-		/// <returns>T2</returns>
-		public static async Task<T2> PostJsonAsync<T1, T2>(this HttpClient client, Uri uri, T1 postData, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
-		{
-			using (var content = new StringContent(SimpleJson.SerializeObject(postData), Encoding.UTF8, "application/json"))
-			{
-				var response = await client.PostAsync(uri, content, token).ConfigureAwait(false);
-				return await response.GetAsJsonAsync<T2>(throwErrorOnNonSuccess, token).ConfigureAwait(false);
-			}
-		}
-
-		/// <summary>
 		/// Get the content as a MemoryStream
 		/// </summary>
 		/// <param name="client">HttpClient</param>
 		/// <param name="uri">Uri</param>
-		/// <param name="throwErrorOnNonSuccess">true to throw an exception when an error occurse, else null is returned</param>
+		/// <param name="behaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>MemoryStream</returns>
-		public static async Task<MemoryStream> GetAsMemoryStreamAsync(this HttpClient client, Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
+		public static async Task<MemoryStream> GetAsMemoryStreamAsync(this HttpClient client, Uri uri, HttpBehaviour behaviour = null, CancellationToken token = default(CancellationToken))
 		{
 			using (var response = await client.GetAsync(uri, token))
 			{
-				return await response.GetAsMemoryStreamAsync(throwErrorOnNonSuccess, token);
+				return await response.GetAsMemoryStreamAsync(behaviour, token);
             }
-		}
-
-		/// <summary>
-		/// Get the content as JSON
-		/// </summary>
-		/// <param name="client">HttpClient</param>
-		/// <param name="uri">Uri</param>
-		/// <param name="throwErrorOnNonSuccess">true to throw an exception when an error occurse, else null is returned</param>
-		/// <param name="token">CancellationToken</param>
-		/// <returns>dynamic (JSON)</returns>
-		public static async Task<dynamic> GetAsJsonAsync(this HttpClient client, Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
-		{
-			using (var response = await client.GetAsync(uri, token))
-			{
-				return await response.GetAsJsonAsync(throwErrorOnNonSuccess, token);
-			}
-		}
-
-		/// <summary>
-		/// Get the content as JSON
-		/// </summary>
-		/// <param name="client">HttpClient</param>
-		/// <param name="uri">Uri</param>
-		/// <param name="throwErrorOnNonSuccess">true to throw an exception when an error occurse, else null is returned</param>
-		/// <param name="token">CancellationToken</param>
-		/// <typeparam name="T">Type to use in the JSON parsing</typeparam>
-		/// <returns>dynamic (json)</returns>
-		public static async Task<T> GetAsJsonAsync<T>(this HttpClient client, Uri uri, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
-		{
-			using (var response = await client.GetAsync(uri, token))
-			{
-				return await response.GetAsJsonAsync<T>(throwErrorOnNonSuccess, token);
-			}
 		}
 	}
 }

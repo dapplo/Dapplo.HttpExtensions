@@ -35,10 +35,11 @@ namespace Dapplo.HttpExtensions
 		/// Apply settings on the HttpClientHandler
 		/// </summary>
 		/// <param name="httpClientHandler"></param>
-		/// <param name="suppliedHttpSettings">IHttpSettings instance or null if the global settings need to be used</param>
-		public static void SetDefaults(HttpClientHandler httpClientHandler, IHttpSettings suppliedHttpSettings = null)
+		/// <param name="behaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
+		public static void SetDefaults(HttpClientHandler httpClientHandler, HttpBehaviour behaviour = null)
 		{
-			var httpSettings = suppliedHttpSettings ?? HttpSettings.GlobalHttpSettings;
+			behaviour = behaviour ?? HttpBehaviour.GlobalHttpBehaviour;
+			var httpSettings = behaviour.HttpSettings ?? HttpSettings.GlobalHttpSettings;
 
 			httpClientHandler.AllowAutoRedirect = httpSettings.AllowAutoRedirect;
 			httpClientHandler.AutomaticDecompression = httpSettings.DefaultDecompressionMethods;
@@ -48,7 +49,7 @@ namespace Dapplo.HttpExtensions
 			httpClientHandler.MaxRequestContentBufferSize = httpSettings.MaxRequestContentBufferSize;
 			httpClientHandler.UseCookies = httpSettings.UseCookies;
 			httpClientHandler.UseDefaultCredentials = httpSettings.UseDefaultCredentials;
-			httpClientHandler.Proxy = httpSettings.UseProxy ? ProxyFactory.CreateProxy(httpSettings) : null;
+			httpClientHandler.Proxy = httpSettings.UseProxy ? ProxyFactory.CreateProxy(behaviour) : null;
 			httpClientHandler.UseProxy = httpSettings.UseProxy;
 			httpClientHandler.PreAuthenticate = httpSettings.PreAuthenticate;
 		}
@@ -56,13 +57,14 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// Apply settings on the WebRequestHandler, this also calls the SetDefaults for the underlying HttpClientHandler
 		/// </summary>
-		/// <param name="webRequestHandler"></param>
-		/// <param name="suppliedHttpSettings">IHttpSettings instance or null if the global settings need to be used</param>
-		public static void SetDefaults(WebRequestHandler webRequestHandler, IHttpSettings suppliedHttpSettings = null)
+		/// <param name="webRequestHandler">WebRequestHandler to set the defaults to</param>
+		/// <param name="behaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
+		public static void SetDefaults(WebRequestHandler webRequestHandler, HttpBehaviour behaviour = null)
 		{
-			var httpSettings = suppliedHttpSettings ?? HttpSettings.GlobalHttpSettings;
+			behaviour = behaviour ?? HttpBehaviour.GlobalHttpBehaviour;
+			SetDefaults(webRequestHandler as HttpClientHandler, behaviour);
 
-			SetDefaults(webRequestHandler as HttpClientHandler, httpSettings);
+			var httpSettings = behaviour.HttpSettings ?? HttpSettings.GlobalHttpSettings;
 
 			webRequestHandler.AllowPipelining = httpSettings.AllowPipelining;
             webRequestHandler.ReadWriteTimeout = httpSettings.ReadWriteTimeout;
@@ -75,13 +77,14 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// This creates an HttpClientHandler, normally one should use CreateWebRequestHandler
 		/// </summary>
-		/// <param name="suppliedHttpSettings">IHttpSettings instance or null if the global settings need to be used</param>
+		/// <param name="behaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <returns>HttpMessageHandler (HttpClientHandler)</returns>
-		public static HttpMessageHandler CreateHttpClientHandler(IHttpSettings suppliedHttpSettings = null)
+		public static HttpMessageHandler CreateHttpClientHandler(HttpBehaviour behaviour = null)
 		{
-			var httpSettings = suppliedHttpSettings ?? HttpSettings.GlobalHttpSettings;
+			behaviour = behaviour ?? HttpBehaviour.GlobalHttpBehaviour;
 			var httpClientHandler = new HttpClientHandler();
-			SetDefaults(httpClientHandler, httpSettings);
+			SetDefaults(httpClientHandler, behaviour);
+			behaviour.OnCreateHttpClientHandler?.Invoke(httpClientHandler);
 			return httpClientHandler;
 		}
 
@@ -89,13 +92,14 @@ namespace Dapplo.HttpExtensions
 		/// This creates an advanced HttpMessageHandler, used in desktop applications
 		/// Should be preferred
 		/// </summary>
-		/// <param name="suppliedHttpSettings">IHttpSettings instance or null if the global settings need to be used</param>
+		/// <param name="behaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <returns>HttpMessageHandler (WebRequestHandler)</returns>
-		public static HttpMessageHandler CreateWebRequestHandler(IHttpSettings suppliedHttpSettings = null)
+		public static HttpMessageHandler CreateWebRequestHandler(HttpBehaviour behaviour = null)
 		{
-			var httpSettings = suppliedHttpSettings ?? HttpSettings.GlobalHttpSettings;
+			behaviour = behaviour ?? HttpBehaviour.GlobalHttpBehaviour;
 			var webRequestHandler = new WebRequestHandler();
-			SetDefaults(webRequestHandler, httpSettings);
+			SetDefaults(webRequestHandler, behaviour);
+			behaviour.OnCreateWebRequestHandler?.Invoke(webRequestHandler);
 			return webRequestHandler;
 		}
 	}

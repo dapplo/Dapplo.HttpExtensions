@@ -32,16 +32,18 @@ namespace Dapplo.HttpExtensions
 	public static class HttpClientFactory
 	{
 		/// <summary>
-		/// Create a HttpClient with default, in the HttpClientExtensions configured, settings
+		/// Create a HttpClient which is modified by the settings specified in the IHttpSettings of the HttpBehaviour.
+		/// If nothing is passed, the GlobalSettings are used
 		/// </summary>
-		/// <param name="suppliedHttpSettings">IHttpSettings instance or null if the global settings need to be used</param>
+		/// <param name="HttpBehaviour">HttpBehaviour instance or null if the global settings need to be used</param>
 		/// <param name="uriForConfiguration">If a Uri is supplied, this is used to configure the HttpClient. Currently the Uri.UserInfo is used to set the basic authorization.</param>
 		/// <returns>HttpClient</returns>
-		public static HttpClient CreateHttpClient(IHttpSettings suppliedHttpSettings = null, Uri uriForConfiguration = null)
+		public static HttpClient CreateHttpClient(HttpBehaviour behaviour = null, Uri uriForConfiguration = null)
 		{
-			var httpSettings = suppliedHttpSettings ?? HttpSettings.GlobalHttpSettings;
+			behaviour = behaviour ?? HttpBehaviour.GlobalHttpBehaviour;
+			var httpSettings = behaviour.HttpSettings ?? HttpSettings.GlobalHttpSettings;
 
-			var client = new HttpClient(HttpMessageHandlerFactory.CreateWebRequestHandler(httpSettings))
+			var client = new HttpClient(HttpMessageHandlerFactory.CreateWebRequestHandler(behaviour))
 			{
 				Timeout = httpSettings.RequestTimeout,
 				MaxResponseContentBufferSize = httpSettings.MaxResponseContentBufferSize
@@ -50,7 +52,12 @@ namespace Dapplo.HttpExtensions
 			{
 				client.DefaultRequestHeaders.UserAgent.TryParseAdd(httpSettings.DefaultUserAgent);
 			}
+
+			// If the uri has username/password, use this to set Basic Authorization
 			client.SetBasicAuthorization(uriForConfiguration);
+
+			// Allow the passed OnCreateHttpClient action to modify the HttpClient
+			behaviour.OnCreateHttpClient?.Invoke(client);
 			return client;
 		}
 	}

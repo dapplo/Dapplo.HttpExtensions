@@ -30,14 +30,14 @@ namespace Dapplo.HttpExtensions
 	/// This class returns the information of a HTTP request
 	/// Makes it possible to process the error information too
 	/// </summary>
-	/// <typeparam name="TNormal">Type for the normal response</typeparam>
+	/// <typeparam name="TResult">Type for the normal response</typeparam>
 	/// <typeparam name="TError">Type for the error response</typeparam>
-	public class HttpResponse<TNormal, TError>
+	public class HttpResponse<TResult, TError>
 	{
 		/// <summary>
-		/// The response when a 200 status was returned
+		/// The result when a 200 status was returned
 		/// </summary>
-		public TNormal Response { get; set; }
+		public TResult Result { get; set; }
 
 		/// <summary>
 		/// The response when not an 200 status was returned

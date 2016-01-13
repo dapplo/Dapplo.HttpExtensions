@@ -38,91 +38,27 @@ namespace Dapplo.HttpExtensions
 		/// Read the response as a string
 		/// </summary>
 		/// <param name="response">HttpResponseMessage</param>
-		/// <param name="throwErrorOnNonSuccess">true to throw an exception when an error occurse, else null is returned</param>
+		/// <param name="behaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>string</returns>
-		public static async Task<string> GetAsStringAsync(this HttpResponseMessage response, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
+		public static async Task<string> GetAsStringAsync(this HttpResponseMessage response, HttpBehaviour behaviour = null, CancellationToken token = default(CancellationToken))
 		{
 			if (response.IsSuccessStatusCode)
 			{
 				return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 			}
-			await response.HandleErrorAsync(throwErrorOnNonSuccess, token).ConfigureAwait(false);
+			await response.HandleErrorAsync(behaviour, token).ConfigureAwait(false);
 			return null;
-		}
-
-		/// <summary>
-		/// Get Json from the httpResponseMessage
-		/// </summary>
-		/// <param name="httpResponseMessage">HttpResponseMessage</param>
-		/// <param name="throwErrorOnNonSuccess">true to throw an exception when an error occurse, else null is returned</param>
-		/// <param name="token">CancellationToken</param>
-		/// <returns>dynamic created with SimpleJson</returns>
-		public static async Task<dynamic> GetAsJsonAsync(this HttpResponseMessage httpResponseMessage, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
-		{
-			if (httpResponseMessage.IsSuccessStatusCode)
-			{
-				var jsonString = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-				return SimpleJson.DeserializeObject(jsonString);
-			}
-			await httpResponseMessage.HandleErrorAsync(throwErrorOnNonSuccess, token).ConfigureAwait(false);
-			return null;
-		}
-
-		/// <summary>
-		/// GetAsJsonAsync&lt;T&gt; will use DataMember / DataContract to parse the object into
-		/// </summary>
-		/// <typeparam name="T">Type to parse to</typeparam>
-		/// <param name="httpResponseMessage"></param>
-		/// <param name="throwErrorOnNonSuccess">true to throw an exception when an error occurse, else the default for T is returned</param>
-		/// <param name="token">CancellationToken</param>
-		/// <returns>T created with SimpleJson</returns>
-		public static async Task<T> GetAsJsonAsync<T>(this HttpResponseMessage httpResponseMessage, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
-		{
-			if (httpResponseMessage.IsSuccessStatusCode)
-			{
-				var jsonString = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-				return SimpleJson.DeserializeObject<T>(jsonString);
-			}
-			await httpResponseMessage.HandleErrorAsync(throwErrorOnNonSuccess, token).ConfigureAwait(false);
-			return default(T);
-		}
-
-		/// <summary>
-		/// GetAsJsonAsync will use DataMember / DataContract to parse the object into
-		/// </summary>
-		/// <typeparam name="TNormal">Type to parse to</typeparam>
-		/// <typeparam name="TError">Type to parse to if the httpResponseMessage has an error</typeparam>
-		/// <param name="httpResponseMessage"></param>
-		/// <param name="token">CancellationToken</param>
-		/// <returns>HttpResponse of TNormal and TError filled by SimpleJson</returns>
-		public static async Task<HttpResponse<TNormal, TError>> GetAsJsonAsync<TNormal, TError>(this HttpResponseMessage httpResponseMessage, CancellationToken token = default(CancellationToken))
-		{
-			var response = new HttpResponse<TNormal, TError>
-			{
-				StatusCode = httpResponseMessage.StatusCode
-			};
-			if (httpResponseMessage.IsSuccessStatusCode)
-			{
-				var jsonResponse = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-				response.Response = SimpleJson.DeserializeObject<TNormal>(jsonResponse);
-			}
-			else
-			{
-				var jsonErrorResponse = await httpResponseMessage.HandleErrorAsync(false, token).ConfigureAwait(false);
-				response.ErrorResponse = SimpleJson.DeserializeObject<TError>(jsonErrorResponse);
-			}
-			return response;
 		}
 
 		/// <summary>
 		/// Get the content as a MemoryStream
 		/// </summary>
 		/// <param name="response">HttpResponseMessage</param>
-		/// <param name="throwErrorOnNonSuccess">true to throw an exception when an error occurse, else null is returned</param>
+		/// <param name="behaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>MemoryStream</returns>
-		public static async Task<MemoryStream> GetAsMemoryStreamAsync(this HttpResponseMessage response, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
+		public static async Task<MemoryStream> GetAsMemoryStreamAsync(this HttpResponseMessage response, HttpBehaviour behaviour = null, CancellationToken token = default(CancellationToken))
 		{
 			if (response.IsSuccessStatusCode)
 			{
@@ -136,7 +72,7 @@ namespace Dapplo.HttpExtensions
 					return memoryStream;
 				}
 			}
-			await response.HandleErrorAsync(throwErrorOnNonSuccess, token).ConfigureAwait(false);
+			await response.HandleErrorAsync(behaviour, token).ConfigureAwait(false);
 			return null;
 		}
 
@@ -144,10 +80,10 @@ namespace Dapplo.HttpExtensions
 		/// Simplified error handling, this makes sure the uri & response are logged
 		/// </summary>
 		/// <param name="responseMessage">HttpResponseMessage</param>
-		/// <param name="throwErrorOnNonSuccess">true to throw an exception when an error is returned, else the response text is returned</param>
+		/// <param name="behaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
-		/// <returns>string with the error content if throwErrorOnNonSuccess = false</returns>
-		public static async Task<string> HandleErrorAsync(this HttpResponseMessage responseMessage, bool throwErrorOnNonSuccess = true, CancellationToken token = default(CancellationToken))
+		/// <returns>string with the error content if HttpBehaviour.ThrowErrorOnNonSuccess = false</returns>
+		public static async Task<string> HandleErrorAsync(this HttpResponseMessage responseMessage, HttpBehaviour behaviour = null, CancellationToken token = default(CancellationToken))
 		{
 			Exception throwException = null;
 			string errorContent = null;
@@ -178,7 +114,8 @@ namespace Dapplo.HttpExtensions
 					throwException.Data.Add("response", errorContent);
 				}
 			}
-			if (throwErrorOnNonSuccess && throwException != null)
+			behaviour = behaviour ?? HttpBehaviour.GlobalHttpBehaviour;
+			if (behaviour.ThrowErrorOnNonSuccess && throwException != null)
 			{
 				throw throwException;
 			}

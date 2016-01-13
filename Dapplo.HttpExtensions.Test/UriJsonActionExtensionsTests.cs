@@ -55,7 +55,7 @@ namespace Dapplo.HttpExtensions.Test
 			Assert.IsNotNull(releases);
 			Assert.IsFalse(releases.HasError, $"{releases.StatusCode}: {releases.ErrorResponse?.Message} {releases.ErrorResponse?.DocumentationUrl}");
 
-			var latestRelease = releases.Response
+			var latestRelease = releases.Result
 					.Where(x => !x.Prerelease)
 					.OrderByDescending(x => x.PublishedAt)
 					.FirstOrDefault();

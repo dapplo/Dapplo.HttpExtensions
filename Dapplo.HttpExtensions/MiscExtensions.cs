@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace Dapplo.HttpExtensions
@@ -82,6 +83,22 @@ namespace Dapplo.HttpExtensions
 			{
 				action(item);
 			}
+		}
+
+		/// <summary>
+		/// The returns the Value from the EnumMemberAttribute, or a ToString on the element.
+		/// This can be used to create a lookup from string to enum element
+		/// </summary>
+		/// <param name="enumerationItem">Enum</param>
+		/// <returns>string</returns>
+		public static string EnumValueOf(this Enum enumerationItem)
+		{
+			if (enumerationItem == null)
+			{
+				return null;
+			}
+			var attributes = (EnumMemberAttribute[])enumerationItem.GetType().GetField(enumerationItem.ToString()).GetCustomAttributes(typeof(EnumMemberAttribute), false);
+			return attributes.Length > 0 ? attributes[0].Value : enumerationItem.ToString();
 		}
 	}
 }

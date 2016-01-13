@@ -38,12 +38,12 @@ namespace Dapplo.HttpExtensions
 		/// <param name="HttpBehaviour">HttpBehaviour instance or null if the global settings need to be used</param>
 		/// <param name="uriForConfiguration">If a Uri is supplied, this is used to configure the HttpClient. Currently the Uri.UserInfo is used to set the basic authorization.</param>
 		/// <returns>HttpClient</returns>
-		public static HttpClient CreateHttpClient(HttpBehaviour behaviour = null, Uri uriForConfiguration = null)
+		public static HttpClient CreateHttpClient(HttpBehaviour httpBehaviour = null, Uri uriForConfiguration = null)
 		{
-			behaviour = behaviour ?? HttpBehaviour.GlobalHttpBehaviour;
-			var httpSettings = behaviour.HttpSettings ?? HttpSettings.GlobalHttpSettings;
+			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
+			var httpSettings = httpBehaviour.HttpSettings ?? HttpSettings.GlobalHttpSettings;
 
-			var client = new HttpClient(HttpMessageHandlerFactory.CreateWebRequestHandler(behaviour))
+			var client = new HttpClient(HttpMessageHandlerFactory.CreateWebRequestHandler(httpBehaviour))
 			{
 				Timeout = httpSettings.RequestTimeout,
 				MaxResponseContentBufferSize = httpSettings.MaxResponseContentBufferSize
@@ -57,7 +57,7 @@ namespace Dapplo.HttpExtensions
 			client.SetBasicAuthorization(uriForConfiguration);
 
 			// Allow the passed OnCreateHttpClient action to modify the HttpClient
-			behaviour.OnCreateHttpClient?.Invoke(client);
+			httpBehaviour.OnCreateHttpClient?.Invoke(client);
 			return client;
 		}
 	}

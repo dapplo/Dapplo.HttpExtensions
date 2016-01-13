@@ -79,11 +79,11 @@ namespace Dapplo.HttpExtensions
 		public bool ValidateResponseContentType { get; set; } = true;
 
 		/// <summary>
-		/// Clone this HttpBehaviour, this is used inernally
+		/// Clone this HttpBehaviour
 		/// Remember not to modify the values of any reference objects like HttpSettings
 		/// </summary>
 		/// <returns>HttpBehaviour</returns>
-		internal HttpBehaviour Clone()
+		public HttpBehaviour Clone()
 		{
 			return (HttpBehaviour)MemberwiseClone();
 		}

@@ -30,58 +30,25 @@ namespace Dapplo.HttpExtensions
 {
 	/// <summary>
 	/// Extensions for the HttpResponseMessage class which handle Json
+	/// These are explicitly for JSON, but could be ignored if you use ReadAsSync which does the same
 	/// </summary>
 	public static class HttpResponseMessageJsonExtensions
 	{
 		/// <summary>
-		/// Internal extension method for parsing the response to a Json object
-		/// </summary>
-		/// <typeparam name="TResult">The type to deserialize to</typeparam>
-		/// <param name="httpResponseMessage">HttpResponseMessage</param>
-		/// <returns>the deserialized object of type T</returns>
-		private static async Task<TResult> DeserializeObject<TResult>(this HttpResponseMessage httpResponseMessage)
-		{
-			var jsonString = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-			return SimpleJson.DeserializeObject<TResult>(jsonString);
-		}
-
-		/// <summary>
-		/// Internal extension method for checking IsSuccessStatusCode and eventually a validation is done to see if the returned content-type fits
-		/// </summary>
-		/// <param name="httpResponseMessage">HttpResponseMessage</param>
-		/// <param name="behaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
-		/// <returns>true</returns>
-		private static bool IsSuccessAndContentTypeJson(this HttpResponseMessage httpResponseMessage, HttpBehaviour behaviour = null)
-		{
-			if (httpResponseMessage.IsSuccessStatusCode)
-			{
-				// Make sure we have HttpBehaviour
-				behaviour = behaviour ?? HttpBehaviour.GlobalHttpBehaviour;
-
-				if (behaviour.ValidateResponseContentType && httpResponseMessage.Content.Headers.ContentType.MediaType != MediaTypes.Json.EnumValueOf())
-				{
-					throw new InvalidOperationException($"Expected response with Content-Type {MediaTypes.Json.EnumValueOf()} got {httpResponseMessage.Content.Headers.ContentType.MediaType}");
-				}
-				return true;
-			}
-			return false;
-		}
-
-
-		/// <summary>
 		/// Get Json from the httpResponseMessage
 		/// </summary>
 		/// <param name="httpResponseMessage">HttpResponseMessage</param>
-		/// <param name="behaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
+		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>dynamic created with SimpleJson</returns>
-		public static async Task<dynamic> GetAsJsonAsync(this HttpResponseMessage httpResponseMessage, HttpBehaviour behaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<dynamic> GetAsJsonAsync(this HttpResponseMessage httpResponseMessage, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
 		{
-			if (httpResponseMessage.IsSuccessAndContentTypeJson())
+			var content = httpResponseMessage.Content;
+			if (content.ExpectContentType(MediaTypes.Json, httpBehaviour))
 			{
-				return await httpResponseMessage.DeserializeObject<dynamic>().ConfigureAwait(false);
+				return await content.ReadAsAsync<dynamic>().ConfigureAwait(false);
 			}
-			await httpResponseMessage.HandleErrorAsync(behaviour, token).ConfigureAwait(false);
+			await httpResponseMessage.HandleErrorAsync(httpBehaviour, token).ConfigureAwait(false);
 			return null;
 		}
 
@@ -90,44 +57,46 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <typeparam name="TResult">Type to parse to</typeparam>
 		/// <param name="httpResponseMessage"></param>
-		/// <param name="behaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
+		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>T created with SimpleJson</returns>
-		public static async Task<TResult> GetAsJsonAsync<TResult>(this HttpResponseMessage httpResponseMessage, HttpBehaviour behaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<TResult> GetAsJsonAsync<TResult>(this HttpResponseMessage httpResponseMessage, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
 		{
-			if (httpResponseMessage.IsSuccessAndContentTypeJson())
+			var content = httpResponseMessage.Content;
+			if (content.ExpectContentType(MediaTypes.Json, httpBehaviour))
 			{
-				return await httpResponseMessage.DeserializeObject<TResult>().ConfigureAwait(false);
+				return await content.ReadAsAsync<TResult>().ConfigureAwait(false);
 			}
-			await httpResponseMessage.HandleErrorAsync(behaviour, token).ConfigureAwait(false);
+			await httpResponseMessage.HandleErrorAsync(httpBehaviour, token).ConfigureAwait(false);
 			return default(TResult);
 		}
 
 		/// <summary>
 		/// GetAsJsonAsync will use DataMember / DataContract to parse the object into
 		/// </summary>
-		/// <typeparam name="TNormal">Type to parse to</typeparam>
+		/// <typeparam name="TResult">Type to parse to</typeparam>
 		/// <typeparam name="TError">Type to parse to if the httpResponseMessage has an error</typeparam>
 		/// <param name="httpResponseMessage"></param>
-		/// <param name="behaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
+		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>HttpResponse of TNormal and TError filled by SimpleJson</returns>
-		public static async Task<HttpResponse<TNormal, TError>> GetAsJsonAsync<TNormal, TError>(this HttpResponseMessage httpResponseMessage, HttpBehaviour behaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<HttpResponse<TResult, TError>> GetAsJsonAsync<TResult, TError>(this HttpResponseMessage httpResponseMessage, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
 		{
-			var response = new HttpResponse<TNormal, TError>
+			var response = new HttpResponse<TResult, TError>
 			{
 				StatusCode = httpResponseMessage.StatusCode
 			};
 
-			if (httpResponseMessage.IsSuccessAndContentTypeJson(behaviour))
+			var content = httpResponseMessage.Content;
+			if (content.ExpectContentType(MediaTypes.Json, httpBehaviour))
 			{
-				response.Result = await httpResponseMessage.DeserializeObject<TNormal>().ConfigureAwait(false);
+				response.Result = await content.ReadAsAsync<TResult>().ConfigureAwait(false);
 			}
 			else
 			{
 				// ThrowErrorOnNonSuccess NEEDS to be false
-				behaviour = behaviour ?? HttpBehaviour.GlobalHttpBehaviour;
-				var specialBehaviour = behaviour.Clone();
+				httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
+				var specialBehaviour = httpBehaviour.Clone();
 				specialBehaviour.ThrowErrorOnNonSuccess = false;
 				var jsonErrorResponse = await httpResponseMessage.HandleErrorAsync(specialBehaviour, token).ConfigureAwait(false);
 				response.ErrorResponse = SimpleJson.DeserializeObject<TError>(jsonErrorResponse);

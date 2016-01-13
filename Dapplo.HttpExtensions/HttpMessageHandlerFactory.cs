@@ -35,11 +35,11 @@ namespace Dapplo.HttpExtensions
 		/// Apply settings on the HttpClientHandler
 		/// </summary>
 		/// <param name="httpClientHandler"></param>
-		/// <param name="behaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
-		public static void SetDefaults(HttpClientHandler httpClientHandler, HttpBehaviour behaviour = null)
+		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
+		public static void SetDefaults(HttpClientHandler httpClientHandler, HttpBehaviour httpBehaviour = null)
 		{
-			behaviour = behaviour ?? HttpBehaviour.GlobalHttpBehaviour;
-			var httpSettings = behaviour.HttpSettings ?? HttpSettings.GlobalHttpSettings;
+			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
+			var httpSettings = httpBehaviour.HttpSettings ?? HttpSettings.GlobalHttpSettings;
 
 			httpClientHandler.AllowAutoRedirect = httpSettings.AllowAutoRedirect;
 			httpClientHandler.AutomaticDecompression = httpSettings.DefaultDecompressionMethods;
@@ -49,7 +49,7 @@ namespace Dapplo.HttpExtensions
 			httpClientHandler.MaxRequestContentBufferSize = httpSettings.MaxRequestContentBufferSize;
 			httpClientHandler.UseCookies = httpSettings.UseCookies;
 			httpClientHandler.UseDefaultCredentials = httpSettings.UseDefaultCredentials;
-			httpClientHandler.Proxy = httpSettings.UseProxy ? ProxyFactory.CreateProxy(behaviour) : null;
+			httpClientHandler.Proxy = httpSettings.UseProxy ? ProxyFactory.CreateProxy(httpBehaviour) : null;
 			httpClientHandler.UseProxy = httpSettings.UseProxy;
 			httpClientHandler.PreAuthenticate = httpSettings.PreAuthenticate;
 		}
@@ -58,13 +58,13 @@ namespace Dapplo.HttpExtensions
 		/// Apply settings on the WebRequestHandler, this also calls the SetDefaults for the underlying HttpClientHandler
 		/// </summary>
 		/// <param name="webRequestHandler">WebRequestHandler to set the defaults to</param>
-		/// <param name="behaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
-		public static void SetDefaults(WebRequestHandler webRequestHandler, HttpBehaviour behaviour = null)
+		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
+		public static void SetDefaults(WebRequestHandler webRequestHandler, HttpBehaviour httpBehaviour = null)
 		{
-			behaviour = behaviour ?? HttpBehaviour.GlobalHttpBehaviour;
-			SetDefaults(webRequestHandler as HttpClientHandler, behaviour);
+			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
+			SetDefaults(webRequestHandler as HttpClientHandler, httpBehaviour);
 
-			var httpSettings = behaviour.HttpSettings ?? HttpSettings.GlobalHttpSettings;
+			var httpSettings = httpBehaviour.HttpSettings ?? HttpSettings.GlobalHttpSettings;
 
 			webRequestHandler.AllowPipelining = httpSettings.AllowPipelining;
             webRequestHandler.ReadWriteTimeout = httpSettings.ReadWriteTimeout;
@@ -77,14 +77,14 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// This creates an HttpClientHandler, normally one should use CreateWebRequestHandler
 		/// </summary>
-		/// <param name="behaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
+		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <returns>HttpMessageHandler (HttpClientHandler)</returns>
-		public static HttpMessageHandler CreateHttpClientHandler(HttpBehaviour behaviour = null)
+		public static HttpMessageHandler CreateHttpClientHandler(HttpBehaviour httpBehaviour = null)
 		{
-			behaviour = behaviour ?? HttpBehaviour.GlobalHttpBehaviour;
+			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
 			var httpClientHandler = new HttpClientHandler();
-			SetDefaults(httpClientHandler, behaviour);
-			behaviour.OnCreateHttpClientHandler?.Invoke(httpClientHandler);
+			SetDefaults(httpClientHandler, httpBehaviour);
+			httpBehaviour.OnCreateHttpClientHandler?.Invoke(httpClientHandler);
 			return httpClientHandler;
 		}
 
@@ -92,14 +92,14 @@ namespace Dapplo.HttpExtensions
 		/// This creates an advanced HttpMessageHandler, used in desktop applications
 		/// Should be preferred
 		/// </summary>
-		/// <param name="behaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
+		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <returns>HttpMessageHandler (WebRequestHandler)</returns>
-		public static HttpMessageHandler CreateWebRequestHandler(HttpBehaviour behaviour = null)
+		public static HttpMessageHandler CreateWebRequestHandler(HttpBehaviour httpBehaviour = null)
 		{
-			behaviour = behaviour ?? HttpBehaviour.GlobalHttpBehaviour;
+			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
 			var webRequestHandler = new WebRequestHandler();
-			SetDefaults(webRequestHandler, behaviour);
-			behaviour.OnCreateWebRequestHandler?.Invoke(webRequestHandler);
+			SetDefaults(webRequestHandler, httpBehaviour);
+			httpBehaviour.OnCreateWebRequestHandler?.Invoke(webRequestHandler);
 			return webRequestHandler;
 		}
 	}

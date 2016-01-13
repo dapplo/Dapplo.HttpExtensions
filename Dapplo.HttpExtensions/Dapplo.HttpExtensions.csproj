@@ -42,6 +42,7 @@
     <Compile Include="HttpClientJsonExtensions.cs" />
     <Compile Include="HttpClientExtensions.cs" />
     <Compile Include="HttpClientFactory.cs" />
+    <Compile Include="HttpContentExtensions.cs" />
     <Compile Include="HttpMessageHandlerFactory.cs" />
     <Compile Include="HttpResponse.cs" />
     <Compile Include="HttpResponseMessageJsonExtensions.cs" />

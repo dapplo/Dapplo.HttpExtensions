@@ -37,37 +37,37 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// Create a behaviour which makes sure that we add "application/json" to the accepting
 		/// </summary>
-		/// <param name="behaviour"></param>
+		/// <param name="httpBehaviour"></param>
 		/// <returns>HttpBehaviour which is a clone of the original or GlobalHttpBehaviour</returns>
-		private static HttpBehaviour CreateJsonAcceptingHttpBehaviour(HttpBehaviour behaviour)
+		private static HttpBehaviour CreateJsonAcceptingHttpBehaviour(HttpBehaviour httpBehaviour = null)
 		{
-			behaviour = behaviour ?? HttpBehaviour.GlobalHttpBehaviour;
-			behaviour = behaviour.Clone();
+			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
+			httpBehaviour = httpBehaviour.Clone();
 
 			// Store the OnCreateHttpClient, so we can wrap the functionality
-			Action<HttpClient> previousOnCreateHttpClient = behaviour.OnCreateHttpClient;
+			Action<HttpClient> previousOnCreateHttpClient = httpBehaviour.OnCreateHttpClient;
 
-			behaviour.OnCreateHttpClient = (httpClient) => {
+			httpBehaviour.OnCreateHttpClient = (httpClient) => {
 				// Wrap existing OnCreateHttpClient (if any)
 				previousOnCreateHttpClient?.Invoke(httpClient);
 				httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Json.EnumValueOf()));
 			};
-			return behaviour;
+			return httpBehaviour;
 		}
 
 		/// <summary>
 		/// Download a Json response
 		/// </summary>
 		/// <param name="uri">An Uri to specify the download location</param>
-		/// <param name="behaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
+		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>dynamic created with SimpleJson</returns>
-		public static async Task<dynamic> GetAsJsonAsync(this Uri uri, HttpBehaviour behaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<dynamic> GetAsJsonAsync(this Uri uri, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
 		{
-			behaviour = CreateJsonAcceptingHttpBehaviour(behaviour);
-			using (var reponse = await uri.GetAsync(behaviour, token).ConfigureAwait(false))
+			httpBehaviour = CreateJsonAcceptingHttpBehaviour(httpBehaviour);
+			using (var reponse = await uri.GetAsync(httpBehaviour, token).ConfigureAwait(false))
 			{
-				return await reponse.GetAsJsonAsync(behaviour, token).ConfigureAwait(false);
+				return await reponse.GetAsJsonAsync(httpBehaviour, token).ConfigureAwait(false);
             }
 		}
 
@@ -76,15 +76,15 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <typeparam name="TResult">Type to deserialize into</typeparam>
 		/// <param name="uri">An Uri to specify the download location</param>
-		/// <param name="behaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
+		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>T created with SimpleJson</returns>
-		public static async Task<TResult> GetAsJsonAsync<TResult>(this Uri uri, HttpBehaviour behaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<TResult> GetAsJsonAsync<TResult>(this Uri uri, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
 		{
-			behaviour = CreateJsonAcceptingHttpBehaviour(behaviour);
-			using (var reponse = await uri.GetAsync(behaviour, token).ConfigureAwait(false))
+			httpBehaviour = CreateJsonAcceptingHttpBehaviour(httpBehaviour);
+			using (var reponse = await uri.GetAsync(httpBehaviour, token).ConfigureAwait(false))
 			{
-				return await reponse.GetAsJsonAsync<TResult>(behaviour, token).ConfigureAwait(false);
+				return await reponse.GetAsJsonAsync<TResult>(httpBehaviour, token).ConfigureAwait(false);
 			}
 		}
 
@@ -96,15 +96,15 @@ namespace Dapplo.HttpExtensions
 		/// <typeparam name="TResult">Type to deserialize into if the response don't have an error</typeparam>
 		/// <typeparam name="TError">Type to deserialize into if the response has an error</typeparam>
 		/// <param name="uri">An Uri to specify the download location</param>
-		/// <param name="behaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
+		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>HttpResponse of TNormal and TError filled by SimpleJson</returns>
-		public static async Task<HttpResponse<TResult, TError>> GetAsJsonAsync<TResult, TError>(this Uri uri, HttpBehaviour behaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<HttpResponse<TResult, TError>> GetAsJsonAsync<TResult, TError>(this Uri uri, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
 		{
-			behaviour = CreateJsonAcceptingHttpBehaviour(behaviour);
-			using (var reponse = await uri.GetAsync(behaviour, token).ConfigureAwait(false))
+			httpBehaviour = CreateJsonAcceptingHttpBehaviour(httpBehaviour);
+			using (var reponse = await uri.GetAsync(httpBehaviour, token).ConfigureAwait(false))
 			{
-				return await reponse.GetAsJsonAsync<TResult, TError>(behaviour, token).ConfigureAwait(false);
+				return await reponse.GetAsJsonAsync<TResult, TError>(httpBehaviour, token).ConfigureAwait(false);
 			}
 		}
 
@@ -114,18 +114,18 @@ namespace Dapplo.HttpExtensions
 		/// <typeparam name="TContent">Type to post</typeparam>
 		/// <param name="uri">Uri to post json to</param>
 		/// <param name="jsonContent">T</param>
-		/// <param name="behaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
+		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>HttpResponseMessage</returns>
-		public static async Task<HttpResponseMessage> PostJsonAsync<TContent>(this Uri uri, TContent jsonContent, HttpBehaviour behaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<HttpResponseMessage> PostJsonAsync<TContent>(this Uri uri, TContent jsonContent, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
 		{
 			if (uri == null)
 			{
 				throw new ArgumentNullException(nameof(uri));
 			}
-			using (var client = HttpClientFactory.CreateHttpClient(behaviour, uri))
+			using (var client = HttpClientFactory.CreateHttpClient(httpBehaviour, uri))
 			{
-				return await client.PostJsonAsync(uri, jsonContent, behaviour, token).ConfigureAwait(false);
+				return await client.PostJsonAsync(uri, jsonContent, httpBehaviour, token).ConfigureAwait(false);
 			}
 		}
 
@@ -136,19 +136,19 @@ namespace Dapplo.HttpExtensions
 		/// <typeparam name="TResult">Type to read from the response</typeparam>
 		/// <param name="uri">Uri to post to</param>
 		/// <param name="jsonContent">T1</param>
-		/// <param name="behaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
+		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>T2</returns>
-		public static async Task<TResult> PostJsonAsync<TContent, TResult>(this Uri uri, TContent jsonContent, HttpBehaviour behaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<TResult> PostJsonAsync<TContent, TResult>(this Uri uri, TContent jsonContent, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
 		{
 			if (uri == null)
 			{
 				throw new ArgumentNullException(nameof(uri));
 			}
-			behaviour = CreateJsonAcceptingHttpBehaviour(behaviour);
-			using (var client = HttpClientFactory.CreateHttpClient(behaviour, uri))
+			httpBehaviour = CreateJsonAcceptingHttpBehaviour(httpBehaviour);
+			using (var client = HttpClientFactory.CreateHttpClient(httpBehaviour, uri))
 			{
-				return await client.PostJsonAsync<TContent, TResult>(uri, jsonContent, behaviour, token).ConfigureAwait(false);
+				return await client.PostJsonAsync<TContent, TResult>(uri, jsonContent, httpBehaviour, token).ConfigureAwait(false);
 			}
 		}
 	}

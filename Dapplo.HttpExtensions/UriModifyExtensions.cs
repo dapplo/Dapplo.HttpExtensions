@@ -55,14 +55,12 @@ namespace Dapplo.HttpExtensions
 			{
 				throw new ArgumentNullException(nameof(value));
 			}
-			var keyValuePairs = uri.QueryToKeyValuePairs().Concat(new[] { new KeyValuePair<string, string>(name, value?.ToString()) });
+			var keyValuePairs = uri.QueryToKeyValuePairs().Concat(new[] { new KeyValuePair<string, string>(name, value.ToString()) });
 
-			var uriBuilder = new UriBuilder(uri);
-			if (!keyValuePairs.Any())
+			var uriBuilder = new UriBuilder(uri)
 			{
-				return uri;
-			}
-			uriBuilder.Query = keyValuePairs.ToQueryString();
+				Query = keyValuePairs.ToQueryString()
+			};
 			return uriBuilder.Uri;
 		}
 
@@ -89,12 +87,10 @@ namespace Dapplo.HttpExtensions
 			}
 			var keyValuePairs = uri.QueryToKeyValuePairs().Concat(values.Select(nameValue => new KeyValuePair<string, string>(nameValue.Key, nameValue.Value?.ToString())));
 
-			var uriBuilder = new UriBuilder(uri);
-			if (!keyValuePairs.Any())
+			var uriBuilder = new UriBuilder(uri)
 			{
-				return uri;
-			}
-			uriBuilder.Query = keyValuePairs.ToQueryString();
+				Query = keyValuePairs.ToQueryString()
+			};
 			return uriBuilder.Uri;
 		}
 
@@ -117,12 +113,10 @@ namespace Dapplo.HttpExtensions
 		{
 			var keyValuePairs = uri.QueryToKeyValuePairs().Concat(from kvp in values from value in kvp select new KeyValuePair<string, string>(kvp.Key, value?.ToString()));
 
-			var uriBuilder = new UriBuilder(uri);
-			if (!keyValuePairs.Any())
+			var uriBuilder = new UriBuilder(uri)
 			{
-				return uri;
-			}
-			uriBuilder.Query = keyValuePairs.ToQueryString();
+				Query = keyValuePairs.ToQueryString()
+			};
 			return uriBuilder.Uri;
 		}
 
@@ -135,9 +129,11 @@ namespace Dapplo.HttpExtensions
 		/// <returns>Uri with extended query</returns>
 		public static Uri SetCredentials(this Uri uri, string username, string password)
 		{
-			var uriBuilder = new UriBuilder(uri);
-			uriBuilder.UserName = username;
-			uriBuilder.Password = password;
+			var uriBuilder = new UriBuilder(uri)
+			{
+				UserName = username,
+				Password = password
+			};
 			return uriBuilder.Uri;
 		}
 

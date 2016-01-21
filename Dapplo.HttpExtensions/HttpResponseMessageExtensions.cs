@@ -82,8 +82,9 @@ namespace Dapplo.HttpExtensions
 		/// We might support other object, e.g MemoryStream, Bitmap etc soon
 		/// </summary>
 		/// <typeparam name="TResult">The Type to read into</typeparam>
-		/// <param name="httpContent">HttpContent</param>
-		/// <param name="HttpBehaviour">behaviour</param>
+		/// <param name="response">HttpResponseMessage</param>
+		/// <param name="httpBehaviour">HttpBehaviour</param>
+		/// <param name="token"></param>
 		/// <returns>the deserialized object of type T or default(T)</returns>
 		public static async Task<TResult> ReadAsAsync<TResult>(this HttpResponseMessage response, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
 		{

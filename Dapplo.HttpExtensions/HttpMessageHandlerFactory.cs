@@ -49,7 +49,7 @@ namespace Dapplo.HttpExtensions
 			httpClientHandler.MaxRequestContentBufferSize = httpSettings.MaxRequestContentBufferSize;
 			httpClientHandler.UseCookies = httpSettings.UseCookies;
 			httpClientHandler.UseDefaultCredentials = httpSettings.UseDefaultCredentials;
-			httpClientHandler.Proxy = httpSettings.UseProxy ? ProxyFactory.CreateProxy(httpBehaviour) : null;
+			httpClientHandler.Proxy = httpSettings.UseProxy ? WebProxyFactory.Create(httpBehaviour) : null;
 			httpClientHandler.UseProxy = httpSettings.UseProxy;
 			httpClientHandler.PreAuthenticate = httpSettings.PreAuthenticate;
 		}
@@ -84,7 +84,7 @@ namespace Dapplo.HttpExtensions
 			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
 			var httpClientHandler = new HttpClientHandler();
 			SetDefaults(httpClientHandler, httpBehaviour);
-			httpBehaviour.OnCreateHttpClientHandler?.Invoke(httpClientHandler);
+			httpBehaviour.OnCreateHttpMessageHandler?.Invoke(httpClientHandler);
 			return httpClientHandler;
 		}
 
@@ -99,8 +99,19 @@ namespace Dapplo.HttpExtensions
 			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
 			var webRequestHandler = new WebRequestHandler();
 			SetDefaults(webRequestHandler, httpBehaviour);
-			httpBehaviour.OnCreateWebRequestHandler?.Invoke(webRequestHandler);
+			httpBehaviour.OnCreateHttpMessageHandler?.Invoke(webRequestHandler);
 			return webRequestHandler;
+		}
+
+		/// <summary>
+		/// This creates a HttpMessageHandler
+		/// Should be the preferred method to use to create a HttpMessageHandler
+		/// </summary>
+		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
+		/// <returns>HttpMessageHandler (WebRequestHandler)</returns>
+		public static HttpMessageHandler Create(HttpBehaviour httpBehaviour = null)
+		{
+			return CreateWebRequestHandler(httpBehaviour);
 		}
 	}
 }

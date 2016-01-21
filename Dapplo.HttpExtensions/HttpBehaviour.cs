@@ -51,16 +51,10 @@ namespace Dapplo.HttpExtensions
 		public Action<HttpClient> OnCreateHttpClient { get; set; }
 
 		/// <summary>
-		/// An action which can modify the HttpClientHandler which is generated in the HttpMessageHandlerFactory.
+		/// An action which can modify the HttpMessageHandler which is generated in the HttpMessageHandlerFactory.
 		/// Use cases for this, might be if you have very specify settings which can't be set via the IHttpSettings
 		/// </summary>
-		public Action<HttpClientHandler> OnCreateHttpClientHandler { get; set; }
-
-		/// <summary>
-		/// An action which can modify the WebRequestHandler which is generated in the HttpMessageHandlerFactory.
-		/// Use cases for this, might be if you have very specify settings which can't be set via the IHttpSettings
-		/// </summary>
-		public Action<WebRequestHandler> OnCreateWebRequestHandler { get; set; }
+		public Action<HttpMessageHandler> OnCreateHttpMessageHandler { get; set; }
 
 		/// <summary>
 		/// If a request gets a response which has a HTTP status code which is not 200, it would normally throw an exception.

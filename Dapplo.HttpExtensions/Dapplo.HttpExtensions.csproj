@@ -38,6 +38,7 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Handlers\ProgressMessageHandler.cs" />
     <Compile Include="HttpBehaviour.cs" />
     <Compile Include="HttpClientJsonExtensions.cs" />
     <Compile Include="HttpClientExtensions.cs" />
@@ -51,7 +52,7 @@
     <Compile Include="IHttpSettings.cs" />
     <Compile Include="MediaTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ProxyFactory.cs" />
+    <Compile Include="WebProxyFactory.cs" />
     <Compile Include="SimpleJson.cs" />
     <Compile Include="MiscExtensions.cs" />
     <Compile Include="UriParseExtensions.cs" />

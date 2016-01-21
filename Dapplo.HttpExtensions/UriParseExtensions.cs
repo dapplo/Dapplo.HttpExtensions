@@ -63,17 +63,16 @@ namespace Dapplo.HttpExtensions
 		public static IEnumerable<KeyValuePair<string, string>> QueryToKeyValuePairs(this Uri uri)
 		{
 			var queryString = uri.Query;
-			var parameters = new List<KeyValuePair<string, string>>();
 			if (string.IsNullOrEmpty(queryString))
 			{
-				return parameters;
+				yield break;
 			}
 			// remove anything other than query string from uri
 			if (queryString.StartsWith("?"))
 			{
 				queryString = queryString.Substring(1);
 			}
-			foreach (string vp in Regex.Split(queryString, "&"))
+			foreach (var vp in Regex.Split(queryString, "&"))
 			{
 				if (string.IsNullOrEmpty(vp))
 				{
@@ -86,9 +85,8 @@ namespace Dapplo.HttpExtensions
 				{
 					value = Uri.UnescapeDataString(singlePair[1]);
                 }
-                parameters.Add(new KeyValuePair<string, string>(name, value));
+				yield return new KeyValuePair<string, string>(name, value);
 			}
-			return parameters;
 		}
 
 		/// <summary>

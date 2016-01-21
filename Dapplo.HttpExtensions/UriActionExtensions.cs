@@ -80,7 +80,7 @@ namespace Dapplo.HttpExtensions
 				throw new ArgumentNullException(nameof(uri));
 			}
 
-			using (var client = HttpClientFactory.CreateHttpClient(httpBehaviour, uri))
+			using (var client = HttpClientFactory.Create(httpBehaviour, uri))
 			using (var request = new HttpRequestMessage(HttpMethod.Head, uri))
 			{
 				var responseMessage = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
@@ -103,7 +103,7 @@ namespace Dapplo.HttpExtensions
 				throw new ArgumentNullException(nameof(uri));
 			}
 
-			using (var client = HttpClientFactory.CreateHttpClient(httpBehaviour, uri))
+			using (var client = HttpClientFactory.Create(httpBehaviour, uri))
 			{
 				return await client.PostAsync(uri, token);
 			}
@@ -124,7 +124,7 @@ namespace Dapplo.HttpExtensions
 				throw new ArgumentNullException(nameof(uri));
 			}
 
-			using (var client = HttpClientFactory.CreateHttpClient(httpBehaviour, uri))
+			using (var client = HttpClientFactory.Create(httpBehaviour, uri))
 			{
 				return await client.PostAsync(uri, content, token);
 			}
@@ -149,7 +149,7 @@ namespace Dapplo.HttpExtensions
 				throw new ArgumentNullException(nameof(formContent));
 			}
 			using (var content = new FormUrlEncodedContent(formContent))
-			using (var client = HttpClientFactory.CreateHttpClient(httpBehaviour, uri))
+			using (var client = HttpClientFactory.Create(httpBehaviour, uri))
 			{
 				return await client.PostAsync(uri, content, token);
 			}
@@ -168,7 +168,7 @@ namespace Dapplo.HttpExtensions
 			{
 				throw new ArgumentNullException(nameof(uri));
 			}
-			using (var client = HttpClientFactory.CreateHttpClient(httpBehaviour, uri))
+			using (var client = HttpClientFactory.Create(httpBehaviour, uri))
 			{
 				return await client.GetAsync(uri, token).ConfigureAwait(false);
 			}
@@ -187,7 +187,7 @@ namespace Dapplo.HttpExtensions
 			{
 				throw new ArgumentNullException(nameof(uri));
 			}
-			using (var client = HttpClientFactory.CreateHttpClient(httpBehaviour, uri))
+			using (var client = HttpClientFactory.Create(httpBehaviour, uri))
 			using (var response = await client.GetAsync(uri, token).ConfigureAwait(false))
 			{
 				return await response.GetAsStringAsync(httpBehaviour, token).ConfigureAwait(false);
@@ -207,7 +207,7 @@ namespace Dapplo.HttpExtensions
 			{
 				throw new ArgumentNullException(nameof(uri));
 			}
-			using (var client = HttpClientFactory.CreateHttpClient(httpBehaviour, uri))
+			using (var client = HttpClientFactory.Create(httpBehaviour, uri))
 			{
 				return await client.GetAsMemoryStreamAsync(uri, httpBehaviour, token);
 			}

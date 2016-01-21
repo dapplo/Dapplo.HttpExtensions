@@ -45,7 +45,7 @@ namespace Dapplo.HttpExtensions
 		/// <returns>HttpClient for fluent usage</returns>
 		public static HttpClient SetBasicAuthorization(this HttpClient client, string user, string password)
 		{
-			string credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Format("{0}:{1}", user, password)));
+			var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{user}:{password}"));
 			return client.SetAuthorization("Basic", credentials);
 		}
 
@@ -139,9 +139,10 @@ namespace Dapplo.HttpExtensions
 		/// We might support other object, e.g MemoryStream, Bitmap etc soon
 		/// </summary>
 		/// <typeparam name="TResult">The Type to read into</typeparam>
-		/// <param name="uri">Uri</param>
-		/// <param name="httpContent">HttpContent</param>
-		/// <param name="HttpBehaviour">behaviour</param>
+		/// <param name="client">HttpClient</param>
+		/// <param name="uri">URI</param>
+		/// <param name="httpBehaviour">HttpBehaviour</param>
+		/// <param name="token">CancellationToken</param>
 		/// <returns>the deserialized object of type T or default(T)</returns>
 		public static async Task<TResult> ReadAsAsync<TResult>(this HttpClient client, Uri uri, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
 		{

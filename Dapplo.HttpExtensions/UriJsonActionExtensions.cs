@@ -47,7 +47,7 @@ namespace Dapplo.HttpExtensions
 			// Store the OnCreateHttpClient, so we can wrap the functionality
 			Action<HttpClient> previousOnCreateHttpClient = httpBehaviour.OnCreateHttpClient;
 
-			httpBehaviour.OnCreateHttpClient = (httpClient) => {
+			httpBehaviour.OnCreateHttpClient = httpClient => {
 				// Wrap existing OnCreateHttpClient (if any)
 				previousOnCreateHttpClient?.Invoke(httpClient);
 				httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Json.EnumValueOf()));
@@ -123,7 +123,7 @@ namespace Dapplo.HttpExtensions
 			{
 				throw new ArgumentNullException(nameof(uri));
 			}
-			using (var client = HttpClientFactory.CreateHttpClient(httpBehaviour, uri))
+			using (var client = HttpClientFactory.Create(httpBehaviour, uri))
 			{
 				return await client.PostJsonAsync(uri, jsonContent, httpBehaviour, token).ConfigureAwait(false);
 			}
@@ -146,7 +146,7 @@ namespace Dapplo.HttpExtensions
 				throw new ArgumentNullException(nameof(uri));
 			}
 			httpBehaviour = CreateJsonAcceptingHttpBehaviour(httpBehaviour);
-			using (var client = HttpClientFactory.CreateHttpClient(httpBehaviour, uri))
+			using (var client = HttpClientFactory.Create(httpBehaviour, uri))
 			{
 				return await client.PostJsonAsync<TContent, TResult>(uri, jsonContent, httpBehaviour, token).ConfigureAwait(false);
 			}

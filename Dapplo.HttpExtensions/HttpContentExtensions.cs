@@ -39,7 +39,7 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <typeparam name="TResult">The Type to read into</typeparam>
 		/// <param name="httpContent">HttpContent</param>
-		/// <param name="HttpBehaviour">behaviour</param>
+		/// <param name="httpBehaviour">HttpBehaviour</param>
 		/// <returns>the deserialized object of type T</returns>
 		public static async Task<TResult> ReadAsAsync<TResult>(this HttpContent httpContent, HttpBehaviour httpBehaviour = null)
 		{
@@ -51,7 +51,7 @@ namespace Dapplo.HttpExtensions
 		/// Extension method for parsing the (json) response to a Type object
 		/// </summary>
 		/// <param name="httpContent">HttpContent</param>
-		/// <param name="type">The Type to deserialize to, use null for dynamic json parsing</typeparam>
+		/// <param name="type">The Type to deserialize to, use null for dynamic json parsing</param>
 		/// <returns>the deserialized object of type T</returns>
 		public static async Task<object> ReadAsAsync(this HttpContent httpContent, Type type)
 		{

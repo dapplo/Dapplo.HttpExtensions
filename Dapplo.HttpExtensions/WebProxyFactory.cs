@@ -28,7 +28,7 @@ namespace Dapplo.HttpExtensions
 	/// <summary>
 	/// Creating a proxy is not very straightforward, that is why the logic is capsulated in the ProxyFactory.
 	/// </summary>
-	public static class ProxyFactory
+	public static class WebProxyFactory
 	{
 		/// <summary>
 		/// Create a IWebProxy Object which can be used to access the Internet
@@ -36,7 +36,7 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <returns>IWebProxy filled with all the proxy details or null if none is set/wanted</returns>
-		public static IWebProxy CreateProxy(HttpBehaviour httpBehaviour = null)
+		public static IWebProxy Create(HttpBehaviour httpBehaviour = null)
 		{
 			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
 			var httpSettings = httpBehaviour.HttpSettings ?? HttpSettings.GlobalHttpSettings;
@@ -46,23 +46,7 @@ namespace Dapplo.HttpExtensions
 			{
 				return null;
 			}
-			IWebProxy proxyToUse;
-			if (httpSettings.UseDefaultProxy)
-			{
-				proxyToUse = WebRequest.GetSystemWebProxy();
-			}
-			else
-			{
-				if (httpSettings.ProxyBypassList != null)
-				{
-					proxyToUse = new WebProxy(httpSettings.ProxyUri, httpSettings.ProxyBypassOnLocal, httpSettings.ProxyBypassList);
-				}
-				else
-				{
-					proxyToUse = new WebProxy(httpSettings.ProxyUri, httpSettings.ProxyBypassOnLocal);
-				}
-			}
-
+			var proxyToUse = httpSettings.UseDefaultProxy ? WebRequest.GetSystemWebProxy() : new WebProxy(httpSettings.ProxyUri, httpSettings.ProxyBypassOnLocal, httpSettings.ProxyBypassList);
 			if (httpSettings.UseDefaultCredentialsForProy)
 			{
 				if (proxyToUse is WebProxy)

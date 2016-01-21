@@ -46,7 +46,8 @@ namespace Dapplo.HttpExtensions
 			var content = httpResponseMessage.Content;
 			if (content.ExpectContentType(MediaTypes.Json, httpBehaviour))
 			{
-				return await content.ReadAsAsync<dynamic>().ConfigureAwait(false);
+				// Currently we can't specify that we need a dynamic, but this will be automatically if we use null for a type.
+				return await content.ReadAsAsync(null).ConfigureAwait(false);
 			}
 			await httpResponseMessage.HandleErrorAsync(httpBehaviour, token).ConfigureAwait(false);
 			return null;

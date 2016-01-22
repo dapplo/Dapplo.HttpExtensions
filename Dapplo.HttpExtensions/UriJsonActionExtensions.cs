@@ -18,7 +18,7 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
 using System;
@@ -39,7 +39,7 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="httpBehaviour"></param>
 		/// <returns>HttpBehaviour which is a clone of the original or GlobalHttpBehaviour</returns>
-		private static HttpBehaviour CreateJsonAcceptingHttpBehaviour(HttpBehaviour httpBehaviour = null)
+		private static IHttpBehaviour CreateJsonAcceptingHttpBehaviour(IHttpBehaviour httpBehaviour = null)
 		{
 			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
 			httpBehaviour = httpBehaviour.Clone();
@@ -56,59 +56,6 @@ namespace Dapplo.HttpExtensions
 		}
 
 		/// <summary>
-		/// Download a Json response
-		/// </summary>
-		/// <param name="uri">An Uri to specify the download location</param>
-		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
-		/// <param name="token">CancellationToken</param>
-		/// <returns>dynamic created with SimpleJson</returns>
-		public static async Task<dynamic> GetAsJsonAsync(this Uri uri, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
-		{
-			httpBehaviour = CreateJsonAcceptingHttpBehaviour(httpBehaviour);
-			using (var reponse = await uri.GetAsync(httpBehaviour, token).ConfigureAwait(false))
-			{
-				return await reponse.GetAsJsonAsync(httpBehaviour, token).ConfigureAwait(false);
-            }
-		}
-
-		/// <summary>
-		/// Get a response as json
-		/// </summary>
-		/// <typeparam name="TResult">Type to deserialize into</typeparam>
-		/// <param name="uri">An Uri to specify the download location</param>
-		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
-		/// <param name="token">CancellationToken</param>
-		/// <returns>T created with SimpleJson</returns>
-		public static async Task<TResult> GetAsJsonAsync<TResult>(this Uri uri, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
-		{
-			httpBehaviour = CreateJsonAcceptingHttpBehaviour(httpBehaviour);
-			using (var reponse = await uri.GetAsync(httpBehaviour, token).ConfigureAwait(false))
-			{
-				return await reponse.GetAsJsonAsync<TResult>(httpBehaviour, token).ConfigureAwait(false);
-			}
-		}
-
-		/// <summary>
-		/// Get a response as json
-		/// The response is parsed depending on the HttpStatusCode:
-		///  TNormal is used when Ok, the TError in the other cases.
-		/// </summary>
-		/// <typeparam name="TResult">Type to deserialize into if the response don't have an error</typeparam>
-		/// <typeparam name="TError">Type to deserialize into if the response has an error</typeparam>
-		/// <param name="uri">An Uri to specify the download location</param>
-		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
-		/// <param name="token">CancellationToken</param>
-		/// <returns>HttpResponse of TNormal and TError filled by SimpleJson</returns>
-		public static async Task<HttpResponse<TResult, TError>> GetAsJsonAsync<TResult, TError>(this Uri uri, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
-		{
-			httpBehaviour = CreateJsonAcceptingHttpBehaviour(httpBehaviour);
-			using (var reponse = await uri.GetAsync(httpBehaviour, token).ConfigureAwait(false))
-			{
-				return await reponse.GetAsJsonAsync<TResult, TError>(httpBehaviour, token).ConfigureAwait(false);
-			}
-		}
-
-		/// <summary>
 		/// Method to post JSON
 		/// </summary>
 		/// <typeparam name="TContent">Type to post</typeparam>
@@ -117,7 +64,7 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>HttpResponseMessage</returns>
-		public static async Task<HttpResponseMessage> PostJsonAsync<TContent>(this Uri uri, TContent jsonContent, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<HttpResponseMessage> PostJsonAsync<TContent>(this Uri uri, TContent jsonContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
 		{
 			if (uri == null)
 			{
@@ -139,7 +86,7 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>TResult</returns>
-		public static async Task<TResult> PostJsonAsync<TContent, TResult>(this Uri uri, TContent jsonContent, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
+		public static async Task<TResult> PostJsonAsync<TContent, TResult>(this Uri uri, TContent jsonContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
 			if (uri == null)
 			{

@@ -18,7 +18,7 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
 using System;
@@ -41,28 +41,11 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>string</returns>
-		public static async Task<string> GetAsStringAsync(this HttpResponseMessage response, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<string> GetAsStringAsync(this HttpResponseMessage response, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
 		{
 			if (response.IsSuccessStatusCode)
 			{
 				return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-			}
-			await response.HandleErrorAsync(httpBehaviour, token).ConfigureAwait(false);
-			return null;
-		}
-
-		/// <summary>
-		/// Get the content as a MemoryStream
-		/// </summary>
-		/// <param name="response">HttpResponseMessage</param>
-		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
-		/// <param name="token">CancellationToken</param>
-		/// <returns>MemoryStream</returns>
-		public static async Task<MemoryStream> GetAsMemoryStreamAsync(this HttpResponseMessage response, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
-		{
-			if (response.IsSuccessStatusCode)
-			{
-				return await response.Content.GetAsMemoryStreamAsync(httpBehaviour, token).ConfigureAwait(false);
 			}
 			await response.HandleErrorAsync(httpBehaviour, token).ConfigureAwait(false);
 			return null;
@@ -74,19 +57,50 @@ namespace Dapplo.HttpExtensions
 		/// We might support other object, e.g MemoryStream, Bitmap etc soon
 		/// </summary>
 		/// <typeparam name="TResult">The Type to read into</typeparam>
-		/// <param name="response">HttpResponseMessage</param>
+		/// <param name="httpResponseMessage">HttpResponseMessage</param>
 		/// <param name="httpBehaviour">HttpBehaviour</param>
-		/// <param name="token"></param>
+		/// <param name="token">CancellationToken</param>
 		/// <returns>the deserialized object of type T or default(T)</returns>
-		public static async Task<TResult> ReadAsAsync<TResult>(this HttpResponseMessage response, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
+		public static async Task<TResult> ReadAsAsync<TResult>(this HttpResponseMessage httpResponseMessage, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
-			if (response.IsSuccessStatusCode)
+			if (httpResponseMessage.IsSuccessStatusCode)
 			{
-				var content = response.Content;
-				return await content.ReadAsAsync<TResult>(httpBehaviour).ConfigureAwait(false);
+				var content = httpResponseMessage.Content;
+				return await content.ReadAsAsync<TResult>(httpBehaviour, token).ConfigureAwait(false);
 			}
-			await response.HandleErrorAsync(httpBehaviour, token).ConfigureAwait(false);
+			await httpResponseMessage.HandleErrorAsync(httpBehaviour, token).ConfigureAwait(false);
 			return default(TResult);
+		}
+
+		/// <summary>
+		/// Extension method reading the HttpResponseMessage to a Type object
+		/// Currently we support Json objects which are annotated with the DataContract/DataMember attributes
+		/// We might support other object, e.g MemoryStream, Bitmap etc soon
+		/// </summary>
+		/// <typeparam name="TResult">The Type to read into</typeparam>
+		/// <typeparam name="TError">The type to read into when an error occurs</typeparam>
+		/// <param name="httpResponseMessage">HttpResponseMessage</param>
+		/// <param name="httpBehaviour">HttpBehaviour</param>
+		/// <param name="token">CancellationToken</param>
+		/// <returns>HttpResponse</returns>
+		public static async Task<HttpResponse<TResult,TError>> ReadAsAsync<TResult, TError>(this HttpResponseMessage httpResponseMessage, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class where TError : class
+		{
+			var response = new HttpResponse<TResult, TError>
+			{
+				StatusCode = httpResponseMessage.StatusCode,
+				Headers = httpResponseMessage.Headers
+			};
+
+			var content = httpResponseMessage.Content;
+			if (httpResponseMessage.IsSuccessStatusCode)
+			{
+				response.Result = await content.ReadAsAsync<TResult>(httpBehaviour, token).ConfigureAwait(false);
+			}
+			else
+			{
+				response.ErrorResponse = await content.ReadAsAsync<TError>(httpBehaviour, token).ConfigureAwait(false);
+			}
+			return response;
 		}
 
 		/// <summary>
@@ -96,7 +110,7 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>string with the error content if HttpBehaviour.ThrowErrorOnNonSuccess = false</returns>
-		public static async Task<string> HandleErrorAsync(this HttpResponseMessage responseMessage, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<string> HandleErrorAsync(this HttpResponseMessage responseMessage, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
 		{
 			Exception throwException = null;
 			string errorContent = null;

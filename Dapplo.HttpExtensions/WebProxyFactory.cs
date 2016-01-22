@@ -18,7 +18,7 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
 using System.Net;
@@ -36,7 +36,7 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <returns>IWebProxy filled with all the proxy details or null if none is set/wanted</returns>
-		public static IWebProxy Create(HttpBehaviour httpBehaviour = null)
+		public static IWebProxy Create(IHttpBehaviour httpBehaviour = null)
 		{
 			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
 			var httpSettings = httpBehaviour.HttpSettings ?? HttpSettings.GlobalHttpSettings;

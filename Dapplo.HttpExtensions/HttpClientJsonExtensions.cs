@@ -18,12 +18,11 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
 using System;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -44,9 +43,12 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>HttpResponseMessage</returns>
-		public static async Task<HttpResponseMessage> PostJsonAsync<TContent>(this HttpClient client, Uri uri, TContent postData, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<HttpResponseMessage> PostJsonAsync<TContent>(this HttpClient client, Uri uri, TContent postData, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
 		{
-			using (var content = new StringContent(SimpleJson.SerializeObject(postData), Encoding.UTF8, "application/json"))
+			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
+
+			var jsonStringContent = httpBehaviour.JsonSerializer.SerializeJson(postData);
+			using (var content = new StringContent(jsonStringContent, httpBehaviour.DefaultEncoding, MediaTypes.Json.EnumValueOf()))
 			{
 				return await client.PostAsync(uri, content, token).ConfigureAwait(false);
 			}
@@ -63,45 +65,16 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>T2</returns>
-		public static async Task<T2> PostJsonAsync<T1, T2>(this HttpClient client, Uri uri, T1 postData, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where T2 : class
+		public static async Task<T2> PostJsonAsync<T1, T2>(this HttpClient client, Uri uri, T1 postData, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where T2 : class
 		{
-			using (var content = new StringContent(SimpleJson.SerializeObject(postData), Encoding.UTF8, "application/json"))
+			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
+
+			var jsonStringContent = httpBehaviour.JsonSerializer.SerializeJson(postData);
+
+			using (var content = new StringContent(jsonStringContent, httpBehaviour.DefaultEncoding, MediaTypes.Json.EnumValueOf()))
 			{
 				var response = await client.PostAsync(uri, content, token).ConfigureAwait(false);
-				return await response.GetAsJsonAsync<T2>(httpBehaviour, token).ConfigureAwait(false);
-			}
-		}
-
-		/// <summary>
-		/// Get the content as JSON
-		/// </summary>
-		/// <param name="client">HttpClient</param>
-		/// <param name="uri">Uri</param>
-		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
-		/// <param name="token">CancellationToken</param>
-		/// <returns>dynamic (JSON)</returns>
-		public static async Task<dynamic> GetAsJsonAsync(this HttpClient client, Uri uri, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
-		{
-			using (var response = await client.GetAsync(uri, token))
-			{
-				return await response.GetAsJsonAsync(httpBehaviour, token);
-			}
-		}
-
-		/// <summary>
-		/// Get the content as JSON
-		/// </summary>
-		/// <param name="client">HttpClient</param>
-		/// <param name="uri">Uri</param>
-		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
-		/// <param name="token">CancellationToken</param>
-		/// <typeparam name="TResult">Type to use in the JSON parsing</typeparam>
-		/// <returns>dynamic (json)</returns>
-		public static async Task<TResult> GetAsJsonAsync<TResult>(this HttpClient client, Uri uri, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
-		{
-			using (var response = await client.GetAsync(uri, token))
-			{
-				return await response.GetAsJsonAsync<TResult>(httpBehaviour, token);
+				return await response.ReadAsAsync<T2>(httpBehaviour, token).ConfigureAwait(false);
 			}
 		}
 	}

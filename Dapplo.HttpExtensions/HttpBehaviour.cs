@@ -18,66 +18,52 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Text;
+using Dapplo.HttpExtensions.SpecializedHttpContent;
 
 namespace Dapplo.HttpExtensions
 {
 	/// <summary>
-	/// This can be used to modify the behaviour of the HttpExtensions operations.
-	/// Most of the times the default is okay but sometimes you just want to have a way to fix something
+	/// This is the default implementation of the IHttpBehaviour, see IHttpBehaviour details
 	/// </summary>
-	public class HttpBehaviour
+	public class HttpBehaviour : IHttpBehaviour
 	{
-		public static HttpBehaviour GlobalHttpBehaviour
+		public static IHttpBehaviour GlobalHttpBehaviour
 		{
 			get;
 			set;
 		} = new HttpBehaviour();
 
-		/// <summary>
-		/// Pass your HttpSettings here, which will be used to create the HttpClient
-		/// If not specified, the HttpSettings.GlobalSettings will be used
-		/// </summary>
 		public IHttpSettings HttpSettings { get; set; }
 
-		/// <summary>
-		/// An action which can modify the HttpClient which is generated in the HttpClientFactory.
-		/// Use cases for this, might be adding a header or other settings for specific cases
-		/// </summary>
+		public IJsonSerializer JsonSerializer { get; set; } = new SimpleJsonSerializer();
+
+		public IList<IHttpContentConverter> HttpContentConverters { get; set; } = new List<IHttpContentConverter>
+		{
+			BitmapHttpContentConverter.Instance, MemoryStreamHttpContentConverter.Instance, JsonHttpContentConverter.Instance
+		};
+
 		public Action<HttpClient> OnCreateHttpClient { get; set; }
 
-		/// <summary>
-		/// An action which can modify the HttpMessageHandler which is generated in the HttpMessageHandlerFactory.
-		/// Use cases for this, might be if you have very specify settings which can't be set via the IHttpSettings
-		/// </summary>
 		public Action<HttpMessageHandler> OnCreateHttpMessageHandler { get; set; }
 
-		/// <summary>
-		/// If a request gets a response which has a HTTP status code which is not 200, it would normally throw an exception.
-		/// Sometimes you would still want the response, settings this to false would allow this.
-		/// </summary>
 		public bool ThrowErrorOnNonSuccess { get; set; } = true;
 
-		/// <summary>
-		/// This can be used to change the behaviour of Http operation, default is to read the complete response.
-		/// </summary>
 		public HttpCompletionOption HttpCompletionOption { get; set; } = HttpCompletionOption.ResponseContentRead;
 
-		/// <summary>
-		/// Check if the response has the expected content-type, when servers are used that are not following specifications this should be set to false
-		/// </summary>
 		public bool ValidateResponseContentType { get; set; } = true;
 
-		/// <summary>
-		/// Clone this HttpBehaviour
-		/// Remember not to modify the values of any reference objects like HttpSettings
-		/// </summary>
-		/// <returns>HttpBehaviour</returns>
-		public HttpBehaviour Clone()
+		public Encoding DefaultEncoding { get; set; } = Encoding.UTF8;
+
+		public int ReadBufferSize { get; set; } = 4096;
+
+		public IHttpBehaviour Clone()
 		{
 			return (HttpBehaviour)MemberwiseClone();
 		}

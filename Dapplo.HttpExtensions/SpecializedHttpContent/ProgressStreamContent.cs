@@ -18,7 +18,7 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
 using System;
@@ -36,10 +36,10 @@ namespace Dapplo.HttpExtensions.SpecializedHttpContent
 	{
 		public enum UploadStates { PendingUpload, Uploading, PendingResponse }
 
-		private Stream _content;
-		private int _bufferSize;
+		private readonly Stream _content;
+		private readonly int _bufferSize;
 		private bool _contentConsumed;
-		private IProgress<float> _progressHandler;
+		private readonly IProgress<float> _progressHandler;
 
 		/// <summary>
 		/// the current upload state

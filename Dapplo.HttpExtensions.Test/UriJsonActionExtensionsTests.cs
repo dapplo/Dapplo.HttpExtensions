@@ -18,7 +18,7 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
 using System;
@@ -48,10 +48,15 @@ namespace Dapplo.HttpExtensions.Test
 			var password = Environment.GetEnvironmentVariable("github_token");
 			if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
 			{
-                releasesUri = releasesUri.SetCredentials(username, password);
+				releasesUri = releasesUri.SetCredentials(username, password);
+			}
+			else
+			{
+				releasesUri = releasesUri.SetCredentials("username", "password");
+
 			}
 
-			var releases = await releasesUri.GetAsJsonAsync<List<GitHubRelease>, GitHubError>();
+			var releases = await releasesUri.ReadAsAsync<List<GitHubRelease>, GitHubError>();
 			Assert.IsNotNull(releases);
 			Assert.IsFalse(releases.HasError, $"{releases.StatusCode}: {releases.ErrorResponse?.Message} {releases.ErrorResponse?.DocumentationUrl}");
 

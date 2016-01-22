@@ -18,7 +18,7 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
 using System;
@@ -38,7 +38,7 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">HttpBehaviour instance or null if the global settings need to be used</param>
 		/// <param name="uriForConfiguration">If a Uri is supplied, this is used to configure the HttpClient. Currently the Uri.UserInfo is used to set the basic authorization.</param>
 		/// <returns>HttpClient</returns>
-		public static HttpClient Create(HttpBehaviour httpBehaviour = null, Uri uriForConfiguration = null)
+		public static HttpClient Create(IHttpBehaviour httpBehaviour = null, Uri uriForConfiguration = null)
 		{
 			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
 			var httpSettings = httpBehaviour.HttpSettings ?? HttpSettings.GlobalHttpSettings;

@@ -22,20 +22,27 @@
  */
 
 using System;
-using System.Runtime.Serialization;
 
-namespace Dapplo.HttpExtensions.Test.TestEntities
+namespace Dapplo.HttpExtensions
 {
 	/// <summary>
-	/// Container for errors from GitHub
+	/// This defines the default way how Json is de-/serialized.
 	/// </summary>
-	[DataContract]
-	public class GitHubError
+	public class SimpleJsonSerializer : IJsonSerializer
 	{
-		[DataMember(Name = "message")]
-		public string Message { get; set; }
+		public object DeserializeJson(Type targetType, string jsonString)
+		{
+			return SimpleJson.DeserializeObject(jsonString, targetType);
+		}
 
-		[DataMember(Name = "documentation_url")]
-		public string DocumentationUrl { get; set; }
+		public TResult DeserializeJson<TResult>(string jsonString) where TResult : class
+		{
+			return SimpleJson.DeserializeObject<TResult>(jsonString);
+		}
+
+		public string SerializeJson<T>(T jsonObject)
+		{
+			return SimpleJson.SerializeObject(jsonObject);
+		}
 	}
 }

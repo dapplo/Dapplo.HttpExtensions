@@ -18,7 +18,7 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
 using System;
@@ -43,7 +43,7 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>DateTime</returns>
-		public static async Task<DateTimeOffset> LastModifiedAsync(this Uri uri, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<DateTimeOffset> LastModifiedAsync(this Uri uri, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
 		{
 			if (uri == null)
 			{
@@ -73,7 +73,7 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>HttpContentHeaders</returns>
-		public static async Task<HttpContentHeaders> HeadAsync(this Uri uri, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<HttpContentHeaders> HeadAsync(this Uri uri, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
 		{
 			if (uri == null)
 			{
@@ -96,7 +96,7 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>HttpResponseMessage</returns>
-		public static async Task<HttpResponseMessage> PostAsync(this Uri uri, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<HttpResponseMessage> PostAsync(this Uri uri, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
 		{
 			if (uri == null)
 			{
@@ -117,7 +117,7 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>HttpResponseMessage</returns>
-		public static async Task<HttpResponseMessage> PostAsync(this Uri uri, HttpContent content, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<HttpResponseMessage> PostAsync(this Uri uri, HttpContent content, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
 		{
 			if (uri == null)
 			{
@@ -138,7 +138,7 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">Cancellationtoken</param>
 		/// <returns>HttpResponseMessage</returns>
-		public static async Task<HttpResponseMessage> PostFormUrlEncodedAsync(this Uri uri, IDictionary<string, string> formContent, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<HttpResponseMessage> PostFormUrlEncodedAsync(this Uri uri, IDictionary<string, string> formContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
 		{
 			if (uri == null)
 			{
@@ -162,7 +162,7 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>HttpResponseMessage</returns>
-		public static async Task<HttpResponseMessage> GetAsync(this Uri uri, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<HttpResponseMessage> GetAsync(this Uri uri, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
 		{
 			if (uri == null)
 			{
@@ -181,7 +181,7 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>string with the content</returns>
-		public static async Task<string> GetAsStringAsync(this Uri uri, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<string> GetAsStringAsync(this Uri uri, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
 		{
 			if (uri == null)
 			{
@@ -202,7 +202,7 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>string with the content</returns>
-		public static async Task<TResult>ReadAsAsync<TResult>(this Uri uri, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
+		public static async Task<TResult>ReadAsAsync<TResult>(this Uri uri, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
 			if (uri == null)
 			{
@@ -215,13 +215,15 @@ namespace Dapplo.HttpExtensions
 		}
 
 		/// <summary>
-		/// Get the content as a MemoryStream
+		/// Get the response as the specified type
 		/// </summary>
-		/// <param name="uri">Uri</param>
+		/// <typeparam name="TResult">Type to deserialize into</typeparam>
+		/// <typeparam name="TError">Type to deserialize into when an error occured</typeparam>
+		/// <param name="uri">An Uri to specify the download location</param>
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
-		/// <returns>MemoryStream</returns>
-		public static async Task<MemoryStream> GetAsMemoryStreamAsync(this Uri uri, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		/// <returns>HttpResponse with TResult and TError</returns>
+		public static async Task<HttpResponse<TResult, TError>> ReadAsAsync<TResult, TError>(this Uri uri, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class where TError : class
 		{
 			if (uri == null)
 			{
@@ -229,7 +231,7 @@ namespace Dapplo.HttpExtensions
 			}
 			using (var client = HttpClientFactory.Create(httpBehaviour, uri))
 			{
-				return await client.GetAsMemoryStreamAsync(uri, httpBehaviour, token);
+				return await client.ReadAsAsync<TResult, TError>(uri, httpBehaviour, token).ConfigureAwait(false);
 			}
 		}
 	}

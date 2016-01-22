@@ -18,7 +18,7 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
 using System.Net;
@@ -36,7 +36,7 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="httpClientHandler"></param>
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
-		public static void SetDefaults(HttpClientHandler httpClientHandler, HttpBehaviour httpBehaviour = null)
+		public static void SetDefaults(HttpClientHandler httpClientHandler, IHttpBehaviour httpBehaviour = null)
 		{
 			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
 			var httpSettings = httpBehaviour.HttpSettings ?? HttpSettings.GlobalHttpSettings;
@@ -59,7 +59,7 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="webRequestHandler">WebRequestHandler to set the defaults to</param>
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
-		public static void SetDefaults(WebRequestHandler webRequestHandler, HttpBehaviour httpBehaviour = null)
+		public static void SetDefaults(WebRequestHandler webRequestHandler, IHttpBehaviour httpBehaviour = null)
 		{
 			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
 			SetDefaults(webRequestHandler as HttpClientHandler, httpBehaviour);
@@ -79,7 +79,7 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <returns>HttpMessageHandler (HttpClientHandler)</returns>
-		public static HttpMessageHandler CreateHttpClientHandler(HttpBehaviour httpBehaviour = null)
+		public static HttpMessageHandler CreateHttpClientHandler(IHttpBehaviour httpBehaviour = null)
 		{
 			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
 			var httpClientHandler = new HttpClientHandler();
@@ -94,7 +94,7 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <returns>HttpMessageHandler (WebRequestHandler)</returns>
-		public static HttpMessageHandler CreateWebRequestHandler(HttpBehaviour httpBehaviour = null)
+		public static HttpMessageHandler CreateWebRequestHandler(IHttpBehaviour httpBehaviour = null)
 		{
 			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
 			var webRequestHandler = new WebRequestHandler();
@@ -109,7 +109,7 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <returns>HttpMessageHandler (WebRequestHandler)</returns>
-		public static HttpMessageHandler Create(HttpBehaviour httpBehaviour = null)
+		public static HttpMessageHandler Create(IHttpBehaviour httpBehaviour = null)
 		{
 			return CreateWebRequestHandler(httpBehaviour);
 		}

@@ -18,11 +18,12 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
 
 using System.Net;
+using System.Net.Http.Headers;
 
 namespace Dapplo.HttpExtensions
 {
@@ -32,7 +33,7 @@ namespace Dapplo.HttpExtensions
 	/// </summary>
 	/// <typeparam name="TResult">Type for the normal response</typeparam>
 	/// <typeparam name="TError">Type for the error response</typeparam>
-	public class HttpResponse<TResult, TError>
+	public class HttpResponse<TResult, TError> where TResult : class where TError : class
 	{
 		/// <summary>
 		/// The result when a 200 status was returned
@@ -43,6 +44,11 @@ namespace Dapplo.HttpExtensions
 		/// The response when not an 200 status was returned
 		/// </summary>
 		public TError ErrorResponse { get; set; }
+
+		/// <summary>
+		/// Headers of the response
+		/// </summary>
+		public HttpResponseHeaders Headers { get; set; }
 
 		/// <summary>
 		/// The response HTTP status code

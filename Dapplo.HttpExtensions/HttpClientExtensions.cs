@@ -18,7 +18,7 @@
 	GNU General Public License for more details.
 
 	You should have received a copy of the GNU General Public License
-	along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
 using System;
@@ -118,22 +118,6 @@ namespace Dapplo.HttpExtensions
 		}
 
 		/// <summary>
-		/// Get the content as a MemoryStream
-		/// </summary>
-		/// <param name="client">HttpClient</param>
-		/// <param name="uri">Uri</param>
-		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
-		/// <param name="token">CancellationToken</param>
-		/// <returns>MemoryStream</returns>
-		public static async Task<MemoryStream> GetAsMemoryStreamAsync(this HttpClient client, Uri uri, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
-		{
-			using (var response = await client.GetAsync(uri, token))
-			{
-				return await response.GetAsMemoryStreamAsync(httpBehaviour, token);
-            }
-		}
-
-		/// <summary>
 		/// Get the content from the specified uri via the HttpClient read into a Type object
 		/// Currently we support Json objects which are annotated with the DataContract/DataMember attributes
 		/// We might support other object, e.g MemoryStream, Bitmap etc soon
@@ -144,11 +128,31 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">HttpBehaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>the deserialized object of type T or default(T)</returns>
-		public static async Task<TResult> ReadAsAsync<TResult>(this HttpClient client, Uri uri, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
+		public static async Task<TResult> ReadAsAsync<TResult>(this HttpClient client, Uri uri, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
 			using (var response = await client.GetAsync(uri, token))
 			{
 				return await response.ReadAsAsync<TResult>(httpBehaviour, token);
+			}
+		}
+
+		/// <summary>
+		/// Get the content from the specified uri via the HttpClient read into a Type object
+		/// Currently we support Json objects which are annotated with the DataContract/DataMember attributes
+		/// We might support other object, e.g MemoryStream, Bitmap etc soon
+		/// </summary>
+		/// <typeparam name="TResult">The Type to read into</typeparam>
+		/// <typeparam name="TError">The Type to read into when an error occured</typeparam>
+		/// <param name="client">HttpClient</param>
+		/// <param name="uri">URI</param>
+		/// <param name="httpBehaviour">HttpBehaviour</param>
+		/// <param name="token">CancellationToken</param>
+		/// <returns>HttpResponse with all result and error information</returns>
+		public static async Task<HttpResponse<TResult, TError>> ReadAsAsync<TResult, TError>(this HttpClient client, Uri uri, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class where TError : class
+		{
+			using (var response = await client.GetAsync(uri, token))
+			{
+				return await response.ReadAsAsync<TResult, TError>(httpBehaviour, token);
 			}
 		}
 	}

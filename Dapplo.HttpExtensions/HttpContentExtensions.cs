@@ -24,6 +24,11 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Linq;
+using System.Windows.Media.Imaging;
+using System.Drawing;
+using System.IO;
+using System.Threading;
 
 namespace Dapplo.HttpExtensions
 {
@@ -32,19 +37,110 @@ namespace Dapplo.HttpExtensions
 	/// </summary>
 	public static class HttpContentExtensions
 	{
+		// TODO: Make this available in the HttpSettings or HttpBehaviour
+		private const int BufferSize = 4096;
+
 		/// <summary>
-		/// Extension method reading the httpContent to a Type object
-		/// Currently we support Json objects which are annotated with the DataContract/DataMember attributes
-		/// We might support other object, e.g MemoryStream, Bitmap etc soon
+		/// Get the content as a MemoryStream
+		/// </summary>
+		/// <param name="httpContent">HttpContent</param>
+		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
+		/// <param name="token">CancellationToken</param>
+		/// <returns>MemoryStream</returns>
+		public static async Task<MemoryStream> GetAsMemoryStreamAsync(this HttpContent httpContent, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		{
+			using (var contentStream = await httpContent.ReadAsStreamAsync().ConfigureAwait(false))
+			{
+				var memoryStream = new MemoryStream();
+				await contentStream.CopyToAsync(memoryStream, 4096, token).ConfigureAwait(false);
+				// Make sure the memory stream position is at the beginning,
+				// so the processing code can read right away.
+				memoryStream.Position = 0;
+				return memoryStream;
+			}
+		}
+
+		/// <summary>
+		/// Extension method reading the httpContent to a Typed object, depending on the returned content-type
+		/// Currently we support:
+		///		Json objects which are annotated with the DataContract/DataMember attributes
 		/// </summary>
 		/// <typeparam name="TResult">The Type to read into</typeparam>
 		/// <param name="httpContent">HttpContent</param>
 		/// <param name="httpBehaviour">HttpBehaviour</param>
+		/// <param name="token">CancellationToken</param>
 		/// <returns>the deserialized object of type T</returns>
-		public static async Task<TResult> ReadAsAsync<TResult>(this HttpContent httpContent, HttpBehaviour httpBehaviour = null)
+		public static async Task<TResult> ReadAsAsync<TResult>(this HttpContent httpContent, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
-			var jsonString = await httpContent.ReadAsStringAsync().ConfigureAwait(false);
-			return SimpleJson.DeserializeObject<TResult>(jsonString);
+			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
+			var contentType = httpContent.ContentType();
+			var mediaType = Enum.GetValues(typeof(MediaTypes)).Cast<MediaTypes>().Where(x => x.EnumValueOf() == contentType).FirstOrDefault();
+			var resultType = typeof(TResult);
+
+			if (httpBehaviour.ValidateResponseContentType)
+			{
+				switch (mediaType)
+				{
+					case MediaTypes.Bmp:
+					case MediaTypes.Gif:
+					case MediaTypes.Jpeg:
+					case MediaTypes.Png:
+					case MediaTypes.Tiff:
+						if (!resultType.IsAssignableFrom(typeof(Bitmap)) && !resultType.IsAssignableFrom(typeof(BitmapImage)) && !resultType.IsAssignableFrom(typeof(MemoryStream)))
+						{
+							throw new ArgumentException($"Content-type {contentType} is not assignable from {resultType.Name}");
+						}
+						break;
+					case MediaTypes.Txt:
+					case MediaTypes.Html:
+					case MediaTypes.Xml:
+					case MediaTypes.XmlReadable:
+						// Currently only string is supported
+						if (resultType != typeof(string))
+						{
+							throw new ArgumentException($"Content-type {contentType} is readable as string.");
+						}
+						break;
+				}
+
+			}
+			if (resultType.IsAssignableFrom(typeof(Bitmap)))
+			{
+				var memoryStream = await httpContent.GetAsMemoryStreamAsync(httpBehaviour, token).ConfigureAwait(false);
+				return new Bitmap(memoryStream) as TResult;
+			}
+
+			if (resultType.IsAssignableFrom(typeof(BitmapImage)))
+			{
+				using (var contentStream = await httpContent.ReadAsStreamAsync().ConfigureAwait(false))
+				{
+					var bitmap = new BitmapImage();
+					bitmap.BeginInit();
+					bitmap.StreamSource = contentStream;
+					bitmap.CacheOption = BitmapCacheOption.OnLoad;
+					bitmap.EndInit();
+					bitmap.Freeze();
+					// TODO: Check if this is what was wanted
+					return bitmap as TResult;
+				}
+			}
+			if (resultType.IsAssignableFrom(typeof(MemoryStream)))
+			{
+				return await httpContent.GetAsMemoryStreamAsync(httpBehaviour, token).ConfigureAwait(false) as TResult;
+			}
+
+			if (resultType == typeof(string))
+			{
+				return await httpContent.ReadAsStringAsync().ConfigureAwait(false) as TResult;
+			}
+
+			// From here we assume that Json is wanted
+			if (httpBehaviour.ValidateResponseContentType && mediaType != MediaTypes.Json)
+			{
+				throw new ArgumentException($"Unknown content-type {contentType}");
+			}
+			var jsonResponse = await httpContent.ReadAsStringAsync().ConfigureAwait(false);
+			return SimpleJson.DeserializeObject<TResult>(jsonResponse);
 		}
 
 		/// <summary>
@@ -60,6 +156,16 @@ namespace Dapplo.HttpExtensions
 		}
 
 		/// <summary>
+		/// Simply return the content type of the HttpContent
+		/// </summary>
+		/// <param name="httpContent">HttpContent</param>
+		/// <returns>string with the content type</returns>
+		public static string ContentType(this HttpContent httpContent)
+		{
+			return httpContent?.Headers?.ContentType?.MediaType;
+		}
+
+		/// <summary>
 		/// Validate the content type of the HttpContent
 		/// If HttpBehaviour.ValidateResponseContentType is true, this will throw an exception if the type doesn't match
 		/// </summary>
@@ -71,7 +177,7 @@ namespace Dapplo.HttpExtensions
 		{
 			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
 
-			var contentType = httpContent.Headers.ContentType.MediaType;
+			var contentType = httpContent.ContentType();
 
 			if (httpBehaviour.ValidateResponseContentType && contentType != mediaType.EnumValueOf())
 			{

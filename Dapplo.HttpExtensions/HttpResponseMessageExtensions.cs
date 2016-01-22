@@ -62,15 +62,7 @@ namespace Dapplo.HttpExtensions
 		{
 			if (response.IsSuccessStatusCode)
 			{
-				using (var contentStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
-				{
-					var memoryStream = new MemoryStream();
-					await contentStream.CopyToAsync(memoryStream, 4096, token).ConfigureAwait(false);
-					// Make sure the memory stream position is at the beginning,
-					// so the processing code can read right away.
-					memoryStream.Position = 0;
-					return memoryStream;
-				}
+				return await response.Content.GetAsMemoryStreamAsync(httpBehaviour, token).ConfigureAwait(false);
 			}
 			await response.HandleErrorAsync(httpBehaviour, token).ConfigureAwait(false);
 			return null;
@@ -86,12 +78,12 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">HttpBehaviour</param>
 		/// <param name="token"></param>
 		/// <returns>the deserialized object of type T or default(T)</returns>
-		public static async Task<TResult> ReadAsAsync<TResult>(this HttpResponseMessage response, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<TResult> ReadAsAsync<TResult>(this HttpResponseMessage response, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
 			if (response.IsSuccessStatusCode)
 			{
 				var content = response.Content;
-				return await content.ReadAsAsync<TResult>();
+				return await content.ReadAsAsync<TResult>(httpBehaviour).ConfigureAwait(false);
 			}
 			await response.HandleErrorAsync(httpBehaviour, token).ConfigureAwait(false);
 			return default(TResult);

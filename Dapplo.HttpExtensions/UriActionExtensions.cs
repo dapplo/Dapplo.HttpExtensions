@@ -195,6 +195,26 @@ namespace Dapplo.HttpExtensions
 		}
 
 		/// <summary>
+		/// Get the response as the specified type
+		/// </summary>
+		/// <typeparam name="TResult">Type to deserialize into</typeparam>
+		/// <param name="uri">An Uri to specify the download location</param>
+		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
+		/// <param name="token">CancellationToken</param>
+		/// <returns>string with the content</returns>
+		public static async Task<TResult>ReadAsAsync<TResult>(this Uri uri, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
+		{
+			if (uri == null)
+			{
+				throw new ArgumentNullException(nameof(uri));
+			}
+			using (var client = HttpClientFactory.Create(httpBehaviour, uri))
+			{
+				return await client.ReadAsAsync<TResult>(uri, httpBehaviour, token).ConfigureAwait(false);
+			}
+		}
+
+		/// <summary>
 		/// Get the content as a MemoryStream
 		/// </summary>
 		/// <param name="uri">Uri</param>

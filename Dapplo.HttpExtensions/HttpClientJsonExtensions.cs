@@ -63,7 +63,7 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>T2</returns>
-		public static async Task<T2> PostJsonAsync<T1, T2>(this HttpClient client, Uri uri, T1 postData, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<T2> PostJsonAsync<T1, T2>(this HttpClient client, Uri uri, T1 postData, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where T2 : class
 		{
 			using (var content = new StringContent(SimpleJson.SerializeObject(postData), Encoding.UTF8, "application/json"))
 			{
@@ -97,7 +97,7 @@ namespace Dapplo.HttpExtensions
 		/// <param name="token">CancellationToken</param>
 		/// <typeparam name="TResult">Type to use in the JSON parsing</typeparam>
 		/// <returns>dynamic (json)</returns>
-		public static async Task<TResult> GetAsJsonAsync<TResult>(this HttpClient client, Uri uri, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<TResult> GetAsJsonAsync<TResult>(this HttpClient client, Uri uri, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
 			using (var response = await client.GetAsync(uri, token))
 			{

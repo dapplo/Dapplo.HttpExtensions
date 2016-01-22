@@ -144,7 +144,7 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">HttpBehaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>the deserialized object of type T or default(T)</returns>
-		public static async Task<TResult> ReadAsAsync<TResult>(this HttpClient client, Uri uri, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<TResult> ReadAsAsync<TResult>(this HttpClient client, Uri uri, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
 			using (var response = await client.GetAsync(uri, token))
 			{

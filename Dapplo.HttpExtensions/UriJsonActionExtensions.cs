@@ -79,7 +79,7 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>T created with SimpleJson</returns>
-		public static async Task<TResult> GetAsJsonAsync<TResult>(this Uri uri, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<TResult> GetAsJsonAsync<TResult>(this Uri uri, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
 			httpBehaviour = CreateJsonAcceptingHttpBehaviour(httpBehaviour);
 			using (var reponse = await uri.GetAsync(httpBehaviour, token).ConfigureAwait(false))
@@ -99,7 +99,7 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>HttpResponse of TNormal and TError filled by SimpleJson</returns>
-		public static async Task<HttpResponse<TResult, TError>> GetAsJsonAsync<TResult, TError>(this Uri uri, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<HttpResponse<TResult, TError>> GetAsJsonAsync<TResult, TError>(this Uri uri, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
 			httpBehaviour = CreateJsonAcceptingHttpBehaviour(httpBehaviour);
 			using (var reponse = await uri.GetAsync(httpBehaviour, token).ConfigureAwait(false))
@@ -138,8 +138,8 @@ namespace Dapplo.HttpExtensions
 		/// <param name="jsonContent">T1</param>
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
-		/// <returns>T2</returns>
-		public static async Task<TResult> PostJsonAsync<TContent, TResult>(this Uri uri, TContent jsonContent, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		/// <returns>TResult</returns>
+		public static async Task<TResult> PostJsonAsync<TContent, TResult>(this Uri uri, TContent jsonContent, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
 			if (uri == null)
 			{

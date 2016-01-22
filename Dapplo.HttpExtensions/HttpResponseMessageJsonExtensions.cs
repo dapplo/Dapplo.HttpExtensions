@@ -60,7 +60,7 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>T created with SimpleJson</returns>
-		public static async Task<TResult> GetAsJsonAsync<TResult>(this HttpResponseMessage httpResponseMessage, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<TResult> GetAsJsonAsync<TResult>(this HttpResponseMessage httpResponseMessage, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
 			var content = httpResponseMessage.Content;
 			if (content.ExpectContentType(MediaTypes.Json, httpBehaviour))
@@ -80,7 +80,7 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>HttpResponse of TNormal and TError filled by SimpleJson</returns>
-		public static async Task<HttpResponse<TResult, TError>> GetAsJsonAsync<TResult, TError>(this HttpResponseMessage httpResponseMessage, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<HttpResponse<TResult, TError>> GetAsJsonAsync<TResult, TError>(this HttpResponseMessage httpResponseMessage, HttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
 			var response = new HttpResponse<TResult, TError>
 			{

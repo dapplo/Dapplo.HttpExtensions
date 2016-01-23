@@ -26,6 +26,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Threading;
+using Dapplo.HttpExtensions.Support;
 
 namespace Dapplo.HttpExtensions
 {
@@ -44,9 +45,9 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">HttpBehaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>the deserialized object of type T</returns>
-		public static async Task<TResult> ReadAsAsync<TResult>(this HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
+		public static async Task<TResult> GetAsAsync<TResult>(this HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
-			return await httpContent.ReadAsAsync(typeof(TResult), httpBehaviour, token) as TResult;
+			return await httpContent.GetAsAsync(typeof(TResult), httpBehaviour, token) as TResult;
 		}
 
 		/// <summary>
@@ -57,8 +58,12 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">IHttpBehaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>the deserialized object of type T</returns>
-		public static async Task<object> ReadAsAsync(this HttpContent httpContent, Type resultType, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<object> GetAsAsync(this HttpContent httpContent, Type resultType, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
 		{
+			if (resultType.IsInstanceOfType(httpContent))
+			{
+				return httpContent;
+			}
 			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
 			var converter = httpBehaviour.HttpContentConverters.OrderBy(x => x.Order).FirstOrDefault(x => x.CanConvertFromHttpContent(resultType, httpContent, httpBehaviour));
 			if (converter != null)

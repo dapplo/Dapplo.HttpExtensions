@@ -25,9 +25,8 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
-using Dapplo.HttpExtensions.SpecializedHttpContent;
 
-namespace Dapplo.HttpExtensions
+namespace Dapplo.HttpExtensions.Support
 {
 	/// <summary>
 	/// This is the default implementation of the IHttpBehaviour, see IHttpBehaviour details
@@ -46,8 +45,10 @@ namespace Dapplo.HttpExtensions
 
 		public IList<IHttpContentConverter> HttpContentConverters { get; set; } = new List<IHttpContentConverter>
 		{
-			BitmapHttpContentConverter.Instance, MemoryStreamHttpContentConverter.Instance, JsonHttpContentConverter.Instance
+			BitmapHttpContentConverter.Instance, BitmapSourceHttpContentConverter.Instance, FormUrilEncodedContentConverter.Instance, StreamHttpContentConverter.Instance, JsonHttpContentConverter.Instance
 		};
+
+		public Action<HttpRequestMessage> OnCreateHttpRequestMessage { get; set; }
 
 		public Action<HttpClient> OnCreateHttpClient { get; set; }
 

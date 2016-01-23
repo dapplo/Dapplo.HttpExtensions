@@ -21,38 +21,28 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System.Runtime.Serialization;
+using System;
 
-namespace Dapplo.HttpExtensions
+namespace Dapplo.HttpExtensions.Support
 {
 	/// <summary>
-	/// Use this enum for the creating the accept header or checking the content-type
+	/// This defines the default way how Json is de-/serialized.
 	/// </summary>
-	public enum MediaTypes
+	public class SimpleJsonSerializer : IJsonSerializer
 	{
-		[EnumMember(Value = "application/json")]
-		Json,
-		[EnumMember(Value = "application/xml")]
-		Xml,
-		[EnumMember(Value = "text/xml")]
-		XmlReadable,
-		[EnumMember(Value = "text/html")]
-		Html,
-		[EnumMember(Value = "text/plain")]
-		Txt,
-		[EnumMember(Value = "application/x-www-form-urlencoded")]
-		WwwFormUrlEncoded,
-		[EnumMember(Value = "image/gif")]
-		Gif,
-		[EnumMember(Value = "image/jpeg")]
-		Jpeg,
-		[EnumMember(Value = "image/png")]
-		Png,
-		[EnumMember(Value = "image/bmp")]
-		Bmp,
-		[EnumMember(Value = "image/tiff")]
-		Tiff,
-		[EnumMember(Value = "image/svg+xml")]
-		Svg
+		public object DeserializeJson(Type targetType, string jsonString)
+		{
+			return SimpleJson.DeserializeObject(jsonString, targetType);
+		}
+
+		public TResult DeserializeJson<TResult>(string jsonString) where TResult : class
+		{
+			return SimpleJson.DeserializeObject<TResult>(jsonString);
+		}
+
+		public string SerializeJson<T>(T jsonObject)
+		{
+			return SimpleJson.SerializeObject(jsonObject);
+		}
 	}
 }

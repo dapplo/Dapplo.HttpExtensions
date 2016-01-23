@@ -23,6 +23,7 @@
 
 using System;
 using System.Net.Http;
+using Dapplo.HttpExtensions.Support;
 
 namespace Dapplo.HttpExtensions
 {

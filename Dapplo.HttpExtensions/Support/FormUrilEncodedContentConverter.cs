@@ -22,19 +22,20 @@
  */
 
 using System;
-using System.IO;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Dapplo.HttpExtensions.SpecializedHttpContent
+namespace Dapplo.HttpExtensions.Support
 {
 	/// <summary>
-	/// This can convert HttpContent from/to a MemoryStream
+	/// This can convert HttpContent from/to a IEnumerable keyvaluepair string-string
 	/// </summary>
-	public class MemoryStreamHttpContentConverter : IHttpContentConverter
+	public class FormUrilEncodedContentConverter : IHttpContentConverter
 	{
-		public static readonly MemoryStreamHttpContentConverter Instance = new MemoryStreamHttpContentConverter();
+		public static readonly FormUrilEncodedContentConverter Instance = new FormUrilEncodedContentConverter();
 
 		public int Order => 0;
 
@@ -45,7 +46,7 @@ namespace Dapplo.HttpExtensions.SpecializedHttpContent
 
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent, IHttpBehaviour httpBehaviour = null)
 		{
-			return typeToConvertTo.IsAssignableFrom(typeof(MemoryStream));
+			return false;
 		}
 
 		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
@@ -53,28 +54,14 @@ namespace Dapplo.HttpExtensions.SpecializedHttpContent
 			return await ConvertFromHttpContentAsync(typeof (TResult), httpContent, httpBehaviour, token) as TResult;
 		}
 
-		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
 		{
-			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
-			if (!CanConvertFromHttpContent(resultType, httpContent, httpBehaviour))
-			{
-				throw new NotSupportedException("CanConvertFromHttpContent resulted in false, this is not supposed to be called.");
-			}
-
-			using (var contentStream = await httpContent.ReadAsStreamAsync().ConfigureAwait(false))
-			{
-				var memoryStream = new MemoryStream();
-				await contentStream.CopyToAsync(memoryStream, httpBehaviour.ReadBufferSize, token).ConfigureAwait(false);
-				// Make sure the memory stream position is at the beginning,
-				// so the processing code can read right away.
-				memoryStream.Position = 0;
-				return memoryStream;
-			}
+			throw new NotSupportedException("CanConvertFromHttpContent resulted in false, this is not supposed to be called.");
 		}
 
 		public bool CanConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
 		{
-			return typeToConvert == typeof(MemoryStream);
+			return typeof(IEnumerable<KeyValuePair<string, string>>).IsAssignableFrom(typeToConvert);
 		}
 
 		public bool CanConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null) where TInput : class
@@ -84,12 +71,21 @@ namespace Dapplo.HttpExtensions.SpecializedHttpContent
 
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
 		{
-			return new StreamContent(content as Stream);
+			return new FormUrlEncodedContent(content as IEnumerable<KeyValuePair<string, string>>);
 		}
 
 		public HttpContent ConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null) where TInput : class
 		{
 			return ConvertToHttpContent(typeof(TInput), content, httpBehaviour);
+		}
+
+		public void AddAcceptHeadersForType<TResult>(HttpRequestMessage httpRequestMessage)
+		{
+			if (!typeof(TResult).IsAssignableFrom(typeof(IEnumerable<KeyValuePair<string,string>>)))
+			{
+				return;
+			}
+			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.WwwFormUrlEncoded.EnumValueOf()));
 		}
 	}
 }

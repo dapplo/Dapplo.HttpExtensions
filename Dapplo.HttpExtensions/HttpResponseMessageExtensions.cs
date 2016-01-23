@@ -22,10 +22,10 @@
  */
 
 using System;
-using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Dapplo.HttpExtensions.Support;
 
 namespace Dapplo.HttpExtensions
 {
@@ -61,12 +61,16 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">HttpBehaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>the deserialized object of type T or default(T)</returns>
-		public static async Task<TResult> ReadAsAsync<TResult>(this HttpResponseMessage httpResponseMessage, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
+		public static async Task<TResult> GetAsAsync<TResult>(this HttpResponseMessage httpResponseMessage, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
+			if (typeof (TResult) == typeof (HttpResponseMessage))
+			{
+				return httpResponseMessage as TResult;
+			}
 			if (httpResponseMessage.IsSuccessStatusCode)
 			{
 				var content = httpResponseMessage.Content;
-				return await content.ReadAsAsync<TResult>(httpBehaviour, token).ConfigureAwait(false);
+				return await content.GetAsAsync<TResult>(httpBehaviour, token).ConfigureAwait(false);
 			}
 			await httpResponseMessage.HandleErrorAsync(httpBehaviour, token).ConfigureAwait(false);
 			return default(TResult);
@@ -83,7 +87,7 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">HttpBehaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>HttpResponse</returns>
-		public static async Task<HttpResponse<TResult,TError>> ReadAsAsync<TResult, TError>(this HttpResponseMessage httpResponseMessage, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class where TError : class
+		public static async Task<HttpResponse<TResult,TError>> GetAsAsync<TResult, TError>(this HttpResponseMessage httpResponseMessage, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class where TError : class
 		{
 			var response = new HttpResponse<TResult, TError>
 			{
@@ -94,11 +98,11 @@ namespace Dapplo.HttpExtensions
 			var content = httpResponseMessage.Content;
 			if (httpResponseMessage.IsSuccessStatusCode)
 			{
-				response.Result = await content.ReadAsAsync<TResult>(httpBehaviour, token).ConfigureAwait(false);
+				response.Result = await content.GetAsAsync<TResult>(httpBehaviour, token).ConfigureAwait(false);
 			}
 			else
 			{
-				response.ErrorResponse = await content.ReadAsAsync<TError>(httpBehaviour, token).ConfigureAwait(false);
+				response.ErrorResponse = await content.GetAsAsync<TError>(httpBehaviour, token).ConfigureAwait(false);
 			}
 			return response;
 		}

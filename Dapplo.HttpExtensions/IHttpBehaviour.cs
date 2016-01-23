@@ -51,6 +51,13 @@ namespace Dapplo.HttpExtensions
 		IList<IHttpContentConverter> HttpContentConverters { get; set; }
 
 		/// <summary>
+		/// An action which can modify the HttpRequestMessage right before it's used to start the request.
+		/// This can be used to add a specific header, which should not be for all requests.
+		/// As the called action has access to HttpRequestMessage with the content, uri and method this is quite usefull.
+		/// </summary>
+		Action<HttpRequestMessage> OnCreateHttpRequestMessage { get; set; }
+
+		/// <summary>
 		/// An action which can modify the HttpClient which is generated in the HttpClientFactory.
 		/// Use cases for this, might be adding a header or other settings for specific cases
 		/// </summary>

@@ -27,7 +27,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Dapplo.HttpExtensions.SpecializedHttpContent
+namespace Dapplo.HttpExtensions.Support
 {
 	/// <summary>
 	/// The ProgressStreamContent makes it possible to track the progress of a http-post for a stream

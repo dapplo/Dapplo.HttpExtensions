@@ -22,6 +22,7 @@
  */
 
 using System.Net;
+using Dapplo.HttpExtensions.Support;
 
 namespace Dapplo.HttpExtensions
 {

@@ -28,7 +28,7 @@ using System.Reflection;
 using System.Security.Principal;
 using System.Text;
 
-namespace Dapplo.HttpExtensions
+namespace Dapplo.HttpExtensions.Support
 {
 	/// <summary>
 	/// This class contains the default settings for the proxy / httpclient

@@ -50,13 +50,8 @@ namespace Dapplo.HttpExtensions.Test
 			{
 				releasesUri = releasesUri.SetCredentials(username, password);
 			}
-			else
-			{
-				releasesUri = releasesUri.SetCredentials("username", "password");
 
-			}
-
-			var releases = await releasesUri.ReadAsAsync<List<GitHubRelease>, GitHubError>();
+			var releases = await releasesUri.GetAsAsync<List<GitHubRelease>, GitHubError>();
 			Assert.IsNotNull(releases);
 			Assert.IsFalse(releases.HasError, $"{releases.StatusCode}: {releases.ErrorResponse?.Message} {releases.ErrorResponse?.DocumentationUrl}");
 

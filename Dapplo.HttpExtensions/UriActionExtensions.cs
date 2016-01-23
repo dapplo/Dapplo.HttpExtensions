@@ -23,11 +23,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using Dapplo.HttpExtensions.Support;
 
 namespace Dapplo.HttpExtensions
 {
@@ -117,16 +117,17 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>HttpResponseMessage</returns>
-		public static async Task<HttpResponseMessage> PostAsync(this Uri uri, HttpContent content, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<TResult> PostAsync<TResult, TContent>(this Uri uri, TContent content, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class where TContent : class
 		{
 			if (uri == null)
 			{
 				throw new ArgumentNullException(nameof(uri));
 			}
+			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
 
 			using (var client = HttpClientFactory.Create(httpBehaviour, uri))
 			{
-				return await client.PostAsync(uri, content, token);
+				return await client.PostAsync<TResult, TContent>(uri, content, httpBehaviour, token).ConfigureAwait(false);
 			}
 		}
 
@@ -202,7 +203,7 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>string with the content</returns>
-		public static async Task<TResult>ReadAsAsync<TResult>(this Uri uri, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
+		public static async Task<TResult> GetAsAsync<TResult>(this Uri uri, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
 			if (uri == null)
 			{
@@ -210,7 +211,7 @@ namespace Dapplo.HttpExtensions
 			}
 			using (var client = HttpClientFactory.Create(httpBehaviour, uri))
 			{
-				return await client.ReadAsAsync<TResult>(uri, httpBehaviour, token).ConfigureAwait(false);
+				return await client.GetAsAsync<TResult>(uri, httpBehaviour, token).ConfigureAwait(false);
 			}
 		}
 
@@ -223,7 +224,7 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>HttpResponse with TResult and TError</returns>
-		public static async Task<HttpResponse<TResult, TError>> ReadAsAsync<TResult, TError>(this Uri uri, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class where TError : class
+		public static async Task<HttpResponse<TResult, TError>> GetAsAsync<TResult, TError>(this Uri uri, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class where TError : class
 		{
 			if (uri == null)
 			{
@@ -231,7 +232,7 @@ namespace Dapplo.HttpExtensions
 			}
 			using (var client = HttpClientFactory.Create(httpBehaviour, uri))
 			{
-				return await client.ReadAsAsync<TResult, TError>(uri, httpBehaviour, token).ConfigureAwait(false);
+				return await client.GetAsAsync<TResult, TError>(uri, httpBehaviour, token).ConfigureAwait(false);
 			}
 		}
 	}

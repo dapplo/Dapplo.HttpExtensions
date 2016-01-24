@@ -26,47 +26,39 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 
-namespace Dapplo.HttpExtensions.Support
+namespace Dapplo.HttpExtensions
 {
 	/// <summary>
-	/// This is the default implementation of the IHttpBehaviour, see IHttpBehaviour details
+	/// This is the default implementation of the IHttpBehaviour, see IHttpBehaviour for details
+	/// Most values are initialized via the HttpExtensionsGlobals
 	/// </summary>
 	public class HttpBehaviour : IHttpBehaviour
 	{
-		public static IHttpBehaviour GlobalHttpBehaviour
-		{
-			get;
-			set;
-		} = new HttpBehaviour();
+		public IHttpSettings HttpSettings { get; set; } = HttpExtensionsGlobals.HttpSettings;
 
-		public IHttpSettings HttpSettings { get; set; }
+		public IJsonSerializer JsonSerializer { get; set; } = HttpExtensionsGlobals.JsonSerializer;
 
-		public IJsonSerializer JsonSerializer { get; set; } = new SimpleJsonSerializer();
+		public IList<IHttpContentConverter> HttpContentConverters { get; set; } = HttpExtensionsGlobals.HttpContentConverters;
 
-		public IList<IHttpContentConverter> HttpContentConverters { get; set; } = new List<IHttpContentConverter>
-		{
-			BitmapHttpContentConverter.Instance, BitmapSourceHttpContentConverter.Instance, FormUrilEncodedContentConverter.Instance, StreamHttpContentConverter.Instance, JsonHttpContentConverter.Instance
-		};
+		public Action<HttpRequestMessage> OnHttpRequestMessageCreated { get; set; }
 
-		public Action<HttpRequestMessage> OnCreateHttpRequestMessage { get; set; }
+		public Action<HttpClient> OnHttpClientCreated { get; set; }
 
-		public Action<HttpClient> OnCreateHttpClient { get; set; }
+		public Action<HttpMessageHandler> OnHttpMessageHandlerCreated { get; set; }
 
-		public Action<HttpMessageHandler> OnCreateHttpMessageHandler { get; set; }
-
-		public bool ThrowErrorOnNonSuccess { get; set; } = true;
+		public bool ThrowOnError { get; set; } = HttpExtensionsGlobals.ThrowOnError;
 
 		public HttpCompletionOption HttpCompletionOption { get; set; } = HttpCompletionOption.ResponseContentRead;
 
-		public bool ValidateResponseContentType { get; set; } = true;
+		public bool ValidateResponseContentType { get; set; } = HttpExtensionsGlobals.ValidateResponseContentType;
 
-		public Encoding DefaultEncoding { get; set; } = Encoding.UTF8;
+		public Encoding DefaultEncoding { get; set; } = HttpExtensionsGlobals.DefaultEncoding;
 
-		public int ReadBufferSize { get; set; } = 4096;
+		public int ReadBufferSize { get; set; } = HttpExtensionsGlobals.ReadBufferSize;
 
-		public IHttpBehaviour Clone()
+		public object Clone()
 		{
-			return (HttpBehaviour)MemberwiseClone();
+			return MemberwiseClone();
 		}
 	}
 }

@@ -22,7 +22,6 @@
  */
 
 using System.Net;
-using Dapplo.HttpExtensions.Support;
 
 namespace Dapplo.HttpExtensions
 {
@@ -39,8 +38,8 @@ namespace Dapplo.HttpExtensions
 		/// <returns>IWebProxy filled with all the proxy details or null if none is set/wanted</returns>
 		public static IWebProxy Create(IHttpBehaviour httpBehaviour = null)
 		{
-			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
-			var httpSettings = httpBehaviour.HttpSettings ?? HttpSettings.GlobalHttpSettings;
+			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
+			var httpSettings = httpBehaviour.HttpSettings ?? HttpExtensionsGlobals.HttpSettings;
 
 			// This is already checked in the HttpClientFactory, but should be checked if this call is used elsewhere.
 			if (!httpSettings.UseProxy)

@@ -27,7 +27,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using Dapplo.HttpExtensions.Support;
 
 namespace Dapplo.HttpExtensions
 {
@@ -123,7 +122,7 @@ namespace Dapplo.HttpExtensions
 			{
 				throw new ArgumentNullException(nameof(uri));
 			}
-			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
+			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 
 			using (var client = HttpClientFactory.Create(httpBehaviour, uri))
 			{

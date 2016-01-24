@@ -23,7 +23,6 @@
 
 using System;
 using System.Net.Http;
-using Dapplo.HttpExtensions.Support;
 
 namespace Dapplo.HttpExtensions
 {
@@ -45,8 +44,7 @@ namespace Dapplo.HttpExtensions
 		/// <returns>HttpRequestMessage</returns>
 		public static HttpRequestMessage Create(HttpMethod method, Uri requestUri, HttpContent content, IHttpBehaviour httpBehaviour = null)
 		{
-			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
-			//var httpSettings = httpBehaviour.HttpSettings ?? HttpSettings.GlobalHttpSettings;
+			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 
 			var httpRequestMessage = new HttpRequestMessage(method, requestUri)
 			{
@@ -54,7 +52,7 @@ namespace Dapplo.HttpExtensions
 			};
 
 			// Make sure the OnCreateHttpRequestMessage action is called
-			httpBehaviour?.OnCreateHttpRequestMessage?.Invoke(httpRequestMessage);
+			httpBehaviour.OnHttpRequestMessageCreated?.Invoke(httpRequestMessage);
 			return httpRequestMessage;
 		}
 
@@ -69,7 +67,7 @@ namespace Dapplo.HttpExtensions
 		/// <returns>HttpRequestMessage</returns>
 		public static HttpRequestMessage Create<TResult>(HttpMethod method, Uri requestUri, HttpContent content, IHttpBehaviour httpBehaviour = null) where TResult : class
 		{
-			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
+			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 			//var httpSettings = httpBehaviour.HttpSettings ?? HttpSettings.GlobalHttpSettings;
 			var httpRequestMessage = Create(method, requestUri, content, httpBehaviour);
 			httpBehaviour.HttpContentConverters?.ForEach(x => x.AddAcceptHeadersForType<TResult>(httpRequestMessage));

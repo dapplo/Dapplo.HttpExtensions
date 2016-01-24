@@ -62,7 +62,7 @@ namespace Dapplo.HttpExtensions.Support
 		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent,
 			IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
 		{
-			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
+			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 			if (!CanConvertFromHttpContent(resultType, httpContent, httpBehaviour))
 			{
 				throw new NotSupportedException("CanConvertFromHttpContent resulted in false, this is not supposed to be called.");
@@ -84,9 +84,8 @@ namespace Dapplo.HttpExtensions.Support
 
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
 		{
-			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
+			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 			var jsonString = httpBehaviour.JsonSerializer.SerializeJson(content);
-
 			return new StringContent(jsonString, httpBehaviour.DefaultEncoding, MediaTypes.Json.EnumValueOf());
 		}
 

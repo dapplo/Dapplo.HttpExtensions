@@ -64,7 +64,7 @@ namespace Dapplo.HttpExtensions
 			{
 				return httpContent;
 			}
-			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
+			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 			var converter = httpBehaviour.HttpContentConverters.OrderBy(x => x.Order).FirstOrDefault(x => x.CanConvertFromHttpContent(resultType, httpContent, httpBehaviour));
 			if (converter != null)
 			{
@@ -98,7 +98,7 @@ namespace Dapplo.HttpExtensions
 		/// <returns>true if it fits, or if validation is turned off</returns>
 		public static bool ExpectContentType(this HttpContent httpContent, MediaTypes mediaType, IHttpBehaviour httpBehaviour = null)
 		{
-			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
+			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 
 			var contentType = httpContent.ContentType();
 

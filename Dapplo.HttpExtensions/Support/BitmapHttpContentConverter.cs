@@ -111,7 +111,7 @@ namespace Dapplo.HttpExtensions.Support
 			{
 				return false;
 			}
-			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
+			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 			return !httpBehaviour.ValidateResponseContentType || SupportedContentTypes.Contains(httpContent.ContentType());
 		}
 

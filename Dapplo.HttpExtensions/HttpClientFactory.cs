@@ -23,7 +23,6 @@
 
 using System;
 using System.Net.Http;
-using Dapplo.HttpExtensions.Support;
 
 namespace Dapplo.HttpExtensions
 {
@@ -41,8 +40,8 @@ namespace Dapplo.HttpExtensions
 		/// <returns>HttpClient</returns>
 		public static HttpClient Create(IHttpBehaviour httpBehaviour = null, Uri uriForConfiguration = null)
 		{
-			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
-			var httpSettings = httpBehaviour.HttpSettings ?? HttpSettings.GlobalHttpSettings;
+			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
+			var httpSettings = httpBehaviour.HttpSettings ?? HttpExtensionsGlobals.HttpSettings;
 
 			var client = new HttpClient(HttpMessageHandlerFactory.Create(httpBehaviour))
 			{
@@ -58,7 +57,7 @@ namespace Dapplo.HttpExtensions
 			client.SetBasicAuthorization(uriForConfiguration);
 
 			// Allow the passed OnCreateHttpClient action to modify the HttpClient
-			httpBehaviour.OnCreateHttpClient?.Invoke(client);
+			httpBehaviour.OnHttpClientCreated?.Invoke(client);
 			return client;
 		}
 	}

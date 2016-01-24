@@ -31,7 +31,7 @@ namespace Dapplo.HttpExtensions
 	/// <summary>
 	/// The IHttpBehaviour is used to control the behaviour of all operations in the HttpExtensions library.
 	/// </summary>
-	public interface IHttpBehaviour
+	public interface IHttpBehaviour : ICloneable
 	{
 		/// <summary>
 		/// Pass your HttpSettings here, which will be used to create the HttpClient
@@ -55,25 +55,26 @@ namespace Dapplo.HttpExtensions
 		/// This can be used to add a specific header, which should not be for all requests.
 		/// As the called action has access to HttpRequestMessage with the content, uri and method this is quite usefull.
 		/// </summary>
-		Action<HttpRequestMessage> OnCreateHttpRequestMessage { get; set; }
+		Action<HttpRequestMessage> OnHttpRequestMessageCreated { get; set; }
 
 		/// <summary>
 		/// An action which can modify the HttpClient which is generated in the HttpClientFactory.
 		/// Use cases for this, might be adding a header or other settings for specific cases
 		/// </summary>
-		Action<HttpClient> OnCreateHttpClient { get; set; }
+		Action<HttpClient> OnHttpClientCreated { get; set; }
 
 		/// <summary>
 		/// An action which can modify the HttpMessageHandler which is generated in the HttpMessageHandlerFactory.
 		/// Use cases for this, might be if you have very specify settings which can't be set via the IHttpSettings
 		/// </summary>
-		Action<HttpMessageHandler> OnCreateHttpMessageHandler { get; set; }
+		Action<HttpMessageHandler> OnHttpMessageHandlerCreated { get; set; }
 
 		/// <summary>
 		/// If a request gets a response which has a HTTP status code which is not 200, it would normally throw an exception.
 		/// Sometimes you would still want the response, settings this to false would allow this.
+		/// This can be ignored for all HttpResponse returning methods.
 		/// </summary>
-		bool ThrowErrorOnNonSuccess { get; set; }
+		bool ThrowOnError { get; set; }
 
 		/// <summary>
 		/// This can be used to change the behaviour of Http operation, default is to read the complete response.
@@ -95,12 +96,5 @@ namespace Dapplo.HttpExtensions
 		/// Specify the buffer for reading operations
 		/// </summary>
 		int ReadBufferSize { get; set; }
-
-		/// <summary>
-		/// Clone this IHttpBehaviour
-		/// Remember not to modify the values of any reference objects like IHttpSettings
-		/// </summary>
-		/// <returns>HttpBehaviour</returns>
-		IHttpBehaviour Clone();
 	}
 }

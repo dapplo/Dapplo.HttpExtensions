@@ -25,7 +25,6 @@ using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Dapplo.HttpExtensions.Support;
 
 namespace Dapplo.HttpExtensions
 {
@@ -145,8 +144,8 @@ namespace Dapplo.HttpExtensions
 					throwException.Data.Add("response", errorContent);
 				}
 			}
-			httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
-			if (httpBehaviour.ThrowErrorOnNonSuccess && throwException != null)
+			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
+			if (httpBehaviour.ThrowOnError && throwException != null)
 			{
 				throw throwException;
 			}

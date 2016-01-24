@@ -42,6 +42,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HttpExtensionsGlobals.cs" />
     <Compile Include="HttpRequestMessageFactory.cs" />
     <Compile Include="IHttpBehaviour.cs" />
     <Compile Include="IHttpContentConverter.cs" />
@@ -52,7 +53,7 @@
     <Compile Include="Support\BitmapHttpContentConverter.cs" />
     <Compile Include="Support\SimpleJsonSerializer.cs" />
     <Compile Include="Support\ProgressStreamContent.cs" />
-    <Compile Include="Support\HttpBehaviour.cs" />
+    <Compile Include="HttpBehaviour.cs" />
     <Compile Include="HttpClientExtensions.cs" />
     <Compile Include="HttpClientFactory.cs" />
     <Compile Include="HttpContentExtensions.cs" />

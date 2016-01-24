@@ -28,7 +28,6 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Dapplo.HttpExtensions.Support;
 
 namespace Dapplo.HttpExtensions
 {
@@ -133,7 +132,7 @@ namespace Dapplo.HttpExtensions
 		{
 			if (content != null)
 			{
-				httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
+				httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 				var httpContentConverter = httpBehaviour.HttpContentConverters.OrderBy(x => x.Order).FirstOrDefault(x => x.CanConvertToHttpContent(content, httpBehaviour));
 				if (httpContentConverter != null)
 				{
@@ -168,7 +167,7 @@ namespace Dapplo.HttpExtensions
 		{
 			if (content != null)
 			{
-				httpBehaviour = httpBehaviour ?? HttpBehaviour.GlobalHttpBehaviour;
+				httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 				var httpContentConverter = httpBehaviour.HttpContentConverters.OrderBy(x => x.Order).FirstOrDefault(x => x.CanConvertToHttpContent(content, httpBehaviour));
 				if (httpContentConverter != null)
 				{

@@ -44,12 +44,6 @@ namespace Dapplo.HttpExtensions.Support
 
 		private string _userAgent;
 
-		public static IHttpSettings GlobalHttpSettings
-		{
-			get;
-			set;
-		} = new HttpSettings();
-
 		public bool UseProxy { get; set; } = true;
 
 		public bool UseDefaultProxy { get; set; } = true;

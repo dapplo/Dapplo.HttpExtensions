@@ -45,7 +45,7 @@ namespace Dapplo.HttpExtensions.Support
 
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent, IHttpBehaviour httpBehaviour = null)
 		{
-			return typeToConvertTo.IsAssignableFrom(typeof(MemoryStream));
+			return typeToConvertTo == typeof(MemoryStream);
 		}
 
 		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class

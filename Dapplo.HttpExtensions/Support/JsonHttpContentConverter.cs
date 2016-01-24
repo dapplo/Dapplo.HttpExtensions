@@ -39,14 +39,12 @@ namespace Dapplo.HttpExtensions.Support
 
 		public int Order => int.MaxValue;
 
-		public bool CanConvertFromHttpContent<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null)
-			where TResult : class
+		public bool CanConvertFromHttpContent<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null) where TResult : class
 		{
 			return CanConvertFromHttpContent(typeof (TResult), httpContent, httpBehaviour);
 		}
 
-		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent,
-			IHttpBehaviour httpBehaviour = null)
+		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent, IHttpBehaviour httpBehaviour = null)
 		{
 			return httpContent.ContentType() == MediaTypes.Json.EnumValueOf();
 		}
@@ -54,13 +52,10 @@ namespace Dapplo.HttpExtensions.Support
 		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent,
 			IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
-			return
-				await ConvertFromHttpContentAsync(typeof (TResult), httpContent, httpBehaviour, token).ConfigureAwait(false) as
-					TResult;
+			return await ConvertFromHttpContentAsync(typeof (TResult), httpContent, httpBehaviour, token).ConfigureAwait(false) as TResult;
 		}
 
-		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent,
-			IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
 		{
 			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 			if (!CanConvertFromHttpContent(resultType, httpContent, httpBehaviour))
@@ -69,7 +64,7 @@ namespace Dapplo.HttpExtensions.Support
 			}
 
 			var jsonString = await httpContent.ReadAsStringAsync().ConfigureAwait(false);
-			return httpBehaviour.JsonSerializer.DeserializeJson(resultType, jsonString);
+			return httpBehaviour.JsonSerializer.DeserializeJson(resultType == typeof(object) ? null : resultType, jsonString);
 		}
 
 		public bool CanConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
@@ -89,8 +84,7 @@ namespace Dapplo.HttpExtensions.Support
 			return new StringContent(jsonString, httpBehaviour.DefaultEncoding, MediaTypes.Json.EnumValueOf());
 		}
 
-		public HttpContent ConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null)
-			where TInput : class
+		public HttpContent ConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null) where TInput : class
 		{
 			return ConvertToHttpContent(typeof (TInput), content, httpBehaviour);
 		}

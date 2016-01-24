@@ -60,7 +60,7 @@ namespace Dapplo.HttpExtensions
 		/// <returns>the deserialized object of type T</returns>
 		public static async Task<object> GetAsAsync(this HttpContent httpContent, Type resultType, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
 		{
-			if (resultType.IsInstanceOfType(httpContent))
+			if (resultType != null && typeof(HttpContent).IsAssignableFrom(resultType))
 			{
 				return httpContent;
 			}

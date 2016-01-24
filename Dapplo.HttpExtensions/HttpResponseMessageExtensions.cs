@@ -68,8 +68,15 @@ namespace Dapplo.HttpExtensions
 			}
 			if (httpResponseMessage.IsSuccessStatusCode)
 			{
-				var content = httpResponseMessage.Content;
-				return await content.GetAsAsync<TResult>(httpBehaviour, token).ConfigureAwait(false);
+				var httpContent = httpResponseMessage.Content;
+				var result = await httpContent.GetAsAsync<TResult>(httpBehaviour, token).ConfigureAwait(false);
+				// Make sure the httpContent is only disposed when it's not the return type
+				if (!typeof(HttpContent).IsAssignableFrom(typeof(TResult)))
+				{
+					httpContent?.Dispose();
+				}
+
+				return result;
 			}
 			await httpResponseMessage.HandleErrorAsync(httpBehaviour, token).ConfigureAwait(false);
 			return default(TResult);
@@ -94,14 +101,25 @@ namespace Dapplo.HttpExtensions
 				Headers = httpResponseMessage.Headers
 			};
 
-			var content = httpResponseMessage.Content;
+			var httpContent = httpResponseMessage.Content;
 			if (httpResponseMessage.IsSuccessStatusCode)
 			{
-				response.Result = await content.GetAsAsync<TResult>(httpBehaviour, token).ConfigureAwait(false);
+				response.Result = await httpContent.GetAsAsync<TResult>(httpBehaviour, token).ConfigureAwait(false);
+				// Make sure the httpContent is only disposed when it's not the return type
+				if (!typeof(HttpContent).IsAssignableFrom(typeof(TResult)))
+				{
+					httpContent?.Dispose();
+				}
 			}
 			else
 			{
-				response.ErrorResponse = await content.GetAsAsync<TError>(httpBehaviour, token).ConfigureAwait(false);
+				response.ErrorResponse = await httpContent.GetAsAsync<TError>(httpBehaviour, token).ConfigureAwait(false);
+
+				// Make sure the httpContent is only disposed when it's not the return type
+				if (!typeof(HttpContent).IsAssignableFrom(typeof(TError)))
+				{
+					httpContent?.Dispose();
+				}
 			}
 			return response;
 		}

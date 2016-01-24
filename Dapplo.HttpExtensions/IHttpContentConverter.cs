@@ -41,9 +41,9 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// This will add accept headers depending on the result type
 		/// </summary>
-		/// <typeparam name="TResult">Type to read into</typeparam>
+		/// <param name="resultType">Type to read into</param>
 		/// <param name="httpRequestMessage">HttpClient for the response headers</param>
-		void AddAcceptHeadersForType<TResult>(HttpRequestMessage httpRequestMessage);
+		void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage);
 
 		/// <summary>
 		/// Check if this IHttpContentProcessor can convert the specified object to a HttpContent

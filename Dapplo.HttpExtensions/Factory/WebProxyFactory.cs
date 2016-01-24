@@ -23,7 +23,7 @@
 
 using System.Net;
 
-namespace Dapplo.HttpExtensions
+namespace Dapplo.HttpExtensions.Factory
 {
 	/// <summary>
 	/// Creating a proxy is not very straightforward, that is why the logic is capsulated in the ProxyFactory.

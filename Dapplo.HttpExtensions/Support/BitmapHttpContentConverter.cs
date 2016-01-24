@@ -117,7 +117,7 @@ namespace Dapplo.HttpExtensions.Support
 
 		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
-			return await ConvertFromHttpContentAsync(typeof(TResult), httpContent, httpBehaviour, token) as TResult;
+			return await ConvertFromHttpContentAsync(typeof(TResult), httpContent, httpBehaviour, token).ConfigureAwait(false) as TResult;
 		}
 
 		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
@@ -173,9 +173,17 @@ namespace Dapplo.HttpExtensions.Support
 			return null;
 		}
 
-		public void AddAcceptHeadersForType<TResult>(HttpRequestMessage httpRequestMessage)
+		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage)
 		{
-			if (!typeof (TResult).IsAssignableFrom(typeof (Bitmap)))
+			if (resultType == null)
+			{
+				throw new ArgumentNullException(nameof(resultType));
+			}
+			if (httpRequestMessage == null)
+			{
+				throw new ArgumentNullException(nameof(httpRequestMessage));
+			}
+			if (!resultType.IsAssignableFrom(typeof (Bitmap)))
 			{
 				return;
 			}

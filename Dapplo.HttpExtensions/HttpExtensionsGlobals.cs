@@ -70,6 +70,5 @@ namespace Dapplo.HttpExtensions
 		/// The global read buffer-size
 		/// </summary>
 		public static int ReadBufferSize { get; set; } = 4096;
-
 	}
 }

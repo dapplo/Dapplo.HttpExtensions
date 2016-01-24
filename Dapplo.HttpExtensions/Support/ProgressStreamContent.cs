@@ -111,7 +111,7 @@ namespace Dapplo.HttpExtensions.Support
 
 			while (true)
 			{
-				var length = await _content.ReadAsync(buffer, 0, buffer.Length);
+				var length = await _content.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
 				if (length <= 0)
 				{
 					break;
@@ -122,7 +122,7 @@ namespace Dapplo.HttpExtensions.Support
 				// Report the progress
 				_progressHandler?.Report(UploadedBytes * 100 / (float)size);
 
-				await stream.WriteAsync(buffer, 0, length);
+				await stream.WriteAsync(buffer, 0, length).ConfigureAwait(false);
 
 				State = UploadStates.Uploading;
 			}

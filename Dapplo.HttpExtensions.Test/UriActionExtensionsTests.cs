@@ -27,12 +27,55 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using Dapplo.HttpExtensions.Test.TestEntities;
+using System.Drawing;
+using System.IO;
+using System.Windows.Media.Imaging;
 
 namespace Dapplo.HttpExtensions.Test
 {
 	[TestClass]
-	public class UriJsonActionExtensionsTests
+	public class UriActionExtensionsTests
 	{
+		private readonly Uri _bitmapUri = new Uri("http://getgreenshot.org/wp-content/themes/greenshot/images/headers/greenshot_logo.gif");
+
+		/// <summary>
+		/// Test getting the uri as Bitmap
+		/// </summary>
+		/// <returns></returns>
+		[TestMethod]
+		public async Task TestGetAsAsyncBitmap()
+		{
+			var bitmap = await _bitmapUri.GetAsAsync<Bitmap>();
+			Assert.IsNotNull(bitmap);
+			Assert.IsTrue(bitmap.Width > 0);
+			Assert.IsTrue(bitmap.Height > 0);
+		}
+
+		/// <summary>
+		/// Test getting the Uri as BitmapSource
+		/// </summary>
+		/// <returns></returns>
+		[TestMethod]
+		public async Task TestGetAsAsyncBitmapSource()
+		{
+			var bitmap = await _bitmapUri.GetAsAsync<BitmapSource>();
+			Assert.IsNotNull(bitmap);
+			Assert.IsTrue(bitmap.Width > 0);
+			Assert.IsTrue(bitmap.Height > 0);
+		}
+
+		/// <summary>
+		/// Test getting the Uri as MemoryStream
+		/// </summary>
+		/// <returns></returns>
+		[TestMethod]
+		public async Task TestGetAsAsyncMemoryStream()
+		{
+			var stream = await _bitmapUri.GetAsAsync<MemoryStream>();
+			Assert.IsNotNull(stream);
+			Assert.IsTrue(stream.Length > 0);
+		}
+
 		/// <summary>
 		/// To make sure we test some of the functionality, we call the GitHub API to get the releases for this project.
 		/// </summary>

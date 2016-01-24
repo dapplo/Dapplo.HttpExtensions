@@ -24,7 +24,7 @@
 using System.Net;
 using System.Net.Http;
 
-namespace Dapplo.HttpExtensions
+namespace Dapplo.HttpExtensions.Factory
 {
 	/// <summary>
 	/// Creating a HttpMessageHandler is not very straightforward, that is why the logic is capsulated in the HttpMessageHandlerFactory.

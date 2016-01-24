@@ -47,7 +47,7 @@ namespace Dapplo.HttpExtensions
 		/// <returns>the deserialized object of type T</returns>
 		public static async Task<TResult> GetAsAsync<TResult>(this HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
-			return await httpContent.GetAsAsync(typeof(TResult), httpBehaviour, token) as TResult;
+			return await httpContent.GetAsAsync(typeof(TResult), httpBehaviour, token).ConfigureAwait(false) as TResult;
 		}
 
 		/// <summary>

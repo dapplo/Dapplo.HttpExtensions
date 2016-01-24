@@ -27,6 +27,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using Dapplo.HttpExtensions.Factory;
 
 namespace Dapplo.HttpExtensions
 {
@@ -80,11 +81,11 @@ namespace Dapplo.HttpExtensions
 			}
 
 			using (var client = HttpClientFactory.Create(httpBehaviour, uri))
-			using (var request = new HttpRequestMessage(HttpMethod.Head, uri))
+			using (var httpRequestMessage = HttpRequestMessageFactory.CreateHead(uri, httpBehaviour))
+			using (var httpResponseMessage = await client.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false))
 			{
-				var responseMessage = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
-				await responseMessage.HandleErrorAsync(httpBehaviour, token);
-				return responseMessage.Content.Headers;
+				await httpResponseMessage.HandleErrorAsync(httpBehaviour, token).ConfigureAwait(false);
+				return httpResponseMessage.Content.Headers;
 			}
 		}
 
@@ -101,10 +102,12 @@ namespace Dapplo.HttpExtensions
 			{
 				throw new ArgumentNullException(nameof(uri));
 			}
+			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 
 			using (var client = HttpClientFactory.Create(httpBehaviour, uri))
+			using (var httpRequestMessage = HttpRequestMessageFactory.CreatePost(uri, null, null, httpBehaviour))
 			{
-				return await client.PostAsync(uri, token);
+				return await client.SendAsync(httpRequestMessage, httpBehaviour.HttpCompletionOption, token).ConfigureAwait(false);
 			}
 		}
 
@@ -151,7 +154,7 @@ namespace Dapplo.HttpExtensions
 			using (var content = new FormUrlEncodedContent(formContent))
 			using (var client = HttpClientFactory.Create(httpBehaviour, uri))
 			{
-				return await client.PostAsync(uri, content, token);
+				return await client.PostAsync(uri, content, token).ConfigureAwait(false);
 			}
 		}
 

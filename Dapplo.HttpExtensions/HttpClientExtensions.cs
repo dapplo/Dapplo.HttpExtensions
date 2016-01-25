@@ -21,14 +21,13 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Dapplo.HttpExtensions.Factory;
 using System;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Dapplo.HttpExtensions.Factory;
 
 namespace Dapplo.HttpExtensions
 {
@@ -134,12 +133,10 @@ namespace Dapplo.HttpExtensions
 		public static async Task<TResult> PostAsync<TResult, TContent>(this HttpClient client, Uri uri, TContent content, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class where TContent : class
 		{
 			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
-			if (content != null)
+			using (var httpContent = HttpContentFactory.Create(content, httpBehaviour))
 			{
-				var httpContentConverter = httpBehaviour.HttpContentConverters.OrderBy(x => x.Order).FirstOrDefault(x => x.CanConvertToHttpContent(content, httpBehaviour));
-				if (httpContentConverter != null)
+				if (httpContent != null)
 				{
-					using (var httpContent = httpContentConverter.ConvertToHttpContent(content, httpBehaviour))
 					using (var httpRequestMessage = HttpRequestMessageFactory.Create<TResult>(HttpMethod.Post, uri, httpContent, httpBehaviour))
 					using (var httpResponseMessage = await client.SendAsync(httpRequestMessage, httpBehaviour.HttpCompletionOption, token).ConfigureAwait(false))
 					{
@@ -159,28 +156,26 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// Method to post without content
 		/// </summary>
-		/// <typeparam name="TResult">the generic type to return the result into</typeparam>
+		/// <typeparam name="TResponse">the generic type to return the result into</typeparam>
 		/// <typeparam name="TContent">the generic type to for the content</typeparam>
-		/// <typeparam name="TError">what to return an error into</typeparam>
+		/// <typeparam name="TErrorResponse">what to return an error into</typeparam>
 		/// <param name="client">HttpClient</param>
 		/// <param name="uri">Uri to post an empty request to</param>
 		/// <param name="content">TContent with the content to post</param>
 		/// <param name="httpBehaviour">IHttpBehaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>TResult</returns>
-		public static async Task<HttpResponse<TResult, TError>> PostAsync<TResult, TError, TContent>(this HttpClient client, Uri uri, TContent content, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class where TError : class where TContent : class
+		public static async Task<IHttpResponse<TResponse, TErrorResponse>> PostAsync<TResponse, TErrorResponse, TContent>(this HttpClient client, Uri uri, TContent content, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResponse : class where TErrorResponse : class where TContent : class
 		{
 			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
-			if (content != null)
+			using (var httpContent = HttpContentFactory.Create(content, httpBehaviour))
 			{
-				var httpContentConverter = httpBehaviour.HttpContentConverters.OrderBy(x => x.Order).FirstOrDefault(x => x.CanConvertToHttpContent(content, httpBehaviour));
-				if (httpContentConverter != null)
+				if (httpContent != null)
 				{
-					using (var httpContent = httpContentConverter.ConvertToHttpContent(content, httpBehaviour))
-					using (var httpRequestMessage = HttpRequestMessageFactory.Create<TResult>(HttpMethod.Post, uri, httpContent, httpBehaviour))
+					using (var httpRequestMessage = HttpRequestMessageFactory.Create<TResponse>(HttpMethod.Post, uri, httpContent, httpBehaviour))
 					using (var httpResponseMessage = await client.SendAsync(httpRequestMessage, httpBehaviour.HttpCompletionOption, token).ConfigureAwait(false))
 					{
-						return await httpResponseMessage.GetAsAsync<TResult, TError>(httpBehaviour, token).ConfigureAwait(false);
+						return await httpResponseMessage.GetAsAsync<TResponse, TErrorResponse>(httpBehaviour, token).ConfigureAwait(false);
 					}
 				}
 			}
@@ -189,7 +184,7 @@ namespace Dapplo.HttpExtensions
 			using (var httpRequestMessage = HttpRequestMessageFactory.CreatePost(uri))
 			using (var httpResponseMessage = await client.SendAsync(httpRequestMessage, httpBehaviour.HttpCompletionOption, token).ConfigureAwait(false))
 			{
-				return await httpResponseMessage.GetAsAsync<TResult, TError>(httpBehaviour, token).ConfigureAwait(false);
+				return await httpResponseMessage.GetAsAsync<TResponse, TErrorResponse>(httpBehaviour, token).ConfigureAwait(false);
 			}
 		}
 
@@ -217,18 +212,18 @@ namespace Dapplo.HttpExtensions
 		/// Currently we support Json objects which are annotated with the DataContract/DataMember attributes
 		/// We might support other object, e.g MemoryStream, Bitmap etc soon
 		/// </summary>
-		/// <typeparam name="TResult">The Type to read into</typeparam>
-		/// <typeparam name="TError">The Type to read into when an error occured</typeparam>
+		/// <typeparam name="TResponse">The Type to read into</typeparam>
+		/// <typeparam name="TErrorResponse">The Type to read into when an error occured</typeparam>
 		/// <param name="client">HttpClient</param>
 		/// <param name="uri">URI</param>
 		/// <param name="httpBehaviour">HttpBehaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>HttpResponse with all result and error information</returns>
-		public static async Task<HttpResponse<TResult, TError>> GetAsAsync<TResult, TError>(this HttpClient client, Uri uri, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class where TError : class
+		public static async Task<IHttpResponse<TResponse, TErrorResponse>> GetAsAsync<TResponse, TErrorResponse>(this HttpClient client, Uri uri, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResponse : class where TErrorResponse : class
 		{
 			using (var httpResponseMessage = await client.GetAsync(uri, token).ConfigureAwait(false))
 			{
-				return await httpResponseMessage.GetAsAsync<TResult, TError>(httpBehaviour, token).ConfigureAwait(false);
+				return await httpResponseMessage.GetAsAsync<TResponse, TErrorResponse>(httpBehaviour, token).ConfigureAwait(false);
 			}
 		}
 	}

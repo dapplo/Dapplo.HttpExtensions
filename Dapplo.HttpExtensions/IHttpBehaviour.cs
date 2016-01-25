@@ -51,6 +51,12 @@ namespace Dapplo.HttpExtensions
 		IList<IHttpContentConverter> HttpContentConverters { get; set; }
 
 		/// <summary>
+		/// An action which can modify the HttpContent right before it's used to start the request.
+		/// This can be used to add a specific header, e.g. set a filename etc.
+		/// </summary>
+		Action<HttpContent> OnHttpContentCreated { get; set; }
+
+		/// <summary>
 		/// An action which can modify the HttpRequestMessage right before it's used to start the request.
 		/// This can be used to add a specific header, which should not be for all requests.
 		/// As the called action has access to HttpRequestMessage with the content, uri and method this is quite usefull.
@@ -70,7 +76,7 @@ namespace Dapplo.HttpExtensions
 		Action<HttpMessageHandler> OnHttpMessageHandlerCreated { get; set; }
 
 		/// <summary>
-		/// If a request gets a response which has a HTTP status code which is not 200, it would normally throw an exception.
+		/// If a request gets a response which has a HTTP status code which is an error, it would normally THROW an exception.
 		/// Sometimes you would still want the response, settings this to false would allow this.
 		/// This can be ignored for all HttpResponse returning methods.
 		/// </summary>

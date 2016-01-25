@@ -42,10 +42,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Factory\HttpContentFactory.cs" />
     <Compile Include="HttpExtensionsGlobals.cs" />
     <Compile Include="Factory\HttpRequestMessageFactory.cs" />
     <Compile Include="IHttpBehaviour.cs" />
     <Compile Include="IHttpContentConverter.cs" />
+    <Compile Include="IHttpResponse.cs" />
     <Compile Include="Support\BitmapSourceHttpContentConverter.cs" />
     <Compile Include="Support\JsonHttpContentConverter.cs" />
     <Compile Include="Support\FormUrilEncodedContentConverter.cs" />
@@ -58,7 +60,7 @@
     <Compile Include="Factory\HttpClientFactory.cs" />
     <Compile Include="HttpContentExtensions.cs" />
     <Compile Include="Factory\HttpMessageHandlerFactory.cs" />
-    <Compile Include="HttpResponse.cs" />
+    <Compile Include="Support\HttpResponse.cs" />
     <Compile Include="HttpResponseMessageExtensions.cs" />
     <Compile Include="Support\HttpSettings.cs" />
     <Compile Include="IHttpSettings.cs" />

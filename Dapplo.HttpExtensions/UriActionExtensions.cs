@@ -220,13 +220,13 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// Get the response as the specified type
 		/// </summary>
-		/// <typeparam name="TResult">Type to deserialize into</typeparam>
-		/// <typeparam name="TError">Type to deserialize into when an error occured</typeparam>
+		/// <typeparam name="TResponse">Type to deserialize into</typeparam>
+		/// <typeparam name="TErrorResponse">Type to deserialize into when an error occured</typeparam>
 		/// <param name="uri">An Uri to specify the download location</param>
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>HttpResponse with TResult and TError</returns>
-		public static async Task<HttpResponse<TResult, TError>> GetAsAsync<TResult, TError>(this Uri uri, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class where TError : class
+		public static async Task<IHttpResponse<TResponse, TErrorResponse>> GetAsAsync<TResponse, TErrorResponse>(this Uri uri, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResponse : class where TErrorResponse : class
 		{
 			if (uri == null)
 			{
@@ -234,7 +234,7 @@ namespace Dapplo.HttpExtensions
 			}
 			using (var client = HttpClientFactory.Create(httpBehaviour, uri))
 			{
-				return await client.GetAsAsync<TResult, TError>(uri, httpBehaviour, token).ConfigureAwait(false);
+				return await client.GetAsAsync<TResponse, TErrorResponse>(uri, httpBehaviour, token).ConfigureAwait(false);
 			}
 		}
 	}

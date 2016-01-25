@@ -46,6 +46,8 @@ namespace Dapplo.HttpExtensions
 
 		public Action<HttpMessageHandler> OnHttpMessageHandlerCreated { get; set; }
 
+		public Action<HttpContent> OnHttpContentCreated { get; set; }
+
 		public bool ThrowOnError { get; set; } = HttpExtensionsGlobals.ThrowOnError;
 
 		public HttpCompletionOption HttpCompletionOption { get; set; } = HttpCompletionOption.ResponseContentRead;

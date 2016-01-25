@@ -21,43 +21,44 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 using System.Net;
 using System.Net.Http.Headers;
 
 namespace Dapplo.HttpExtensions
 {
 	/// <summary>
-	/// This class returns the information of a HTTP request
+	/// This interface returns the information of a HTTP request
 	/// Makes it possible to process the error information too
 	/// </summary>
-	/// <typeparam name="TResult">Type for the normal response</typeparam>
-	/// <typeparam name="TError">Type for the error response</typeparam>
-	public class HttpResponse<TResult, TError> where TResult : class where TError : class
+	/// <typeparam name="TResponse">Type for the normal response</typeparam>
+	/// <typeparam name="TErrorResponse">Type for the error response</typeparam>
+	public interface IHttpResponse<TResponse, TErrorResponse>
+		where TResponse : class
+		where TErrorResponse : class
 	{
 		/// <summary>
-		/// The result when a 200 status was returned
+		/// The response when an "OK" status was returned
 		/// </summary>
-		public TResult Result { get; set; }
+		TResponse Response { get; set; }
 
 		/// <summary>
-		/// The response when not an 200 status was returned
+		/// The response when an "OK" status was returned
 		/// </summary>
-		public TError ErrorResponse { get; set; }
-
-		/// <summary>
-		/// Headers of the response
-		/// </summary>
-		public HttpResponseHeaders Headers { get; set; }
-
-		/// <summary>
-		/// The response HTTP status code
-		/// </summary>
-		public HttpStatusCode StatusCode { get; set; }
+		TErrorResponse ErrorResponse { get; set; }
 
 		/// <summary>
 		/// true if the reponse has an error
 		/// </summary>
-		public bool HasError => ErrorResponse != null;
+		bool HasError { get; }
+
+		/// <summary>
+		/// Headers of the response
+		/// </summary>
+		HttpResponseHeaders Headers { get; set; }
+
+		/// <summary>
+		/// The response HTTP status code
+		/// </summary>
+		HttpStatusCode StatusCode { get; set; }
 	}
 }

@@ -21,6 +21,7 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Dapplo.HttpExtensions.Support;
 using System;
 using System.Net.Http;
 using System.Threading;
@@ -87,15 +88,15 @@ namespace Dapplo.HttpExtensions
 		/// Currently we support Json objects which are annotated with the DataContract/DataMember attributes
 		/// We might support other object, e.g MemoryStream, Bitmap etc soon
 		/// </summary>
-		/// <typeparam name="TResult">The Type to read into</typeparam>
-		/// <typeparam name="TError">The type to read into when an error occurs</typeparam>
+		/// <typeparam name="TResponse">The Type to read into</typeparam>
+		/// <typeparam name="TErrorResponse">The type to read into when an error occurs</typeparam>
 		/// <param name="httpResponseMessage">HttpResponseMessage</param>
 		/// <param name="httpBehaviour">HttpBehaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>HttpResponse</returns>
-		public static async Task<HttpResponse<TResult,TError>> GetAsAsync<TResult, TError>(this HttpResponseMessage httpResponseMessage, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class where TError : class
+		public static async Task<IHttpResponse<TResponse,TErrorResponse>> GetAsAsync<TResponse, TErrorResponse>(this HttpResponseMessage httpResponseMessage, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResponse : class where TErrorResponse : class
 		{
-			var response = new HttpResponse<TResult, TError>
+			var response = new HttpResponse<TResponse, TErrorResponse>
 			{
 				StatusCode = httpResponseMessage.StatusCode,
 				Headers = httpResponseMessage.Headers
@@ -104,19 +105,19 @@ namespace Dapplo.HttpExtensions
 			var httpContent = httpResponseMessage.Content;
 			if (httpResponseMessage.IsSuccessStatusCode)
 			{
-				response.Result = await httpContent.GetAsAsync<TResult>(httpBehaviour, token).ConfigureAwait(false);
+				response.Response = await httpContent.GetAsAsync<TResponse>(httpBehaviour, token).ConfigureAwait(false);
 				// Make sure the httpContent is only disposed when it's not the return type
-				if (!typeof(HttpContent).IsAssignableFrom(typeof(TResult)))
+				if (!typeof(HttpContent).IsAssignableFrom(typeof(TResponse)))
 				{
 					httpContent?.Dispose();
 				}
 			}
 			else
 			{
-				response.ErrorResponse = await httpContent.GetAsAsync<TError>(httpBehaviour, token).ConfigureAwait(false);
+				response.ErrorResponse = await httpContent.GetAsAsync<TErrorResponse>(httpBehaviour, token).ConfigureAwait(false);
 
 				// Make sure the httpContent is only disposed when it's not the return type
-				if (!typeof(HttpContent).IsAssignableFrom(typeof(TError)))
+				if (!typeof(HttpContent).IsAssignableFrom(typeof(TErrorResponse)))
 				{
 					httpContent?.Dispose();
 				}

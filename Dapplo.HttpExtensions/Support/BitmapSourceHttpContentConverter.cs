@@ -132,6 +132,8 @@ namespace Dapplo.HttpExtensions.Support
 				bitmap.StreamSource = memoryStream;
 				bitmap.CacheOption = BitmapCacheOption.OnLoad;
 				bitmap.EndInit();
+
+				// This is very important to make the bitmap usable in the UI thread:
 				bitmap.Freeze();
 				return bitmap;
 			}

@@ -23,20 +23,29 @@
 
 using Dapplo.HttpExtensions.Support;
 using System;
+using System.Diagnostics;
 
 namespace Dapplo.HttpExtensions.Internal
 {
+	/// <summary>
+	/// This solve the problem of the need to specify the type
+	/// </summary>
 	internal class LogContext
 	{
-		private LogContext()
-		{
+		private LogContext() { }
 
-		}
-		public static LogContext Create<TSource>()
+		/// <summary>
+		/// This creates a log context which contains the type of the calling class
+		/// This is slow, only use this in a static variable!
+		/// </summary>
+		/// <returns>LogContext</returns>
+		public static LogContext Create()
 		{
+			// Get the stacktrace, first frame, method and it's declaring type.
+			var souceType = new StackTrace().GetFrame(1).GetMethod().DeclaringType;
 			return new LogContext
 			{
-				Source = typeof(TSource)
+				Source = souceType
 			};
 		}
 		public Type Source { get; private set; }

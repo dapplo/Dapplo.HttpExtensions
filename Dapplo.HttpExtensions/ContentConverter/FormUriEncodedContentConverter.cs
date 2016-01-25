@@ -22,19 +22,26 @@
  */
 
 using System;
-using System.IO;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using Dapplo.HttpExtensions.Internal;
+using Dapplo.HttpExtensions.Support;
 
-namespace Dapplo.HttpExtensions.Support
+namespace Dapplo.HttpExtensions.ContentConverter
 {
 	/// <summary>
-	/// This can convert HttpContent from/to a MemoryStream
+	/// This can convert HttpContent from/to a IEnumerable keyvaluepair string-string or IDictionary string,string
+	/// A common usage is the oauth2 token request as described here:
+	/// https://developers.google.com/identity/protocols/OAuth2InstalledApp
+	/// (the response would be json, that is for the JsonHttpContentConverter)
 	/// </summary>
-	public class StreamHttpContentConverter : IHttpContentConverter
+	public class FormUriEncodedContentConverter : IHttpContentConverter
 	{
-		public static readonly StreamHttpContentConverter Instance = new StreamHttpContentConverter();
+		private static readonly LogContext Log = LogContext.Create();
+		public static readonly FormUriEncodedContentConverter Instance = new FormUriEncodedContentConverter();
 
 		public int Order => 0;
 
@@ -45,7 +52,12 @@ namespace Dapplo.HttpExtensions.Support
 
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent, IHttpBehaviour httpBehaviour = null)
 		{
-			return typeToConvertTo == typeof(MemoryStream);
+			// Check if the return-type can be assigned
+			if (!typeToConvertTo.IsAssignableFrom(typeof(IEnumerable<KeyValuePair<string, string>>)))
+			{
+				return false;
+			}
+			return httpContent.ContentType() == MediaTypes.WwwFormUrlEncoded.EnumValueOf();
 		}
 
 		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
@@ -55,26 +67,29 @@ namespace Dapplo.HttpExtensions.Support
 
 		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
 		{
-			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
+			if (resultType == null)
+			{
+				throw new ArgumentNullException(nameof(resultType));
+			}
+			if (httpContent == null)
+			{
+				throw new ArgumentNullException(nameof(httpContent));
+			}
 			if (!CanConvertFromHttpContent(resultType, httpContent, httpBehaviour))
 			{
-				throw new NotSupportedException("CanConvertFromHttpContent resulted in false, this is not supposed to be called.");
+				throw new NotSupportedException("Don't calls this, when the CanConvertFromHttpContent returns false!");
 			}
-
-			using (var contentStream = await httpContent.ReadAsStreamAsync().ConfigureAwait(false))
-			{
-				var memoryStream = new MemoryStream();
-				await contentStream.CopyToAsync(memoryStream, httpBehaviour.ReadBufferSize, token).ConfigureAwait(false);
-				// Make sure the memory stream position is at the beginning,
-				// so the processing code can read right away.
-				memoryStream.Position = 0;
-				return memoryStream;
-			}
+			// Get the string from the content
+			var formUriEncodedString = await httpContent.ReadAsStringAsync().ConfigureAwait(false);
+			// Use code in the UriParseExtensions to parse the query string
+			Log.Prepare().Debug("Read WwwUriEncodedForm data: {0}", formUriEncodedString);
+			// This returns an IEnumerable<KeyValuePair<string, string>>
+			return UriParseExtensions.QueryStringToKeyValuePairs(formUriEncodedString);
 		}
 
 		public bool CanConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
 		{
-			return typeof(Stream).IsAssignableFrom(typeToConvert);
+			return typeof(IEnumerable<KeyValuePair<string, string>>).IsAssignableFrom(typeToConvert);
 		}
 
 		public bool CanConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null) where TInput : class
@@ -84,7 +99,7 @@ namespace Dapplo.HttpExtensions.Support
 
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
 		{
-			return new StreamContent(content as Stream);
+			return new FormUrlEncodedContent(content as IEnumerable<KeyValuePair<string, string>>);
 		}
 
 		public HttpContent ConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null) where TInput : class
@@ -102,6 +117,11 @@ namespace Dapplo.HttpExtensions.Support
 			{
 				throw new ArgumentNullException(nameof(httpRequestMessage));
 			}
+			if (!resultType.IsAssignableFrom(typeof(IEnumerable<KeyValuePair<string, string>>)))
+			{
+				return;
+			}
+			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.WwwFormUrlEncoded.EnumValueOf()));
 		}
 	}
 }

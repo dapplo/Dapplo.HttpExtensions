@@ -21,7 +21,6 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Dapplo.HttpExtensions.Internal;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
@@ -31,8 +30,10 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using Dapplo.HttpExtensions.Internal;
+using Dapplo.HttpExtensions.Support;
 
-namespace Dapplo.HttpExtensions.Support
+namespace Dapplo.HttpExtensions.ContentConverter
 {
 	/// <summary>
 	/// This can convert HttpContent from/to a WPF BitmapImage
@@ -40,7 +41,7 @@ namespace Dapplo.HttpExtensions.Support
 	public class BitmapSourceHttpContentConverter : IHttpContentConverter
 	{
 		private static readonly IList<string> SupportedContentTypes = new List<string>();
-		private static readonly LogContext Log = LogContext.Create<BitmapSourceHttpContentConverter>();
+		private static readonly LogContext Log = LogContext.Create();
 		public static readonly BitmapSourceHttpContentConverter Instance = new BitmapSourceHttpContentConverter();
 
 		static BitmapSourceHttpContentConverter()
@@ -192,7 +193,7 @@ namespace Dapplo.HttpExtensions.Support
 				return;
 			}
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Png.EnumValueOf()));
-			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Jpeg.EnumValueOf(), Quality/100));
+			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Jpeg.EnumValueOf(), Quality/100d));
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Tiff.EnumValueOf()));
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Bmp.EnumValueOf()));
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Gif.EnumValueOf()));

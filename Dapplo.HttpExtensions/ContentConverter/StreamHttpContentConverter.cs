@@ -24,33 +24,31 @@
 using System;
 using System.IO;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Dapplo.HttpExtensions.Support
+namespace Dapplo.HttpExtensions.ContentConverter
 {
 	/// <summary>
-	/// This can convert HttpContent from/to Json
+	/// This can convert HttpContent from/to a MemoryStream
 	/// </summary>
-	public class JsonHttpContentConverter : IHttpContentConverter
+	public class StreamHttpContentConverter : IHttpContentConverter
 	{
-		public static readonly JsonHttpContentConverter Instance = new JsonHttpContentConverter();
+		public static readonly StreamHttpContentConverter Instance = new StreamHttpContentConverter();
 
-		public int Order => int.MaxValue;
+		public int Order => 0;
 
 		public bool CanConvertFromHttpContent<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null) where TResult : class
 		{
-			return CanConvertFromHttpContent(typeof (TResult), httpContent, httpBehaviour);
+			return CanConvertFromHttpContent(typeof(TResult), httpContent, httpBehaviour);
 		}
 
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent, IHttpBehaviour httpBehaviour = null)
 		{
-			return httpContent.ContentType() == MediaTypes.Json.EnumValueOf();
+			return typeToConvertTo == typeof(MemoryStream);
 		}
 
-		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent,
-			IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
+		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
 			return await ConvertFromHttpContentAsync(typeof (TResult), httpContent, httpBehaviour, token).ConfigureAwait(false) as TResult;
 		}
@@ -63,30 +61,35 @@ namespace Dapplo.HttpExtensions.Support
 				throw new NotSupportedException("CanConvertFromHttpContent resulted in false, this is not supposed to be called.");
 			}
 
-			var jsonString = await httpContent.ReadAsStringAsync().ConfigureAwait(false);
-			return httpBehaviour.JsonSerializer.DeserializeJson(resultType == typeof(object) ? null : resultType, jsonString);
+			using (var contentStream = await httpContent.ReadAsStreamAsync().ConfigureAwait(false))
+			{
+				var memoryStream = new MemoryStream();
+				await contentStream.CopyToAsync(memoryStream, httpBehaviour.ReadBufferSize, token).ConfigureAwait(false);
+				// Make sure the memory stream position is at the beginning,
+				// so the processing code can read right away.
+				memoryStream.Position = 0;
+				return memoryStream;
+			}
 		}
 
 		public bool CanConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
 		{
-			return typeToConvert == typeof (MemoryStream);
+			return typeof(Stream).IsAssignableFrom(typeToConvert);
 		}
 
 		public bool CanConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null) where TInput : class
 		{
-			return CanConvertToHttpContent(typeof (TInput), content, httpBehaviour);
+			return CanConvertToHttpContent(typeof(TInput), content, httpBehaviour);
 		}
 
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
 		{
-			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
-			var jsonString = httpBehaviour.JsonSerializer.SerializeJson(content);
-			return new StringContent(jsonString, httpBehaviour.DefaultEncoding, MediaTypes.Json.EnumValueOf());
+			return new StreamContent(content as Stream);
 		}
 
 		public HttpContent ConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null) where TInput : class
 		{
-			return ConvertToHttpContent(typeof (TInput), content, httpBehaviour);
+			return ConvertToHttpContent(typeof(TInput), content, httpBehaviour);
 		}
 
 		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage)
@@ -99,7 +102,6 @@ namespace Dapplo.HttpExtensions.Support
 			{
 				throw new ArgumentNullException(nameof(httpRequestMessage));
 			}
-			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Json.EnumValueOf()));
 		}
 	}
 }

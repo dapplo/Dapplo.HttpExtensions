@@ -22,45 +22,39 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using Dapplo.HttpExtensions.Internal;
+using Dapplo.HttpExtensions.Support;
 
-namespace Dapplo.HttpExtensions.Support
+namespace Dapplo.HttpExtensions.ContentConverter
 {
 	/// <summary>
-	/// This can convert HttpContent from/to a string
+	/// This can convert HttpContent from/to Json
 	/// </summary>
-	public class StringHttpContentConverter : IHttpContentConverter
+	public class JsonHttpContentConverter : IHttpContentConverter
 	{
-		public static readonly StringHttpContentConverter Instance = new StringHttpContentConverter();
-		private static readonly IList<string> SupportedContentTypes = new List<string>();
-
-		static StringHttpContentConverter()
-		{
-			SupportedContentTypes.Add(MediaTypes.Txt.EnumValueOf());
-		}
+		private static readonly LogContext Log = LogContext.Create();
+		public static readonly JsonHttpContentConverter Instance = new JsonHttpContentConverter();
 
 		public int Order => int.MaxValue;
 
-		public bool CanConvertFromHttpContent<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null) where TResult : class
+		public bool CanConvertFromHttpContent<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null)
+			where TResult : class
 		{
-			return CanConvertFromHttpContent(typeof(TResult), httpContent, httpBehaviour);
+			return CanConvertFromHttpContent(typeof (TResult), httpContent, httpBehaviour);
 		}
 
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent, IHttpBehaviour httpBehaviour = null)
 		{
-			if (typeToConvertTo != typeof(string))
-			{
-				return false;
-			}
-			return !httpBehaviour.ValidateResponseContentType || SupportedContentTypes.Contains(httpContent.ContentType());
+			return httpContent.ContentType() == MediaTypes.Json.EnumValueOf();
 		}
 
-		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
+		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+			where TResult : class
 		{
 			return await ConvertFromHttpContentAsync(typeof (TResult), httpContent, httpBehaviour, token).ConfigureAwait(false) as TResult;
 		}
@@ -72,27 +66,35 @@ namespace Dapplo.HttpExtensions.Support
 			{
 				throw new NotSupportedException("CanConvertFromHttpContent resulted in false, this is not supposed to be called.");
 			}
-			return await httpContent.ReadAsStringAsync().ConfigureAwait(false);
+
+			var jsonString = await httpContent.ReadAsStringAsync().ConfigureAwait(false);
+			Log.Prepare().Debug("Read Json content: {0}", jsonString);
+			return httpBehaviour.JsonSerializer.DeserializeJson(resultType == typeof(object) ? null : resultType, jsonString);
 		}
 
 		public bool CanConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
 		{
-			return typeof(string) == typeToConvert;
+			return typeToConvert == typeof (MemoryStream);
 		}
 
-		public bool CanConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null) where TInput : class
+		public bool CanConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null)
+			where TInput : class
 		{
-			return CanConvertToHttpContent(typeof(TInput), content, httpBehaviour);
+			return CanConvertToHttpContent(typeof (TInput), content, httpBehaviour);
 		}
 
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
 		{
-			return new StringContent(content as string);
+			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
+			var jsonString = httpBehaviour.JsonSerializer.SerializeJson(content);
+			Log.Prepare().Debug("Posting Json content: {0}", jsonString);
+			return new StringContent(jsonString, httpBehaviour.DefaultEncoding, MediaTypes.Json.EnumValueOf());
 		}
 
-		public HttpContent ConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null) where TInput : class
+		public HttpContent ConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null)
+			where TInput : class
 		{
-			return ConvertToHttpContent(typeof(TInput), content, httpBehaviour);
+			return ConvertToHttpContent(typeof (TInput), content, httpBehaviour);
 		}
 
 		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage)
@@ -105,7 +107,7 @@ namespace Dapplo.HttpExtensions.Support
 			{
 				throw new ArgumentNullException(nameof(httpRequestMessage));
 			}
-			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Txt.EnumValueOf()));
+			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Json.EnumValueOf()));
 		}
 	}
 }

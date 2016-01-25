@@ -113,26 +113,26 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpBehaviour">IHttpBehaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>TResult</returns>
-		public static async Task<TResult> PostAsync<TResult, TContent>(this HttpClient client, Uri uri, TContent content, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class where TContent : class
+		public static async Task<TResponse> PostAsync<TResponse, TContent>(this HttpClient client, Uri uri, TContent content, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResponse : class where TContent : class
 		{
 			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 			using (var httpContent = HttpContentFactory.Create(content, httpBehaviour))
 			{
 				if (httpContent != null)
 				{
-					using (var httpRequestMessage = HttpRequestMessageFactory.Create<TResult>(HttpMethod.Post, uri, httpContent, httpBehaviour))
+					using (var httpRequestMessage = HttpRequestMessageFactory.Create<TResponse>(HttpMethod.Post, uri, httpContent, httpBehaviour))
 					using (var httpResponseMessage = await client.SendAsync(httpRequestMessage, httpBehaviour.HttpCompletionOption, token).ConfigureAwait(false))
 					{
-						return await httpResponseMessage.GetAsAsync<TResult>(httpBehaviour, token).ConfigureAwait(false);
+						return await httpResponseMessage.GetAsAsync<TResponse>(httpBehaviour, token).ConfigureAwait(false);
 					}
 				}
 			}
 
 			// No content, send empty post
-			using (var httpRequestMessage = HttpRequestMessageFactory.Create<TResult>(HttpMethod.Post, uri, null, httpBehaviour))
+			using (var httpRequestMessage = HttpRequestMessageFactory.Create<TResponse>(HttpMethod.Post, uri, null, httpBehaviour))
 			using (var httpResponseMessage = await client.SendAsync(httpRequestMessage, httpBehaviour.HttpCompletionOption, token).ConfigureAwait(false))
 			{
-				return await httpResponseMessage.GetAsAsync<TResult>(httpBehaviour, token).ConfigureAwait(false);
+				return await httpResponseMessage.GetAsAsync<TResponse>(httpBehaviour, token).ConfigureAwait(false);
 			}
 		}
 

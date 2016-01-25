@@ -27,17 +27,24 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using Dapplo.HttpExtensions.Support;
 
-namespace Dapplo.HttpExtensions.Support
+namespace Dapplo.HttpExtensions.ContentConverter
 {
 	/// <summary>
-	/// This can convert HttpContent from/to a IEnumerable keyvaluepair string-string
+	/// This can convert HttpContent from/to a string
 	/// </summary>
-	public class FormUrilEncodedContentConverter : IHttpContentConverter
+	public class StringHttpContentConverter : IHttpContentConverter
 	{
-		public static readonly FormUrilEncodedContentConverter Instance = new FormUrilEncodedContentConverter();
+		public static readonly StringHttpContentConverter Instance = new StringHttpContentConverter();
+		private static readonly IList<string> SupportedContentTypes = new List<string>();
 
-		public int Order => 0;
+		static StringHttpContentConverter()
+		{
+			SupportedContentTypes.Add(MediaTypes.Txt.EnumValueOf());
+		}
+
+		public int Order => int.MaxValue;
 
 		public bool CanConvertFromHttpContent<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null) where TResult : class
 		{
@@ -46,7 +53,12 @@ namespace Dapplo.HttpExtensions.Support
 
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent, IHttpBehaviour httpBehaviour = null)
 		{
-			return false;
+			if (typeToConvertTo != typeof(string))
+			{
+				return false;
+			}
+			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
+			return !httpBehaviour.ValidateResponseContentType || SupportedContentTypes.Contains(httpContent.ContentType());
 		}
 
 		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
@@ -54,14 +66,19 @@ namespace Dapplo.HttpExtensions.Support
 			return await ConvertFromHttpContentAsync(typeof (TResult), httpContent, httpBehaviour, token).ConfigureAwait(false) as TResult;
 		}
 
-		public Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
 		{
-			throw new NotSupportedException("CanConvertFromHttpContent resulted in false, this is not supposed to be called.");
+			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
+			if (!CanConvertFromHttpContent(resultType, httpContent, httpBehaviour))
+			{
+				throw new NotSupportedException("CanConvertFromHttpContent resulted in false, this is not supposed to be called.");
+			}
+			return await httpContent.ReadAsStringAsync().ConfigureAwait(false);
 		}
 
 		public bool CanConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
 		{
-			return typeof(IEnumerable<KeyValuePair<string, string>>).IsAssignableFrom(typeToConvert);
+			return typeof(string) == typeToConvert;
 		}
 
 		public bool CanConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null) where TInput : class
@@ -71,7 +88,7 @@ namespace Dapplo.HttpExtensions.Support
 
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
 		{
-			return new FormUrlEncodedContent(content as IEnumerable<KeyValuePair<string, string>>);
+			return new StringContent(content as string);
 		}
 
 		public HttpContent ConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null) where TInput : class
@@ -89,11 +106,7 @@ namespace Dapplo.HttpExtensions.Support
 			{
 				throw new ArgumentNullException(nameof(httpRequestMessage));
 			}
-			if (!resultType.IsAssignableFrom(typeof(IEnumerable<KeyValuePair<string, string>>)))
-			{
-				return;
-			}
-			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.WwwFormUrlEncoded.EnumValueOf()));
+			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Txt.EnumValueOf()));
 		}
 	}
 }

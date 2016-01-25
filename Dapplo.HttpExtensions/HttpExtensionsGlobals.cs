@@ -23,6 +23,7 @@
 
 using System.Collections.Generic;
 using System.Text;
+using Dapplo.HttpExtensions.ContentConverter;
 using Dapplo.HttpExtensions.Support;
 
 namespace Dapplo.HttpExtensions
@@ -53,11 +54,16 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		public static IList<IHttpContentConverter> HttpContentConverters { get; set; } = new List<IHttpContentConverter>
 		{
-			BitmapHttpContentConverter.Instance, BitmapSourceHttpContentConverter.Instance, FormUrilEncodedContentConverter.Instance, JsonHttpContentConverter.Instance, StreamHttpContentConverter.Instance, StringHttpContentConverter.Instance
+			BitmapHttpContentConverter.Instance, BitmapSourceHttpContentConverter.Instance, FormUriEncodedContentConverter.Instance, JsonHttpContentConverter.Instance, StreamHttpContentConverter.Instance, StringHttpContentConverter.Instance
 		};
 
 		/// <summary>
-		/// Global value for ThrowOnError
+		/// Global value for UseProgressStream, see IHttpBehaviour
+		/// </summary>
+		public static bool UseProgressStreamContent { get; set; } = true;
+
+		/// <summary>
+		/// Global value for ThrowOnError, see IHttpBehaviour
 		/// </summary>
 		public static bool ThrowOnError { get; set; } = true;
 

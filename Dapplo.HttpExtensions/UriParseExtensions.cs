@@ -56,18 +56,27 @@ namespace Dapplo.HttpExtensions
 		}
 
 		/// <summary>
-		/// QueryToTuples creates a List with KeyValuePair which have the name-values
+		/// QueryToKeyValuePairs creates a List with KeyValuePair which have the name-values
 		/// </summary>
 		/// <param name="uri">Uri of which the query is processed</param>
 		/// <returns>List KeyValuePair string, string</returns>
 		public static IEnumerable<KeyValuePair<string, string>> QueryToKeyValuePairs(this Uri uri)
 		{
-			var queryString = uri.Query;
+			return QueryStringToKeyValuePairs(uri?.Query);
+		}
+
+		/// <summary>
+		/// Query-string To KeyValuePairs creates a List with KeyValuePair which have the name-values
+		/// </summary>
+		/// <param name="queryString">query string which is processed</param>
+		/// <returns>List KeyValuePair string, string</returns>
+		public static IEnumerable<KeyValuePair<string, string>> QueryStringToKeyValuePairs(string queryString)
+		{
 			if (string.IsNullOrEmpty(queryString))
 			{
 				yield break;
 			}
-			// remove anything other than query string from uri
+			// remove starting ? from query-string if needed
 			if (queryString.StartsWith("?"))
 			{
 				queryString = queryString.Substring(1);

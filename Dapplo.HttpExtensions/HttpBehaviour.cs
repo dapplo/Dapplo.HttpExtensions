@@ -48,6 +48,10 @@ namespace Dapplo.HttpExtensions
 
 		public Action<HttpContent> OnHttpContentCreated { get; set; }
 
+		public IProgress<float> UploadProgress { get; set; }
+
+		public bool UseProgressStreamContent { get; set; } = HttpExtensionsGlobals.UseProgressStreamContent;
+
 		public bool ThrowOnError { get; set; } = HttpExtensionsGlobals.ThrowOnError;
 
 		public HttpCompletionOption HttpCompletionOption { get; set; } = HttpCompletionOption.ResponseContentRead;

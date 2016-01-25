@@ -21,7 +21,6 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Dapplo.HttpExtensions.Internal;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -32,8 +31,10 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using Dapplo.HttpExtensions.Internal;
+using Dapplo.HttpExtensions.Support;
 
-namespace Dapplo.HttpExtensions.Support
+namespace Dapplo.HttpExtensions.ContentConverter
 {
 	/// <summary>
 	/// This can convert HttpContent from/to a GDI Bitmap
@@ -41,7 +42,7 @@ namespace Dapplo.HttpExtensions.Support
 	public class BitmapHttpContentConverter : IHttpContentConverter
 	{
 		private static readonly IList<string> SupportedContentTypes = new List<string>();
-		private static readonly LogContext Log = LogContext.Create<BitmapHttpContentConverter>();
+		private static readonly LogContext Log = LogContext.Create();
 		public static readonly BitmapHttpContentConverter Instance = new BitmapHttpContentConverter();
 
 		static BitmapHttpContentConverter()
@@ -161,32 +162,39 @@ namespace Dapplo.HttpExtensions.Support
 
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
 		{
-			if (CanConvertToHttpContent(typeToConvert, content, httpBehaviour))
-			{
-				var bitmap = content as Bitmap;
-				if (bitmap == null) return null;
+			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
+			if (!CanConvertToHttpContent(typeToConvert, content, httpBehaviour)) return null;
 
-				var memoryStream = new MemoryStream();
-				var encoder = ImageCodecInfo.GetImageEncoders().FirstOrDefault(x => x.FormatID == Format.Guid);
-				if (encoder != null)
-				{
-					var parameters = new EncoderParameters(EncoderParameters.Count);
-					int index = 0;
-					EncoderParameters.ForEach(parameter => parameters.Param[index++] = parameter);
-					bitmap.Save(memoryStream, encoder, parameters);
-				}
-				else
-				{
-					var exMessage = $"Can't find an encoder for {Format}";
-					Log.Prepare().Error(exMessage);
-					throw new NotSupportedException(exMessage);
-				}
-				memoryStream.Seek(0, SeekOrigin.Begin);
-				var httpContent = new StreamContent(memoryStream);
-				httpContent.Headers.Add("Content-Type", "image/" + Format.ToString().ToLowerInvariant());
-				return httpContent;
+			var bitmap = content as Bitmap;
+			if (bitmap == null) return null;
+
+			var memoryStream = new MemoryStream();
+			var encoder = ImageCodecInfo.GetImageEncoders().FirstOrDefault(x => x.FormatID == Format.Guid);
+			if (encoder != null)
+			{
+				var parameters = new EncoderParameters(EncoderParameters.Count);
+				int index = 0;
+				EncoderParameters.ForEach(parameter => parameters.Param[index++] = parameter);
+				bitmap.Save(memoryStream, encoder, parameters);
 			}
-			return null;
+			else
+			{
+				var exMessage = $"Can't find an encoder for {Format}";
+				Log.Prepare().Error(exMessage);
+				throw new NotSupportedException(exMessage);
+			}
+			memoryStream.Seek(0, SeekOrigin.Begin);
+			HttpContent httpContent;
+			if (httpBehaviour.UseProgressStreamContent)
+			{
+				httpContent = new ProgressStreamContent(memoryStream, httpBehaviour.UploadProgress);
+			}
+			else
+			{
+				httpContent = new StreamContent(memoryStream);
+			}
+			httpContent.Headers.Add("Content-Type", "image/" + Format.ToString().ToLowerInvariant());
+			return httpContent;
 		}
 
 		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage)

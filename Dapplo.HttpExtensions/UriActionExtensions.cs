@@ -92,6 +92,7 @@ namespace Dapplo.HttpExtensions
 		/// Method to Post content
 		/// </summary>
 		/// <typeparam name="TResponse">the generic type to return the result into, use HttpContent or HttpResponseMessage to get those unprocessed</typeparam>
+		/// <typeparam name="TContent">Generic type for the content to upload</typeparam>
 		/// <param name="uri">Uri to post to</param>
 		/// <param name="content">HttpContent to post</param>
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
@@ -117,7 +118,6 @@ namespace Dapplo.HttpExtensions
 		/// <typeparam name="TResponse">the generic type to return the result into, use HttpContent or HttpResponseMessage to get those unprocessed</typeparam>
 		/// <typeparam name="TContent">the generic type to for the content</typeparam>
 		/// <typeparam name="TErrorResponse">what to return an error into, use HttpContent or HttpResponseMessage to get those unprocessed</typeparam>
-		/// <param name="client">HttpClient</param>
 		/// <param name="uri">Uri to post an empty request to</param>
 		/// <param name="content">TContent with the content to post</param>
 		/// <param name="httpBehaviour">IHttpBehaviour</param>

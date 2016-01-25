@@ -76,6 +76,18 @@ namespace Dapplo.HttpExtensions
 		Action<HttpMessageHandler> OnHttpMessageHandlerCreated { get; set; }
 
 		/// <summary>
+		/// IProgress for uploading, only used when using non-string content like Bitmaps or MemoryStreams.
+		/// Also the UseProgressStreamContent needs to be true for detailed upload progress
+		/// </summary>
+		IProgress<float> UploadProgress { get; set; }
+		 
+		/// <summary>
+		/// Whenever a post is made to upload memorystream or bitmaps, this value is used to decide:
+		/// true: ProgressStreamContent is used, instead of StreamContent
+		/// </summary>
+		bool UseProgressStreamContent { get; set; }
+
+		/// <summary>
 		/// If a request gets a response which has a HTTP status code which is an error, it would normally THROW an exception.
 		/// Sometimes you would still want the response, settings this to false would allow this.
 		/// This can be ignored for all HttpResponse returning methods.

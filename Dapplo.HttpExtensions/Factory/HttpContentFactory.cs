@@ -71,8 +71,8 @@ namespace Dapplo.HttpExtensions.Factory
 		/// <returns></returns>
 		public static async Task<TResult> ProcessAsync<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
-			Type resultType = typeof(TResult);
-			if (resultType != null && typeof(HttpContent).IsAssignableFrom(resultType))
+			var resultType = typeof(TResult);
+			if (typeof(HttpContent).IsAssignableFrom(resultType))
 			{
 				return httpContent as TResult;
 			}
@@ -89,6 +89,5 @@ namespace Dapplo.HttpExtensions.Factory
 
 			throw new NotSupportedException($"Unsupported result type {resultType}");
 		}
-
 	}
 }

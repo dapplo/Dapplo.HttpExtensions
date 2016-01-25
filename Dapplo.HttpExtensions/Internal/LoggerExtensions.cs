@@ -155,8 +155,9 @@ namespace Dapplo.HttpExtensions.Internal
 		/// <summary>
 		/// This extension will create ILogInfo, if a logger is passed
 		/// </summary>
-		/// <param name="logger">Logger to use</param>
-		/// <param name="memberName">Should be set by the compiler</param>
+		/// <param name="logContext">LogContext is the context (source) from where the log entry came</param>
+		/// <param name="memberName">Should be set by the compiler, is the calling method</param>
+		/// <param name="lineNumber">int lineNumber of the log statement</param>
 		/// <returns>ILogInfo</returns>
 		public static ILogInfo Prepare(this LogContext logContext, [CallerMemberName] string memberName = "", [CallerLineNumber] int lineNumber = 0)
 		{

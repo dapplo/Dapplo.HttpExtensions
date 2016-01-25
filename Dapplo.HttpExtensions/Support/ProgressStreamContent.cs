@@ -39,7 +39,11 @@ namespace Dapplo.HttpExtensions.Support
 		private readonly Stream _content;
 		private readonly int _bufferSize;
 		private bool _contentConsumed;
-		private readonly IProgress<float> _progressHandler;
+
+		/// <summary>
+		/// Specify the IProgress, which will be informed of progress
+		/// </summary>
+		public IProgress<float> ProgressHandler { get; set; }
 
 		/// <summary>
 		/// the current upload state
@@ -77,7 +81,7 @@ namespace Dapplo.HttpExtensions.Support
 			}
 			_content = content;
 			_bufferSize = bufferSize;
-			_progressHandler = progressHandler;
+			ProgressHandler = progressHandler;
 		}
 
 		/// <summary>
@@ -120,7 +124,7 @@ namespace Dapplo.HttpExtensions.Support
 				UploadedBytes = uploaded += length;
 
 				// Report the progress
-				_progressHandler?.Report(UploadedBytes * 100 / (float)size);
+				ProgressHandler?.Report(UploadedBytes * 100 / (float)size);
 
 				await stream.WriteAsync(buffer, 0, length).ConfigureAwait(false);
 

@@ -14,7 +14,7 @@ A short example:
 	using Dapplo.HttpExtensions;
 
 	var uri = new Uri("http://myserver/");
-	var response = await uri.GetAsStringAsync();
+	var response = await uri.GetAsAsync<string>();
 ```
 
 A more "complex" example of how you can use this, is visible in the [UriJsonActionExtensionsTests.TestGetAsJsonAsync_GitHubApiReleases](https://github.com/dapplo/Dapplo.HttpExtensions/blob/master/Dapplo.HttpExtensions.Test/UriJsonActionExtensionsTests.cs).

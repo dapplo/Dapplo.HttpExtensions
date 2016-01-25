@@ -36,7 +36,7 @@ namespace Dapplo.HttpExtensions.Test
 	[TestClass]
 	public class UriActionExtensionsTests
 	{
-		private readonly Uri _bitmapUri = new Uri("http://getgreenshot.org/wp-content/themes/greenshot/images/headers/greenshot_logo.gif");
+		private readonly Uri _bitmapUri = new Uri("http://beta.getgreenshot.org/assets/greenshot-logo.png");
 
 		/// <summary>
 		/// Test getting the uri as Bitmap

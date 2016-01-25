@@ -105,24 +105,7 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// Method to post without content
 		/// </summary>
-		/// <param name="client">HttpClient</param>
-		/// <param name="uri">Uri to post an empty request to</param>
-		/// <param name="httpBehaviour">IHttpBehaviour</param>
-		/// <param name="token">CancellationToken</param>
-		/// <returns>HttpResponseMessage</returns>
-		public static async Task<HttpResponseMessage> PostAsync(this HttpClient client, Uri uri, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
-		{
-			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
-			using (var httpRequestMessage = HttpRequestMessageFactory.Create(HttpMethod.Post, uri, null, null, httpBehaviour))
-			{
-				return await client.SendAsync(httpRequestMessage, httpBehaviour.HttpCompletionOption, token).ConfigureAwait(false);
-			}
-		}
-
-		/// <summary>
-		/// Method to post without content
-		/// </summary>
-		/// <typeparam name="TResult">the generic type to return the result into</typeparam>
+		/// <typeparam name="TResponse">the generic type to return the result into, use HttpContent or HttpResponseMessage to get those unprocessed</typeparam>
 		/// <typeparam name="TContent">the generic type to for the content</typeparam>
 		/// <param name="client">HttpClient</param>
 		/// <param name="uri">Uri to post an empty request to</param>
@@ -154,17 +137,17 @@ namespace Dapplo.HttpExtensions
 		}
 
 		/// <summary>
-		/// Method to post without content
+		/// Method to post content
 		/// </summary>
-		/// <typeparam name="TResponse">the generic type to return the result into</typeparam>
+		/// <typeparam name="TResponse">the generic type to return the result into, use HttpContent or HttpResponseMessage to get those unprocessed</typeparam>
 		/// <typeparam name="TContent">the generic type to for the content</typeparam>
-		/// <typeparam name="TErrorResponse">what to return an error into</typeparam>
+		/// <typeparam name="TErrorResponse">what to return an error into, use HttpContent or HttpResponseMessage to get those unprocessed</typeparam>
 		/// <param name="client">HttpClient</param>
 		/// <param name="uri">Uri to post an empty request to</param>
 		/// <param name="content">TContent with the content to post</param>
 		/// <param name="httpBehaviour">IHttpBehaviour</param>
 		/// <param name="token">CancellationToken</param>
-		/// <returns>TResult</returns>
+		/// <returns>IHttpResponse with TResponse and TErrorResponse</returns>
 		public static async Task<IHttpResponse<TResponse, TErrorResponse>> PostAsync<TResponse, TErrorResponse, TContent>(this HttpClient client, Uri uri, TContent content, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResponse : class where TErrorResponse : class where TContent : class
 		{
 			httpBehaviour = httpBehaviour ?? new HttpBehaviour();

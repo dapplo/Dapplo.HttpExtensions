@@ -46,6 +46,10 @@ namespace Dapplo.HttpExtensions.Factory
 			HttpContent result = null;
 			if (content != null)
 			{
+				if (typeof(HttpContent).IsAssignableFrom(typeof(TInput)))
+				{
+					return content as HttpContent;
+				}
 				httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 				var httpContentConverter = httpBehaviour.HttpContentConverters.OrderBy(x => x.Order).FirstOrDefault(x => x.CanConvertToHttpContent(content, httpBehaviour));
 				if (httpContentConverter != null)

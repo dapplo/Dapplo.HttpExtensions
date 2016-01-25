@@ -51,6 +51,7 @@
     <Compile Include="Support\BitmapSourceHttpContentConverter.cs" />
     <Compile Include="Support\JsonHttpContentConverter.cs" />
     <Compile Include="Support\FormUrilEncodedContentConverter.cs" />
+    <Compile Include="Support\StringHttpContentConverter.cs" />
     <Compile Include="Support\StreamHttpContentConverter.cs" />
     <Compile Include="Support\BitmapHttpContentConverter.cs" />
     <Compile Include="Support\SimpleJsonSerializer.cs" />

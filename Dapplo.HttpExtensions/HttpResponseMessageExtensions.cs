@@ -35,23 +35,6 @@ namespace Dapplo.HttpExtensions
 	public static class HttpResponseMessageExtensions
 	{
 		/// <summary>
-		/// Read the response as a string
-		/// </summary>
-		/// <param name="response">HttpResponseMessage</param>
-		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
-		/// <param name="token">CancellationToken</param>
-		/// <returns>string</returns>
-		public static async Task<string> GetAsStringAsync(this HttpResponseMessage response, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
-		{
-			if (response.IsSuccessStatusCode)
-			{
-				return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-			}
-			await response.HandleErrorAsync(httpBehaviour, token).ConfigureAwait(false);
-			return null;
-		}
-
-		/// <summary>
 		/// Extension method reading the HttpResponseMessage to a Type object
 		/// Currently we support Json objects which are annotated with the DataContract/DataMember attributes
 		/// We might support other object, e.g MemoryStream, Bitmap etc soon

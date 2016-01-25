@@ -21,13 +21,12 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Dapplo.HttpExtensions.Factory;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using Dapplo.HttpExtensions.Factory;
 
 namespace Dapplo.HttpExtensions
 {
@@ -90,36 +89,15 @@ namespace Dapplo.HttpExtensions
 		}
 
 		/// <summary>
-		/// Method to Post without content
-		/// </summary>
-		/// <param name="uri">Uri to post to</param>
-		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
-		/// <param name="token">CancellationToken</param>
-		/// <returns>HttpResponseMessage</returns>
-		public static async Task<HttpResponseMessage> PostAsync(this Uri uri, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
-		{
-			if (uri == null)
-			{
-				throw new ArgumentNullException(nameof(uri));
-			}
-			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
-
-			using (var client = HttpClientFactory.Create(httpBehaviour, uri))
-			using (var httpRequestMessage = HttpRequestMessageFactory.CreatePost(uri, null, null, httpBehaviour))
-			{
-				return await client.SendAsync(httpRequestMessage, httpBehaviour.HttpCompletionOption, token).ConfigureAwait(false);
-			}
-		}
-
-		/// <summary>
 		/// Method to Post content
 		/// </summary>
+		/// <typeparam name="TResponse">the generic type to return the result into, use HttpContent or HttpResponseMessage to get those unprocessed</typeparam>
 		/// <param name="uri">Uri to post to</param>
 		/// <param name="content">HttpContent to post</param>
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
-		/// <returns>HttpResponseMessage</returns>
-		public static async Task<TResult> PostAsync<TResult, TContent>(this Uri uri, TContent content, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class where TContent : class
+		/// <returns>TResponse</returns>
+		public static async Task<TResponse> PostAsync<TResponse, TContent>(this Uri uri, TContent content, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResponse : class where TContent : class
 		{
 			if (uri == null)
 			{
@@ -129,71 +107,33 @@ namespace Dapplo.HttpExtensions
 
 			using (var client = HttpClientFactory.Create(httpBehaviour, uri))
 			{
-				return await client.PostAsync<TResult, TContent>(uri, content, httpBehaviour, token).ConfigureAwait(false);
+				return await client.PostAsync<TResponse, TContent>(uri, content, httpBehaviour, token).ConfigureAwait(false);
 			}
 		}
 
 		/// <summary>
-		/// Simple extension to post Form-URLEncoded Content
+		/// Method to post content
 		/// </summary>
-		/// <param name="uri">Uri to post to</param>
-		/// <param name="formContent">Dictionary with the values</param>
-		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
-		/// <param name="token">Cancellationtoken</param>
-		/// <returns>HttpResponseMessage</returns>
-		public static async Task<HttpResponseMessage> PostFormUrlEncodedAsync(this Uri uri, IDictionary<string, string> formContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
-		{
-			if (uri == null)
-			{
-				throw new ArgumentNullException(nameof(uri));
-			}
-			if (formContent == null)
-			{
-				throw new ArgumentNullException(nameof(formContent));
-			}
-			using (var content = new FormUrlEncodedContent(formContent))
-			using (var client = HttpClientFactory.Create(httpBehaviour, uri))
-			{
-				return await client.PostAsync(uri, content, token).ConfigureAwait(false);
-			}
-		}
-
-		/// <summary>
-		/// Download a uri response as string
-		/// </summary>
-		/// <param name="uri">An Uri to specify the download location</param>
-		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
+		/// <typeparam name="TResponse">the generic type to return the result into, use HttpContent or HttpResponseMessage to get those unprocessed</typeparam>
+		/// <typeparam name="TContent">the generic type to for the content</typeparam>
+		/// <typeparam name="TErrorResponse">what to return an error into, use HttpContent or HttpResponseMessage to get those unprocessed</typeparam>
+		/// <param name="client">HttpClient</param>
+		/// <param name="uri">Uri to post an empty request to</param>
+		/// <param name="content">TContent with the content to post</param>
+		/// <param name="httpBehaviour">IHttpBehaviour</param>
 		/// <param name="token">CancellationToken</param>
-		/// <returns>HttpResponseMessage</returns>
-		public static async Task<HttpResponseMessage> GetAsync(this Uri uri, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		/// <returns>IHttpResponse with TResponse and TErrorResponse</returns>
+		public static async Task<IHttpResponse<TResponse, TErrorResponse>> PostAsync<TResponse, TErrorResponse, TContent>(this Uri uri, TContent content, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResponse : class where TErrorResponse : class where TContent : class
 		{
 			if (uri == null)
 			{
 				throw new ArgumentNullException(nameof(uri));
 			}
-			using (var client = HttpClientFactory.Create(httpBehaviour, uri))
-			{
-				return await client.GetAsync(uri, token).ConfigureAwait(false);
-			}
-		}
+			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 
-		/// <summary>
-		/// Download a uri response as string
-		/// </summary>
-		/// <param name="uri">An Uri to specify the download location</param>
-		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
-		/// <param name="token">CancellationToken</param>
-		/// <returns>string with the content</returns>
-		public static async Task<string> GetAsStringAsync(this Uri uri, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
-		{
-			if (uri == null)
-			{
-				throw new ArgumentNullException(nameof(uri));
-			}
 			using (var client = HttpClientFactory.Create(httpBehaviour, uri))
-			using (var response = await client.GetAsync(uri, token).ConfigureAwait(false))
 			{
-				return await response.GetAsStringAsync(httpBehaviour, token).ConfigureAwait(false);
+				return await client.PostAsync<TResponse, TErrorResponse, TContent>(uri, content, httpBehaviour, token).ConfigureAwait(false);
 			}
 		}
 

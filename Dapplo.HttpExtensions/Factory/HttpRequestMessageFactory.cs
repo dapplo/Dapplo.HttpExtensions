@@ -50,9 +50,10 @@ namespace Dapplo.HttpExtensions.Factory
 		/// <param name="requestUri">the target uri for this message</param>
 		/// <param name="httpBehaviour">HttpBehaviour instance or null if the global settings need to be used</param>
 		/// <returns>HttpRequestMessage</returns>
-		public static HttpRequestMessage CreateGet(Uri requestUri, IHttpBehaviour httpBehaviour = null)
+		public static HttpRequestMessage CreateGet<TResponse>(Uri requestUri, IHttpBehaviour httpBehaviour = null)
+			where TResponse : class
 		{
-			return Create(HttpMethod.Get, requestUri, null, null, httpBehaviour);
+			return Create<TResponse>(HttpMethod.Get, requestUri, null, httpBehaviour);
 		}
 
 		/// <summary>
@@ -98,15 +99,16 @@ namespace Dapplo.HttpExtensions.Factory
 		/// <summary>
 		/// Create a HttpRequestMessage for the specified method
 		/// </summary>
-		/// <typeparam name="TResult">The type for the result, this modifies the Accep headers</typeparam>
+		/// <typeparam name="TResponse">The type for the response, this modifies the Accep headers</typeparam>
 		/// <param name="method">Method to create the request message for</param>
 		/// <param name="requestUri">the target uri for this message</param>
 		/// <param name="content">HttpContent</param>
 		/// <param name="httpBehaviour">HttpBehaviour instance or null if the global settings need to be used</param>
 		/// <returns>HttpRequestMessage</returns>
-		public static HttpRequestMessage Create<TResult>(HttpMethod method, Uri requestUri, HttpContent content = null, IHttpBehaviour httpBehaviour = null) where TResult : class
+		public static HttpRequestMessage Create<TResponse>(HttpMethod method, Uri requestUri, HttpContent content = null, IHttpBehaviour httpBehaviour = null)
+			where TResponse : class
 		{
-			return Create(method, requestUri, typeof(TResult), content, httpBehaviour);
+			return Create(method, requestUri, typeof(TResponse), content, httpBehaviour);
 		}
 	}
 }

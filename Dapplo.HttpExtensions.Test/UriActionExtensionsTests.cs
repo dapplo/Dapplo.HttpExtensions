@@ -38,6 +38,13 @@ namespace Dapplo.HttpExtensions.Test
 	{
 		private readonly Uri _bitmapUri = new Uri("http://beta.getgreenshot.org/assets/greenshot-logo.png");
 
+		[TestInitialize]
+		public void Init()
+		{
+			// Make sure the logger is set for debugging
+			HttpExtensionsGlobals.Logger = new Support.DebugLogger();
+		}
+
 		/// <summary>
 		/// Test getting the uri as Bitmap
 		/// </summary>

@@ -48,7 +48,11 @@
     <Compile Include="IHttpBehaviour.cs" />
     <Compile Include="IHttpContentConverter.cs" />
     <Compile Include="IHttpResponse.cs" />
+    <Compile Include="Support\ILogger.cs" />
     <Compile Include="Support\BitmapSourceHttpContentConverter.cs" />
+    <Compile Include="Internal\LoggerExtensions.cs" />
+    <Compile Include="Internal\LogInfo.cs" />
+    <Compile Include="Support\DebugLogger.cs" />
     <Compile Include="Support\JsonHttpContentConverter.cs" />
     <Compile Include="Support\FormUrilEncodedContentConverter.cs" />
     <Compile Include="Support\StringHttpContentConverter.cs" />

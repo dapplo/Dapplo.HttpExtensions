@@ -21,6 +21,7 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Dapplo.HttpExtensions.Internal;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -40,6 +41,7 @@ namespace Dapplo.HttpExtensions.Support
 	public class BitmapHttpContentConverter : IHttpContentConverter
 	{
 		private static readonly IList<string> SupportedContentTypes = new List<string>();
+		private static readonly LogContext Log = LogContext.Create<BitmapHttpContentConverter>();
 		public static readonly BitmapHttpContentConverter Instance = new BitmapHttpContentConverter();
 
 		static BitmapHttpContentConverter()
@@ -50,6 +52,8 @@ namespace Dapplo.HttpExtensions.Support
 			SupportedContentTypes.Add(MediaTypes.Png.EnumValueOf());
 			SupportedContentTypes.Add(MediaTypes.Tiff.EnumValueOf());
 		}
+
+		private int _quality;
 
 		public int Order => 0;
 
@@ -69,8 +73,14 @@ namespace Dapplo.HttpExtensions.Support
 		/// </summary>
 		public int Quality
 		{
+			get
+			{
+				return _quality;
+			}
 			set
 			{
+				_quality = value;
+				Log.Prepare().Debug("Setting Quality to ", value);
 				var qualityParameter = EncoderParameters.FirstOrDefault(x => x.Encoder.Guid == Encoder.Quality.Guid);
 				if (qualityParameter != null)
 				{
@@ -124,9 +134,13 @@ namespace Dapplo.HttpExtensions.Support
 		{
 			if (!CanConvertFromHttpContent(resultType, httpContent, httpBehaviour))
 			{
-				throw new NotSupportedException("CanConvertFromHttpContent resulted in false, this is not supposed to be called.");
+				var exMessage = "CanConvertFromHttpContent resulted in false, ConvertFromHttpContentAsync is not supposed to be called.";
+				Log.Prepare().Error(exMessage);
+				throw new NotSupportedException(exMessage);
 			}
+			Log.Prepare().Debug("Retrieving the content as MemoryStream, Content-Type: {0}", httpContent.Headers.ContentType);
 			var memoryStream = await StreamHttpContentConverter.Instance.ConvertFromHttpContentAsync<MemoryStream>(httpContent, httpBehaviour, token).ConfigureAwait(false);
+			Log.Prepare().Debug("Creating a Bitmap from the MemoryStream.");
 			return new Bitmap(memoryStream);
 		}
 
@@ -163,7 +177,9 @@ namespace Dapplo.HttpExtensions.Support
 				}
 				else
 				{
-					throw new NotSupportedException($"Can't find an encoder for {Format}");
+					var exMessage = $"Can't find an encoder for {Format}";
+					Log.Prepare().Error(exMessage);
+					throw new NotSupportedException(exMessage);
 				}
 				memoryStream.Seek(0, SeekOrigin.Begin);
 				var httpContent = new StreamContent(memoryStream);
@@ -188,11 +204,12 @@ namespace Dapplo.HttpExtensions.Support
 				return;
 			}
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Png.EnumValueOf()));
-			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Jpeg.EnumValueOf()));
+			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Jpeg.EnumValueOf(), Quality/100d));
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Tiff.EnumValueOf()));
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Bmp.EnumValueOf()));
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Gif.EnumValueOf()));
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Icon.EnumValueOf()));
+			Log.Prepare().Debug("Added headers: {0}", httpRequestMessage.Headers);
 		}
 	}
 }

@@ -17,10 +17,10 @@ A short example:
 	var response = await uri.GetAsAsync<string>();
 ```
 
-A more "complex" example of how you can use this, is visible in the [UriJsonActionExtensionsTests.TestGetAsJsonAsync_GitHubApiReleases](https://github.com/dapplo/Dapplo.HttpExtensions/blob/master/Dapplo.HttpExtensions.Test/UriJsonActionExtensionsTests.cs).
+A more "complex" example of how you can use this, is visible in the test, e.g. [UriJsonActionExtensionsTests.TestGetAsJsonAsync_GitHubApiReleases](https://github.com/dapplo/Dapplo.HttpExtensions/blob/master/Dapplo.HttpExtensions.Test/UriJsonActionExtensionsTests.cs).
 
 Notes:
 
-1. [This project](https://github.com/facebook-csharp-sdk/simple-json) is internally used for the Json parser, I will have to look into a possibility to specify your own.
-2. This project uses async code, and tries to conform to the Task-bases Asynchronous Pattern (TAP). Meaning all async methods have names which end with Async and (where possible) accept a CancellationToken. This is the final parameter, as adviced here: https://blogs.msdn.microsoft.com/andrewarnottms/2014/03/19/recommended-patterns-for-cancellationtoken/
-3. With version 0.2 the signatures have changed, a HttpBehaviour object was added to prevent future signature changes as much as possible
+1. [This project](https://github.com/facebook-csharp-sdk/simple-json) is internally used for the Json parser, as this is abstracted via a IJsonSerializer you could e.g. change this to Json.NET.
+2. This project uses async code, and tries to conform to the Task-bases Asynchronous Pattern (TAP). Just so you know why sometimes the method name look odd... Meaning all async methods have names which end with Async and (where possible) accept a CancellationToken. This is the final parameter, as adviced here: https://blogs.msdn.microsoft.com/andrewarnottms/2014/03/19/recommended-patterns-for-cancellationtoken/
+3. With every 0.x change the signatures have changed, in 0.2.x a HttpBehaviour object was added to prevent future signature changes as much as possible. In 0.3 a lot of previous method were combined. (GetAsMemoryStream -> GetAsAsync<MemoryStream>, GetAsStringAsync -> GetAsAsync<string>)

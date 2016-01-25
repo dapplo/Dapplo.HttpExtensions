@@ -29,10 +29,15 @@ namespace Dapplo.HttpExtensions
 {
 	/// <summary>
 	/// These are the globals for some of the important configurable settings
-	/// When a HttpBehaviour is created, these values will be copied. (unless diffently specified)
+	/// When a HttpBehaviour is created, some of the values from here will be copied. (unless diffently specified)
 	/// </summary>
 	public static class HttpExtensionsGlobals
 	{
+		/// <summary>
+		/// The global ILogger, if null nothing happens
+		/// </summary>
+		public static ILogger Logger { get; set; }
+
 		/// <summary>
 		/// The global IHttpSettings
 		/// </summary>

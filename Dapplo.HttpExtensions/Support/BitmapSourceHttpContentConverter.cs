@@ -21,6 +21,7 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Dapplo.HttpExtensions.Internal;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
@@ -39,6 +40,7 @@ namespace Dapplo.HttpExtensions.Support
 	public class BitmapSourceHttpContentConverter : IHttpContentConverter
 	{
 		private static readonly IList<string> SupportedContentTypes = new List<string>();
+		private static readonly LogContext Log = LogContext.Create<BitmapSourceHttpContentConverter>();
 		public static readonly BitmapSourceHttpContentConverter Instance = new BitmapSourceHttpContentConverter();
 
 		static BitmapSourceHttpContentConverter()
@@ -125,6 +127,7 @@ namespace Dapplo.HttpExtensions.Support
 			{
 				throw new NotSupportedException("CanConvertFromHttpContent resulted in false, this is not supposed to be called.");
 			}
+			Log.Prepare().Debug("Retrieving the content as MemoryStream, Content-Type: {0}", httpContent.Headers.ContentType);
 			using (var memoryStream = await StreamHttpContentConverter.Instance.ConvertFromHttpContentAsync<MemoryStream>(httpContent, httpBehaviour,token).ConfigureAwait(false))
 			{
 				var bitmap = new BitmapImage();
@@ -189,11 +192,12 @@ namespace Dapplo.HttpExtensions.Support
 				return;
 			}
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Png.EnumValueOf()));
-			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Jpeg.EnumValueOf()));
+			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Jpeg.EnumValueOf(), Quality/100));
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Tiff.EnumValueOf()));
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Bmp.EnumValueOf()));
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Gif.EnumValueOf()));
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Icon.EnumValueOf()));
+			Log.Prepare().Debug("Added headers: {0}", httpRequestMessage.Headers);
 		}
 	}
 }

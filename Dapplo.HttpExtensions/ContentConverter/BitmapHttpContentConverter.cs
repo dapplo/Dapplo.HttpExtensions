@@ -139,7 +139,6 @@ namespace Dapplo.HttpExtensions.ContentConverter
 				Log.Error().Write(exMessage);
 				throw new NotSupportedException(exMessage);
 			}
-			Log.Debug().Write("Retrieving the content as MemoryStream, Content-Type: {0}", httpContent.Headers.ContentType);
 			var memoryStream = await StreamHttpContentConverter.Instance.ConvertFromHttpContentAsync<MemoryStream>(httpContent, httpBehaviour, token).ConfigureAwait(false);
 			Log.Debug().Write("Creating a Bitmap from the MemoryStream.");
 			return new Bitmap(memoryStream);

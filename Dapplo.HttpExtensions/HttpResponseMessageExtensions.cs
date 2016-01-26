@@ -24,10 +24,7 @@
 using Dapplo.HttpExtensions.Internal;
 using Dapplo.HttpExtensions.Support;
 using System;
-using System.IO;
-using System.IO.Compression;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -56,6 +53,7 @@ namespace Dapplo.HttpExtensions
 			{
 				return httpResponseMessage as TResult;
 			}
+			await httpResponseMessage.HandleErrorAsync(httpBehaviour, token).ConfigureAwait(false);
 			if (httpResponseMessage.IsSuccessStatusCode)
 			{
 				var httpContent = httpResponseMessage.Content;
@@ -68,7 +66,6 @@ namespace Dapplo.HttpExtensions
 
 				return result;
 			}
-			await httpResponseMessage.HandleErrorAsync(httpBehaviour, token).ConfigureAwait(false);
 			return default(TResult);
 		}
 
@@ -94,6 +91,8 @@ namespace Dapplo.HttpExtensions
 			var httpContent = httpResponseMessage.Content;
 			if (httpResponseMessage.IsSuccessStatusCode)
 			{
+				// Write log for success
+				Log.Debug().Write("Http response {0} ({1}) from {2}", (int)httpResponseMessage.StatusCode, httpResponseMessage.StatusCode, httpResponseMessage?.RequestMessage?.RequestUri);
 				response.Response = await httpContent.GetAsAsync<TResponse>(httpBehaviour, token).ConfigureAwait(false);
 				// Make sure the httpContent is only disposed when it's not the return type
 				if (!typeof(HttpContent).IsAssignableFrom(typeof(TResponse)))
@@ -103,6 +102,8 @@ namespace Dapplo.HttpExtensions
 			}
 			else
 			{
+				// Write log if an error occured.
+				Log.Error().Write("Http response {0} ({1}) from {2}", (int)httpResponseMessage.StatusCode, httpResponseMessage.StatusCode, httpResponseMessage?.RequestMessage?.RequestUri);
 				response.ErrorResponse = await httpContent.GetAsAsync<TErrorResponse>(httpBehaviour, token).ConfigureAwait(false);
 
 				// Make sure the httpContent is only disposed when it's not the return type
@@ -117,30 +118,41 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// Simplified error handling, this makes sure the uri & response are logged
 		/// </summary>
-		/// <param name="responseMessage">HttpResponseMessage</param>
+		/// <param name="httpResponseMessage">HttpResponseMessage</param>
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>string with the error content if HttpBehaviour.ThrowErrorOnNonSuccess = false</returns>
-		public static async Task<string> HandleErrorAsync(this HttpResponseMessage responseMessage, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task<string> HandleErrorAsync(this HttpResponseMessage httpResponseMessage, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
 		{
+			if (httpResponseMessage == null)
+			{
+				throw new ArgumentNullException(nameof(httpResponseMessage));
+			}
 			Exception throwException = null;
 			string errorContent = null;
-			Uri requestUri = null;
+			Uri requestUri = httpResponseMessage.RequestMessage?.RequestUri;
 			try
 			{
-				if (!responseMessage.IsSuccessStatusCode)
+				if (!httpResponseMessage.IsSuccessStatusCode)
 				{
-					requestUri = responseMessage.RequestMessage.RequestUri;
 					try
 					{
 						// try reading the content, so this is not lost
-						errorContent = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+						errorContent = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
 					}
 					catch (Exception ex)
 					{
 						Log.Debug().Write("Error while reading the error content: {0}", ex.Message);
 					}
-					responseMessage.EnsureSuccessStatusCode();
+					// Write log if an error occured.
+					Log.Debug().Write("Http response {0} ({1}) from {2}, details from website: {3}", (int)httpResponseMessage.StatusCode, httpResponseMessage.StatusCode, requestUri, errorContent);
+
+					httpResponseMessage.EnsureSuccessStatusCode();
+				}
+				else
+				{
+					// Write log for success
+					Log.Error().Write("Http response {0} ({1}) from {2}", (int)httpResponseMessage.StatusCode, httpResponseMessage.StatusCode, requestUri);
 				}
 			}
 			catch (Exception ex)
@@ -152,7 +164,7 @@ namespace Dapplo.HttpExtensions
 					throwException.Data.Add("response", errorContent);
 				}
 			}
-			Log.Error().Write("Http response {0}({1}) while calling {2} occured, answer from website: {3}", responseMessage.StatusCode, (int)responseMessage.StatusCode, requestUri, errorContent);
+
 			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 			if (httpBehaviour.ThrowOnError && throwException != null)
 			{

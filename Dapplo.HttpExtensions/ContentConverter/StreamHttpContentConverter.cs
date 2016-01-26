@@ -21,6 +21,7 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Dapplo.HttpExtensions.Internal;
 using Dapplo.HttpExtensions.Support;
 using System;
 using System.IO;
@@ -35,6 +36,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	/// </summary>
 	public class StreamHttpContentConverter : IHttpContentConverter
 	{
+		private static readonly LogContext Log = LogContext.Create();
 		public static readonly StreamHttpContentConverter Instance = new StreamHttpContentConverter();
 
 		public int Order => 0;
@@ -61,6 +63,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			{
 				throw new NotSupportedException("CanConvertFromHttpContent resulted in false, this is not supposed to be called.");
 			}
+			Log.Debug().Write("Retrieving the content as MemoryStream, Content-Type: {0}", httpContent.Headers.ContentType);
 
 			using (var contentStream = await httpContent.ReadAsStreamAsync().ConfigureAwait(false))
 			{

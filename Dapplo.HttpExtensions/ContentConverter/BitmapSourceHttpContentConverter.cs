@@ -128,9 +128,9 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			{
 				throw new NotSupportedException("CanConvertFromHttpContent resulted in false, this is not supposed to be called.");
 			}
-			Log.Debug().Write("Retrieving the content as MemoryStream, Content-Type: {0}", httpContent.Headers.ContentType);
 			using (var memoryStream = await StreamHttpContentConverter.Instance.ConvertFromHttpContentAsync<MemoryStream>(httpContent, httpBehaviour,token).ConfigureAwait(false))
 			{
+				Log.Debug().Write("Creating a BitmapImage from the MemoryStream.");
 				var bitmap = new BitmapImage();
 				bitmap.BeginInit();
 				bitmap.StreamSource = memoryStream;

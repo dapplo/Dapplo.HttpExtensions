@@ -43,22 +43,21 @@ namespace Dapplo.HttpExtensions.Factory
 			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 			var httpSettings = httpBehaviour.HttpSettings ?? HttpExtensionsGlobals.HttpSettings;
 
-			var client = new HttpClient(HttpMessageHandlerFactory.Create(httpBehaviour))
+			var httpClient = new HttpClient(HttpMessageHandlerFactory.Create(httpBehaviour))
 			{
 				Timeout = httpSettings.RequestTimeout,
-				MaxResponseContentBufferSize = httpSettings.MaxResponseContentBufferSize
+				MaxResponseContentBufferSize = httpSettings.MaxResponseContentBufferSize,
 			};
 			if (!string.IsNullOrEmpty(httpSettings.DefaultUserAgent))
 			{
-				client.DefaultRequestHeaders.UserAgent.TryParseAdd(httpSettings.DefaultUserAgent);
+				httpClient.DefaultRequestHeaders.UserAgent.TryParseAdd(httpSettings.DefaultUserAgent);
 			}
-
 			// If the uri has username/password, use this to set Basic Authorization
-			client.SetBasicAuthorization(uriForConfiguration);
+			httpClient.SetBasicAuthorization(uriForConfiguration);
 
 			// Allow the passed OnCreateHttpClient action to modify the HttpClient
-			httpBehaviour.OnHttpClientCreated?.Invoke(client);
-			return client;
+			httpBehaviour.OnHttpClientCreated?.Invoke(httpClient);
+			return httpClient;
 		}
 	}
 }

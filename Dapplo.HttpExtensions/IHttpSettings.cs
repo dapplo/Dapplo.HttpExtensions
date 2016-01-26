@@ -24,6 +24,7 @@
 using System;
 using System.ComponentModel;
 using System.Net;
+using System.Net.Cache;
 using System.Net.Security;
 using System.Runtime.Serialization;
 using System.Security.Principal;
@@ -85,7 +86,7 @@ namespace Dapplo.HttpExtensions
 
 		/// <summary>
 		/// The impersonation level determines how the server can use the client's credentials.
-		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.impersonationlevel(v=vs.110).aspx
+		/// See: https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.impersonationlevel.aspx
 		/// </summary>
 		[DefaultValue(TokenImpersonationLevel.Delegation),
 		 Description("The impersonation level determines how the server can use the client's credentials")]
@@ -116,6 +117,13 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		[DefaultValue(256), Description("The max length, in kilobytes (1024 bytes), of the response headers")]
 		int MaxResponseHeadersLength { get; set; }
+
+		/// <summary>
+		/// See: https://msdn.microsoft.com/en-us/library/system.net.cache.httprequestcachelevel.aspx
+		/// Default is RequestCacheLevel.Default
+		/// </summary>
+		[DefaultValue(RequestCacheLevel.Default), Description("The cache level for the request")]
+		RequestCacheLevel RequestCacheLevel { get; set; }
 
 		/// <summary>
 		/// The Uri for the proxy to use, when the UseDefaultProxy is set to false

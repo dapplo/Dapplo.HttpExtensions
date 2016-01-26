@@ -22,6 +22,7 @@
  */
 
 using System.Net;
+using System.Net.Cache;
 using System.Net.Http;
 
 namespace Dapplo.HttpExtensions.Factory
@@ -72,6 +73,7 @@ namespace Dapplo.HttpExtensions.Factory
 			webRequestHandler.ContinueTimeout = httpSettings.ContinueTimeout;
 			webRequestHandler.ImpersonationLevel = httpSettings.ImpersonationLevel;
 			webRequestHandler.MaxResponseHeadersLength = httpSettings.MaxResponseHeadersLength;
+			webRequestHandler.CachePolicy = new RequestCachePolicy(httpSettings.RequestCacheLevel);
 		}
 
 		/// <summary>

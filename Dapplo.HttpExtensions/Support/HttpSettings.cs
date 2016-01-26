@@ -23,6 +23,7 @@
 
 using System;
 using System.Net;
+using System.Net.Cache;
 using System.Net.Security;
 using System.Reflection;
 using System.Security.Principal;
@@ -68,7 +69,7 @@ namespace Dapplo.HttpExtensions.Support
 
 		public bool AllowAutoRedirect { get; set; } = true;
 
-		public DecompressionMethods DefaultDecompressionMethods { get; set; } = DecompressionMethods.Deflate | DecompressionMethods.GZip;
+		public DecompressionMethods DefaultDecompressionMethods { get; set; } = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 
 		public bool PreAuthenticate { get; set; } = true;
 
@@ -116,5 +117,7 @@ namespace Dapplo.HttpExtensions.Support
 				_userAgent = value;
 			}
 		}
+
+		public RequestCacheLevel RequestCacheLevel { get; set; } = RequestCacheLevel.Default;
 	}
 }

@@ -21,9 +21,13 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Dapplo.HttpExtensions.Internal;
 using Dapplo.HttpExtensions.Support;
 using System;
+using System.IO;
+using System.IO.Compression;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -34,6 +38,8 @@ namespace Dapplo.HttpExtensions
 	/// </summary>
 	public static class HttpResponseMessageExtensions
 	{
+		private static readonly LogContext Log = LogContext.Create();
+
 		/// <summary>
 		/// Extension method reading the HttpResponseMessage to a Type object
 		/// Currently we support Json objects which are annotated with the DataContract/DataMember attributes
@@ -130,9 +136,9 @@ namespace Dapplo.HttpExtensions
 						// try reading the content, so this is not lost
 						errorContent = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
 					}
-					catch
+					catch (Exception ex)
 					{
-						// Ignore
+						Log.Debug().Write("Error while reading the error content: {0}", ex.Message);
 					}
 					responseMessage.EnsureSuccessStatusCode();
 				}
@@ -146,6 +152,7 @@ namespace Dapplo.HttpExtensions
 					throwException.Data.Add("response", errorContent);
 				}
 			}
+			Log.Error().Write("Http response {0}({1}) while calling {2} occured, answer from website: {3}", responseMessage.StatusCode, (int)responseMessage.StatusCode, requestUri, errorContent);
 			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 			if (httpBehaviour.ThrowOnError && throwException != null)
 			{

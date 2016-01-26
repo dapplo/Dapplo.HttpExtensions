@@ -54,7 +54,11 @@ namespace Dapplo.HttpExtensions
 
 		public bool ThrowOnError { get; set; } = HttpExtensionsGlobals.ThrowOnError;
 
-		public HttpCompletionOption HttpCompletionOption { get; set; } = HttpCompletionOption.ResponseContentRead;
+		/// <summary>
+		/// The ResponseHeadersRead forces a pause between the initial response and reading the content, this is needed for better error handling and progress
+		/// Turning this to ResponseContentRead might change the behaviour
+		/// </summary>
+		public HttpCompletionOption HttpCompletionOption { get; set; } = HttpCompletionOption.ResponseHeadersRead;
 
 		public bool ValidateResponseContentType { get; set; } = HttpExtensionsGlobals.ValidateResponseContentType;
 

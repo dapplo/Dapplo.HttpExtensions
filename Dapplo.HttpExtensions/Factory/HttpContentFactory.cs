@@ -26,6 +26,7 @@ using System.Net.Http;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
+using Dapplo.HttpExtensions.Internal;
 
 namespace Dapplo.HttpExtensions.Factory
 {
@@ -34,6 +35,8 @@ namespace Dapplo.HttpExtensions.Factory
 	/// </summary>
 	public static class HttpContentFactory
 	{
+		private static readonly LogContext Log = LogContext.Create();
+
 		/// <summary>
 		/// Create a HttpContent object from the supplied content
 		/// </summary>
@@ -82,12 +85,12 @@ namespace Dapplo.HttpExtensions.Factory
 			{
 				return await converter.ConvertFromHttpContentAsync(resultType, httpContent, httpBehaviour, token).ConfigureAwait(false) as TResult;
 			}
-			if (resultType == typeof(string))
-			{
-				return await httpContent.ReadAsStringAsync().ConfigureAwait(false) as TResult;
-			}
 
-			throw new NotSupportedException($"Unsupported result type {resultType}");
-		}
+			// For everything that comes here, a fitting converter should be written, or the ValidateResponseContentType can be set to false
+			var contentType = httpContent.ContentType();
+			var message = $"Unsupported result type {resultType} / {contentType} combination.";
+			Log.Prepare().Error(message);
+			throw new NotSupportedException(message);
+        }
 	}
 }

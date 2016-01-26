@@ -21,6 +21,7 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Dapplo.HttpExtensions.Support;
 using System;
 using System.IO;
 using System.Net.Http;
@@ -84,7 +85,17 @@ namespace Dapplo.HttpExtensions.ContentConverter
 
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
 		{
-			return new StreamContent(content as Stream);
+			var stream = content as Stream;
+			HttpContent httpContent;
+			if (httpBehaviour.UseProgressStreamContent)
+			{
+				httpContent = new ProgressStreamContent(stream, httpBehaviour.UploadProgress);
+			}
+			else
+			{
+				httpContent = new StreamContent(stream);
+			}
+			return httpContent;
 		}
 
 		public HttpContent ConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null) where TInput : class
@@ -92,7 +103,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			return ConvertToHttpContent(typeof(TInput), content, httpBehaviour);
 		}
 
-		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage)
+		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage, IHttpBehaviour httpBehaviour = null)
 		{
 			if (resultType == null)
 			{

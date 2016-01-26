@@ -99,7 +99,9 @@ namespace Dapplo.HttpExtensions.ContentConverter
 
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
 		{
-			return new FormUrlEncodedContent(content as IEnumerable<KeyValuePair<string, string>>);
+			var nameValueCollection = content as IEnumerable<KeyValuePair<string, string>>;
+			Log.Prepare().Debug("Created HttpContent with WwwUriEncodedForm data: {0}", nameValueCollection);
+			return new FormUrlEncodedContent(nameValueCollection);
 		}
 
 		public HttpContent ConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null) where TInput : class
@@ -107,7 +109,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			return ConvertToHttpContent(typeof(TInput), content, httpBehaviour);
 		}
 
-		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage)
+		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage, IHttpBehaviour httpBehaviour = null)
 		{
 			if (resultType == null)
 			{
@@ -122,6 +124,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 				return;
 			}
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.WwwFormUrlEncoded.EnumValueOf()));
+			Log.Prepare().Debug("Added headers to HttpRequestMessage: {0}", httpRequestMessage.Headers);
 		}
 	}
 }

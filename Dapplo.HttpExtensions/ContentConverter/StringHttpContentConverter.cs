@@ -28,6 +28,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Support;
+using Dapplo.HttpExtensions.Internal;
 
 namespace Dapplo.HttpExtensions.ContentConverter
 {
@@ -37,11 +38,16 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	public class StringHttpContentConverter : IHttpContentConverter
 	{
 		public static readonly StringHttpContentConverter Instance = new StringHttpContentConverter();
+		private static readonly LogContext Log = LogContext.Create();
 		private static readonly IList<string> SupportedContentTypes = new List<string>();
 
 		static StringHttpContentConverter()
 		{
+			// Store the Content-Types this converter supports
 			SupportedContentTypes.Add(MediaTypes.Txt.EnumValueOf());
+			SupportedContentTypes.Add(MediaTypes.Html.EnumValueOf());
+			SupportedContentTypes.Add(MediaTypes.Xml.EnumValueOf());
+			SupportedContentTypes.Add(MediaTypes.XmlReadable.EnumValueOf());
 		}
 
 		public int Order => int.MaxValue;
@@ -58,6 +64,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 				return false;
 			}
 			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
+			// Set ValidateResponseContentType to false to "catch" all
 			return !httpBehaviour.ValidateResponseContentType || SupportedContentTypes.Contains(httpContent.ContentType());
 		}
 
@@ -96,17 +103,22 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			return ConvertToHttpContent(typeof(TInput), content, httpBehaviour);
 		}
 
-		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage)
+		public void AddAcceptHeadersForType(Type typeToConvertTo, HttpRequestMessage httpRequestMessage, IHttpBehaviour httpBehaviour = null)
 		{
-			if (resultType == null)
+			if (typeToConvertTo == null)
 			{
-				throw new ArgumentNullException(nameof(resultType));
+				throw new ArgumentNullException(nameof(typeToConvertTo));
 			}
 			if (httpRequestMessage == null)
 			{
 				throw new ArgumentNullException(nameof(httpRequestMessage));
 			}
+			if (typeToConvertTo != typeof(string))
+			{
+				return;
+			}
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Txt.EnumValueOf()));
+			Log.Prepare().Debug("Added headers to HttpRequestMessage: {0}", httpRequestMessage.Headers);
 		}
 	}
 }

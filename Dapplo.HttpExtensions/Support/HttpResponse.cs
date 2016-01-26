@@ -28,8 +28,8 @@ using System.Net.Http.Headers;
 namespace Dapplo.HttpExtensions.Support
 {
 	/// <summary>
-	/// This class returns the information of a HTTP request
-	/// Makes it possible to process the error information too
+	/// This class returns the information of a HTTP request, see the IHttpResponse for details
+	/// Makes it possible to process the error information, and eventually do something different
 	/// </summary>
 	/// <typeparam name="TResponse">Type for the normal response</typeparam>
 	/// <typeparam name="TErrorResponse">Type for the error response</typeparam>
@@ -41,19 +41,10 @@ namespace Dapplo.HttpExtensions.Support
 
 		public TErrorResponse ErrorResponse { get; set; }
 
-		/// <summary>
-		/// Headers of the response
-		/// </summary>
 		public HttpResponseHeaders Headers { get; set; }
 
-		/// <summary>
-		/// The response HTTP status code
-		/// </summary>
 		public HttpStatusCode StatusCode { get; set; }
 
-		/// <summary>
-		/// true if the reponse has an error
-		/// </summary>
 		public bool HasError => ErrorResponse != null;
 	}
 }

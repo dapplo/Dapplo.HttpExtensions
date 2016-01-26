@@ -160,6 +160,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
 		{
+			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 			if (CanConvertToHttpContent(typeToConvert, content, httpBehaviour))
 			{
 				var bitmapSource = content as BitmapSource;
@@ -170,7 +171,15 @@ namespace Dapplo.HttpExtensions.ContentConverter
 					encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
 					encoder.Save(memoryStream);
 					memoryStream.Seek(0, SeekOrigin.Begin);
-					var httpContent = new StreamContent(memoryStream);
+					HttpContent httpContent;
+					if (httpBehaviour.UseProgressStreamContent)
+					{
+						httpContent = new ProgressStreamContent(memoryStream, httpBehaviour.UploadProgress);
+					}
+					else
+					{
+						httpContent = new StreamContent(memoryStream);
+					}
 					httpContent.Headers.Add("Content-Type", "image/" + Format.ToString().ToLowerInvariant());
 					return httpContent;
 				}
@@ -178,7 +187,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			return null;
 		}
 
-		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage)
+		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage, IHttpBehaviour httpBehaviour = null)
 		{
 			if (resultType == null)
 			{
@@ -198,7 +207,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Bmp.EnumValueOf()));
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Gif.EnumValueOf()));
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Icon.EnumValueOf()));
-			Log.Prepare().Debug("Added headers: {0}", httpRequestMessage.Headers);
+			Log.Prepare().Debug("Added headers to HttpRequestMessage: {0}", httpRequestMessage.Headers);
 		}
 	}
 }

@@ -21,6 +21,7 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Dapplo.HttpExtensions.Internal;
 using System;
 using System.IO;
 using System.Net;
@@ -34,6 +35,7 @@ namespace Dapplo.HttpExtensions.Support
 	/// </summary>
 	public class ProgressStreamContent : HttpContent
 	{
+		private static readonly LogContext Log = LogContext.Create();
 		public enum UploadStates { PendingUpload, Uploading, PendingResponse }
 
 		private readonly Stream _content;
@@ -123,9 +125,15 @@ namespace Dapplo.HttpExtensions.Support
 
 				UploadedBytes = uploaded += length;
 
-				// Report the progress
-				ProgressHandler?.Report(UploadedBytes * 100 / (float)size);
 
+				// Calculate the progress
+				float progress = UploadedBytes * 100 / (float)size;
+				// Log the progress
+				Log.Prepare().Debug("Uploaded {0} bytes for a total of {1} bytes this results in a {2}% progress.", UploadedBytes, size, progress);
+				// Report the progress
+				ProgressHandler?.Report(progress);
+
+				// Write the buffer (shouldn't this be before the reporting?)
 				await stream.WriteAsync(buffer, 0, length).ConfigureAwait(false);
 
 				State = UploadStates.Uploading;

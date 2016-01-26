@@ -74,7 +74,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 
 		public bool CanConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
 		{
-			return typeToConvert == typeof (MemoryStream);
+			return typeToConvert != typeof (string);
 		}
 
 		public bool CanConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null)
@@ -87,7 +87,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		{
 			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 			var jsonString = httpBehaviour.JsonSerializer.SerializeJson(content);
-			Log.Prepare().Debug("Posting Json content: {0}", jsonString);
+			Log.Prepare().Debug("Created HttpContent for Json: {0}", jsonString);
 			return new StringContent(jsonString, httpBehaviour.DefaultEncoding, MediaTypes.Json.EnumValueOf());
 		}
 
@@ -97,7 +97,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			return ConvertToHttpContent(typeof (TInput), content, httpBehaviour);
 		}
 
-		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage)
+		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage, IHttpBehaviour httpBehaviour = null)
 		{
 			if (resultType == null)
 			{
@@ -108,6 +108,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 				throw new ArgumentNullException(nameof(httpRequestMessage));
 			}
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Json.EnumValueOf()));
+			Log.Prepare().Debug("Added headers to HttpRequestMessage: {0}", httpRequestMessage.Headers);
 		}
 	}
 }

@@ -197,7 +197,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			return httpContent;
 		}
 
-		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage)
+		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage, IHttpBehaviour httpBehaviour = null)
 		{
 			if (resultType == null)
 			{
@@ -217,7 +217,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Bmp.EnumValueOf()));
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Gif.EnumValueOf()));
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Icon.EnumValueOf()));
-			Log.Prepare().Debug("Added headers: {0}", httpRequestMessage.Headers);
+			Log.Prepare().Debug("Added headers to HttpRequestMessage: {0}", httpRequestMessage.Headers);
 		}
 	}
 }

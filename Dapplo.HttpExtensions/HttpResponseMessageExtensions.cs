@@ -145,14 +145,14 @@ namespace Dapplo.HttpExtensions
 						Log.Debug().Write("Error while reading the error content: {0}", ex.Message);
 					}
 					// Write log if an error occured.
-					Log.Debug().Write("Http response {0} ({1}) from {2}, details from website: {3}", (int)httpResponseMessage.StatusCode, httpResponseMessage.StatusCode, requestUri, errorContent);
+					Log.Error().Write("Http response {0} ({1}) from {2}, details from website: {3}", (int)httpResponseMessage.StatusCode, httpResponseMessage.StatusCode, requestUri, errorContent);
 
 					httpResponseMessage.EnsureSuccessStatusCode();
 				}
 				else
 				{
 					// Write log for success
-					Log.Error().Write("Http response {0} ({1}) from {2}", (int)httpResponseMessage.StatusCode, httpResponseMessage.StatusCode, requestUri);
+					Log.Debug().Write("Http response {0} ({1}) from {2}", (int)httpResponseMessage.StatusCode, httpResponseMessage.StatusCode, requestUri);
 				}
 			}
 			catch (Exception ex)

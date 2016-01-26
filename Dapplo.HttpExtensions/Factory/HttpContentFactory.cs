@@ -89,7 +89,7 @@ namespace Dapplo.HttpExtensions.Factory
 			// For everything that comes here, a fitting converter should be written, or the ValidateResponseContentType can be set to false
 			var contentType = httpContent.ContentType();
 			var message = $"Unsupported result type {resultType} / {contentType} combination.";
-			Log.Prepare().Error(message);
+			Log.Error().Write(message);
 			throw new NotSupportedException(message);
         }
 	}

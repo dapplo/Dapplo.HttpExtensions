@@ -68,7 +68,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			}
 
 			var jsonString = await httpContent.ReadAsStringAsync().ConfigureAwait(false);
-			Log.Prepare().Debug("Read Json content: {0}", jsonString);
+			Log.Debug().Write("Read Json content: {0}", jsonString);
 			return httpBehaviour.JsonSerializer.DeserializeJson(resultType == typeof(object) ? null : resultType, jsonString);
 		}
 
@@ -87,7 +87,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		{
 			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 			var jsonString = httpBehaviour.JsonSerializer.SerializeJson(content);
-			Log.Prepare().Debug("Created HttpContent for Json: {0}", jsonString);
+			Log.Debug().Write("Created HttpContent for Json: {0}", jsonString);
 			return new StringContent(jsonString, httpBehaviour.DefaultEncoding, MediaTypes.Json.EnumValueOf());
 		}
 
@@ -107,8 +107,9 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			{
 				throw new ArgumentNullException(nameof(httpRequestMessage));
 			}
+			// TODO: How to prevent the adding if this type is really not something we can de-serialize, like Bitmap?
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Json.EnumValueOf()));
-			Log.Prepare().Debug("Added headers to HttpRequestMessage: {0}", httpRequestMessage.Headers);
+			Log.Debug().Write("Modified the header(s) of the HttpRequestMessage: Accept: {0}", httpRequestMessage.Headers.Accept);
 		}
 	}
 }

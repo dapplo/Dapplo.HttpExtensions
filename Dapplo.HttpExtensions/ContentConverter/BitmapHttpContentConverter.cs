@@ -81,7 +81,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			set
 			{
 				_quality = value;
-				Log.Prepare().Debug("Setting Quality to ", value);
+				Log.Debug().Write("Setting Quality to ", value);
 				var qualityParameter = EncoderParameters.FirstOrDefault(x => x.Encoder.Guid == Encoder.Quality.Guid);
 				if (qualityParameter != null)
 				{
@@ -136,12 +136,12 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			if (!CanConvertFromHttpContent(resultType, httpContent, httpBehaviour))
 			{
 				var exMessage = "CanConvertFromHttpContent resulted in false, ConvertFromHttpContentAsync is not supposed to be called.";
-				Log.Prepare().Error(exMessage);
+				Log.Error().Write(exMessage);
 				throw new NotSupportedException(exMessage);
 			}
-			Log.Prepare().Debug("Retrieving the content as MemoryStream, Content-Type: {0}", httpContent.Headers.ContentType);
+			Log.Debug().Write("Retrieving the content as MemoryStream, Content-Type: {0}", httpContent.Headers.ContentType);
 			var memoryStream = await StreamHttpContentConverter.Instance.ConvertFromHttpContentAsync<MemoryStream>(httpContent, httpBehaviour, token).ConfigureAwait(false);
-			Log.Prepare().Debug("Creating a Bitmap from the MemoryStream.");
+			Log.Debug().Write("Creating a Bitmap from the MemoryStream.");
 			return new Bitmap(memoryStream);
 		}
 
@@ -180,7 +180,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			else
 			{
 				var exMessage = $"Can't find an encoder for {Format}";
-				Log.Prepare().Error(exMessage);
+				Log.Error().Write(exMessage);
 				throw new NotSupportedException(exMessage);
 			}
 			memoryStream.Seek(0, SeekOrigin.Begin);
@@ -207,7 +207,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			{
 				throw new ArgumentNullException(nameof(httpRequestMessage));
 			}
-			if (!resultType.IsAssignableFrom(typeof (Bitmap)))
+			if (resultType == typeof(object) || !resultType.IsAssignableFrom(typeof (Bitmap)))
 			{
 				return;
 			}
@@ -217,7 +217,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Bmp.EnumValueOf()));
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Gif.EnumValueOf()));
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Icon.EnumValueOf()));
-			Log.Prepare().Debug("Added headers to HttpRequestMessage: {0}", httpRequestMessage.Headers);
+			Log.Debug().Write("Modified the header(s) of the HttpRequestMessage: Accept: {0}", httpRequestMessage.Headers.Accept);
 		}
 	}
 }

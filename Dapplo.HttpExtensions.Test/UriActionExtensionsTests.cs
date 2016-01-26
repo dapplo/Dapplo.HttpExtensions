@@ -42,7 +42,7 @@ namespace Dapplo.HttpExtensions.Test
 		public void Init()
 		{
 			// Make sure the logger is set for debugging
-			HttpExtensionsGlobals.Logger = new Support.DebugLogger();
+			HttpExtensionsGlobals.Logger = new Support.TraceLogger();
 		}
 
 		/// <summary>

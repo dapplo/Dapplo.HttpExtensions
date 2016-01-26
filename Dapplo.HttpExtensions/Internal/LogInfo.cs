@@ -64,11 +64,13 @@ namespace Dapplo.HttpExtensions.Internal
 
 		public ILogger Logger { get; set; }
 
+		public LogLevel Level { get; set; }
+
 		public DateTimeOffset Timestamp { get; set; } = DateTimeOffset.Now;
 
 		public override string ToString()
 		{
-			return $"{Timestamp.ToString("yyyy-MM-dd HH:mm:sss")} {Caller.FullName}:{Method}({Line})";
+			return $"{Timestamp.ToString("yyyy-MM-dd HH:mm:sss")} {Level} {Caller.FullName}:{Method}({Line})";
         }
 	}
 }

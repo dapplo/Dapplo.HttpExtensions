@@ -33,133 +33,43 @@ namespace Dapplo.HttpExtensions.Internal
 	internal static class LoggerExtensions
 	{
 		/// <summary>
-		/// Wrapper for the Debug call
+		/// Wrapper for the Write call
 		/// </summary>
 		/// <param name="logInfo">ILogInfo</param>
 		/// <param name="messageTemplate">string with formatting</param>
 		/// <param name="propertyValues">parameters for the formatting</param>
-		public static void Debug(this ILogInfo logInfo, string messageTemplate, params object[] propertyValues)
+		public static void Write(this ILogInfo logInfo, string messageTemplate, params object[] propertyValues)
 		{
 			if (logInfo == null)
 			{
 				return;
 			}
-			HttpExtensionsGlobals.Logger?.Debug(logInfo, messageTemplate, propertyValues);
+			HttpExtensionsGlobals.Logger?.Write(logInfo, messageTemplate, propertyValues);
         }
 		/// <summary>
-		/// Wrapper for the Debug call
+		/// Wrapper for the Write call
 		/// </summary>
 		/// <param name="logInfo">ILogInfo</param>
 		/// <param name="exception">Exception to log</param>
 		/// <param name="messageTemplate">string with formatting</param>
 		/// <param name="propertyValues">parameters for the formatting</param>
-		public static void Debug(this ILogInfo logInfo, Exception exception, string messageTemplate, params object[] propertyValues)
+		public static void Write(this ILogInfo logInfo, Exception exception, string messageTemplate, params object[] propertyValues)
 		{
 			if (logInfo == null)
 			{
 				return;
 			}
-			HttpExtensionsGlobals.Logger?.Debug(logInfo, exception, messageTemplate, propertyValues);
+			HttpExtensionsGlobals.Logger?.Write(logInfo, exception, messageTemplate, propertyValues);
 		}
 
 		/// <summary>
-		/// Wrapper for the Info call
-		/// </summary>
-		/// <param name="logInfo">ILogInfo</param>
-		/// <param name="messageTemplate">string with formatting</param>
-		/// <param name="propertyValues">parameters for the formatting</param>
-		public static void Info(this ILogInfo logInfo, string messageTemplate, params object[] propertyValues)
-		{
-			if (logInfo == null)
-			{
-				return;
-			}
-			HttpExtensionsGlobals.Logger?.Info(logInfo, messageTemplate, propertyValues);
-		}
-		/// <summary>
-		/// Wrapper for the Info call
-		/// </summary>
-		/// <param name="logInfo">ILogInfo</param>
-		/// <param name="exception">Exception to log</param>
-		/// <param name="messageTemplate">string with formatting</param>
-		/// <param name="propertyValues">parameters for the formatting</param>
-		public static void Info(this ILogInfo logInfo, Exception exception, string messageTemplate, params object[] propertyValues)
-		{
-			if (logInfo == null)
-			{
-				return;
-			}
-			HttpExtensionsGlobals.Logger?.Info(logInfo, exception, messageTemplate, propertyValues);
-		}
-
-		/// <summary>
-		/// Wrapper for the Warn call
-		/// </summary>
-		/// <param name="logInfo">ILogInfo</param>
-		/// <param name="messageTemplate">string with formatting</param>
-		/// <param name="propertyValues">parameters for the formatting</param>
-		public static void Warn(this ILogInfo logInfo, string messageTemplate, params object[] propertyValues)
-		{
-			if (logInfo == null)
-			{
-				return;
-			}
-			HttpExtensionsGlobals.Logger?.Warn(logInfo, messageTemplate, propertyValues);
-		}
-		/// <summary>
-		/// Wrapper for the Warn call
-		/// </summary>
-		/// <param name="logInfo">ILogInfo</param>
-		/// <param name="exception">Exception to log</param>
-		/// <param name="messageTemplate">string with formatting</param>
-		/// <param name="propertyValues">parameters for the formatting</param>
-		public static void Warn(this ILogInfo logInfo, Exception exception, string messageTemplate, params object[] propertyValues)
-		{
-			if (logInfo == null)
-			{
-				return;
-			}
-			HttpExtensionsGlobals.Logger?.Warn(logInfo, exception, messageTemplate, propertyValues);
-		}
-		/// <summary>
-		/// Wrapper for the Error call
-		/// </summary>
-		/// <param name="logInfo">ILogInfo</param>
-		/// <param name="messageTemplate">string with formatting</param>
-		/// <param name="propertyValues">parameters for the formatting</param>
-		public static void Error(this ILogInfo logInfo, string messageTemplate, params object[] propertyValues)
-		{
-			if (logInfo == null)
-			{
-				return;
-			}
-			HttpExtensionsGlobals.Logger?.Error(logInfo, messageTemplate, propertyValues);
-		}
-
-		/// <summary>
-		/// Wrapper for the Error call
-		/// </summary>
-		/// <param name="logInfo">ILogInfo</param>
-		/// <param name="exception">Exception to log</param>
-		/// <param name="messageTemplate">string with formatting</param>
-		/// <param name="propertyValues">parameters for the formatting</param>
-		public static void Error(this ILogInfo logInfo, Exception exception, string messageTemplate, params object[] propertyValues)
-		{
-			if (logInfo == null)
-			{
-				return;
-			}
-			HttpExtensionsGlobals.Logger?.Error(logInfo, exception, messageTemplate, propertyValues);
-		}
-
-		/// <summary>
-		/// This extension will create ILogInfo, if a logger is passed
+		/// This extension will create ILogInfo, for the Level representing the name, if a logger is passed
 		/// </summary>
 		/// <param name="logContext">LogContext is the context (source) from where the log entry came</param>
 		/// <param name="memberName">Should be set by the compiler, is the calling method</param>
 		/// <param name="lineNumber">int lineNumber of the log statement</param>
 		/// <returns>ILogInfo</returns>
-		public static ILogInfo Prepare(this LogContext logContext, [CallerMemberName] string memberName = "", [CallerLineNumber] int lineNumber = 0)
+		public static ILogInfo Debug(this LogContext logContext, [CallerMemberName] string memberName = "", [CallerLineNumber] int lineNumber = 0)
 		{
 			if (logContext == null)
 			{
@@ -170,7 +80,77 @@ namespace Dapplo.HttpExtensions.Internal
 			{
 				Caller = logContext.Source,
 				Method = memberName,
-				Line = lineNumber
+				Line = lineNumber,
+				Level = LogLevel.Debug
+			};
+		}
+
+		/// <summary>
+		/// This extension will create ILogInfo, for the Level representing the name, if a logger is passed
+		/// </summary>
+		/// <param name="logContext">LogContext is the context (source) from where the log entry came</param>
+		/// <param name="memberName">Should be set by the compiler, is the calling method</param>
+		/// <param name="lineNumber">int lineNumber of the log statement</param>
+		/// <returns>ILogInfo</returns>
+		public static ILogInfo Info(this LogContext logContext, [CallerMemberName] string memberName = "", [CallerLineNumber] int lineNumber = 0)
+		{
+			if (logContext == null)
+			{
+				return null;
+			}
+
+			return new LogInfo
+			{
+				Caller = logContext.Source,
+				Method = memberName,
+				Line = lineNumber,
+				Level = LogLevel.Info
+			};
+		}
+
+		/// <summary>
+		/// This extension will create ILogInfo, for the Level representing the name, if a logger is passed
+		/// </summary>
+		/// <param name="logContext">LogContext is the context (source) from where the log entry came</param>
+		/// <param name="memberName">Should be set by the compiler, is the calling method</param>
+		/// <param name="lineNumber">int lineNumber of the log statement</param>
+		/// <returns>ILogInfo</returns>
+		public static ILogInfo Error(this LogContext logContext, [CallerMemberName] string memberName = "", [CallerLineNumber] int lineNumber = 0)
+		{
+			if (logContext == null)
+			{
+				return null;
+			}
+
+			return new LogInfo
+			{
+				Caller = logContext.Source,
+				Method = memberName,
+				Line = lineNumber,
+				Level = LogLevel.Error
+			};
+		}
+
+		/// <summary>
+		/// This extension will create ILogInfo, for the Level representing the name, if a logger is passed
+		/// </summary>
+		/// <param name="logContext">LogContext is the context (source) from where the log entry came</param>
+		/// <param name="memberName">Should be set by the compiler, is the calling method</param>
+		/// <param name="lineNumber">int lineNumber of the log statement</param>
+		/// <returns>ILogInfo</returns>
+		public static ILogInfo Fatal(this LogContext logContext, [CallerMemberName] string memberName = "", [CallerLineNumber] int lineNumber = 0)
+		{
+			if (logContext == null)
+			{
+				return null;
+			}
+
+			return new LogInfo
+			{
+				Caller = logContext.Source,
+				Method = memberName,
+				Line = lineNumber,
+				Level = LogLevel.Fatal
 			};
 		}
 	}

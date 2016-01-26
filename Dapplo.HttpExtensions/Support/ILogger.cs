@@ -25,6 +25,15 @@ using System;
 
 namespace Dapplo.HttpExtensions.Support
 {
+	public enum LogLevel
+	{
+		Debug,
+		Info,
+		Warn,
+		Error,
+		Fatal
+	}
+
 	/// <summary>
 	/// Used to pass 
 	/// </summary>
@@ -41,6 +50,11 @@ namespace Dapplo.HttpExtensions.Support
 		string Method { get; set; }
 
 		/// <summary>
+		/// The LogLevel for this log info
+		/// </summary>
+		LogLevel Level { get; set; }
+
+		/// <summary>
 		/// Timestamp of the log
 		/// </summary>
 		DateTimeOffset Timestamp { get; set; }
@@ -50,17 +64,11 @@ namespace Dapplo.HttpExtensions.Support
 	/// This is the interface used for internal logging.
 	/// The idea is that you can implement a small wrapper for you favorite logger which implements this interface.
 	/// Assign it to the HttpExtensionsGlobals.Logger and Dapplo.HttpExtensions will start logger with your class.
-	/// Some default implementations are supplied, so you can use them while your project is in development.
+	/// A TraceLogger implementation is supplied, so you can see some output while your project is in development.
 	/// </summary>
 	public interface ILogger
 	{
-		void Debug(ILogInfo logInfo, string messageTemplate, params object[] propertyValues);
-		void Debug(ILogInfo logInfo, Exception exception, string messageTemplate, params object[] propertyValues);
-		void Info(ILogInfo logInfo, string messageTemplate, params object[] propertyValues);
-		void Info(ILogInfo logInfo, Exception exception, string messageTemplate, params object[] propertyValues);
-		void Warn(ILogInfo logInfo, string messageTemplate, params object[] propertyValues);
-		void Warn(ILogInfo logInfo, Exception exception, string messageTemplate, params object[] propertyValues);
-		void Error(ILogInfo logInfo, string messageTemplate, params object[] propertyValues);
-		void Error(ILogInfo logInfo, Exception exception, string messageTemplate, params object[] propertyValues);
+		void Write(ILogInfo logInfo, string messageTemplate, params object[] propertyValues);
+		void Write(ILogInfo logInfo, Exception exception, string messageTemplate, params object[] propertyValues);
 	}
 }

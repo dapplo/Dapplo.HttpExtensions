@@ -129,7 +129,7 @@ namespace Dapplo.HttpExtensions.Support
 				// Calculate the progress
 				float progress = UploadedBytes * 100 / (float)size;
 				// Log the progress
-				Log.Prepare().Debug("Uploaded {0} bytes for a total of {1} bytes this results in a {2}% progress.", UploadedBytes, size, progress);
+				Log.Debug().Write("Uploaded {0} bytes for a total of {1} bytes this results in a {2}% progress.", UploadedBytes, size, progress);
 				// Report the progress
 				ProgressHandler?.Report(progress);
 

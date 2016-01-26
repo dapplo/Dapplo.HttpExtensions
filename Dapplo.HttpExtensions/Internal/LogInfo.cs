@@ -32,21 +32,10 @@ namespace Dapplo.HttpExtensions.Internal
 	/// </summary>
 	internal class LogContext
 	{
-		private LogContext() { }
-
-		/// <summary>
-		/// This creates a log context which contains the type of the calling class
-		/// This is slow, only use this in a static variable!
-		/// </summary>
-		/// <returns>LogContext</returns>
-		public static LogContext Create()
+		public LogContext()
 		{
 			// Get the stacktrace, first frame, method and it's declaring type.
-			var souceType = new StackTrace().GetFrame(1).GetMethod().DeclaringType;
-			return new LogContext
-			{
-				Source = souceType
-			};
+			Source = new StackTrace().GetFrame(1).GetMethod().DeclaringType;
 		}
 		public Type Source { get; private set; }
 	}

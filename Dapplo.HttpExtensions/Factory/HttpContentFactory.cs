@@ -35,7 +35,7 @@ namespace Dapplo.HttpExtensions.Factory
 	/// </summary>
 	public static class HttpContentFactory
 	{
-		private static readonly LogContext Log = LogContext.Create();
+		private static readonly LogContext Log = new LogContext();
 
 		/// <summary>
 		/// Create a HttpContent object from the supplied content

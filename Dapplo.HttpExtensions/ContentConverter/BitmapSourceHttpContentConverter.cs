@@ -41,7 +41,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	public class BitmapSourceHttpContentConverter : IHttpContentConverter
 	{
 		private static readonly IList<string> SupportedContentTypes = new List<string>();
-		private static readonly LogContext Log = LogContext.Create();
+		private static readonly LogContext Log = new LogContext();
 		public static readonly BitmapSourceHttpContentConverter Instance = new BitmapSourceHttpContentConverter();
 
 		static BitmapSourceHttpContentConverter()

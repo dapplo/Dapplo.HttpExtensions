@@ -35,7 +35,7 @@ namespace Dapplo.HttpExtensions.Support
 	/// </summary>
 	public class ProgressStreamContent : HttpContent
 	{
-		private static readonly LogContext Log = LogContext.Create();
+		private static readonly LogContext Log = new LogContext();
 		public enum UploadStates { PendingUpload, Uploading, PendingResponse }
 
 		private readonly Stream _content;

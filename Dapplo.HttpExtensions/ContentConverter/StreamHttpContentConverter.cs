@@ -36,7 +36,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	/// </summary>
 	public class StreamHttpContentConverter : IHttpContentConverter
 	{
-		private static readonly LogContext Log = LogContext.Create();
+		private static readonly LogContext Log = new LogContext();
 		public static readonly StreamHttpContentConverter Instance = new StreamHttpContentConverter();
 
 		public int Order => 0;

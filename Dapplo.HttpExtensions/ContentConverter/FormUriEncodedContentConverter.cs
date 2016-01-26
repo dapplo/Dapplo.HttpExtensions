@@ -40,7 +40,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	/// </summary>
 	public class FormUriEncodedContentConverter : IHttpContentConverter
 	{
-		private static readonly LogContext Log = LogContext.Create();
+		private static readonly LogContext Log = new LogContext();
 		public static readonly FormUriEncodedContentConverter Instance = new FormUriEncodedContentConverter();
 
 		public int Order => 0;

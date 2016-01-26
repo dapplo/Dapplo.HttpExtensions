@@ -37,7 +37,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	/// </summary>
 	public class JsonHttpContentConverter : IHttpContentConverter
 	{
-		private static readonly LogContext Log = LogContext.Create();
+		private static readonly LogContext Log = new LogContext();
 		public static readonly JsonHttpContentConverter Instance = new JsonHttpContentConverter();
 
 		public int Order => int.MaxValue;

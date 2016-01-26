@@ -35,7 +35,7 @@ namespace Dapplo.HttpExtensions
 	/// </summary>
 	public static class HttpResponseMessageExtensions
 	{
-		private static readonly LogContext Log = LogContext.Create();
+		private static readonly LogContext Log = new LogContext();
 
 		/// <summary>
 		/// Extension method reading the HttpResponseMessage to a Type object
@@ -92,7 +92,7 @@ namespace Dapplo.HttpExtensions
 			if (httpResponseMessage.IsSuccessStatusCode)
 			{
 				// Write log for success
-				Log.Debug().Write("Http response {0} ({1}) from {2}", (int)httpResponseMessage.StatusCode, httpResponseMessage.StatusCode, httpResponseMessage?.RequestMessage?.RequestUri);
+				Log.Debug().Write("Http response {0} ({1}) from {2}", (int)httpResponseMessage.StatusCode, httpResponseMessage.StatusCode, httpResponseMessage.RequestMessage?.RequestUri);
 				response.Response = await httpContent.GetAsAsync<TResponse>(httpBehaviour, token).ConfigureAwait(false);
 				// Make sure the httpContent is only disposed when it's not the return type
 				if (!typeof(HttpContent).IsAssignableFrom(typeof(TResponse)))
@@ -103,7 +103,7 @@ namespace Dapplo.HttpExtensions
 			else
 			{
 				// Write log if an error occured.
-				Log.Error().Write("Http response {0} ({1}) from {2}", (int)httpResponseMessage.StatusCode, httpResponseMessage.StatusCode, httpResponseMessage?.RequestMessage?.RequestUri);
+				Log.Error().Write("Http response {0} ({1}) from {2}", (int)httpResponseMessage.StatusCode, httpResponseMessage.StatusCode, httpResponseMessage.RequestMessage?.RequestUri);
 				response.ErrorResponse = await httpContent.GetAsAsync<TErrorResponse>(httpBehaviour, token).ConfigureAwait(false);
 
 				// Make sure the httpContent is only disposed when it's not the return type

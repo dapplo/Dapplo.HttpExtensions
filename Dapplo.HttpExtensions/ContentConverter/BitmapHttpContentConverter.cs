@@ -123,7 +123,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 				return false;
 			}
 			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
-			return !httpBehaviour.ValidateResponseContentType || SupportedContentTypes.Contains(httpContent.ContentType());
+			return !httpBehaviour.ValidateResponseContentType || SupportedContentTypes.Contains(httpContent.GetContentType());
 		}
 
 		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class

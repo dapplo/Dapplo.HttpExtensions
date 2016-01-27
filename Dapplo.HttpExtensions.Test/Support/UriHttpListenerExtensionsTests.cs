@@ -21,15 +21,15 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Dapplo.HttpExtensions.Support;
 using System.Threading.Tasks;
+using Dapplo.HttpExtensions.Listener;
 
 namespace Dapplo.HttpExtensions.Test.Support
 {
 	[TestClass]
-	public class AsyncHttpListenerTests
+	public class UriHttpListenerExtensionsTests
 	{
 		[TestInitialize]
 		public void InitLogger()
@@ -40,15 +40,16 @@ namespace Dapplo.HttpExtensions.Test.Support
 		[TestMethod]
 		public async Task TestListenAsync()
 		{
-			var listenUri = AsyncHttpListenerExtensions.CreateLocalHostUri().AppendSegments("AsyncHttpListenerTests");
-			var listenTask = listenUri.ListenAsync(async (httpListenerContext) =>
+			var listenUri = UriHttpListenerExtensions.CreateFreeLocalHostUri().AppendSegments("AsyncHttpListenerTests");
+			var listenTask = listenUri.ListenAsync(async httpListenerContext =>
 			{
 				// Process the request
 				var httpListenerRequest = httpListenerContext.Request;
 				var result = httpListenerRequest.Url.QueryToDictionary();
-				await httpListenerContext.WriteResponseTextAsync("OK");
+				await httpListenerContext.RespondAsync("OK");
 				return result;
 			});
+			// Do we need a delay for the listener to be ready?
 			//await Task.Delay(100);
 			var testUri = listenUri.ExtendQuery("name", "dapplo");
 			var okResponse = await testUri.GetAsAsync<string>();

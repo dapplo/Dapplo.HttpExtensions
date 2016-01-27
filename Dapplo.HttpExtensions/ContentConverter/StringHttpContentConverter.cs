@@ -65,7 +65,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			}
 			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 			// Set ValidateResponseContentType to false to "catch" all
-			return !httpBehaviour.ValidateResponseContentType || SupportedContentTypes.Contains(httpContent.ContentType());
+			return !httpBehaviour.ValidateResponseContentType || SupportedContentTypes.Contains(httpContent.GetContentType());
 		}
 
 		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
@@ -117,7 +117,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			{
 				return;
 			}
-			// TODO: Encoding?
+			// TODO: Encoding header?
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Txt.EnumValueOf()));
 			Log.Debug().Write("Modified the header(s) of the HttpRequestMessage: Accept: {0}", httpRequestMessage.Headers.Accept);
 		}

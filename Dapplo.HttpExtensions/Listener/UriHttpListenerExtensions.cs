@@ -21,27 +21,28 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Dapplo.HttpExtensions.Internal;
 using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Dapplo.HttpExtensions.Internal;
+using Dapplo.HttpExtensions.Support;
 
-namespace Dapplo.HttpExtensions.Support
+namespace Dapplo.HttpExtensions.Listener
 {
 	/// <summary>
 	/// Async helpers for the HttpListener
 	/// </summary>
-	public static class AsyncHttpListenerExtensions
+	public static class UriHttpListenerExtensions
 	{
 		private static readonly LogContext Log = new LogContext();
 
 		/// <summary>
 		/// This method starts a HttpListener to make it possible to listen async for a SINGLE request.
 		/// </summary>
-		/// <param name="listenUri">The Uri to listen to</param>
+		/// <param name="listenUri">The Uri to listen to, use CreateFreeLocalHostUri (and add segments) if you don't have a specific reason</param>
 		/// <param name="httpListenerContextHandler">A function which gets a HttpListenerContext and returns a value</param>
 		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>The value from the httpListenerContextHandler</returns>
@@ -56,7 +57,6 @@ namespace Dapplo.HttpExtensions.Support
 			{
 				using (var httpListener = new HttpListener())
 				{
-					HttpListenerContext httpListenerContext = null;
 					try
 					{
 						// Add the URI to listen to, this SHOULD be localhost to prevent a lot of problemens with rights
@@ -64,14 +64,20 @@ namespace Dapplo.HttpExtensions.Support
 						// Start listening
 						httpListener.Start();
 						Log.Debug().Write("Started listening on {0}", listenUriString);
+
 						// Make the listener stop if the token is cancelled.
-						cancellationToken.Register(() => httpListener.Stop());
+						// This registratrion is disposed before the httpListener is disposed:
+						// ReSharper disable once AccessToDisposedClosure
+						var cancellationTokenRegistration = cancellationToken.Register(() => httpListener.Stop());
 
 						// Get the context
-						httpListenerContext = await httpListener.GetContextAsync().ConfigureAwait(false);
+						var httpListenerContext = await httpListener.GetContextAsync().ConfigureAwait(false);
 
 						// Call the httpListenerContextHandler with the context we got for the result
 						var result = await httpListenerContextHandler(httpListenerContext).ConfigureAwait(false);
+
+						// Dispose the registration, so the stop isn't called on a disposed httpListener
+						cancellationTokenRegistration.Dispose();
 
 						// Set the result to the TaskCompletionSource, so the await on the task finishe
 						taskCompletionSource.SetResult(result);
@@ -95,37 +101,15 @@ namespace Dapplo.HttpExtensions.Support
 				}
 			}, cancellationToken, TaskCreationOptions.LongRunning, TaskScheduler.Default).ConfigureAwait(false);
 
+			// Return the taskCompletionSource.Task so the caller can await on it
 			return taskCompletionSource.Task;
-		}
-
-		/// <summary
-		/// Helper method to write a response
-		/// </summary>
-		/// <returns>Task</returns>
-		public static async Task WriteResponseTextAsync(this HttpListenerContext httpListenerContext, string reponseText, CancellationToken cancellationToken = default(CancellationToken))
-		{
-			// Get response object.
-			using (var response = httpListenerContext.Response)
-			{
-				// Write a "close" response.
-				var buffer = Encoding.UTF8.GetBytes(reponseText);
-				// Write to response stream.
-				response.ContentLength64 = buffer.Length;
-				response.ContentType = MediaTypes.Txt.EnumValueOf();
-				response.ContentEncoding = Encoding.UTF8;
-				Log.Debug().Write("Answering request.");
-				using (var stream = response.OutputStream)
-				{
-					await stream.WriteAsync(buffer, 0, buffer.Length, cancellationToken);
-				}
-			}
 		}
 
 		/// <summary>
 		/// Create an Localhost Uri for an unused port
 		/// </summary>
 		/// <returns></returns>
-		public static Uri CreateLocalHostUri()
+		public static Uri CreateFreeLocalHostUri()
 		{
 			return new Uri($"http://localhost:{GetRandomUnusedPort()}");
 		}

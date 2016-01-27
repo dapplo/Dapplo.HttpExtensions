@@ -22,7 +22,6 @@
  */
 
 using System;
-using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
@@ -50,7 +49,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent, IHttpBehaviour httpBehaviour = null)
 		{
-			return httpContent.ContentType() == MediaTypes.Json.EnumValueOf();
+			return httpContent.GetContentType() == MediaTypes.Json.EnumValueOf();
 		}
 
 		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))

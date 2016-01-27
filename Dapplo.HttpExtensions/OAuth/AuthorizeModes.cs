@@ -25,6 +25,7 @@ namespace Dapplo.HttpExtensions.OAuth
 {
 	/// <summary>
 	/// Specify the autorize mode that is used to get the token from the cloud service.
+	/// Some details are described here: https://developers.google.com/identity/protocols/OAuth2InstalledApp
 	/// </summary>
 	public enum AuthorizeModes
 	{

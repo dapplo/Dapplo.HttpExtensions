@@ -57,7 +57,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Support\AsyncHttpListenerTests.cs" />
+    <Compile Include="Support\UriHttpListenerExtensionsTests.cs" />
     <Compile Include="TestEntities\GitHubError.cs" />
     <Compile Include="TestEntities\GitHubRelease.cs" />
     <Compile Include="UriActionExtensionsTests.cs" />

@@ -57,7 +57,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			{
 				return false;
 			}
-			return httpContent.ContentType() == MediaTypes.WwwFormUrlEncoded.EnumValueOf();
+			return httpContent.GetContentType() == MediaTypes.WwwFormUrlEncoded.EnumValueOf();
 		}
 
 		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class

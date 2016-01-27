@@ -21,10 +21,13 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Dapplo.HttpExtensions.Factory;
+using System;
+using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using Dapplo.HttpExtensions.Internal;
 
 namespace Dapplo.HttpExtensions
 {
@@ -33,6 +36,8 @@ namespace Dapplo.HttpExtensions
 	/// </summary>
 	public static class HttpContentExtensions
 	{
+		private static readonly LogContext Log = new LogContext();
+
 		/// <summary>
 		/// Extension method reading the httpContent to a Typed object, depending on the returned content-type
 		/// Currently we support:
@@ -45,7 +50,23 @@ namespace Dapplo.HttpExtensions
 		/// <returns>the deserialized object of type T</returns>
 		public static async Task<TResult> GetAsAsync<TResult>(this HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
-			return await HttpContentFactory.ProcessAsync<TResult>(httpContent, httpBehaviour, token).ConfigureAwait(false);
+			var resultType = typeof(TResult);
+			if (typeof(HttpContent).IsAssignableFrom(resultType))
+			{
+				return httpContent as TResult;
+			}
+			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
+			var converter = httpBehaviour.HttpContentConverters.OrderBy(x => x.Order).FirstOrDefault(x => x.CanConvertFromHttpContent(resultType, httpContent, httpBehaviour));
+			if (converter != null)
+			{
+				return await converter.ConvertFromHttpContentAsync(resultType, httpContent, httpBehaviour, token).ConfigureAwait(false) as TResult;
+			}
+
+			// For everything that comes here, a fitting converter should be written, or the ValidateResponseContentType can be set to false
+			var contentType = httpContent.GetContentType();
+			var message = $"Unsupported result type {resultType} / {contentType} combination.";
+			Log.Error().Write(message);
+			throw new NotSupportedException(message);
 		}
 
 		/// <summary>
@@ -53,9 +74,19 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="httpContent">HttpContent</param>
 		/// <returns>string with the content type</returns>
-		public static string ContentType(this HttpContent httpContent)
+		public static string GetContentType(this HttpContent httpContent)
 		{
 			return httpContent?.Headers?.ContentType?.MediaType;
+		}
+
+		/// <summary>
+		/// Simply set the content type of the HttpContent
+		/// </summary>
+		/// <param name="httpContent">HttpContent</param>
+		/// <param name="contentType">Content-Type to set</param>
+		public static void SetContentType(this HttpContent httpContent, string contentType)
+		{
+			httpContent.Headers.ContentType = MediaTypeHeaderValue.Parse(contentType);
 		}
 	}
 }

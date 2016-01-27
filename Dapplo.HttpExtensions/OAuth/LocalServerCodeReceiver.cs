@@ -22,12 +22,14 @@
  */
 
 using Dapplo.HttpExtensions.Internal;
-using Dapplo.HttpExtensions.Support;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Dapplo.HttpExtensions.Factory;
+using Dapplo.HttpExtensions.Listener;
+using Dapplo.HttpExtensions.Support;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
@@ -68,11 +70,11 @@ The authentication process received information from CloudServiceName. You can c
 		public async Task<IDictionary<string, string>> ReceiveCodeAsync(OAuth2Settings oauth2Settings, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			// Set the redirect URL on the settings
-			var redirectUri = AsyncHttpListenerExtensions.CreateLocalHostUri().AppendSegments("authorize");
+			var redirectUri = UriHttpListenerExtensions.CreateFreeLocalHostUri().AppendSegments("authorize");
 
 			oauth2Settings.RedirectUrl = Uri.EscapeDataString(redirectUri.AbsoluteUri);
 
-			var listenTask = redirectUri.ListenAsync(async (httpListenerContext) =>
+			var listenTask = redirectUri.ListenAsync(async httpListenerContext =>
 			{
 				// Process the request
 				var httpListenerRequest = httpListenerContext.Request;
@@ -82,7 +84,9 @@ The authentication process received information from CloudServiceName. You can c
 
 				try
 				{
-					await httpListenerContext.WriteResponseTextAsync(ClosePageResponse.Replace("CloudServiceName", oauth2Settings.CloudServiceName), cancellationToken);
+					var htmlContent = HttpContentFactory.Create(ClosePageResponse.Replace("CloudServiceName", oauth2Settings.CloudServiceName));
+					htmlContent.SetContentType(MediaTypes.Html.EnumValueOf());
+					await httpListenerContext.RespondAsync(htmlContent, null, cancellationToken);
 				}
 				catch (Exception ex)
 				{

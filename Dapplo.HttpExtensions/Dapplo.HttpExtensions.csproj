@@ -48,10 +48,12 @@
     <Compile Include="IHttpBehaviour.cs" />
     <Compile Include="IHttpContentConverter.cs" />
     <Compile Include="IHttpResponse.cs" />
-    <Compile Include="Support\AsyncHttpListenerExtensions.cs" />
+    <Compile Include="Listener\HttpListenerContextExtensions.cs" />
+    <Compile Include="Listener\UriHttpListenerExtensions.cs" />
     <Compile Include="OAuth\AuthorizeModes.cs" />
     <Compile Include="OAuth\LocalServerCodeReceiver.cs" />
     <Compile Include="OAuth\OAuth2Settings.cs" />
+    <Compile Include="OAuth\OAuthTokenResponse.cs" />
     <Compile Include="StringExtensions.cs" />
     <Compile Include="Support\TraceLogger.cs" />
     <Compile Include="Support\ILogger.cs" />

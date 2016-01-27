@@ -21,15 +21,13 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Dapplo.HttpExtensions.Internal;
+using Dapplo.HttpExtensions.Support;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Dapplo.HttpExtensions.Internal;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
@@ -65,76 +63,44 @@ The authentication process received information from CloudServiceName. You can c
 		/// The OAuth code receiver
 		/// </summary>
 		/// <param name="oauth2Settings"></param>
-		/// <param name="token"></param>
+		/// <param name="cancellationToken"></param>
 		/// <returns>Dictionary with values</returns>
-		public async Task<IDictionary<string, string>> ReceiveCodeAsync(OAuth2Settings oauth2Settings, CancellationToken token = default(CancellationToken))
+		public async Task<IDictionary<string, string>> ReceiveCodeAsync(OAuth2Settings oauth2Settings, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			// Set the redirect URL on the settings
-			var redirectUri = new Uri($"http://localhost:{GetRandomUnusedPort()}/authorize/");
+			var redirectUri = AsyncHttpListenerExtensions.CreateLocalHostUri().AppendSegments("authorize");
 
 			oauth2Settings.RedirectUrl = Uri.EscapeDataString(redirectUri.AbsoluteUri);
-			var taskCompletionSource = new TaskCompletionSource<IDictionary<string, string>>();
 
-			// ReSharper disable once UnusedVariable
-			var listenTask = Task.Factory.StartNew(async () =>
+			var listenTask = redirectUri.ListenAsync(async (httpListenerContext) =>
 			{
-				using (var listener = new HttpListener())
-				{
-					listener.Prefixes.Add(redirectUri.AbsoluteUri);
-					listener.Start();
-					var httpListenerContext = await listener.GetContextAsync();
-					var httpListenerRequest = httpListenerContext.Request;
-					try
-					{
-						// we got the result, parse the Query and set it as a result
-						taskCompletionSource.SetResult(httpListenerRequest.Url.QueryToDictionary());
+				// Process the request
+				var httpListenerRequest = httpListenerContext.Request;
+				Log.Debug().Write("Got request {0}", httpListenerRequest.Url);
+				// we got the result, parse the Query and set it as a result
+				var result = httpListenerRequest.Url.QueryToDictionary();
 
-						// Get response object.
-						using (var response = httpListenerContext.Response)
-						{
-							// Write a "close" response.
-							var buffer = Encoding.UTF8.GetBytes(ClosePageResponse.Replace("CloudServiceName", oauth2Settings.CloudServiceName));
-							// Write to response stream.
-							response.ContentLength64 = buffer.Length;
-							using (var stream = response.OutputStream)
-							{
-								await stream.WriteAsync(buffer, 0, buffer.Length, token);
-							}
-						}
-					}
-					catch (Exception ex)
-					{
-						httpListenerContext.Response.OutputStream.Close();
-						taskCompletionSource.SetException(ex);
-					}
+				try
+				{
+					await httpListenerContext.WriteResponseTextAsync(ClosePageResponse.Replace("CloudServiceName", oauth2Settings.CloudServiceName), cancellationToken);
 				}
-			}, token);
+				catch (Exception ex)
+				{
+					Log.Error().Write(ex, "Couldn't write a response");
+				}
+				return result;
+			}, cancellationToken);
+
+			// while the listener is beging starter in the "background", here we prepare opening the browser
+
 			// Get the formatted FormattedAuthUrl
 			var authorizationUrl = new Uri(oauth2Settings.AuthUrlPattern.FormatWith(oauth2Settings));
 			Log.Debug().Write("Open a browser with: {0}", authorizationUrl.AbsoluteUri);
 			// Open the url in the default browser
 			Process.Start(authorizationUrl.AbsoluteUri);
-			return await taskCompletionSource.Task;
-		}
 
-		/// <summary>
-		/// Returns a random, unused port.
-		/// </summary>
-		/// <returns>port to use</returns>
-		private static int GetRandomUnusedPort()
-		{
-			var listener = new TcpListener(IPAddress.Loopback, 0);
-			try
-			{
-				listener.Start();
-				var port = ((IPEndPoint) listener.LocalEndpoint).Port;
-				Log.Debug().Write("Found free listener port {0} for the local code receiver.", port);
-				return port;
-			}
-			finally
-			{
-				listener.Stop();
-			}
+			// Return result of the listening
+			return await listenTask;
 		}
 	}
 }

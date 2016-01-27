@@ -30,6 +30,7 @@ using Dapplo.HttpExtensions.Test.TestEntities;
 using System.Drawing;
 using System.IO;
 using System.Windows.Media.Imaging;
+using Dapplo.HttpExtensions.Support;
 
 namespace Dapplo.HttpExtensions.Test
 {
@@ -42,7 +43,7 @@ namespace Dapplo.HttpExtensions.Test
 		public void Init()
 		{
 			// Make sure the logger is set for debugging
-			HttpExtensionsGlobals.Logger = new Support.TraceLogger();
+			HttpExtensionsGlobals.Logger = new TraceLogger();
 		}
 
 		/// <summary>

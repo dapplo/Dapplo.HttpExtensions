@@ -76,9 +76,10 @@ namespace Dapplo.HttpExtensions.OAuth
 		} = Guid.NewGuid().ToString();
 
 		/// <summary>
-		/// The autorization URL where the values of this class can be "injected"
+		/// The autorization Uri where the values of this class will be "injected"
+		/// Example how this can be created: new Uri("http://server").AppendSegments("auth").Query("client_id", "{ClientId}");
 		/// </summary>
-		public string AuthUrlPattern
+		public Uri AuthorizationUri
 		{
 			get;
 			set;

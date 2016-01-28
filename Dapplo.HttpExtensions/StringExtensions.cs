@@ -56,17 +56,26 @@ namespace Dapplo.HttpExtensions
 				if (propertyInfo.CanRead && propertyInfo.CanWrite)
 				{
 					var value = propertyInfo.GetValue(source, null);
-					if (propertyInfo.PropertyType != typeof (IDictionary<string, string>))
+					if (value == null)
 					{
-						properties.Add(propertyInfo.Name, value);
+						properties.Add(propertyInfo.Name, "");
 					}
-					else
+					else if (propertyInfo.PropertyType == typeof (IDictionary<string, string>))
 					{
-						var dictionary = (IDictionary<string, string>) value;
+						var dictionary = (IDictionary<string, string>)value;
 						foreach (var propertyKey in dictionary.Keys)
 						{
 							properties.Add(propertyKey, dictionary[propertyKey]);
 						}
+					}
+					else if (propertyInfo.PropertyType.IsEnum)
+					{
+						var enumValue = value as Enum;
+						properties.Add(propertyInfo.Name, enumValue.EnumValueOf());
+					}
+					else
+					{
+						properties.Add(propertyInfo.Name, value);
 					}
 				}
 			}
@@ -83,7 +92,7 @@ namespace Dapplo.HttpExtensions
 				object value;
 				values.Add(properties.TryGetValue(propertyGroup.Value, out value) ? value : source);
 				return new string('{', startGroup.Captures.Count) + (values.Count - 1) + formatGroup.Value +
-				       new string('}', endGroup.Captures.Count);
+					new string('}', endGroup.Captures.Count);
 			});
 
 			return string.Format(provider, rewrittenFormat, values.ToArray());

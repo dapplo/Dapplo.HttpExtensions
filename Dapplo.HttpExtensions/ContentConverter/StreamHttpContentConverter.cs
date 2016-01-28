@@ -88,6 +88,8 @@ namespace Dapplo.HttpExtensions.ContentConverter
 
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
 		{
+			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
+
 			var stream = content as Stream;
 			HttpContent httpContent;
 			if (httpBehaviour.UseProgressStreamContent)

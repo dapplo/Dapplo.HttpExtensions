@@ -51,6 +51,7 @@
     <Compile Include="Listener\HttpListenerContextExtensions.cs" />
     <Compile Include="Listener\UriHttpListenerExtensions.cs" />
     <Compile Include="OAuth\AuthorizeModes.cs" />
+    <Compile Include="OAuth\GrantTypes.cs" />
     <Compile Include="OAuth\LocalServerCodeReceiver.cs" />
     <Compile Include="OAuth\OAuth2Settings.cs" />
     <Compile Include="OAuth\OAuthHttpMessageHandler.cs" />

@@ -25,6 +25,7 @@ using Dapplo.HttpExtensions.Internal;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Factory;
@@ -70,9 +71,10 @@ The authentication process received information from CloudServiceName. You can c
 		public async Task<IDictionary<string, string>> ReceiveCodeAsync(OAuth2Settings oauth2Settings, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			// Set the redirect URL on the settings
-			var redirectUri = UriHttpListenerExtensions.CreateFreeLocalHostUri().AppendSegments("authorize");
+			var redirectUri = UriHttpListenerExtensions.CreateFreeLocalHostUri();
 
-			oauth2Settings.RedirectUrl = Uri.EscapeDataString(redirectUri.AbsoluteUri);
+			// Needs to be escaped as this is replaced in the uri that is opened in the browser
+			oauth2Settings.RedirectUrl = redirectUri.AbsoluteUri;
 
 			var listenTask = redirectUri.ListenAsync(async httpListenerContext =>
 			{
@@ -97,8 +99,15 @@ The authentication process received information from CloudServiceName. You can c
 
 			// while the listener is beging starter in the "background", here we prepare opening the browser
 
+			var uriBuilder = new UriBuilder(oauth2Settings.AuthorizationUri)
+			{
+				Query = oauth2Settings.AuthorizationUri.QueryToKeyValuePairs()
+					.Select(x => new KeyValuePair<string, string>(x.Key, x.Value.FormatWith(oauth2Settings)))
+					.ToQueryString()
+			};
+
 			// Get the formatted FormattedAuthUrl
-			var authorizationUrl = new Uri(oauth2Settings.AuthUrlPattern.FormatWith(oauth2Settings));
+			var authorizationUrl = uriBuilder.Uri;
 			Log.Debug().Write("Open a browser with: {0}", authorizationUrl.AbsoluteUri);
 			// Open the url in the default browser
 			Process.Start(authorizationUrl.AbsoluteUri);

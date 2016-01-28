@@ -36,12 +36,12 @@ namespace Dapplo.HttpExtensions.Test
 		private const string TestKey = "value1";
 		private const string TestValue = "1234";
 		private static readonly Uri TestUriSimple = new Uri("http://jira/name?somevalue=42").ExtendQuery(TestKey, TestValue);
-		private Uri TestUriComplex = TestUriSimple.ExtendQuery(TestKey, TestValue);
+		private readonly Uri _testUriComplex = TestUriSimple.ExtendQuery(TestKey, TestValue);
 
 		[TestMethod]
 		public void TestQueryToDictionary()
 		{
-			var dictionary = TestUriComplex.QueryToDictionary();
+			var dictionary = _testUriComplex.QueryToDictionary();
 			Assert.IsNotNull(dictionary);
 			Assert.IsTrue(dictionary.ContainsKey(TestKey));
 			Assert.AreEqual(TestValue, dictionary[TestKey]);
@@ -50,7 +50,7 @@ namespace Dapplo.HttpExtensions.Test
 		[TestMethod]
 		public void TestQueryToKeyValuePairs()
 		{
-			var keyValuePairs = TestUriComplex.QueryToKeyValuePairs();
+			var keyValuePairs = _testUriComplex.QueryToKeyValuePairs();
 			Assert.IsNotNull(keyValuePairs);
 			Assert.IsTrue(keyValuePairs.Any(x => x.Key == TestKey && x.Value == TestValue));
 		}
@@ -66,7 +66,7 @@ namespace Dapplo.HttpExtensions.Test
 		[TestMethod]
 		public void TestQueryToLookup_WithDuplicates()
 		{
-			var loopkup = TestUriComplex.QueryToLookup();
+			var loopkup = _testUriComplex.QueryToLookup();
 			Assert.IsNotNull(loopkup);
 			Assert.AreEqual(2, loopkup[TestKey].Count(x => x == TestValue));
 		}

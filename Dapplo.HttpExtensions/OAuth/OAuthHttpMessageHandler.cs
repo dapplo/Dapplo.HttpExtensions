@@ -39,34 +39,41 @@ namespace Dapplo.HttpExtensions.OAuth
 		private static readonly LogContext Log = new LogContext();
 
 		private const string RefreshToken = "refresh_token";
-		//private const string AccessToken = "access_token";
 		private const string Code = "code";
 		private const string ClientId = "client_id";
 		private const string ClientSecret = "client_secret";
 		private const string GrantType = "grant_type";
-		private const string AuthorizationCode = "authorization_code";
 		private const string RedirectUri = "redirect_uri";
-		private const string ExpiresIn = "expires_in";
 
 		/// <summary>
 		/// Register your special OAuth handler for the AuthorizeMode here
+		/// Default the AuthorizeModes.LocalServer is registered.
+		/// Your implementation is a function which returns a Task with a IDictionary string,string.
+		/// It receives the OAuth2Settings and a CancellationToken.
+		/// The return value should be that which the OAuth server gives as return values, no processing.
 		/// </summary>
 		public static IDictionary<AuthorizeModes, Func<OAuth2Settings, CancellationToken, Task<IDictionary<string,string>>>> AuthorizeHandlers
 		{
 			get;
 		} = new Dictionary<AuthorizeModes, Func<OAuth2Settings, CancellationToken, Task<IDictionary<string,string>>>>();
 
+		/// <summary>
+		/// Add the local server handler.
+		/// </summary>
 		static OAuthHttpMessageHandler()
 		{
-			AuthorizeHandlers.Add(AuthorizeModes.LocalServer, async(oAuth2Settings, cancellationToken) =>
-			{
-				return await new LocalServerCodeReceiver().ReceiveCodeAsync(oAuth2Settings, cancellationToken);
-			});
+			AuthorizeHandlers.Add(AuthorizeModes.LocalServer, async(oAuth2Settings, cancellationToken) => await new LocalServerCodeReceiver().ReceiveCodeAsync(oAuth2Settings, cancellationToken));
 		}
 
 		private readonly OAuth2Settings _oAuth2Settings;
 		private readonly IHttpBehaviour _httpBehaviour;
 
+		/// <summary>
+		/// Create a HttpMessageHandler which handles the OAuth 2 communication for you
+		/// </summary>
+		/// <param name="oAuth2Settings">OAuth2Settings</param>
+		/// <param name="httpBehaviour">IHttpBehaviour</param>
+		/// <param name="innerHandler">HttpMessageHandler</param>
 		public OAuthHttpMessageHandler(OAuth2Settings oAuth2Settings, IHttpBehaviour httpBehaviour, HttpMessageHandler innerHandler) : base(innerHandler)
 		{
 			if (oAuth2Settings.ClientId == null)
@@ -81,21 +88,16 @@ namespace Dapplo.HttpExtensions.OAuth
 			{
 				throw new ArgumentNullException(nameof(oAuth2Settings.TokenUrl));
 			}
-			if (oAuth2Settings.TokenUrl.Scheme != "https")
-			{
-				throw new ArgumentException("Only https is allowed.", nameof(oAuth2Settings.TokenUrl));
-			}
 
 			_oAuth2Settings = oAuth2Settings;
-			_httpBehaviour = httpBehaviour.Clone() as IHttpBehaviour;
-			// Remove the 
+			_httpBehaviour = (IHttpBehaviour) httpBehaviour.Clone();
+			// Remove the OnHttpMessageHandlerCreated
 			_httpBehaviour.OnHttpMessageHandlerCreated = null;
 		}
 
 		/// <summary>
 		/// Authenticate by using the mode specified in the settings
 		/// </summary>
-		/// <param name="settings">OAuth2Settings</param>
 		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>false if it was canceled, true if it worked, exception if not</returns>
 		private async Task<bool> AuthenticateAsync(CancellationToken cancellationToken = default(CancellationToken))
@@ -140,12 +142,14 @@ namespace Dapplo.HttpExtensions.OAuth
 		private async Task GenerateAccessTokenAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
 			Log.Debug().Write("Generating a access token.");
-			var data = new Dictionary<string, string>();
-			data.Add(RefreshToken, _oAuth2Settings.RefreshToken);
-			data.Add(ClientId, _oAuth2Settings.ClientId);
-			data.Add(ClientSecret, _oAuth2Settings.ClientSecret);
-			data.Add(GrantType, RefreshToken);
-			foreach (string key in _oAuth2Settings.AdditionalAttributes.Keys)
+			var data = new Dictionary<string, string>
+			{
+				{RefreshToken, _oAuth2Settings.RefreshToken},
+				{ClientId, _oAuth2Settings.ClientId},
+				{ClientSecret, _oAuth2Settings.ClientSecret},
+				{GrantType, GrantTypes.RefreshToken.EnumValueOf()}
+			};
+			foreach (var key in _oAuth2Settings.AdditionalAttributes.Keys)
 			{
 				if (data.ContainsKey(key))
 				{
@@ -204,13 +208,14 @@ namespace Dapplo.HttpExtensions.OAuth
 		private async Task GenerateRefreshTokenAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
 			Log.Debug().Write("Generating a refresh token.");
-			var data = new Dictionary<string, string>();
-			// Use the returned code to get a refresh code
-			data.Add(Code, _oAuth2Settings.Code);
-			data.Add(ClientId, _oAuth2Settings.ClientId);
-			data.Add(RedirectUri, _oAuth2Settings.RedirectUrl);
-			data.Add(ClientSecret, _oAuth2Settings.ClientSecret);
-			data.Add(GrantType, AuthorizationCode);
+			var data = new Dictionary<string, string>
+			{
+				{Code, _oAuth2Settings.Code},
+				{ClientId, _oAuth2Settings.ClientId},
+				{RedirectUri, _oAuth2Settings.RedirectUrl},
+				{ClientSecret, _oAuth2Settings.ClientSecret},
+				{GrantType, GrantTypes.AuthorizationCode.EnumValueOf()}
+			};
 			foreach (var key in _oAuth2Settings.AdditionalAttributes.Keys)
 			{
 				if (data.ContainsKey(key))
@@ -222,7 +227,7 @@ namespace Dapplo.HttpExtensions.OAuth
 					data.Add(key, _oAuth2Settings.AdditionalAttributes[key]);
 				}
 			}
-			var normalHttpBehaviour = _httpBehaviour.Clone() as IHttpBehaviour;
+			var normalHttpBehaviour = (IHttpBehaviour)_httpBehaviour.Clone();
 			normalHttpBehaviour.OnHttpMessageHandlerCreated = null;
 
 			var refreshTokenResult = await _oAuth2Settings.TokenUrl.PostAsync<OAuthTokenResponse, IDictionary<string, string>>(data, normalHttpBehaviour, cancellationToken).ConfigureAwait(false);
@@ -252,16 +257,15 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <summary>
 		/// Check and authenticate or refresh tokens 
 		/// </summary>
-		/// <param name="settings">OAuth2Settings</param>
-		/// <param name="token"></param>
-		private async Task CheckAndAuthenticateOrRefreshAsync(CancellationToken token = default(CancellationToken))
+		/// <param name="cancellationToken">CancellationToken</param>
+		private async Task CheckAndAuthenticateOrRefreshAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
 			Log.Debug().Write("Checking authentication.");
 			// Get Refresh / Access token
 			if (string.IsNullOrEmpty(_oAuth2Settings.RefreshToken))
 			{
 				Log.Debug().Write("No refresh-token, performing an Authentication");
-				if (!await AuthenticateAsync(token).ConfigureAwait(false))
+				if (!await AuthenticateAsync(cancellationToken).ConfigureAwait(false))
 				{
 					throw new ApplicationException("Authentication cancelled");
 				}
@@ -269,15 +273,15 @@ namespace Dapplo.HttpExtensions.OAuth
 			if (_oAuth2Settings.IsAccessTokenExpired)
 			{
 				Log.Debug().Write("No access-token expired, generating an access token");
-				await GenerateAccessTokenAsync(token).ConfigureAwait(false);
+				await GenerateAccessTokenAsync(cancellationToken).ConfigureAwait(false);
 				// Get Refresh / Access token
 				if (string.IsNullOrEmpty(_oAuth2Settings.RefreshToken))
 				{
-					if (!await AuthenticateAsync(token).ConfigureAwait(false))
+					if (!await AuthenticateAsync(cancellationToken).ConfigureAwait(false))
 					{
 						throw new ApplicationException("Authentication cancelled");
 					}
-					await GenerateAccessTokenAsync(token).ConfigureAwait(false);
+					await GenerateAccessTokenAsync(cancellationToken).ConfigureAwait(false);
 				}
 			}
 			if (_oAuth2Settings.IsAccessTokenExpired)
@@ -291,11 +295,11 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// </summary>
 		/// <param name="httpRequestMessage">HttpRequestMessage</param>
 		/// <param name="cancellationToken">CancellationToken</param>
-		/// <returns></returns>
-		protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken = default(CancellationToken))
+		/// <returns>HttpResponseMessage</returns>
+		protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken)
 		{
 			Log.Debug().Write("Before call to {0}", httpRequestMessage.RequestUri);
-			await CheckAndAuthenticateOrRefreshAsync().ConfigureAwait(false);
+			await CheckAndAuthenticateOrRefreshAsync(cancellationToken).ConfigureAwait(false);
 			httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _oAuth2Settings.AccessToken);
 			var result = await base.SendAsync(httpRequestMessage, cancellationToken);
 			Log.Debug().Write("After call to {0}", httpRequestMessage.RequestUri);

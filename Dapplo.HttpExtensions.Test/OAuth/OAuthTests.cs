@@ -22,6 +22,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.HttpExtensions.OAuth;
@@ -29,7 +30,7 @@ using System.Threading.Tasks;
 
 namespace Dapplo.HttpExtensions.Test.OAuth
 {
-	[TestClass]
+	//[TestClass]
 	public class OAuthTests
 	{
 		[TestInitialize]
@@ -42,12 +43,24 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 		public async Task TestOAuthHttpMessageHandler()
 		{
 			var oauthHttpBehaviour = new HttpBehaviour();
-			var oAuth2Settings = new OAuth2Settings();
-			oauthHttpBehaviour.OnHttpMessageHandlerCreated = (httpMessageHandler) =>
+			var oAuth2Settings = new OAuth2Settings
 			{
-				return new OAuthHttpMessageHandler(oAuth2Settings, oauthHttpBehaviour, httpMessageHandler);
+				ClientId = "demoapp",
+				ClientSecret = "demopass",
+				AuthorizeMode = AuthorizeModes.LocalServer,
+				TokenUrl = new Uri("http://brentertainment.com/oauth2/lockdin/token"),
+				AuthorizationUri = new Uri("http://brentertainment.com").
+					AppendSegments("oauth2","lockdin","authorize").
+					ExtendQuery(new Dictionary<string, string>{
+						{ "response_type", "code"},
+						{ "client_id", "{ClientId}" },
+						{ "redirect_uri", "{RedirectUrl}" },
+						{ "state", "{State}"}
+					})
 			};
-			await new Uri("http://mws-builder-docs/mws-callclients-release-2016_08/version.properties").GetAsAsync<string>(oauthHttpBehaviour);
+			oauthHttpBehaviour.OnHttpMessageHandlerCreated = httpMessageHandler => new OAuthHttpMessageHandler(oAuth2Settings, oauthHttpBehaviour, httpMessageHandler);
+			var response = await new Uri("http://brentertainment.com/oauth2/lockdin/resource").GetAsAsync<string>(oauthHttpBehaviour);
+			Assert.IsTrue(response.Contains("friends"));
 		}
 	}
 }

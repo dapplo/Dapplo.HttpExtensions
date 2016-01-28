@@ -26,13 +26,26 @@ namespace Dapplo.HttpExtensions.OAuth
 	/// <summary>
 	/// Specify the autorize mode that is used to get the token from the cloud service.
 	/// Some details are described here: https://developers.google.com/identity/protocols/OAuth2InstalledApp
+	/// You can register your implementations with the OAuthHttpMessageHandler
+	/// Currently only a LocalServer is in this project
 	/// </summary>
 	public enum AuthorizeModes
 	{
-		Unknown, // Will give an exception, caller needs to specify another value
-		LocalServer, // Will specify a redirect URL to http://localhost:port/authorize, while having a HttpListener
-		MonitorTitle, // Not implemented yet: Will monitor for title changes
-		Pin, // Not implemented yet: Will ask the user to enter the shown PIN
-		EmbeddedBrowser // Will open into an embedded _browser (OAuthLoginForm), and catch the redirect
+		// Default value, this will give an exception, caller needs to specify another value
+		Unknown,
+		// Used with a redirect URL to http://localhost:port, this is supported out of the box
+		LocalServer,
+		// This mode should monitor for title changes, used with redirect_uri of:
+		// urn:ietf:wg:oauth:2.0:oob & urn:ietf:wg:oauth:2.0:oob:auto
+		// Dapplo.Windows has possibilities to monitor titles
+		MonitorTitle,
+		// Should ask the user to enter the PIN which is shown in the browser
+		Pin,
+		// Should open an embedded _browser and catch the redirect
+		EmbeddedBrowser,
+		// Custom mode 1
+		Custom1,
+		// Custom mode 2
+		Custom2
 	}
 }

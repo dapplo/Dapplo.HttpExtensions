@@ -57,6 +57,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="OAuth\OAuthTests.cs" />
     <Compile Include="Support\UriHttpListenerExtensionsTests.cs" />
     <Compile Include="TestEntities\GitHubError.cs" />
     <Compile Include="TestEntities\GitHubRelease.cs" />
@@ -71,9 +72,7 @@
       <Name>Dapplo.HttpExtensions</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="OAuth\" />
-  </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

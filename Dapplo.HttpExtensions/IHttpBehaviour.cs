@@ -51,17 +51,17 @@ namespace Dapplo.HttpExtensions
 		IList<IHttpContentConverter> HttpContentConverters { get; set; }
 
 		/// <summary>
-		/// An action which can modify the HttpContent right before it's used to start the request.
-		/// This can be used to add a specific header, e.g. set a filename etc.
+		/// An Func which can modify the HttpContent right before it's used to start the request.
+		/// This can be used to add a specific header, e.g. set a filename etc, or return a completely different HttpContent type
 		/// </summary>
-		Action<HttpContent> OnHttpContentCreated { get; set; }
+		Func<HttpContent, HttpContent> OnHttpContentCreated { get; set; }
 
 		/// <summary>
-		/// An action which can modify the HttpRequestMessage right before it's used to start the request.
+		/// An Func which can modify the HttpRequestMessage right before it's used to start the request.
 		/// This can be used to add a specific header, which should not be for all requests.
-		/// As the called action has access to HttpRequestMessage with the content, uri and method this is quite usefull.
+		/// As the called func has access to HttpRequestMessage with the content, uri and method this is quite usefull, it can return a completely different HttpRequestMessage
 		/// </summary>
-		Action<HttpRequestMessage> OnHttpRequestMessageCreated { get; set; }
+		Func<HttpRequestMessage, HttpRequestMessage> OnHttpRequestMessageCreated { get; set; }
 
 		/// <summary>
 		/// An action which can modify the HttpClient which is generated in the HttpClientFactory.
@@ -70,10 +70,11 @@ namespace Dapplo.HttpExtensions
 		Action<HttpClient> OnHttpClientCreated { get; set; }
 
 		/// <summary>
-		/// An action which can modify the HttpMessageHandler which is generated in the HttpMessageHandlerFactory.
+		/// An Func which can modify or wrap the HttpMessageHandler which is generated in the HttpMessageHandlerFactory.
 		/// Use cases for this, might be if you have very specify settings which can't be set via the IHttpSettings
+		/// Or you want to add additional behaviour (extend DelegatingHandler!!) like the OAuthDelegatingHandler
 		/// </summary>
-		Action<HttpMessageHandler> OnHttpMessageHandlerCreated { get; set; }
+		Func<HttpMessageHandler, HttpMessageHandler> OnHttpMessageHandlerCreated { get; set; }
 
 		/// <summary>
 		/// IProgress for uploading, only used when using non-string content like Bitmaps or MemoryStreams.

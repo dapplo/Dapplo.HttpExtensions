@@ -91,8 +91,11 @@ namespace Dapplo.HttpExtensions.Factory
 				httpBehaviour.HttpContentConverters?.ForEach(x => x.AddAcceptHeadersForType(resultType, httpRequestMessage));
 			}
 
-			// Make sure the OnCreateHttpRequestMessage action is called
-			httpBehaviour.OnHttpRequestMessageCreated?.Invoke(httpRequestMessage);
+			// Make sure the OnCreateHttpRequestMessage function is called
+			if (httpBehaviour.OnHttpRequestMessageCreated != null)
+			{
+				return httpBehaviour.OnHttpRequestMessageCreated.Invoke(httpRequestMessage);
+			}
 			return httpRequestMessage;
 		}
 

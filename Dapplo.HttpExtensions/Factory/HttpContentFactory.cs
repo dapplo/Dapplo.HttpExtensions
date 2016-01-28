@@ -21,9 +21,8 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System.Net.Http;
 using System.Linq;
-using Dapplo.HttpExtensions.Internal;
+using System.Net.Http;
 
 namespace Dapplo.HttpExtensions.Factory
 {
@@ -51,9 +50,13 @@ namespace Dapplo.HttpExtensions.Factory
 			var httpContentConverter = httpBehaviour.HttpContentConverters.OrderBy(x => x.Order).FirstOrDefault(x => x.CanConvertToHttpContent(content, httpBehaviour));
 			if (httpContentConverter == null) return null;
 
-			var result = httpContentConverter.ConvertToHttpContent(content, httpBehaviour);
-			httpBehaviour.OnHttpContentCreated?.Invoke(result);
-			return result;
+			var httpContent = httpContentConverter.ConvertToHttpContent(content, httpBehaviour);
+			// Make sure the OnHttpContentCreated function is called
+			if (httpBehaviour.OnHttpContentCreated != null)
+			{
+				return httpBehaviour.OnHttpContentCreated.Invoke(httpContent);
+			}
+			return httpContent;
 		}
 	}
 }

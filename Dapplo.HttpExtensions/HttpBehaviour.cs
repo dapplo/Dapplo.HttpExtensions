@@ -40,13 +40,13 @@ namespace Dapplo.HttpExtensions
 
 		public IList<IHttpContentConverter> HttpContentConverters { get; set; } = HttpExtensionsGlobals.HttpContentConverters;
 
-		public Action<HttpRequestMessage> OnHttpRequestMessageCreated { get; set; }
+		public Func<HttpRequestMessage, HttpRequestMessage> OnHttpRequestMessageCreated { get; set; }
 
 		public Action<HttpClient> OnHttpClientCreated { get; set; }
 
-		public Action<HttpMessageHandler> OnHttpMessageHandlerCreated { get; set; }
+		public Func<HttpMessageHandler, HttpMessageHandler> OnHttpMessageHandlerCreated { get; set; }
 
-		public Action<HttpContent> OnHttpContentCreated { get; set; }
+		public Func<HttpContent, HttpContent> OnHttpContentCreated { get; set; }
 
 		public IProgress<float> UploadProgress { get; set; }
 

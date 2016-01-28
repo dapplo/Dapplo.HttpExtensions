@@ -1,4 +1,27 @@
-﻿using System;
+﻿/*
+	Dapplo - building blocks for desktop applications
+	Copyright (C) 2015-2016 Dapplo
+
+	For more information see: http://dapplo.net/
+	Dapplo repositories are hosted on GitHub: https://github.com/dapplo
+
+	This file is part of Dapplo.HttpExtensions.
+
+	Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Dapplo.HttpExtensions is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+using System;
 using System.Collections.Generic;
 
 namespace Dapplo.HttpExtensions.OAuth
@@ -18,23 +41,6 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// Specify the name of the cloud service, so it can be used in window titles, logs etc
 		/// </summary>
 		public string CloudServiceName
-		{
-			get;
-			set;
-		}
-
-		/// <summary>
-		/// Specify the width of the embedded Browser
-		/// </summary>
-		public int BrowserWidth
-		{
-			get;
-			set;
-		}
-		/// <summary>
-		/// Specify the Height of the embedded Browser
-		/// </summary>
-		public int BrowserHeight
 		{
 			get;
 			set;
@@ -91,7 +97,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// This is the redirect URL, in some implementations this is automatically set (LocalServerCodeReceiver)
 		/// In some implementations this could be e.g. urn:ietf:wg:oauth:2.0:oob or urn:ietf:wg:oauth:2.0:oob:auto
 		/// </summary>
-		public string RedirectUrl { get; set; } = "http://getgreenshot.org";
+		public string RedirectUrl { get; set; }
 
 		/// <summary>
 		/// Bearer token for accessing OAuth 2 services

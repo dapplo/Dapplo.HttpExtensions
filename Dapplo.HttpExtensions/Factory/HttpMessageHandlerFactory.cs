@@ -81,12 +81,11 @@ namespace Dapplo.HttpExtensions.Factory
 		/// </summary>
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <returns>HttpMessageHandler (HttpClientHandler)</returns>
-		public static HttpMessageHandler CreateHttpClientHandler(IHttpBehaviour httpBehaviour = null)
+		private static HttpMessageHandler CreateHttpClientHandler(IHttpBehaviour httpBehaviour = null)
 		{
 			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 			var httpClientHandler = new HttpClientHandler();
 			SetDefaults(httpClientHandler, httpBehaviour);
-			httpBehaviour.OnHttpMessageHandlerCreated?.Invoke(httpClientHandler);
 			return httpClientHandler;
 		}
 
@@ -96,12 +95,11 @@ namespace Dapplo.HttpExtensions.Factory
 		/// </summary>
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <returns>HttpMessageHandler (WebRequestHandler)</returns>
-		public static HttpMessageHandler CreateWebRequestHandler(IHttpBehaviour httpBehaviour = null)
+		private static HttpMessageHandler CreateWebRequestHandler(IHttpBehaviour httpBehaviour = null)
 		{
 			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 			var webRequestHandler = new WebRequestHandler();
 			SetDefaults(webRequestHandler, httpBehaviour);
-			httpBehaviour.OnHttpMessageHandlerCreated?.Invoke(webRequestHandler);
 			return webRequestHandler;
 		}
 
@@ -113,7 +111,14 @@ namespace Dapplo.HttpExtensions.Factory
 		/// <returns>HttpMessageHandler (WebRequestHandler)</returns>
 		public static HttpMessageHandler Create(IHttpBehaviour httpBehaviour = null)
 		{
-			return CreateWebRequestHandler(httpBehaviour);
+			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
+			var baseMessageHandler = CreateWebRequestHandler(httpBehaviour);
+			if (httpBehaviour.OnHttpMessageHandlerCreated != null)
+			{
+				return httpBehaviour.OnHttpMessageHandlerCreated.Invoke(baseMessageHandler);
+			}
+
+			return baseMessageHandler;
 		}
 	}
 }

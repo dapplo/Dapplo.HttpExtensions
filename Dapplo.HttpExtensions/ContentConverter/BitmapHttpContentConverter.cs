@@ -41,8 +41,8 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	/// </summary>
 	public class BitmapHttpContentConverter : IHttpContentConverter
 	{
-		private static readonly IList<string> SupportedContentTypes = new List<string>();
 		private static readonly LogContext Log = new LogContext();
+		private static readonly IList<string> SupportedContentTypes = new List<string>();
 		public static readonly BitmapHttpContentConverter Instance = new BitmapHttpContentConverter();
 
 		static BitmapHttpContentConverter()
@@ -118,7 +118,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		/// <returns>true if it can convert</returns>
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent, IHttpBehaviour httpBehaviour = null)
 		{
-			if (!typeToConvertTo.IsAssignableFrom(typeof (Bitmap)))
+			if (typeToConvertTo == typeof(object) || !typeToConvertTo.IsAssignableFrom(typeof (Bitmap)))
 			{
 				return false;
 			}

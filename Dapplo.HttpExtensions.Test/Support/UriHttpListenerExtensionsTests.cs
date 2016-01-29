@@ -21,10 +21,10 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Dapplo.HttpExtensions.Support;
-using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Listener;
+using Dapplo.HttpExtensions.Support;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading.Tasks;
 
 namespace Dapplo.HttpExtensions.Test.Support
 {
@@ -40,7 +40,8 @@ namespace Dapplo.HttpExtensions.Test.Support
 		[TestMethod]
 		public async Task TestListenAsync()
 		{
-			var listenUri = UriHttpListenerExtensions.CreateFreeLocalHostUri().AppendSegments("AsyncHttpListenerTests");
+			// Try listening on 8080, if this doesn't work take the first free port
+			var listenUri = new int[] { 8080, 0 }.CreateLocalHostUri().AppendSegments("AsyncHttpListenerTests");
 			var listenTask = listenUri.ListenAsync(async httpListenerContext =>
 			{
 				// Process the request

@@ -34,16 +34,9 @@ namespace Dapplo.HttpExtensions.OAuth
 	/// <summary>
 	/// This DelegatingHandler handles the OAuth2 specific stuff and delegates the "final" SendAsync to the InnerHandler
 	/// </summary>
-	public class OAuthHttpMessageHandler : DelegatingHandler
+	public class OAuth2HttpMessageHandler : DelegatingHandler
 	{
 		private static readonly LogContext Log = new LogContext();
-
-		private const string RefreshToken = "refresh_token";
-		private const string Code = "code";
-		private const string ClientId = "client_id";
-		private const string ClientSecret = "client_secret";
-		private const string GrantType = "grant_type";
-		private const string RedirectUri = "redirect_uri";
 
 		/// <summary>
 		/// Register your special OAuth handler for the AuthorizeMode here
@@ -60,7 +53,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <summary>
 		/// Add the local server handler.
 		/// </summary>
-		static OAuthHttpMessageHandler()
+		static OAuth2HttpMessageHandler()
 		{
 			AuthorizeHandlers.Add(AuthorizeModes.LocalServer, async(oAuth2Settings, cancellationToken) => await new LocalServerCodeReceiver().ReceiveCodeAsync(oAuth2Settings, cancellationToken));
 		}
@@ -74,7 +67,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <param name="oAuth2Settings">OAuth2Settings</param>
 		/// <param name="httpBehaviour">IHttpBehaviour</param>
 		/// <param name="innerHandler">HttpMessageHandler</param>
-		public OAuthHttpMessageHandler(OAuth2Settings oAuth2Settings, IHttpBehaviour httpBehaviour, HttpMessageHandler innerHandler) : base(innerHandler)
+		public OAuth2HttpMessageHandler(OAuth2Settings oAuth2Settings, IHttpBehaviour httpBehaviour, HttpMessageHandler innerHandler) : base(innerHandler)
 		{
 			if (oAuth2Settings.ClientId == null)
 			{
@@ -109,10 +102,10 @@ namespace Dapplo.HttpExtensions.OAuth
 			var result = await authorizeFunc(_oAuth2Settings, cancellationToken);
 
 			string error;
-			if (result.TryGetValue("error", out error))
+			if (result.TryGetValue(OAuth2Fields.Error.EnumValueOf(), out error))
 			{
 				string errorDescription;
-				if (result.TryGetValue("error_description", out errorDescription))
+				if (result.TryGetValue(OAuth2Fields.ErrorDescription.EnumValueOf(), out errorDescription))
 				{
 					throw new ApplicationException(errorDescription);
 				}
@@ -123,7 +116,7 @@ namespace Dapplo.HttpExtensions.OAuth
 				throw new ApplicationException(error);
 			}
 			string code;
-			if (result.TryGetValue(Code, out code) && !string.IsNullOrEmpty(code))
+			if (result.TryGetValue(OAuth2Fields.Code.EnumValueOf(), out code) && !string.IsNullOrEmpty(code))
 			{
 				_oAuth2Settings.Code = code;
 				Log.Debug().Write("Retrieving a first time refresh token.");
@@ -144,10 +137,10 @@ namespace Dapplo.HttpExtensions.OAuth
 			Log.Debug().Write("Generating a access token.");
 			var data = new Dictionary<string, string>
 			{
-				{RefreshToken, _oAuth2Settings.RefreshToken},
-				{ClientId, _oAuth2Settings.ClientId},
-				{ClientSecret, _oAuth2Settings.ClientSecret},
-				{GrantType, GrantTypes.RefreshToken.EnumValueOf()}
+				{OAuth2Fields.RefreshToken.EnumValueOf(), _oAuth2Settings.RefreshToken},
+				{OAuth2Fields.ClientId.EnumValueOf(), _oAuth2Settings.ClientId},
+				{OAuth2Fields.ClientSecret.EnumValueOf(), _oAuth2Settings.ClientSecret},
+				{OAuth2Fields.GrantType.EnumValueOf(), GrantTypes.RefreshToken.EnumValueOf()}
 			};
 			foreach (var key in _oAuth2Settings.AdditionalAttributes.Keys)
 			{
@@ -161,7 +154,7 @@ namespace Dapplo.HttpExtensions.OAuth
 				}
 			}
 
-			var accessTokenResult = await _oAuth2Settings.TokenUrl.PostAsync<OAuthTokenResponse, IDictionary<string, string>>(data, null, cancellationToken).ConfigureAwait(false);
+			var accessTokenResult = await _oAuth2Settings.TokenUrl.PostAsync<OAuth2TokenResponse, IDictionary<string, string>>(data, null, cancellationToken).ConfigureAwait(false);
 
 			if (accessTokenResult.HasError)
 			{
@@ -210,11 +203,11 @@ namespace Dapplo.HttpExtensions.OAuth
 			Log.Debug().Write("Generating a refresh token.");
 			var data = new Dictionary<string, string>
 			{
-				{Code, _oAuth2Settings.Code},
-				{ClientId, _oAuth2Settings.ClientId},
-				{RedirectUri, _oAuth2Settings.RedirectUrl},
-				{ClientSecret, _oAuth2Settings.ClientSecret},
-				{GrantType, GrantTypes.AuthorizationCode.EnumValueOf()}
+				{OAuth2Fields.Code.EnumValueOf(), _oAuth2Settings.Code},
+				{OAuth2Fields.ClientId.EnumValueOf(), _oAuth2Settings.ClientId},
+				{OAuth2Fields.RedirectUri.EnumValueOf(), _oAuth2Settings.RedirectUrl},
+				{OAuth2Fields.ClientSecret.EnumValueOf(), _oAuth2Settings.ClientSecret},
+				{OAuth2Fields.GrantType.EnumValueOf(), GrantTypes.AuthorizationCode.EnumValueOf()}
 			};
 			foreach (var key in _oAuth2Settings.AdditionalAttributes.Keys)
 			{
@@ -230,7 +223,7 @@ namespace Dapplo.HttpExtensions.OAuth
 			var normalHttpBehaviour = (IHttpBehaviour)_httpBehaviour.Clone();
 			normalHttpBehaviour.OnHttpMessageHandlerCreated = null;
 
-			var refreshTokenResult = await _oAuth2Settings.TokenUrl.PostAsync<OAuthTokenResponse, IDictionary<string, string>>(data, normalHttpBehaviour, cancellationToken).ConfigureAwait(false);
+			var refreshTokenResult = await _oAuth2Settings.TokenUrl.PostAsync<OAuth2TokenResponse, IDictionary<string, string>>(data, normalHttpBehaviour, cancellationToken).ConfigureAwait(false);
 			if (refreshTokenResult.HasError)
 			{
 				if (!string.IsNullOrEmpty(refreshTokenResult.ErrorDescription))
@@ -298,11 +291,9 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <returns>HttpResponseMessage</returns>
 		protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken)
 		{
-			Log.Debug().Write("Before call to {0}", httpRequestMessage.RequestUri);
 			await CheckAndAuthenticateOrRefreshAsync(cancellationToken).ConfigureAwait(false);
 			httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _oAuth2Settings.AccessToken);
 			var result = await base.SendAsync(httpRequestMessage, cancellationToken);
-			Log.Debug().Write("After call to {0}", httpRequestMessage.RequestUri);
 			return result;
 		}
 	}

@@ -53,7 +53,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent, IHttpBehaviour httpBehaviour = null)
 		{
 			// Check if the return-type can be assigned
-			if (!typeToConvertTo.IsAssignableFrom(typeof(IEnumerable<KeyValuePair<string, string>>)))
+			if (typeToConvertTo == typeof(object) || !typeToConvertTo.IsAssignableFrom(typeof(IEnumerable<KeyValuePair<string, string>>)))
 			{
 				return false;
 			}

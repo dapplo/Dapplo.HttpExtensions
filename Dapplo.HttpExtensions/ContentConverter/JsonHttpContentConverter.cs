@@ -28,6 +28,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Internal;
 using Dapplo.HttpExtensions.Support;
+using System.Collections.Generic;
 
 namespace Dapplo.HttpExtensions.ContentConverter
 {
@@ -38,8 +39,15 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	{
 		private static readonly LogContext Log = new LogContext();
 		public static readonly JsonHttpContentConverter Instance = new JsonHttpContentConverter();
+		private static readonly IList<string> SupportedContentTypes = new List<string>();
 
 		public int Order => int.MaxValue;
+
+		static JsonHttpContentConverter()
+		{
+			SupportedContentTypes.Add(MediaTypes.Json.EnumValueOf());
+		}
+
 
 		public bool CanConvertFromHttpContent<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null)
 			where TResult : class
@@ -49,7 +57,8 @@ namespace Dapplo.HttpExtensions.ContentConverter
 
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent, IHttpBehaviour httpBehaviour = null)
 		{
-			return httpContent.GetContentType() == MediaTypes.Json.EnumValueOf();
+			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
+			return !httpBehaviour.ValidateResponseContentType || SupportedContentTypes.Contains(httpContent.GetContentType());
 		}
 
 		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))

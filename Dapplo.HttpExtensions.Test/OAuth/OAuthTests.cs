@@ -30,23 +30,36 @@ using System.Threading.Tasks;
 
 namespace Dapplo.HttpExtensions.Test.OAuth
 {
+	/// <summary>
+	/// This test is more an integration test, SHOULD NOT RUN on a headless server, as it opens a browser where a user should do something
+	/// </summary>
 	//[TestClass]
 	public class OAuthTests
 	{
 		[TestInitialize]
 		public void InitLogger()
 		{
+			// Make sure we get some logging from the internals of our library
 			HttpExtensionsGlobals.Logger = new TraceLogger();
 		}
 
+		/// <summary>
+		/// This will test Oauth with a LocalServer "code" receiver against a demo oauth server provided by brentertainment.com
+		/// </summary>
+		/// <returns>Task</returns>
 		[TestMethod]
 		public async Task TestOAuthHttpMessageHandler()
 		{
 			var oauthHttpBehaviour = new HttpBehaviour();
+			oauthHttpBehaviour.ValidateResponseContentType = false;
+
+			// Create OAuth2Setting for a demo server, which expects a token url like:
+			// http://brentertainment.com/oauth2/lockdin/authorize?response_type=code&client_id=demoapp&redirect_uri=http%3A%2F%2Fbrentertainment.com%2Foauth2%2Fclient%2Freceive_authcode%3Fshow_refresh_token%3D1&state=120b347034ef48c18caee7214f12bdcd
 			var oAuth2Settings = new OAuth2Settings
 			{
 				ClientId = "demoapp",
 				ClientSecret = "demopass",
+				CloudServiceName = "brentertainment",
 				AuthorizeMode = AuthorizeModes.LocalServer,
 				TokenUrl = new Uri("http://brentertainment.com/oauth2/lockdin/token"),
 				AuthorizationUri = new Uri("http://brentertainment.com").
@@ -58,9 +71,9 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 						{ "state", "{State}"}
 					})
 			};
-			oauthHttpBehaviour.OnHttpMessageHandlerCreated = httpMessageHandler => new OAuthHttpMessageHandler(oAuth2Settings, oauthHttpBehaviour, httpMessageHandler);
-			var response = await new Uri("http://brentertainment.com/oauth2/lockdin/resource").GetAsAsync<string>(oauthHttpBehaviour);
-			Assert.IsTrue(response.Contains("friends"));
+			oauthHttpBehaviour.OnHttpMessageHandlerCreated = httpMessageHandler => new OAuth2HttpMessageHandler(oAuth2Settings, oauthHttpBehaviour, httpMessageHandler);
+			var response = await new Uri("http://brentertainment.com/oauth2/lockdin/resource").GetAsAsync<dynamic>(oauthHttpBehaviour);
+			Assert.IsTrue(response.friends.Count > 0);
 		}
 	}
 }

@@ -30,7 +30,7 @@ namespace Dapplo.HttpExtensions.OAuth
 	/// Container for the OAuth token / refresh response
 	/// </summary>
 	[DataContract]
-	public class OAuthTokenResponse
+	public class OAuth2TokenResponse
 	{
 		private readonly DateTimeOffset _responseTime = DateTimeOffset.Now;
 

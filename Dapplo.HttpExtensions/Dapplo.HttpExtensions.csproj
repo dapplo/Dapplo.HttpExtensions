@@ -49,13 +49,15 @@
     <Compile Include="IHttpContentConverter.cs" />
     <Compile Include="IHttpResponse.cs" />
     <Compile Include="Listener\HttpListenerContextExtensions.cs" />
+    <Compile Include="Listener\ListenerPortExtensions.cs" />
     <Compile Include="Listener\UriHttpListenerExtensions.cs" />
     <Compile Include="OAuth\AuthorizeModes.cs" />
     <Compile Include="OAuth\GrantTypes.cs" />
     <Compile Include="OAuth\LocalServerCodeReceiver.cs" />
+    <Compile Include="OAuth\OAuth2Fields.cs" />
     <Compile Include="OAuth\OAuth2Settings.cs" />
-    <Compile Include="OAuth\OAuthHttpMessageHandler.cs" />
-    <Compile Include="OAuth\OAuthTokenResponse.cs" />
+    <Compile Include="OAuth\OAuth2HttpMessageHandler.cs" />
+    <Compile Include="OAuth\OAuth2TokenResponse.cs" />
     <Compile Include="StringExtensions.cs" />
     <Compile Include="Support\TraceLogger.cs" />
     <Compile Include="Support\ILogger.cs" />

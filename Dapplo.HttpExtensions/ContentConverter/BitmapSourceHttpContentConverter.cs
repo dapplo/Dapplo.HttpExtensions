@@ -109,7 +109,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		/// <returns>true if it can convert</returns>
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent, IHttpBehaviour httpBehaviour = null)
 		{
-			if (!typeToConvertTo.IsAssignableFrom(typeof (BitmapImage)))
+			if (typeToConvertTo == typeof(object) || !typeToConvertTo.IsAssignableFrom(typeof (BitmapImage)))
 			{
 				return false;
 			}

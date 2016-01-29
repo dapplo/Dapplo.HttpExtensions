@@ -21,12 +21,11 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Dapplo.HttpExtensions.Internal;
 using System;
 using System.Net;
-using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using Dapplo.HttpExtensions.Internal;
 
 namespace Dapplo.HttpExtensions.Listener
 {
@@ -101,38 +100,6 @@ namespace Dapplo.HttpExtensions.Listener
 
 			// Return the taskCompletionSource.Task so the caller can await on it
 			return taskCompletionSource.Task;
-		}
-
-		/// <summary>
-		/// Create an Localhost Uri for an unused port
-		/// </summary>
-		/// <returns></returns>
-		public static Uri CreateFreeLocalHostUri()
-		{
-			return new Uri($"http://localhost:{GetRandomUnusedPort()}");
-		}
-
-		/// <summary>
-		/// Returns a random, unused port.
-		/// </summary>
-		/// <returns>A free port (at least it was while checking)</returns>
-		private static int GetRandomUnusedPort()
-		{
-			// See here for why 0 is supplied : https://msdn.microsoft.com/en-us/library/c6z86e63.aspx
-			// If you do not care which local port is used, you can specify 0 for the port number. In this case, the service provider will assign an available port number between 1024 and 5000.
-			var listener = new TcpListener(IPAddress.Loopback, 0);
-			try
-			{
-				listener.Start();
-				// As the LocalEndpoint is of type EndPoint, this doesn't have the port, we need to cast it to IPEndPoint
-				var port = ((IPEndPoint)listener.LocalEndpoint).Port;
-				Log.Debug().Write("Found free listener port {0} for the local code receiver.", port);
-				return port;
-			}
-			finally
-			{
-				listener.Stop();
-			}
 		}
 	}
 }

@@ -44,7 +44,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		{
 			get;
 			set;
-		}
+		} = "the remote server";
 
 		/// <summary>
 		/// The OAuth 2 client id

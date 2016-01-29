@@ -9,6 +9,8 @@ Sometimes you just want to access a service in the internet or on a local server
 This project helps you to deal with a lot of difficult stuff like having a default proxy or even making a specify proxy possible.
 Also it can handle Json communication, which a lot of REST based APIs use.
 
+Support for OAuth 2 is also build in, this is currently work in process but with some servers it should already be usable.
+
 A short example:
 ```
 	using Dapplo.HttpExtensions;
@@ -17,7 +19,12 @@ A short example:
 	var response = await uri.GetAsAsync<string>();
 ```
 
-A more "complex" example of how you can use this, is visible in the test, e.g. [UriJsonActionExtensionsTests.TestGetAsJsonAsync_GitHubApiReleases](https://github.com/dapplo/Dapplo.HttpExtensions/blob/master/Dapplo.HttpExtensions.Test/UriJsonActionExtensionsTests.cs).
+A more "complex" example of how you can use this, is available in the test. 
+
+There is a test with calling a JSON Service (GitHub): [UriActionExtensionsTests.TestGetAsJsonAsync_GitHubApiReleases](https://github.com/dapplo/Dapplo.HttpExtensions/blob/master/Dapplo.HttpExtensions.Test/UriActionExtensionsTests.cs).
+
+There is also an OAuth test: [OAuth/OAuthTests.TestOAuthHttpMessageHandler](https://github.com/dapplo/Dapplo.HttpExtensions/blob/master/Dapplo.HttpExtensions.Test/OAuth/OAuthTests.cs).
+This is not running during the build, as it needs "human" interaction with a browser.
 
 Notes:
 

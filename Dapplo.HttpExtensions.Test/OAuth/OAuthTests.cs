@@ -50,9 +50,6 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 		[TestMethod]
 		public async Task TestOAuthHttpMessageHandler()
 		{
-			var oauthHttpBehaviour = new HttpBehaviour();
-			oauthHttpBehaviour.ValidateResponseContentType = false;
-
 			// Create OAuth2Setting for a demo server, which expects a token url like:
 			// http://brentertainment.com/oauth2/lockdin/authorize?response_type=code&client_id=demoapp&redirect_uri=http%3A%2F%2Fbrentertainment.com%2Foauth2%2Fclient%2Freceive_authcode%3Fshow_refresh_token%3D1&state=120b347034ef48c18caee7214f12bdcd
 			var oAuth2Settings = new OAuth2Settings
@@ -71,7 +68,10 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 						{ "state", "{State}"}
 					})
 			};
-			oauthHttpBehaviour.OnHttpMessageHandlerCreated = httpMessageHandler => new OAuth2HttpMessageHandler(oAuth2Settings, oauthHttpBehaviour, httpMessageHandler);
+			var oauthHttpBehaviour = OAuth2HttpBehaviourFactory.Create(oAuth2Settings);
+			// Special need, as http://brentertainment.com/oauth2/lockdin/resource returns text/html instead of json.
+			oauthHttpBehaviour.ValidateResponseContentType = false;
+
 			var response = await new Uri("http://brentertainment.com/oauth2/lockdin/resource").GetAsAsync<dynamic>(oauthHttpBehaviour);
 			Assert.IsTrue(response.friends.Count > 0);
 		}

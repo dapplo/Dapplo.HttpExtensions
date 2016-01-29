@@ -56,6 +56,7 @@
     <Compile Include="OAuth\IOAuth2Token.cs" />
     <Compile Include="OAuth\LocalServerCodeReceiver.cs" />
     <Compile Include="OAuth\OAuth2Fields.cs" />
+    <Compile Include="OAuth\OAuth2HttpBehaviourFactory.cs" />
     <Compile Include="OAuth\OAuth2Settings.cs" />
     <Compile Include="OAuth\OAuth2HttpMessageHandler.cs" />
     <Compile Include="OAuth\OAuth2TokenResponse.cs" />

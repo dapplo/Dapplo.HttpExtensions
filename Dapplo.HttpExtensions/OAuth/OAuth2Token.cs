@@ -31,10 +31,10 @@ namespace Dapplo.HttpExtensions.OAuth
 	/// </summary>
 	internal class OAuth2Token : IOAuth2Token
 	{
-		public string AccessToken { get; set; }
+		public string OAuth2AccessToken { get; set; }
 
-		public DateTimeOffset AccessTokenExpires { get; set; }
+		public DateTimeOffset OAuth2AccessTokenExpires { get; set; }
 
-		public string RefreshToken { get; set; }
+		public string OAuth2RefreshToken { get; set; }
 	}
 }

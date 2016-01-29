@@ -81,5 +81,11 @@ namespace Dapplo.HttpExtensions
 		/// The global read buffer-size
 		/// </summary>
 		public static int ReadBufferSize { get; set; } = 4096;
+
+		/// <summary>
+		/// This offset is used in the OAuth2Setting.IsAccessTokenExpired to check the OAuth2AccessTokenExpires
+		/// Now + this > OAuth2AccessTokenExpires
+		/// </summary>
+		public static int OAuth2ExpireOffset { get; set; } = 5;
 	}
 }

@@ -109,14 +109,14 @@ namespace Dapplo.HttpExtensions.OAuth
 			get
 			{
 				bool expired = true;
-				if (!string.IsNullOrEmpty(Token.AccessToken) && Token.AccessTokenExpires != default(DateTimeOffset))
+				if (!string.IsNullOrEmpty(Token.OAuth2AccessToken) && Token.OAuth2AccessTokenExpires != default(DateTimeOffset))
 				{
-					expired = DateTimeOffset.Now.AddSeconds(60) > Token.AccessTokenExpires;
+					expired = DateTimeOffset.Now.AddSeconds(HttpExtensionsGlobals.OAuth2ExpireOffset) > Token.OAuth2AccessTokenExpires;
 				}
 				// Make sure the token is not usable
 				if (expired)
 				{
-					Token.AccessToken = null;
+					Token.OAuth2AccessToken = null;
 				}
 				return expired;
 			}

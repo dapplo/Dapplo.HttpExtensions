@@ -13,18 +13,18 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <summary>
 		/// Bearer token for accessing OAuth 2 services
 		/// </summary>
-		[Description("Contains a OAuth 2 AccessToken"), TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
-		string AccessToken
+		[Description("Contains the OAuth 2 access token (encrypted)"), TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
+		string OAuth2AccessToken
 		{
 			get;
 			set;
 		}
 
 		/// <summary>
-		/// Expire time for the AccessToken, this this time (-60 seconds) is passed a new AccessToken needs to be generated with the RefreshToken
+		/// Expire time for the AccessToken, this time (-HttpExtensionsGlobals.OAuth2ExpireOffset) is check to know if a new AccessToken needs to be generated with the RefreshToken
 		/// </summary>
-		[Description("This describes when the OAuth 2 AccessToken expires"), TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
-		DateTimeOffset AccessTokenExpires
+		[Description("When does the OAuth 2 AccessToken expire"), TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
+		DateTimeOffset OAuth2AccessTokenExpires
 		{
 			get;
 			set;
@@ -33,8 +33,8 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <summary>
 		/// Token used to get a new Access Token
 		/// </summary>
-		[Description("OAuth 2 authorization refresh Token"), TypeConverter(typeof (DelegatingStringEncryptionTypeConverter))]
-		string RefreshToken
+		[Description("Contains the OAuth 2 refresh token (encrypted)"), TypeConverter(typeof (DelegatingStringEncryptionTypeConverter))]
+		string OAuth2RefreshToken
 		{
 			get;
 			set;

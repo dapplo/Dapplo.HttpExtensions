@@ -101,24 +101,6 @@ namespace Dapplo.HttpExtensions.OAuth
 		public string RedirectUrl { get; set; }
 
 		/// <summary>
-		/// Bearer token for accessing OAuth 2 services
-		/// </summary>
-		public string AccessToken
-		{
-			get;
-			set;
-		}
-
-		/// <summary>
-		/// Expire time for the AccessToken, this this time (-60 seconds) is passed a new AccessToken needs to be generated with the RefreshToken
-		/// </summary>
-		public DateTimeOffset AccessTokenExpires
-		{
-			get;
-			set;
-		}
-
-		/// <summary>
 		/// Return true if the access token is expired.
 		/// Important "side-effect": if true is returned the AccessToken will be set to null!
 		/// </summary>
@@ -127,27 +109,29 @@ namespace Dapplo.HttpExtensions.OAuth
 			get
 			{
 				bool expired = true;
-				if (!string.IsNullOrEmpty(AccessToken) && AccessTokenExpires != default(DateTimeOffset))
+				if (!string.IsNullOrEmpty(Token.AccessToken) && Token.AccessTokenExpires != default(DateTimeOffset))
 				{
-					expired = DateTimeOffset.Now.AddSeconds(60) > AccessTokenExpires;
+					expired = DateTimeOffset.Now.AddSeconds(60) > Token.AccessTokenExpires;
 				}
 				// Make sure the token is not usable
 				if (expired)
 				{
-					AccessToken = null;
+					Token.AccessToken = null;
 				}
 				return expired;
 			}
 		}
 
 		/// <summary>
-		/// Token used to get a new Access Token
+		/// The actualy token information, placed in an interface for usage with the Dapplo.Config project
+		/// the OAuth2Token, a default implementation is assigned when the settings are created.
+		/// When using a Dapplo.Config IIniSection for your settings, this can/should be overwritten with your interface, and make it extend IOAuth2Token
 		/// </summary>
-		public string RefreshToken
+		public IOAuth2Token Token
 		{
 			get;
 			set;
-		}
+		} = new OAuth2Token();
 
 		/// <summary>
 		/// Put anything in here which is needed for the OAuth 2 implementation of this specific service but isn't generic, e.g. for Google there is a "scope"

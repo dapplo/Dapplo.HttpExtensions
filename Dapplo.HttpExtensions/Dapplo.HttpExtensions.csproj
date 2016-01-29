@@ -53,12 +53,16 @@
     <Compile Include="Listener\UriHttpListenerExtensions.cs" />
     <Compile Include="OAuth\AuthorizeModes.cs" />
     <Compile Include="OAuth\GrantTypes.cs" />
+    <Compile Include="OAuth\IOAuth2Token.cs" />
     <Compile Include="OAuth\LocalServerCodeReceiver.cs" />
     <Compile Include="OAuth\OAuth2Fields.cs" />
     <Compile Include="OAuth\OAuth2Settings.cs" />
     <Compile Include="OAuth\OAuth2HttpMessageHandler.cs" />
     <Compile Include="OAuth\OAuth2TokenResponse.cs" />
+    <Compile Include="OAuth\OAuth2Token.cs" />
     <Compile Include="StringExtensions.cs" />
+    <Compile Include="Support\DelegatingTypeConverter.cs" />
+    <Compile Include="Support\DelegatingStringEncryptionTypeConverter.cs" />
     <Compile Include="Support\TraceLogger.cs" />
     <Compile Include="Support\ILogger.cs" />
     <Compile Include="ContentConverter\BitmapSourceHttpContentConverter.cs" />

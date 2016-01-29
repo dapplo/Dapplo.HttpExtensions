@@ -137,7 +137,7 @@ namespace Dapplo.HttpExtensions.OAuth
 			Log.Debug().Write("Generating a access token.");
 			var data = new Dictionary<string, string>
 			{
-				{OAuth2Fields.RefreshToken.EnumValueOf(), _oAuth2Settings.RefreshToken},
+				{OAuth2Fields.RefreshToken.EnumValueOf(), _oAuth2Settings.Token.RefreshToken},
 				{OAuth2Fields.ClientId.EnumValueOf(), _oAuth2Settings.ClientId},
 				{OAuth2Fields.ClientSecret.EnumValueOf(), _oAuth2Settings.ClientSecret},
 				{OAuth2Fields.GrantType.EnumValueOf(), GrantTypes.RefreshToken.EnumValueOf()}
@@ -161,9 +161,9 @@ namespace Dapplo.HttpExtensions.OAuth
 				if (accessTokenResult.IsInvalidGrant)
 				{
 					// Refresh token has also expired, we need a new one!
-					_oAuth2Settings.RefreshToken = null;
-					_oAuth2Settings.AccessToken = null;
-					_oAuth2Settings.AccessTokenExpires = DateTimeOffset.MinValue;
+					_oAuth2Settings.Token.RefreshToken = null;
+					_oAuth2Settings.Token.AccessToken = null;
+					_oAuth2Settings.Token.AccessTokenExpires = DateTimeOffset.MinValue;
 					_oAuth2Settings.Code = null;
 				}
 				else
@@ -181,15 +181,15 @@ namespace Dapplo.HttpExtensions.OAuth
 				//  "access_token":"1/fFAGRNJru1FTz70BzhT3Zg",
 				//	"expires_in":3920,
 				//	"token_type":"Bearer"
-				_oAuth2Settings.AccessToken = accessTokenResult.AccessToken;
+				_oAuth2Settings.Token.AccessToken = accessTokenResult.AccessToken;
 				if (!string.IsNullOrEmpty(accessTokenResult.RefreshToken))
 				{
 					// Refresh the refresh token :)
-					_oAuth2Settings.RefreshToken = accessTokenResult.RefreshToken;
+					_oAuth2Settings.Token.RefreshToken = accessTokenResult.RefreshToken;
 				}
 				if (accessTokenResult.ExpiresInSeconds > 0)
 				{
-					_oAuth2Settings.AccessTokenExpires = accessTokenResult.Expires;
+					_oAuth2Settings.Token.AccessTokenExpires = accessTokenResult.Expires;
 				}
 			}
 		}
@@ -237,12 +237,12 @@ namespace Dapplo.HttpExtensions.OAuth
 			//	"expires_in":3920,
 			//	"token_type":"Bearer",
 			//	"refresh_token":"1/xEoDL4iW3cxlI7yDbSRFYNG01kVKM2C-259HOF2aQbI"
-			_oAuth2Settings.AccessToken = refreshTokenResult.AccessToken;
-			_oAuth2Settings.RefreshToken = refreshTokenResult.RefreshToken;
+			_oAuth2Settings.Token.AccessToken = refreshTokenResult.AccessToken;
+			_oAuth2Settings.Token.RefreshToken = refreshTokenResult.RefreshToken;
 
 			if (refreshTokenResult.ExpiresInSeconds > 0)
 			{
-				_oAuth2Settings.AccessTokenExpires = refreshTokenResult.Expires;
+				_oAuth2Settings.Token.AccessTokenExpires = refreshTokenResult.Expires;
 			}
 			_oAuth2Settings.Code = null;
 		}
@@ -255,7 +255,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		{
 			Log.Debug().Write("Checking authentication.");
 			// Get Refresh / Access token
-			if (string.IsNullOrEmpty(_oAuth2Settings.RefreshToken))
+			if (string.IsNullOrEmpty(_oAuth2Settings.Token.RefreshToken))
 			{
 				Log.Debug().Write("No refresh-token, performing an Authentication");
 				if (!await AuthenticateAsync(cancellationToken).ConfigureAwait(false))
@@ -268,7 +268,7 @@ namespace Dapplo.HttpExtensions.OAuth
 				Log.Debug().Write("No access-token expired, generating an access token");
 				await GenerateAccessTokenAsync(cancellationToken).ConfigureAwait(false);
 				// Get Refresh / Access token
-				if (string.IsNullOrEmpty(_oAuth2Settings.RefreshToken))
+				if (string.IsNullOrEmpty(_oAuth2Settings.Token.RefreshToken))
 				{
 					if (!await AuthenticateAsync(cancellationToken).ConfigureAwait(false))
 					{
@@ -292,7 +292,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken)
 		{
 			await CheckAndAuthenticateOrRefreshAsync(cancellationToken).ConfigureAwait(false);
-			httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _oAuth2Settings.AccessToken);
+			httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _oAuth2Settings.Token.AccessToken);
 			var result = await base.SendAsync(httpRequestMessage, cancellationToken);
 			return result;
 		}

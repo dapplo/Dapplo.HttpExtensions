@@ -34,6 +34,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 {
 	/// <summary>
 	/// This can convert HttpContent from/to Json
+	/// TODO: add JsonObject from SimpleJson for more clear generic code..
 	/// </summary>
 	public class JsonHttpContentConverter : IHttpContentConverter
 	{

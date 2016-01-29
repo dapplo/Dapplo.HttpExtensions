@@ -115,6 +115,29 @@ namespace Dapplo.HttpExtensions.Internal
 		/// <param name="memberName">Should be set by the compiler, is the calling method</param>
 		/// <param name="lineNumber">int lineNumber of the log statement</param>
 		/// <returns>ILogInfo</returns>
+		public static ILogInfo Warn(this LogContext logContext, [CallerMemberName] string memberName = "", [CallerLineNumber] int lineNumber = 0)
+		{
+			if (logContext == null)
+			{
+				return null;
+			}
+
+			return new LogInfo
+			{
+				Caller = logContext.Source,
+				Method = memberName,
+				Line = lineNumber,
+				Level = LogLevel.Warn
+			};
+		}
+
+		/// <summary>
+		/// This extension will create ILogInfo, for the Level representing the name, if a logger is passed
+		/// </summary>
+		/// <param name="logContext">LogContext is the context (source) from where the log entry came</param>
+		/// <param name="memberName">Should be set by the compiler, is the calling method</param>
+		/// <param name="lineNumber">int lineNumber of the log statement</param>
+		/// <returns>ILogInfo</returns>
 		public static ILogInfo Error(this LogContext logContext, [CallerMemberName] string memberName = "", [CallerLineNumber] int lineNumber = 0)
 		{
 			if (logContext == null)

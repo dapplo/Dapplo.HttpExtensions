@@ -27,7 +27,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using Dapplo.HttpExtensions.Internal;
+using Dapplo.LogFacade;
 using Dapplo.HttpExtensions.Support;
 
 namespace Dapplo.HttpExtensions.ContentConverter
@@ -40,7 +40,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	/// </summary>
 	public class FormUriEncodedContentConverter : IHttpContentConverter
 	{
-		private static readonly LogContext Log = new LogContext();
+		private static readonly LogSource Log = new LogSource();
 		public static readonly FormUriEncodedContentConverter Instance = new FormUriEncodedContentConverter();
 
 		public int Order => 0;
@@ -82,7 +82,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			// Get the string from the content
 			var formUriEncodedString = await httpContent.ReadAsStringAsync().ConfigureAwait(false);
 			// Use code in the UriParseExtensions to parse the query string
-			Log.Debug().Write("Read WwwUriEncodedForm data: {0}", formUriEncodedString);
+			Log.Debug().WriteLine("Read WwwUriEncodedForm data: {0}", formUriEncodedString);
 			// This returns an IEnumerable<KeyValuePair<string, string>>
 			return UriParseExtensions.QueryStringToKeyValuePairs(formUriEncodedString);
 		}
@@ -100,7 +100,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
 		{
 			var nameValueCollection = content as IEnumerable<KeyValuePair<string, string>>;
-			Log.Debug().Write("Created HttpContent with WwwUriEncodedForm data: {0}", nameValueCollection);
+			Log.Debug().WriteLine("Created HttpContent with WwwUriEncodedForm data: {0}", nameValueCollection);
 			return new FormUrlEncodedContent(nameValueCollection);
 		}
 
@@ -124,7 +124,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 				return;
 			}
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.WwwFormUrlEncoded.EnumValueOf()));
-			Log.Debug().Write("Modified the header(s) of the HttpRequestMessage: Accept: {0}", httpRequestMessage.Headers.Accept);
+			Log.Debug().WriteLine("Modified the header(s) of the HttpRequestMessage: Accept: {0}", httpRequestMessage.Headers.Accept);
 		}
 	}
 }

@@ -31,7 +31,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using Dapplo.HttpExtensions.Internal;
+using Dapplo.LogFacade;
 using Dapplo.HttpExtensions.Support;
 
 namespace Dapplo.HttpExtensions.ContentConverter
@@ -41,7 +41,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	/// </summary>
 	public class BitmapHttpContentConverter : IHttpContentConverter
 	{
-		private static readonly LogContext Log = new LogContext();
+		private static readonly LogSource Log = new LogSource();
 		private static readonly IList<string> SupportedContentTypes = new List<string>();
 		public static readonly BitmapHttpContentConverter Instance = new BitmapHttpContentConverter();
 
@@ -81,7 +81,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			set
 			{
 				_quality = value;
-				Log.Debug().Write("Setting Quality to ", value);
+				Log.Debug().WriteLine("Setting Quality to ", value);
 				var qualityParameter = EncoderParameters.FirstOrDefault(x => x.Encoder.Guid == Encoder.Quality.Guid);
 				if (qualityParameter != null)
 				{
@@ -136,11 +136,11 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			if (!CanConvertFromHttpContent(resultType, httpContent, httpBehaviour))
 			{
 				var exMessage = "CanConvertFromHttpContent resulted in false, ConvertFromHttpContentAsync is not supposed to be called.";
-				Log.Error().Write(exMessage);
+				Log.Error().WriteLine(exMessage);
 				throw new NotSupportedException(exMessage);
 			}
 			var memoryStream = await StreamHttpContentConverter.Instance.ConvertFromHttpContentAsync<MemoryStream>(httpContent, httpBehaviour, token).ConfigureAwait(false);
-			Log.Debug().Write("Creating a Bitmap from the MemoryStream.");
+			Log.Debug().WriteLine("Creating a Bitmap from the MemoryStream.");
 			return new Bitmap(memoryStream);
 		}
 
@@ -179,7 +179,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			else
 			{
 				var exMessage = $"Can't find an encoder for {Format}";
-				Log.Error().Write(exMessage);
+				Log.Error().WriteLine(exMessage);
 				throw new NotSupportedException(exMessage);
 			}
 			memoryStream.Seek(0, SeekOrigin.Begin);
@@ -216,7 +216,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Bmp.EnumValueOf()));
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Gif.EnumValueOf()));
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Icon.EnumValueOf()));
-			Log.Debug().Write("Modified the header(s) of the HttpRequestMessage: Accept: {0}", httpRequestMessage.Headers.Accept);
+			Log.Debug().WriteLine("Modified the header(s) of the HttpRequestMessage: Accept: {0}", httpRequestMessage.Headers.Accept);
 		}
 	}
 }

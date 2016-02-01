@@ -21,7 +21,7 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Dapplo.HttpExtensions.Internal;
+using Dapplo.LogFacade;
 using Dapplo.HttpExtensions.Support;
 using System;
 using System.IO;
@@ -39,7 +39,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	/// </summary>
 	public class SyndicationFeedHttpContentConverter : IHttpContentConverter
 	{
-		private static readonly LogContext Log = new LogContext();
+		private static readonly LogSource Log = new LogSource();
 		public static readonly SyndicationFeedHttpContentConverter Instance = new SyndicationFeedHttpContentConverter();
 
 		public int Order => 0;
@@ -66,7 +66,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			{
 				throw new NotSupportedException("CanConvertFromHttpContent resulted in false, this is not supposed to be called.");
 			}
-			Log.Debug().Write("Retrieving the content as SyndicationFeed, Content-Type: {0}", httpContent.Headers.ContentType);
+			Log.Debug().WriteLine("Retrieving the content as SyndicationFeed, Content-Type: {0}", httpContent.Headers.ContentType);
 
 			using (var contentStream = await httpContent.ReadAsStreamAsync().ConfigureAwait(false))
 			{
@@ -124,7 +124,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 				return;
 			}
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Rss.EnumValueOf()));
-			Log.Debug().Write("Modified the header(s) of the HttpRequestMessage: Accept: {0}", httpRequestMessage.Headers.Accept);
+			Log.Debug().WriteLine("Modified the header(s) of the HttpRequestMessage: Accept: {0}", httpRequestMessage.Headers.Accept);
 		}
 	}
 }

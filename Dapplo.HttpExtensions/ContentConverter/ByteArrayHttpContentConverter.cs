@@ -21,36 +21,23 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Dapplo.LogFacade;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using Dapplo.HttpExtensions.Support;
-using Dapplo.LogFacade;
 
 namespace Dapplo.HttpExtensions.ContentConverter
 {
 	/// <summary>
-	/// This can convert HttpContent from/to a string
+	/// This can convert HttpContent from/to a byte[]
 	/// </summary>
-	public class StringHttpContentConverter : IHttpContentConverter
+	public class ByteArrayHttpContentConverter : IHttpContentConverter
 	{
-		public static readonly StringHttpContentConverter Instance = new StringHttpContentConverter();
 		private static readonly LogSource Log = new LogSource();
-		private static readonly IList<string> SupportedContentTypes = new List<string>();
+		public static readonly ByteArrayHttpContentConverter Instance = new ByteArrayHttpContentConverter();
 
-		static StringHttpContentConverter()
-		{
-			// Store the Content-Types this converter supports
-			SupportedContentTypes.Add(MediaTypes.Txt.EnumValueOf());
-			SupportedContentTypes.Add(MediaTypes.Html.EnumValueOf());
-			SupportedContentTypes.Add(MediaTypes.Xml.EnumValueOf());
-			SupportedContentTypes.Add(MediaTypes.XmlReadable.EnumValueOf());
-		}
-
-		public int Order => int.MaxValue;
+		public int Order => 0;
 
 		public bool CanConvertFromHttpContent<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null) where TResult : class
 		{
@@ -59,18 +46,12 @@ namespace Dapplo.HttpExtensions.ContentConverter
 
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent, IHttpBehaviour httpBehaviour = null)
 		{
-			if (typeToConvertTo != typeof(string))
-			{
-				return false;
-			}
-			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
-			// Set ValidateResponseContentType to false to "catch" all
-			return !httpBehaviour.ValidateResponseContentType || SupportedContentTypes.Contains(httpContent.GetContentType());
+			return typeToConvertTo == typeof(byte[]);
 		}
 
 		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
-			return await ConvertFromHttpContentAsync(typeof (TResult), httpContent, httpBehaviour, token).ConfigureAwait(false) as TResult;
+			return await ConvertFromHttpContentAsync(typeof(TResult), httpContent, httpBehaviour, token).ConfigureAwait(false) as TResult;
 		}
 
 		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
@@ -80,12 +61,14 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			{
 				throw new NotSupportedException("CanConvertFromHttpContent resulted in false, this is not supposed to be called.");
 			}
-			return await httpContent.ReadAsStringAsync().ConfigureAwait(false);
+			Log.Debug().WriteLine("Retrieving the content as byte[], Content-Type: {0}", httpContent.Headers.ContentType);
+
+			return await httpContent.ReadAsByteArrayAsync().ConfigureAwait(false);
 		}
 
 		public bool CanConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
 		{
-			return typeof(string) == typeToConvert;
+			return typeToConvert == typeof(byte[]);
 		}
 
 		public bool CanConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null) where TInput : class
@@ -95,7 +78,8 @@ namespace Dapplo.HttpExtensions.ContentConverter
 
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
 		{
-			return new StringContent(content as string);
+			var byteArray = content as byte[];
+			return new ByteArrayContent(byteArray);
 		}
 
 		public HttpContent ConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null) where TInput : class
@@ -103,23 +87,16 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			return ConvertToHttpContent(typeof(TInput), content, httpBehaviour);
 		}
 
-		public void AddAcceptHeadersForType(Type typeToConvertTo, HttpRequestMessage httpRequestMessage, IHttpBehaviour httpBehaviour = null)
+		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage, IHttpBehaviour httpBehaviour = null)
 		{
-			if (typeToConvertTo == null)
+			if (resultType == null)
 			{
-				throw new ArgumentNullException(nameof(typeToConvertTo));
+				throw new ArgumentNullException(nameof(resultType));
 			}
 			if (httpRequestMessage == null)
 			{
 				throw new ArgumentNullException(nameof(httpRequestMessage));
 			}
-			if (typeToConvertTo != typeof(string))
-			{
-				return;
-			}
-			// TODO: Encoding header?
-			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Txt.EnumValueOf()));
-			Log.Debug().WriteLine("Modified the header(s) of the HttpRequestMessage: Accept: {0}", httpRequestMessage.Headers.Accept);
 		}
 	}
 }

@@ -21,7 +21,7 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Dapplo.HttpExtensions.Internal;
+using Dapplo.LogFacade;
 using System;
 using System.Net;
 using System.Threading;
@@ -34,7 +34,7 @@ namespace Dapplo.HttpExtensions.Listener
 	/// </summary>
 	public static class UriHttpListenerExtensions
 	{
-		private static readonly LogContext Log = new LogContext();
+		private static readonly LogSource Log = new LogSource();
 
 		/// <summary>
 		/// This method starts a HttpListener to make it possible to listen async for a SINGLE request.
@@ -46,7 +46,7 @@ namespace Dapplo.HttpExtensions.Listener
 		public static Task<T> ListenAsync<T>(this Uri listenUri, Func<HttpListenerContext, Task<T>> httpListenerContextHandler, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			var listenUriString = listenUri.AbsoluteUri.EndsWith("/") ? listenUri.AbsoluteUri : listenUri.AbsoluteUri + "/";
-			Log.Debug().Write("Start listening on {0}", listenUriString);
+			Log.Debug().WriteLine("Start listening on {0}", listenUriString);
 			var taskCompletionSource = new TaskCompletionSource<T>();
 
 			// ReSharper disable once UnusedVariable
@@ -60,7 +60,7 @@ namespace Dapplo.HttpExtensions.Listener
 						httpListener.Prefixes.Add(listenUriString);
 						// Start listening
 						httpListener.Start();
-						Log.Debug().Write("Started listening on {0}", listenUriString);
+						Log.Debug().WriteLine("Started listening on {0}", listenUriString);
 
 						// Make the listener stop if the token is cancelled.
 						// This registratrion is disposed before the httpListener is disposed:
@@ -81,7 +81,7 @@ namespace Dapplo.HttpExtensions.Listener
 					}
 					catch (Exception ex)
 					{
-						Log.Error().Write(ex, "Error while wait for or processing a request");
+						Log.Error().WriteLine(ex, "Error while wait for or processing a request");
 
 						// Check if cancel was requested, is so set the taskCompletionSource as cancelled
 						if (cancellationToken.IsCancellationRequested)

@@ -26,19 +26,18 @@ using System;
 namespace Dapplo.HttpExtensions.Support
 {
 	/// <summary>
-	/// A trace logger, the simplest implementation for logging trace messages
+	/// This attribute marks a property as a filename for the multi-part content
 	/// </summary>
-	public class TraceLogger : ILogger
+	[AttributeUsage(AttributeTargets.Property)]
+	public class FilenameAttribute : Attribute
 	{
-		public void Write(ILogInfo logInfo, string messageTemplate, params object[] propertyValues)
+		/// <summary>
+		/// Order of the content when using multi-part content
+		/// </summary>
+		public int Order
 		{
-			System.Diagnostics.Trace.WriteLine($"{logInfo} - {string.Format(messageTemplate, propertyValues)}");
-		}
-
-		public void Write(ILogInfo logInfo, Exception exception, string messageTemplate, params object[] propertyValues)
-		{
-			System.Diagnostics.Trace.WriteLine($"{logInfo} - {string.Format(messageTemplate, propertyValues)}");
-			System.Diagnostics.Trace.WriteLine(exception.ToString());
+			get;
+			set;
 		}
 	}
 }

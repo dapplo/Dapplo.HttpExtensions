@@ -26,13 +26,13 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Factory;
-using Dapplo.HttpExtensions.Internal;
+using Dapplo.LogFacade;
 
 namespace Dapplo.HttpExtensions.Listener
 {
 	public static class HttpListenerContextExtensions
 	{
-		private static readonly LogContext Log = new LogContext();
+		private static readonly LogSource Log = new LogSource();
 
 		/// <summary>
 		/// This writes the supplied content to the response of the httpListenerContext
@@ -62,7 +62,7 @@ namespace Dapplo.HttpExtensions.Listener
 			{
 				if (httpContent == null)
 				{
-					Log.Error().Write("Nothing to respond with...");
+					Log.Error().WriteLine("Nothing to respond with...");
 					response.StatusCode = (int)HttpStatusCode.InternalServerError;
 					return;
 				}
@@ -70,7 +70,7 @@ namespace Dapplo.HttpExtensions.Listener
 				response.ContentLength64 = httpContent.Headers?.ContentLength ?? 0;
 				response.ContentType = httpContent.GetContentType();
 				response.StatusCode = (int) HttpStatusCode.OK;
-				Log.Debug().Write("Responding with {0}", response.ContentType);
+				Log.Debug().WriteLine("Responding with {0}", response.ContentType);
 				using (var stream = response.OutputStream)
 				{
 					await httpContent.CopyToAsync(stream);

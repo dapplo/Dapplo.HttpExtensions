@@ -26,7 +26,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using Dapplo.HttpExtensions.Internal;
+using Dapplo.LogFacade;
 using Dapplo.HttpExtensions.Support;
 using System.Collections.Generic;
 
@@ -38,7 +38,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	/// </summary>
 	public class JsonHttpContentConverter : IHttpContentConverter
 	{
-		private static readonly LogContext Log = new LogContext();
+		private static readonly LogSource Log = new LogSource();
 		public static readonly JsonHttpContentConverter Instance = new JsonHttpContentConverter();
 		private static readonly IList<string> SupportedContentTypes = new List<string>();
 
@@ -77,7 +77,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			}
 
 			var jsonString = await httpContent.ReadAsStringAsync().ConfigureAwait(false);
-			Log.Debug().Write("Read Json content: {0}", jsonString);
+			Log.Debug().WriteLine("Read Json content: {0}", jsonString);
 			return httpBehaviour.JsonSerializer.DeserializeJson(resultType == typeof(object) ? null : resultType, jsonString);
 		}
 
@@ -96,7 +96,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		{
 			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 			var jsonString = httpBehaviour.JsonSerializer.SerializeJson(content);
-			Log.Debug().Write("Created HttpContent for Json: {0}", jsonString);
+			Log.Debug().WriteLine("Created HttpContent for Json: {0}", jsonString);
 			return new StringContent(jsonString, httpBehaviour.DefaultEncoding, MediaTypes.Json.EnumValueOf());
 		}
 
@@ -118,7 +118,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			}
 			// TODO: How to prevent the adding if this type is really not something we can de-serialize, like Bitmap?
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Json.EnumValueOf()));
-			Log.Debug().Write("Modified the header(s) of the HttpRequestMessage: Accept: {0}", httpRequestMessage.Headers.Accept);
+			Log.Debug().WriteLine("Modified the header(s) of the HttpRequestMessage: Accept: {0}", httpRequestMessage.Headers.Accept);
 		}
 	}
 }

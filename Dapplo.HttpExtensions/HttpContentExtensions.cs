@@ -27,7 +27,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using Dapplo.HttpExtensions.Internal;
+using Dapplo.LogFacade;
 
 namespace Dapplo.HttpExtensions
 {
@@ -36,7 +36,7 @@ namespace Dapplo.HttpExtensions
 	/// </summary>
 	public static class HttpContentExtensions
 	{
-		private static readonly LogContext Log = new LogContext();
+		private static readonly LogSource Log = new LogSource();
 
 		/// <summary>
 		/// Extension method reading the httpContent to a Typed object, depending on the returned content-type
@@ -65,7 +65,7 @@ namespace Dapplo.HttpExtensions
 			// For everything that comes here, a fitting converter should be written, or the ValidateResponseContentType can be set to false
 			var contentType = httpContent.GetContentType();
 			var message = $"Unsupported result type {resultType} / {contentType} combination.";
-			Log.Error().Write(message);
+			Log.Error().WriteLine(message);
 			throw new NotSupportedException(message);
 		}
 

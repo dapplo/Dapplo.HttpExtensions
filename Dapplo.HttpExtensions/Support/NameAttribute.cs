@@ -21,45 +21,23 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Dapplo.HttpExtensions.Support;
 using System;
-using System.Diagnostics;
 
-namespace Dapplo.HttpExtensions.Internal
+namespace Dapplo.HttpExtensions.Support
 {
 	/// <summary>
-	/// This solve the problem of the need to specify the type
+	/// This attribute marks a property as a name for the multi-part content
 	/// </summary>
-	internal class LogContext
+	[AttributeUsage(AttributeTargets.Property)]
+	public class NameAttribute : Attribute
 	{
-		public LogContext()
+		/// <summary>
+		/// Order of the content when using multi-part content
+		/// </summary>
+		public int Order
 		{
-			// Get the stacktrace, first frame, method and it's declaring type.
-			Source = new StackTrace().GetFrame(1).GetMethod().DeclaringType;
+			get;
+			set;
 		}
-		public Type Source { get; private set; }
-	}
-
-	/// <summary>
-	/// A simple wrapper for some information which is passed to the logger
-	/// </summary>
-	internal class LogInfo : ILogInfo
-	{
-		public Type Caller { get; set; }
-
-		public string Method { get; set; }
-
-		public int Line { get; set; }
-
-		public ILogger Logger { get; set; }
-
-		public LogLevel Level { get; set; }
-
-		public DateTimeOffset Timestamp { get; set; } = DateTimeOffset.Now;
-
-		public override string ToString()
-		{
-			return $"{Timestamp.ToString("yyyy-MM-dd HH:mm:sss")} {Level} {Caller.FullName}:{Method}({Line})";
-        }
 	}
 }

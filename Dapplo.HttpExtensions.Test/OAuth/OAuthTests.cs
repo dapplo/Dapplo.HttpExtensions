@@ -24,9 +24,10 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Dapplo.HttpExtensions.Support;
 using Dapplo.HttpExtensions.OAuth;
 using System.Threading.Tasks;
+using Dapplo.LogFacade;
+using Dapplo.LogFacade.Loggers;
 
 namespace Dapplo.HttpExtensions.Test.OAuth
 {
@@ -40,7 +41,7 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 		public void InitLogger()
 		{
 			// Make sure we get some logging from the internals of our library
-			HttpExtensionsGlobals.Logger = new TraceLogger();
+			LogExtensions.Logger = new TraceLogger();
 		}
 
 		/// <summary>
@@ -73,7 +74,8 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 			oauthHttpBehaviour.ValidateResponseContentType = false;
 
 			var response = await new Uri("http://brentertainment.com/oauth2/lockdin/resource").GetAsAsync<dynamic>(oauthHttpBehaviour);
-			Assert.IsTrue(response.friends.Count > 0);
+			Assert.IsTrue(response.ContainsKey("friends"));
+			Assert.IsTrue(response["friends"].Count > 0);
 		}
 	}
 }

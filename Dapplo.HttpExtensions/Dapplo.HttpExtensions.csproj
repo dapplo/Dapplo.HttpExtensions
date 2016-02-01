@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Dapplo.LogFacade, Version=0.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapplo.LogFacade.0.1.2.0\lib\net451\Dapplo.LogFacade.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -45,6 +49,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ContentConverter\ByteArrayHttpContentConverter.cs" />
     <Compile Include="ContentConverter\XDocumentHttpContentConverter.cs" />
     <Compile Include="ContentConverter\SyndicationFeedHttpContentConverter.cs" />
     <Compile Include="Factory\HttpContentFactory.cs" />
@@ -66,14 +71,14 @@
     <Compile Include="OAuth\OAuth2HttpMessageHandler.cs" />
     <Compile Include="OAuth\OAuth2TokenResponse.cs" />
     <Compile Include="OAuth\OAuth2Token.cs" />
-    <Compile Include="StringExtensions.cs" />
+    <Compile Include="Support\ContentTypeAttribute.cs" />
     <Compile Include="Support\DelegatingTypeConverter.cs" />
     <Compile Include="Support\DelegatingStringEncryptionTypeConverter.cs" />
-    <Compile Include="Support\TraceLogger.cs" />
-    <Compile Include="Support\ILogger.cs" />
+    <Compile Include="Support\NameAttribute.cs" />
+    <Compile Include="Support\FilenameAttribute.cs" />
+    <Compile Include="Support\MultiPartContentAttribute.cs" />
+    <Compile Include="Support\HttpContentAttribute.cs" />
     <Compile Include="ContentConverter\BitmapSourceHttpContentConverter.cs" />
-    <Compile Include="Internal\LoggerExtensions.cs" />
-    <Compile Include="Internal\LogInfo.cs" />
     <Compile Include="ContentConverter\JsonHttpContentConverter.cs" />
     <Compile Include="ContentConverter\FormUriEncodedContentConverter.cs" />
     <Compile Include="ContentConverter\StringHttpContentConverter.cs" />
@@ -100,7 +105,9 @@
     <Compile Include="UriActionExtensions.cs" />
     <Compile Include="UriModifyExtensions.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

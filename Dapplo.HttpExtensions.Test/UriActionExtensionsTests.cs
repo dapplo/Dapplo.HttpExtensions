@@ -30,12 +30,16 @@ using Dapplo.HttpExtensions.Test.TestEntities;
 using System.Drawing;
 using System.IO;
 using System.Windows.Media.Imaging;
-using Dapplo.HttpExtensions.Support;
 using System.ServiceModel.Syndication;
 using System.Xml.Linq;
+using Dapplo.LogFacade;
+using Dapplo.LogFacade.Loggers;
 
 namespace Dapplo.HttpExtensions.Test
 {
+	/// <summary>
+	/// Should write some tests which use http://httpbin.org/
+	/// </summary>
 	[TestClass]
 	public class UriActionExtensionsTests
 	{
@@ -45,7 +49,7 @@ namespace Dapplo.HttpExtensions.Test
 		public void Init()
 		{
 			// Make sure the logger is set for debugging
-			HttpExtensionsGlobals.Logger = new TraceLogger();
+			LogExtensions.Logger = new TraceLogger();
 		}
 
 		/// <summary>
@@ -95,7 +99,7 @@ namespace Dapplo.HttpExtensions.Test
 		{
 			var xDocument = await new Uri("http://getgreenshot.org/project-feed/").GetAsAsync<XDocument>();
 			Assert.IsNotNull(xDocument);
-			Assert.IsTrue(xDocument.Nodes().Count() > 0);
+			Assert.IsTrue(xDocument.Nodes().Any());
 		}
 
 		/// <summary>

@@ -21,7 +21,7 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Dapplo.HttpExtensions.Internal;
+using Dapplo.LogFacade;
 using Dapplo.HttpExtensions.Support;
 using System;
 using System.Net.Http;
@@ -35,7 +35,7 @@ namespace Dapplo.HttpExtensions
 	/// </summary>
 	public static class HttpResponseMessageExtensions
 	{
-		private static readonly LogContext Log = new LogContext();
+		private static readonly LogSource Log = new LogSource();
 
 		/// <summary>
 		/// Extension method reading the HttpResponseMessage to a Type object
@@ -92,7 +92,7 @@ namespace Dapplo.HttpExtensions
 			if (httpResponseMessage.IsSuccessStatusCode)
 			{
 				// Write log for success
-				Log.Debug().Write("Http response {0} ({1}) from {2}", (int)httpResponseMessage.StatusCode, httpResponseMessage.StatusCode, httpResponseMessage.RequestMessage?.RequestUri);
+				Log.Debug().WriteLine("Http response {0} ({1}) from {2}", (int)httpResponseMessage.StatusCode, httpResponseMessage.StatusCode, httpResponseMessage.RequestMessage?.RequestUri);
 				response.Response = await httpContent.GetAsAsync<TResponse>(httpBehaviour, token).ConfigureAwait(false);
 				// Make sure the httpContent is only disposed when it's not the return type
 				if (!typeof(HttpContent).IsAssignableFrom(typeof(TResponse)))
@@ -103,7 +103,7 @@ namespace Dapplo.HttpExtensions
 			else
 			{
 				// Write log if an error occured.
-				Log.Error().Write("Http response {0} ({1}) from {2}", (int)httpResponseMessage.StatusCode, httpResponseMessage.StatusCode, httpResponseMessage.RequestMessage?.RequestUri);
+				Log.Error().WriteLine("Http response {0} ({1}) from {2}", (int)httpResponseMessage.StatusCode, httpResponseMessage.StatusCode, httpResponseMessage.RequestMessage?.RequestUri);
 				response.ErrorResponse = await httpContent.GetAsAsync<TErrorResponse>(httpBehaviour, token).ConfigureAwait(false);
 
 				// Make sure the httpContent is only disposed when it's not the return type
@@ -142,17 +142,17 @@ namespace Dapplo.HttpExtensions
 					}
 					catch (Exception ex)
 					{
-						Log.Debug().Write("Error while reading the error content: {0}", ex.Message);
+						Log.Debug().WriteLine("Error while reading the error content: {0}", ex.Message);
 					}
 					// Write log if an error occured.
-					Log.Error().Write("Http response {0} ({1}) from {2}, details from website: {3}", (int)httpResponseMessage.StatusCode, httpResponseMessage.StatusCode, requestUri, errorContent);
+					Log.Error().WriteLine("Http response {0} ({1}) from {2}, details from website: {3}", (int)httpResponseMessage.StatusCode, httpResponseMessage.StatusCode, requestUri, errorContent);
 
 					httpResponseMessage.EnsureSuccessStatusCode();
 				}
 				else
 				{
 					// Write log for success
-					Log.Debug().Write("Http response {0} ({1}) from {2}", (int)httpResponseMessage.StatusCode, httpResponseMessage.StatusCode, requestUri);
+					Log.Debug().WriteLine("Http response {0} ({1}) from {2}", (int)httpResponseMessage.StatusCode, httpResponseMessage.StatusCode, requestUri);
 				}
 			}
 			catch (Exception ex)

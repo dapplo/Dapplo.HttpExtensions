@@ -35,11 +35,6 @@ namespace Dapplo.HttpExtensions
 	public static class HttpExtensionsGlobals
 	{
 		/// <summary>
-		/// The global ILogger, if null nothing happens
-		/// </summary>
-		public static ILogger Logger { get; set; }
-
-		/// <summary>
 		/// The global IHttpSettings
 		/// </summary>
 		public static IHttpSettings HttpSettings { get; set; } = new HttpSettings();
@@ -56,6 +51,7 @@ namespace Dapplo.HttpExtensions
 		{
 			BitmapHttpContentConverter.Instance,
 			BitmapSourceHttpContentConverter.Instance,
+			ByteArrayHttpContentConverter.Instance,
 			FormUriEncodedContentConverter.Instance,
 			SyndicationFeedHttpContentConverter.Instance,
 			XDocumentHttpContentConverter.Instance,

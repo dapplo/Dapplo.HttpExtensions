@@ -30,7 +30,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using Dapplo.HttpExtensions.Internal;
+using Dapplo.LogFacade;
 using Dapplo.HttpExtensions.Support;
 
 namespace Dapplo.HttpExtensions.ContentConverter
@@ -41,7 +41,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	public class BitmapSourceHttpContentConverter : IHttpContentConverter
 	{
 		private static readonly IList<string> SupportedContentTypes = new List<string>();
-		private static readonly LogContext Log = new LogContext();
+		private static readonly LogSource Log = new LogSource();
 		public static readonly BitmapSourceHttpContentConverter Instance = new BitmapSourceHttpContentConverter();
 
 		static BitmapSourceHttpContentConverter()
@@ -130,7 +130,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			}
 			using (var memoryStream = await StreamHttpContentConverter.Instance.ConvertFromHttpContentAsync<MemoryStream>(httpContent, httpBehaviour,token).ConfigureAwait(false))
 			{
-				Log.Debug().Write("Creating a BitmapImage from the MemoryStream.");
+				Log.Debug().WriteLine("Creating a BitmapImage from the MemoryStream.");
 				var bitmap = new BitmapImage();
 				bitmap.BeginInit();
 				bitmap.StreamSource = memoryStream;
@@ -207,7 +207,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Bmp.EnumValueOf()));
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Gif.EnumValueOf()));
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Icon.EnumValueOf()));
-			Log.Debug().Write("Modified the header(s) of the HttpRequestMessage: Accept: {0}", httpRequestMessage.Headers.Accept);
+			Log.Debug().WriteLine("Modified the header(s) of the HttpRequestMessage: Accept: {0}", httpRequestMessage.Headers.Accept);
 		}
 	}
 }

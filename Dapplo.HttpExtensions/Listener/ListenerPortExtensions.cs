@@ -21,7 +21,7 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Dapplo.HttpExtensions.Internal;
+using Dapplo.LogFacade;
 using System;
 using System.Net;
 using System.Net.Sockets;
@@ -30,7 +30,7 @@ namespace Dapplo.HttpExtensions.Listener
 {
 	public static class ListenerPortExtensions
 	{
-		private static readonly LogContext Log = new LogContext();
+		private static readonly LogSource Log = new LogSource();
 
 		/// <summary>
 		/// Create an Localhost Uri for an unused port
@@ -61,12 +61,12 @@ namespace Dapplo.HttpExtensions.Listener
 					listener.Start();
 					// As the LocalEndpoint is of type EndPoint, this doesn't have the port, we need to cast it to IPEndPoint
 					var port = ((IPEndPoint)listener.LocalEndpoint).Port;
-					Log.Debug().Write("Found free listener port {0} for the local code receiver.", port);
+					Log.Debug().WriteLine("Found free listener port {0} for the local code receiver.", port);
 					return port;
 				}
 				catch
 				{
-					Log.Debug().Write("Port {0} isn't free.", portToCheck);
+					Log.Debug().WriteLine("Port {0} isn't free.", portToCheck);
 					continue;
 				}
 				finally
@@ -75,7 +75,7 @@ namespace Dapplo.HttpExtensions.Listener
 				}
 			}
 			var message = $"No free ports in the range {possiblePorts} found!";
-			Log.Debug().Write(message);
+			Log.Debug().WriteLine(message);
 			throw new ApplicationException(message);
 		}
 	}

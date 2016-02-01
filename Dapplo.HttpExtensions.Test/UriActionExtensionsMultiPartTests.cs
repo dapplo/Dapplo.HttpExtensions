@@ -21,44 +21,40 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Dapplo.HttpExtensions.Listener;
+using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
+using System.IO;
 using Dapplo.LogFacade;
 using Dapplo.LogFacade.Loggers;
 
-namespace Dapplo.HttpExtensions.Test.Support
+namespace Dapplo.HttpExtensions.Test
 {
+	/// <summary>
+	/// Should write some tests which use http://httpbin.org/
+	/// </summary>
 	[TestClass]
-	public class UriHttpListenerExtensionsTests
+	public class UriActionExtensionsMultiPartTests
 	{
+		private readonly Uri _bitmapUri = new Uri("http://beta.getgreenshot.org/assets/greenshot-logo.png");
+
 		[TestInitialize]
-		public void InitLogger()
+		public void Init()
 		{
+			// Make sure the logger is set for debugging
 			LogExtensions.Logger = new TraceLogger();
 		}
-
+		/// <summary>
+		/// Test getting the Uri as MemoryStream
+		/// </summary>
+		/// <returns></returns>
 		[TestMethod]
-		public async Task TestListenAsync()
+		public async Task TestGetAsAsyncMemoryStream()
 		{
-			// Try listening on 8080, if this doesn't work take the first free port
-			var listenUri = new[] { 8080, 0 }.CreateLocalHostUri().AppendSegments("AsyncHttpListenerTests");
-			var listenTask = listenUri.ListenAsync(async httpListenerContext =>
-			{
-				// Process the request
-				var httpListenerRequest = httpListenerContext.Request;
-				var result = httpListenerRequest.Url.QueryToDictionary();
-				await httpListenerContext.RespondAsync("OK");
-				return result;
-			});
-			// Do we need a delay for the listener to be ready?
-			//await Task.Delay(100);
-			var testUri = listenUri.ExtendQuery("name", "dapplo");
-			var okResponse = await testUri.GetAsAsync<string>();
-			Assert.AreEqual("OK", okResponse);
-			var actionResult = await listenTask;
-			Assert.IsTrue(actionResult.ContainsKey("name"));
-			Assert.IsTrue(actionResult["name"] == "dapplo");
+			var stream = await _bitmapUri.GetAsAsync<MemoryStream>();
+			Assert.IsNotNull(stream);
+			Assert.IsTrue(stream.Length > 0);
 		}
+
 	}
 }

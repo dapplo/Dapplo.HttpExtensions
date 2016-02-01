@@ -21,7 +21,7 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Dapplo.HttpExtensions.Internal;
+using Dapplo.LogFacade;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -36,7 +36,7 @@ namespace Dapplo.HttpExtensions.OAuth
 	/// </summary>
 	public class OAuth2HttpMessageHandler : DelegatingHandler
 	{
-		private static readonly LogContext Log = new LogContext();
+		private static readonly LogSource Log = new LogSource();
 
 		/// <summary>
 		/// Register your special OAuth handler for the AuthorizeMode here
@@ -119,7 +119,7 @@ namespace Dapplo.HttpExtensions.OAuth
 			if (result.TryGetValue(OAuth2Fields.Code.EnumValueOf(), out code) && !string.IsNullOrEmpty(code))
 			{
 				_oAuth2Settings.Code = code;
-				Log.Debug().Write("Retrieving a first time refresh token.");
+				Log.Debug().WriteLine("Retrieving a first time refresh token.");
 				await GenerateRefreshTokenAsync(cancellationToken);
 				return true;
 			}
@@ -134,7 +134,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <param name="cancellationToken">CancellationToken</param>
 		private async Task GenerateAccessTokenAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
-			Log.Debug().Write("Generating a access token.");
+			Log.Debug().WriteLine("Generating a access token.");
 			var data = new Dictionary<string, string>
 			{
 				{OAuth2Fields.RefreshToken.EnumValueOf(), _oAuth2Settings.Token.OAuth2RefreshToken},
@@ -200,7 +200,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <param name="cancellationToken">CancellationToken</param>
 		private async Task GenerateRefreshTokenAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
-			Log.Debug().Write("Generating a refresh token.");
+			Log.Debug().WriteLine("Generating a refresh token.");
 			var data = new Dictionary<string, string>
 			{
 				{OAuth2Fields.Code.EnumValueOf(), _oAuth2Settings.Code},
@@ -253,11 +253,11 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <param name="cancellationToken">CancellationToken</param>
 		private async Task CheckAndAuthenticateOrRefreshAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
-			Log.Debug().Write("Checking authentication.");
+			Log.Debug().WriteLine("Checking authentication.");
 			// Get Refresh / Access token
 			if (string.IsNullOrEmpty(_oAuth2Settings.Token.OAuth2RefreshToken))
 			{
-				Log.Debug().Write("No refresh-token, performing an Authentication");
+				Log.Debug().WriteLine("No refresh-token, performing an Authentication");
 				if (!await AuthenticateAsync(cancellationToken).ConfigureAwait(false))
 				{
 					throw new ApplicationException("Authentication cancelled");
@@ -265,7 +265,7 @@ namespace Dapplo.HttpExtensions.OAuth
 			}
 			if (_oAuth2Settings.IsAccessTokenExpired)
 			{
-				Log.Debug().Write("No access-token expired, generating an access token");
+				Log.Debug().WriteLine("No access-token expired, generating an access token");
 				await GenerateAccessTokenAsync(cancellationToken).ConfigureAwait(false);
 				// Get Refresh / Access token
 				if (string.IsNullOrEmpty(_oAuth2Settings.Token.OAuth2RefreshToken))

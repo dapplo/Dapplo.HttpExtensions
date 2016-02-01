@@ -21,7 +21,7 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Dapplo.HttpExtensions.Internal;
+using Dapplo.LogFacade;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -40,7 +40,7 @@ namespace Dapplo.HttpExtensions.OAuth
 	/// </summary>
 	public class LocalServerCodeReceiver
 	{
-		private static readonly LogContext Log = new LogContext();
+		private static readonly LogSource Log = new LogSource();
 
 		/// <summary>
 		/// HTML code to to return the _browser, default it will try to close the _browser / tab, this won't always work.
@@ -82,7 +82,7 @@ The authentication process received information from CloudServiceName. You can c
 				if (!oauth2Settings.RedirectUrl.StartsWith("http:"))
 				{
 					var message = $"The LocalServerCodeReceiver only works for http URLs, not for {0}, use a different AuthorizeMode.";
-					Log.Error().Write(message);
+					Log.Error().WriteLine(message);
 					throw new ArgumentException(message, nameof(oauth2Settings.RedirectUrl));
 				}
 				redirectUri = new Uri(oauth2Settings.RedirectUrl);
@@ -92,7 +92,7 @@ The authentication process received information from CloudServiceName. You can c
 			{
 				// Process the request
 				var httpListenerRequest = httpListenerContext.Request;
-				Log.Debug().Write("Got request {0}", httpListenerRequest.Url);
+				Log.Debug().WriteLine("Got request {0}", httpListenerRequest.Url);
 				// we got the result, parse the Query and set it as a result
 				var result = httpListenerRequest.Url.QueryToDictionary();
 
@@ -104,7 +104,7 @@ The authentication process received information from CloudServiceName. You can c
 				}
 				catch (Exception ex)
 				{
-					Log.Error().Write(ex, "Couldn't write a response");
+					Log.Error().WriteLine(ex, "Couldn't write a response");
 				}
 				return result;
 			}, cancellationToken);
@@ -120,7 +120,7 @@ The authentication process received information from CloudServiceName. You can c
 
 			// Get the formatted FormattedAuthUrl
 			var authorizationUrl = uriBuilder.Uri;
-			Log.Debug().Write("Opening a browser with: {0}", authorizationUrl.AbsoluteUri);
+			Log.Debug().WriteLine("Opening a browser with: {0}", authorizationUrl.AbsoluteUri);
 			// Open the url in the default browser
 			Process.Start(authorizationUrl.AbsoluteUri);
 

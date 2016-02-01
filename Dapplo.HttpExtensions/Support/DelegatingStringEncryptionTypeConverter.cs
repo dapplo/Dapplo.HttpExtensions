@@ -32,7 +32,7 @@ namespace Dapplo.HttpExtensions.Support
 		/// <summary>
 		/// Delegating to the StringEncryptionTypeConverter
 		/// </summary>
-		public DelegatingStringEncryptionTypeConverter() : base("Dapplo.Config.Converters", "StringEncryptionTypeConverter")
+		public DelegatingStringEncryptionTypeConverter() : base("Dapplo.Config", "Dapplo.Config.Converters.StringEncryptionTypeConverter")
 		{
 		}
 	}

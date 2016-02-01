@@ -57,7 +57,10 @@ namespace Dapplo.HttpExtensions
 				}
                 queryBuilder.Append('&');
 			}
-			queryBuilder.Length -= 1;
+			if (queryBuilder.Length > 0)
+			{
+				queryBuilder.Length -= 1;
+			}
 			return queryBuilder.ToString();
 		}
 

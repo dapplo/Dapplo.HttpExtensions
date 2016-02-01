@@ -23,6 +23,7 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Dapplo.HttpExtensions.Test
@@ -69,6 +70,15 @@ namespace Dapplo.HttpExtensions.Test
 			var loopkup = _testUriComplex.QueryToLookup();
 			Assert.IsNotNull(loopkup);
 			Assert.AreEqual(2, loopkup[TestKey].Count(x => x == TestValue));
+		}
+
+		[TestMethod]
+		public void TestExtendQuery_empty_dictionary()
+		{
+			var simpleUri = new Uri("http://dapplo.net");
+			var newUri = simpleUri.ExtendQuery(new Dictionary<string,string>());
+			Assert.IsNotNull(newUri);
+			Assert.AreEqual(simpleUri, newUri);
 		}
 	}
 }

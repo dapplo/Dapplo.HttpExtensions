@@ -31,6 +31,8 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Media.Imaging;
 using Dapplo.HttpExtensions.Support;
+using System.ServiceModel.Syndication;
+using System.Xml.Linq;
 
 namespace Dapplo.HttpExtensions.Test
 {
@@ -70,6 +72,30 @@ namespace Dapplo.HttpExtensions.Test
 			Assert.IsNotNull(bitmap);
 			Assert.IsTrue(bitmap.Width > 0);
 			Assert.IsTrue(bitmap.Height > 0);
+		}
+
+		/// <summary>
+		/// Test getting the uri as Feed
+		/// </summary>
+		/// <returns></returns>
+		[TestMethod]
+		public async Task TestGetAsAsyncSyndicationFeed()
+		{
+			var feed = await new Uri("http://getgreenshot.org/project-feed/").GetAsAsync<SyndicationFeed>();
+			Assert.IsNotNull(feed);
+			Assert.IsTrue(feed.Items.Count() > 0);
+		}
+
+		/// <summary>
+		/// Test getting the uri as Feed
+		/// </summary>
+		/// <returns></returns>
+		[TestMethod]
+		public async Task TestGetAsAsyncXDocument()
+		{
+			var xDocument = await new Uri("http://getgreenshot.org/project-feed/").GetAsAsync<XDocument>();
+			Assert.IsNotNull(xDocument);
+			Assert.IsTrue(xDocument.Nodes().Count() > 0);
 		}
 
 		/// <summary>

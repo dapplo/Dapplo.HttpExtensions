@@ -55,6 +55,8 @@ namespace Dapplo.HttpExtensions.Support
 		[EnumMember(Value = "image/x-icon")]
 		Icon,
 		[EnumMember(Value = "image/svg+xml")]
-		Svg
+		Svg,
+		[EnumMember(Value = "application/rss+xml")]
+		Rss
 	}
 }

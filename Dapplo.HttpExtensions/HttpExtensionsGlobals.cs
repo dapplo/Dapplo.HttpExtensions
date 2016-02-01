@@ -54,7 +54,14 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		public static IList<IHttpContentConverter> HttpContentConverters { get; set; } = new List<IHttpContentConverter>
 		{
-			BitmapHttpContentConverter.Instance, BitmapSourceHttpContentConverter.Instance, FormUriEncodedContentConverter.Instance, JsonHttpContentConverter.Instance, StreamHttpContentConverter.Instance, StringHttpContentConverter.Instance
+			BitmapHttpContentConverter.Instance,
+			BitmapSourceHttpContentConverter.Instance,
+			FormUriEncodedContentConverter.Instance,
+			SyndicationFeedHttpContentConverter.Instance,
+			XDocumentHttpContentConverter.Instance,
+			JsonHttpContentConverter.Instance,
+			StreamHttpContentConverter.Instance,
+			StringHttpContentConverter.Instance
 		};
 
 		/// <summary>

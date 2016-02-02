@@ -42,7 +42,7 @@ namespace Dapplo.HttpExtensions.Test
 		public void Init()
 		{
 			// Make sure the logger is set for debugging
-			LogExtensions.Logger = new TraceLogger();
+			LogSettings.Logger = new TraceLogger();
 		}
 		/// <summary>
 		/// Test getting the Uri as MemoryStream

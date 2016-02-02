@@ -41,7 +41,7 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 		public void InitLogger()
 		{
 			// Make sure we get some logging from the internals of our library
-			LogExtensions.Logger = new TraceLogger();
+			LogSettings.Logger = new TraceLogger();
 		}
 
 		/// <summary>

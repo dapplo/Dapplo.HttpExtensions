@@ -35,7 +35,7 @@ namespace Dapplo.HttpExtensions.Test.Support
 		[TestInitialize]
 		public void InitLogger()
 		{
-			LogExtensions.Logger = new TraceLogger();
+			LogSettings.Logger = new TraceLogger();
 		}
 
 		[TestMethod]

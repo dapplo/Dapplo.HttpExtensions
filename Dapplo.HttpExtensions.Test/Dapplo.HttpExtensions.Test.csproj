@@ -65,6 +65,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="ConfigureLogging4Tests.cs" />
     <Compile Include="OAuth\OAuthTests.cs" />
     <Compile Include="Support\UriHttpListenerExtensionsTests.cs" />
     <Compile Include="TestEntities\GitHubError.cs" />

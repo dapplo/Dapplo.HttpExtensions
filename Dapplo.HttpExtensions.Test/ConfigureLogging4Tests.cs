@@ -21,32 +21,22 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Dapplo.LogFacade;
+using Dapplo.LogFacade.Loggers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace Dapplo.HttpExtensions.Test
 {
 	/// <summary>
-	/// Should write some tests which use http://httpbin.org/
+	/// This initializes the logger for all tests
 	/// </summary>
 	[TestClass]
-	public class UriActionExtensionsMultiPartTests
+	public class ConfigureLogging4Tests
 	{
-		private readonly Uri _bitmapUri = new Uri("http://beta.getgreenshot.org/assets/greenshot-logo.png");
-
-		/// <summary>
-		/// Test getting the Uri as MemoryStream
-		/// </summary>
-		/// <returns></returns>
-		[TestMethod]
-		public async Task TestGetAsAsyncMemoryStream()
+		[AssemblyInitialize]
+		public static void ConfigureLogging(TestContext context)
 		{
-			var stream = await _bitmapUri.GetAsAsync<MemoryStream>();
-			Assert.IsNotNull(stream);
-			Assert.IsTrue(stream.Length > 0);
+			LogSettings.Logger = new TraceLogger { Level = LogLevel.Verbose };
 		}
-
 	}
 }

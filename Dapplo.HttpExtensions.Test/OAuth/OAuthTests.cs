@@ -21,13 +21,11 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Dapplo.HttpExtensions.OAuth;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Dapplo.HttpExtensions.OAuth;
 using System.Threading.Tasks;
-using Dapplo.LogFacade;
-using Dapplo.LogFacade.Loggers;
 
 namespace Dapplo.HttpExtensions.Test.OAuth
 {
@@ -37,13 +35,6 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 	//[TestClass]
 	public class OAuthTests
 	{
-		[TestInitialize]
-		public void InitLogger()
-		{
-			// Make sure we get some logging from the internals of our library
-			LogSettings.Logger = new TraceLogger();
-		}
-
 		/// <summary>
 		/// This will test Oauth with a LocalServer "code" receiver against a demo oauth server provided by brentertainment.com
 		/// </summary>

@@ -38,6 +38,7 @@ namespace Dapplo.HttpExtensions.Test
 		private const int Value = 1234;
 		private const string TestUriSingleValue = "http://jira/issue?value1=4321";
 		private const string TestUriDuplicateValues = "http://jira/issue?value1=4321&value1=1234";
+
 		[TestMethod]
 		public void TestAppendSegments()
 		{

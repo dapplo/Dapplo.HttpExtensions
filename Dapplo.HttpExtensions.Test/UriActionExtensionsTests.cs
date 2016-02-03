@@ -21,19 +21,17 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Linq;
 using Dapplo.HttpExtensions.Test.TestEntities;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Windows.Media.Imaging;
+using System.Linq;
 using System.ServiceModel.Syndication;
+using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 using System.Xml.Linq;
-using Dapplo.LogFacade;
-using Dapplo.LogFacade.Loggers;
 
 namespace Dapplo.HttpExtensions.Test
 {
@@ -44,13 +42,6 @@ namespace Dapplo.HttpExtensions.Test
 	public class UriActionExtensionsTests
 	{
 		private readonly Uri _bitmapUri = new Uri("http://beta.getgreenshot.org/assets/greenshot-logo.png");
-
-		[TestInitialize]
-		public void Init()
-		{
-			// Make sure the logger is set for debugging
-			LogSettings.Logger = new TraceLogger();
-		}
 
 		/// <summary>
 		/// Test getting the uri as Bitmap

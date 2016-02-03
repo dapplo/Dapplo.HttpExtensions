@@ -24,20 +24,12 @@
 using Dapplo.HttpExtensions.Listener;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
-using Dapplo.LogFacade;
-using Dapplo.LogFacade.Loggers;
 
 namespace Dapplo.HttpExtensions.Test.Support
 {
 	[TestClass]
 	public class UriHttpListenerExtensionsTests
 	{
-		[TestInitialize]
-		public void InitLogger()
-		{
-			LogSettings.Logger = new TraceLogger();
-		}
-
 		[TestMethod]
 		public async Task TestListenAsync()
 		{

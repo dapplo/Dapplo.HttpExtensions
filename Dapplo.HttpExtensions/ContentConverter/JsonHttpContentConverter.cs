@@ -42,12 +42,26 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		public static readonly JsonHttpContentConverter Instance = new JsonHttpContentConverter();
 		private static readonly IList<string> SupportedContentTypes = new List<string>();
 
-		public int Order => int.MaxValue;
-
 		static JsonHttpContentConverter()
 		{
 			SupportedContentTypes.Add(MediaTypes.Json.EnumValueOf());
 		}
+
+		/// <summary>
+		/// Sort order
+		/// </summary>
+		public int Order => int.MaxValue;
+
+		/// <summary>
+		/// If the json content is any longer than LogThreshold AppendedWhenCut is appended to the cut string
+		/// </summary>
+		public string AppendedWhenCut { get; set; } = "...";
+
+		/// <summary>
+		/// This is the amount of characters that are written to the log, if the json content is any longer that it will be cut (and AppendedWhenCut is appended)
+		/// </summary>
+		public int LogThreshold { get; set; } = 512;
+
 
 
 		public bool CanConvertFromHttpContent<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null)
@@ -77,7 +91,11 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			}
 
 			var jsonString = await httpContent.ReadAsStringAsync().ConfigureAwait(false);
-			Log.Debug().WriteLine("Read Json content: {0}", jsonString);
+			// Check if verbose is enabled, if so log but only up to a certain size
+			if (Log.IsVerboseEnabled())
+			{
+				Log.Verbose().WriteLine("Read Json content: {0}{1}", jsonString.Substring(0, Math.Min(jsonString.Length, LogThreshold)), jsonString.Length > LogThreshold ? AppendedWhenCut : string.Empty);
+			}
 			return httpBehaviour.JsonSerializer.DeserializeJson(resultType == typeof(object) ? null : resultType, jsonString);
 		}
 

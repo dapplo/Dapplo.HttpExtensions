@@ -21,6 +21,7 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Dapplo.LogFacade;
 using System;
 using System.Net.Http;
 
@@ -33,6 +34,7 @@ namespace Dapplo.HttpExtensions.Factory
 	/// </summary>
 	public static class HttpRequestMessageFactory
 	{
+		private static readonly LogSource Log = new LogSource();
 		/// <summary>
 		/// Create a HttpRequestMessage for the HEAD method
 		/// </summary>
@@ -80,6 +82,8 @@ namespace Dapplo.HttpExtensions.Factory
 		/// <returns>HttpRequestMessage</returns>
 		public static HttpRequestMessage Create(HttpMethod method, Uri requestUri, Type resultType = null, HttpContent content = null, IHttpBehaviour httpBehaviour = null)
 		{
+			Log.Verbose().WriteLine("Created request for {0}", requestUri);
+
 			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 
 			var httpRequestMessage = new HttpRequestMessage(method, requestUri)

@@ -35,6 +35,29 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 	//[TestClass]
 	public class OAuthTests
 	{
+		private static readonly Uri _googleApiUri = new Uri("https://www.googleapis.com");
+		private static IHttpBehaviour _oAuthHttpBehaviour;
+
+		[ClassInitialize]
+		public static void SetupOAuth(TestContext context)
+		{
+			var oAuth2Settings = new OAuth2Settings
+			{
+				ClientId = "<client id from google developer console>",
+				ClientSecret = "<client id from google developer console>",
+				CloudServiceName = "Google",
+				AuthorizeMode = AuthorizeModes.LocalServer,
+				TokenUrl = _googleApiUri.AppendSegments("oauth2","v4","token"),
+				AuthorizationUri = new Uri("https://accounts.google.com").AppendSegments("o", "oauth2", "v2", "auth"). ExtendQuery(new Dictionary<string, string>{
+						{ "response_type", "code"},
+						{ "client_id", "{ClientId}" },
+						{ "redirect_uri", "{RedirectUrl}" },
+						{ "state", "{State}"},
+						{ "scope" , _googleApiUri.AppendSegments("auth","calendar").AbsoluteUri}
+				})
+			};
+			_oAuthHttpBehaviour = OAuth2HttpBehaviourFactory.Create(oAuth2Settings);
+		}
 		/// <summary>
 		/// This will test Oauth with a LocalServer "code" receiver against a demo oauth server provided by brentertainment.com
 		/// </summary>
@@ -42,31 +65,10 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 		[TestMethod]
 		public async Task TestOAuthHttpMessageHandler()
 		{
-			// Create OAuth2Setting for a demo server, which expects a token url like:
-			// http://brentertainment.com/oauth2/lockdin/authorize?response_type=code&client_id=demoapp&redirect_uri=http%3A%2F%2Fbrentertainment.com%2Foauth2%2Fclient%2Freceive_authcode%3Fshow_refresh_token%3D1&state=120b347034ef48c18caee7214f12bdcd
-			var oAuth2Settings = new OAuth2Settings
-			{
-				ClientId = "demoapp",
-				ClientSecret = "demopass",
-				CloudServiceName = "brentertainment",
-				AuthorizeMode = AuthorizeModes.LocalServer,
-				TokenUrl = new Uri("http://brentertainment.com/oauth2/lockdin/token"),
-				AuthorizationUri = new Uri("http://brentertainment.com").
-					AppendSegments("oauth2","lockdin","authorize").
-					ExtendQuery(new Dictionary<string, string>{
-						{ "response_type", "code"},
-						{ "client_id", "{ClientId}" },
-						{ "redirect_uri", "{RedirectUrl}" },
-						{ "state", "{State}"}
-					})
-			};
-			var oauthHttpBehaviour = OAuth2HttpBehaviourFactory.Create(oAuth2Settings);
-			// Special need, as http://brentertainment.com/oauth2/lockdin/resource returns text/html instead of json.
-			oauthHttpBehaviour.ValidateResponseContentType = false;
-
-			var response = await new Uri("http://brentertainment.com/oauth2/lockdin/resource").GetAsAsync<dynamic>(oauthHttpBehaviour);
-			Assert.IsTrue(response.ContainsKey("friends"));
-			Assert.IsTrue(response["friends"].Count > 0);
+			var calendarApiUri = _googleApiUri.AppendSegments("calendar", "v3");
+			var response = await calendarApiUri.AppendSegments("users","me","calendarList").GetAsAsync<dynamic>(_oAuthHttpBehaviour);
+			Assert.IsTrue(response.ContainsKey("items"));
+			Assert.IsTrue(response["items"].Count > 0);
 		}
 	}
 }

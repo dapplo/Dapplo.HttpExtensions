@@ -38,7 +38,7 @@ namespace Dapplo.HttpExtensions.OAuth
 	/// OAuth (2.0) verification code receiver that runs a local server on a free port
 	/// and waits for a call with the authorization verification code.
 	/// </summary>
-	public class LocalServerCodeReceiver
+	internal class LocalhostCodeReceiver : IOAuthCodeReceiver
 	{
 		private static readonly LogSource Log = new LogSource();
 

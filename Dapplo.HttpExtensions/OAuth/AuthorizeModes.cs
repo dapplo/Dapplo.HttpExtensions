@@ -34,11 +34,12 @@ namespace Dapplo.HttpExtensions.OAuth
 		// Default value, this will give an exception, caller needs to specify another value
 		Unknown,
 		// Used with a redirect URL to http://localhost:port, this is supported out of the box
-		LocalServer,
-		// This mode should monitor for title changes, used with redirect_uri of:
-		// urn:ietf:wg:oauth:2.0:oob & urn:ietf:wg:oauth:2.0:oob:auto
-		// Dapplo.Windows has possibilities to monitor titles
-		MonitorTitle,
+		LocalhostServer,
+		// This mode should show a popup where the user can paste the code, this is used with a redirect_uri of: urn:ietf:wg:oauth:2.0:oob
+		OutOfBound,
+		// This mode should monitor for title changes, used with a redirect_uri of: urn:ietf:wg:oauth:2.0:oob:auto
+		// Dapplo.Windows has possibilities to monitor titles, this could be used for an implementation
+		OutOfBoundAuto,
 		// Should ask the user to enter the PIN which is shown in the browser
 		Pin,
 		// Should open an embedded _browser and catch the redirect

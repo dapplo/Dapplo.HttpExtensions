@@ -9,10 +9,10 @@
         <iconUrl>http://www.dapplo.net/favicon.ico</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Dapplo.HttpExtensions contains extensions which help with Http communication.</description>
-		<summary>A library with code to quickly add a e.g. JSon Rest Service to your project.</summary>
+		<summary>A library with code to quickly make Http request or add a (Json) Rest client to your project.</summary>
         <language>en-us</language>
 		<copyright>Dapplo</copyright>
-		<tags>rest http</tags>
+		<tags>rest http oauth</tags>
 		<frameworkAssemblies>
 			<frameworkAssembly assemblyName="System.Net.Http" targetFramework="net45" />
 			<frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework="net45" />			

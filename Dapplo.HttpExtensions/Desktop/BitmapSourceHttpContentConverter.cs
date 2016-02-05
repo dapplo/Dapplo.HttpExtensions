@@ -32,8 +32,9 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Dapplo.LogFacade;
 using Dapplo.HttpExtensions.Support;
+using Dapplo.HttpExtensions.ContentConverter;
 
-namespace Dapplo.HttpExtensions.ContentConverter
+namespace Dapplo.HttpExtensions.Desktop
 {
 	/// <summary>
 	/// This can convert HttpContent from/to a WPF BitmapImage

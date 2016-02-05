@@ -45,17 +45,26 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// It receives the OAuth2Settings and a CancellationToken.
 		/// The return value should be that which the OAuth server gives as return values, no processing.
 		/// </summary>
-		public static IDictionary<AuthorizeModes, Func<OAuth2Settings, CancellationToken, Task<IDictionary<string,string>>>> AuthorizeHandlers
+		public static IDictionary<AuthorizeModes, IOAuthCodeReceiver> CodeReceivers
 		{
 			get;
-		} = new Dictionary<AuthorizeModes, Func<OAuth2Settings, CancellationToken, Task<IDictionary<string,string>>>>();
+		} = new Dictionary<AuthorizeModes, IOAuthCodeReceiver>();
 
 		/// <summary>
 		/// Add the local server handler.
 		/// </summary>
 		static OAuth2HttpMessageHandler()
 		{
-			AuthorizeHandlers.Add(AuthorizeModes.LocalServer, async(oAuth2Settings, cancellationToken) => await new LocalServerCodeReceiver().ReceiveCodeAsync(oAuth2Settings, cancellationToken));
+			CodeReceivers.Add(
+				AuthorizeModes.LocalhostServer,
+				new LocalhostCodeReceiver()
+			);
+#if DESKTOP
+			CodeReceivers.Add(
+				AuthorizeModes.OutOfBound,
+				new OutOfBoundCodeReceiver()
+			);
+#endif
 		}
 
 		private readonly OAuth2Settings _oAuth2Settings;
@@ -95,11 +104,12 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <returns>false if it was canceled, true if it worked, exception if not</returns>
 		private async Task<bool> AuthenticateAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
-			Func<OAuth2Settings, CancellationToken, Task<IDictionary<string, string>>> authorizeFunc;
-			if (!AuthorizeHandlers.TryGetValue(_oAuth2Settings.AuthorizeMode, out authorizeFunc)) {
+			IOAuthCodeReceiver codeReceiver;
+
+			if (!CodeReceivers.TryGetValue(_oAuth2Settings.AuthorizeMode, out codeReceiver)) {
 				throw new NotImplementedException($"Authorize mode '{_oAuth2Settings.AuthorizeMode}' is not specified.");
 			}
-			var result = await authorizeFunc(_oAuth2Settings, cancellationToken);
+			var result = await codeReceiver.ReceiveCodeAsync(_oAuth2Settings, cancellationToken);
 
 			string error;
 			if (result.TryGetValue(OAuth2Fields.Error.EnumValueOf(), out error))

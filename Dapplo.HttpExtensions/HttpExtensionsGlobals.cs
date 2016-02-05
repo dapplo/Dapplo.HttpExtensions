@@ -26,6 +26,10 @@ using System.Text;
 using Dapplo.HttpExtensions.ContentConverter;
 using Dapplo.HttpExtensions.Support;
 
+#if DESKTOP
+using Dapplo.HttpExtensions.Desktop;
+#endif
+
 namespace Dapplo.HttpExtensions
 {
 	/// <summary>
@@ -49,8 +53,10 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		public static IList<IHttpContentConverter> HttpContentConverters { get; set; } = new List<IHttpContentConverter>
 		{
+#if DESKTOP
 			BitmapHttpContentConverter.Instance,
 			BitmapSourceHttpContentConverter.Instance,
+#endif
 			ByteArrayHttpContentConverter.Instance,
 			FormUriEncodedContentConverter.Instance,
 			SyndicationFeedHttpContentConverter.Instance,

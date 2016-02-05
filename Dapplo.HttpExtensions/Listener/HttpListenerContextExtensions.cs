@@ -37,7 +37,7 @@ namespace Dapplo.HttpExtensions.Listener
 		/// <summary>
 		/// This writes the supplied content to the response of the httpListenerContext
 		/// It's actually a bit overkill, as it convers to HttpContent and writes this to a stream
-		/// But performance & memory usage are currently not our main concern for the HttpListener
+		/// But performance and memory usage are currently not our main concern for the HttpListener
 		/// </summary>
 		/// <typeparam name="TContent">Type of the content</typeparam>
 		/// <param name="httpListenerContext">HttpListenerContext</param>

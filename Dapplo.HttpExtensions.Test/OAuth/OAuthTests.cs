@@ -35,7 +35,7 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 	//[TestClass]
 	public class OAuthTests
 	{
-		private static readonly Uri _googleApiUri = new Uri("https://www.googleapis.com");
+		private static readonly Uri GoogleApiUri = new Uri("https://www.googleapis.com");
 		private static IHttpBehaviour _oAuthHttpBehaviour;
 
 		[ClassInitialize]
@@ -46,14 +46,14 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 				ClientId = "<client id from google developer console>",
 				ClientSecret = "<client id from google developer console>",
 				CloudServiceName = "Google",
-				AuthorizeMode = AuthorizeModes.LocalServer,
-				TokenUrl = _googleApiUri.AppendSegments("oauth2","v4","token"),
+				AuthorizeMode = AuthorizeModes.LocalhostServer,
+				TokenUrl = GoogleApiUri.AppendSegments("oauth2","v4","token"),
 				AuthorizationUri = new Uri("https://accounts.google.com").AppendSegments("o", "oauth2", "v2", "auth"). ExtendQuery(new Dictionary<string, string>{
 						{ "response_type", "code"},
 						{ "client_id", "{ClientId}" },
 						{ "redirect_uri", "{RedirectUrl}" },
 						{ "state", "{State}"},
-						{ "scope" , _googleApiUri.AppendSegments("auth","calendar").AbsoluteUri}
+						{ "scope" , GoogleApiUri.AppendSegments("auth","calendar").AbsoluteUri}
 				})
 			};
 			_oAuthHttpBehaviour = OAuth2HttpBehaviourFactory.Create(oAuth2Settings);
@@ -65,7 +65,7 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 		[TestMethod]
 		public async Task TestOAuthHttpMessageHandler()
 		{
-			var calendarApiUri = _googleApiUri.AppendSegments("calendar", "v3");
+			var calendarApiUri = GoogleApiUri.AppendSegments("calendar", "v3");
 			var response = await calendarApiUri.AppendSegments("users","me","calendarList").GetAsAsync<dynamic>(_oAuthHttpBehaviour);
 			Assert.IsTrue(response.ContainsKey("items"));
 			Assert.IsTrue(response["items"].Count > 0);

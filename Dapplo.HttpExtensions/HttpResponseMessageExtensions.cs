@@ -116,7 +116,7 @@ namespace Dapplo.HttpExtensions
 		}
 
 		/// <summary>
-		/// Simplified error handling, this makes sure the uri & response are logged
+		/// Simplified error handling, this makes sure the uri and response are logged
 		/// </summary>
 		/// <param name="httpResponseMessage">HttpResponseMessage</param>
 		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>

@@ -109,6 +109,13 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			return ConvertToHttpContent(typeof(TInput), content, httpBehaviour);
 		}
 
+		/// <summary>
+		/// Add Accept-Headers to the HttpRequestMessage, depending on the passt resultType.
+		/// This tries to hint the Http server what we can accept, which depends on the type of the return value
+		/// </summary>
+		/// <param name="resultType">Result type, this where to a conversion from HttpContent is made</param>
+		/// <param name="httpRequestMessage">HttpRequestMessage</param>
+		/// <param name="httpBehaviour">IHttpBehaviour</param>
 		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage, IHttpBehaviour httpBehaviour = null)
 		{
 			if (resultType == null)

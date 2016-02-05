@@ -17,8 +17,5 @@
 			<frameworkAssembly assemblyName="System.Net.Http" targetFramework="net45" />
 			<frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework="net45" />			
 		</frameworkAssemblies>
-		<dependencies>
-			<dependency id="Dapplo.LogFacade" version="0.1.3" />
-		</dependencies>
-</metadata>
+	</metadata>
 </package>

@@ -42,8 +42,8 @@ deploy:
   auth_token:
     secure: eBQPtXg53XgcvdcVY3wQAw6kkwNh+QhcsTDwzyQLLh6IOPyiePEaEhJR0D2YBjAj
   artifact: /.*\.nupkg/
-  draft: false
-- provider: NuGet
-  skip_symbols: false
-  api_key:
-    secure: xkDQ385+smLqdzhESsXBJvnUjK4FZ4Djjrqi9tFR29dwESIvPYOrQAqgri5Nf/fA
+  draft: true
+#- provider: NuGet
+#  skip_symbols: false
+#  api_key:
+#    secure: xkDQ385+smLqdzhESsXBJvnUjK4FZ4Djjrqi9tFR29dwESIvPYOrQAqgri5Nf/fA

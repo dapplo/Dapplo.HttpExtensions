@@ -11,6 +11,8 @@ assembly_info:
   assembly_informational_version: '{version}'
 before_build:
   - nuget restore
+after_build:
+  - ps: xmldoc2md.ps1 -xml "Dapplo.HttpExtensions\bin\Release\Dapplo.HttpExtensions.xml" -xsl "xmldoc2md.xsl" -output "Dapplo.HttpExtensions.md"
 environment:
   github_username:
     secure: dGUm8ikFV7zt04Snv/YfNA==
@@ -24,6 +26,9 @@ build:
 artifacts:
 - path: '*.nupkg'
   name: NuGet package
+  artifacts:
+- path: '*.md'
+  name: Documentation
 notifications:
 - provider: Email
   to:

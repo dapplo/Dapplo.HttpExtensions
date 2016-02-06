@@ -18,6 +18,11 @@ if(!([System.IO.Path]::IsPathRooted($xml))){
 	$XmlDoc = [System.IO.Path]::Combine($PSScriptRoot, $xml)
 }
 
+$MarkdownOutput = $output
+if(!([System.IO.Path]::IsPathRooted($output))){
+	$MarkdownOutput = [System.IO.Path]::Combine($PSScriptRoot, $output)
+}
+
 # var = new XslCompiledTransform(true);
 $xslt = New-Object -TypeName "System.Xml.Xsl.XslCompiledTransform"
 
@@ -25,4 +30,4 @@ $xslt = New-Object -TypeName "System.Xml.Xsl.XslCompiledTransform"
 $xslt.Load($TemplateFile)
 
 # xslt.Transform(sourceFile, null, sw);
-$xslt.Transform($XmlDoc, $output)
+$xslt.Transform($XmlDoc, $MarkdownOutput)

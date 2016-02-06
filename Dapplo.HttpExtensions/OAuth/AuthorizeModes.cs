@@ -31,22 +31,38 @@ namespace Dapplo.HttpExtensions.OAuth
 	/// </summary>
 	public enum AuthorizeModes
 	{
-		// Default value, this will give an exception, caller needs to specify another value
+		/// <summary>
+		/// Default value, this will give an exception, caller needs to specify another value
+		/// </summary>
 		Unknown,
-		// Used with a redirect URL to http://localhost:port, this is supported out of the box
+		/// <summary>
+		/// Used with a redirect URL to http://localhost:port, this is supported out of the box
+		/// </summary>
 		LocalhostServer,
-		// This mode should show a popup where the user can paste the code, this is used with a redirect_uri of: urn:ietf:wg:oauth:2.0:oob
+		/// <summary>
+		/// This mode should show a popup where the user can paste the code, this is used with a redirect_uri of: urn:ietf:wg:oauth:2.0:oob
+		/// </summary>
 		OutOfBound,
-		// This mode should monitor for title changes, used with a redirect_uri of: urn:ietf:wg:oauth:2.0:oob:auto
-		// Dapplo.Windows has possibilities to monitor titles, this could be used for an implementation
+		/// <summary>
+		/// This mode should monitor for title changes, used with a redirect_uri of: urn:ietf:wg:oauth:2.0:oob:auto
+		/// Dapplo.Windows has possibilities to monitor titles, this could be used for an implementation
+		/// </summary>
 		OutOfBoundAuto,
-		// Should ask the user to enter the PIN which is shown in the browser
+		/// <summary>
+		/// Should ask the user to enter the PIN which is shown in the browser
+		/// </summary>
 		Pin,
-		// Should open an embedded _browser and catch the redirect
+		/// <summary>
+		/// Should open an embedded _browser and catch the redirect
+		/// </summary>
 		EmbeddedBrowser,
-		// Custom mode 1
+		/// <summary>
+		/// Custom mode 1
+		/// </summary>
 		Custom1,
-		// Custom mode 2
+		/// <summary>
+		/// Custom mode 2
+		/// </summary>
 		Custom2
 	}
 }

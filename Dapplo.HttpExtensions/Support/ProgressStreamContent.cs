@@ -36,7 +36,25 @@ namespace Dapplo.HttpExtensions.Support
 	public class ProgressStreamContent : HttpContent
 	{
 		private static readonly LogSource Log = new LogSource();
-		public enum UploadStates { PendingUpload, Uploading, PendingResponse }
+
+		/// <summary>
+		/// Enum which specifies the current upload state
+		/// </summary>
+		public enum UploadStates
+		{
+			/// <summary>
+			/// Upload didn't start yet
+			/// </summary>
+			PendingUpload,
+			/// <summary>
+			/// Upload is currently running
+			/// </summary>
+			Uploading,
+			/// <summary>
+			/// Awaiting the response
+			/// </summary>
+			PendingResponse
+		}
 
 		private readonly Stream _content;
 		private readonly int _bufferSize;

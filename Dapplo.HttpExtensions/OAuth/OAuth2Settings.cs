@@ -31,6 +31,9 @@ namespace Dapplo.HttpExtensions.OAuth
 	/// </summary>
 	public class OAuth2Settings
 	{
+		/// <summary>
+		/// The AuthorizeMode for this OAuth 2 settings
+		/// </summary>
 		public AuthorizeModes AuthorizeMode
 		{
 			get;

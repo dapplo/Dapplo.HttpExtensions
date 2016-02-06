@@ -28,6 +28,9 @@ using System.Net.Sockets;
 
 namespace Dapplo.HttpExtensions.Listener
 {
+	/// <summary>
+	/// int[] extensions, which in this case is an array of ports
+	/// </summary>
 	public static class ListenerPortExtensions
 	{
 		private static readonly LogSource Log = new LogSource();
@@ -51,7 +54,7 @@ namespace Dapplo.HttpExtensions.Listener
 		/// <returns>A free port</returns>
 		public static int GetFreeListenerPort(this int[] possiblePorts)
 		{
-			possiblePorts = possiblePorts ?? new int[] { 0 };
+			possiblePorts = possiblePorts ?? new[] { 0 };
 
 			foreach (var portToCheck in possiblePorts)
 			{
@@ -67,7 +70,6 @@ namespace Dapplo.HttpExtensions.Listener
 				catch
 				{
 					Log.Debug().WriteLine("Port {0} isn't free.", portToCheck);
-					continue;
 				}
 				finally
 				{

@@ -8,11 +8,21 @@ param (
     [string]$output = $(throw "-output is required.")
 )
 
+$TemplateFile = $xsl
+if(!([System.IO.Path]::IsPathRooted($xsl))){
+	$TemplateFile = [System.IO.Path]::Combine($PSScriptRoot, $xsl)
+}
+
+$XmlDoc = $xml
+if(!([System.IO.Path]::IsPathRooted($xml))){
+	$XmlDoc = [System.IO.Path]::Combine($PSScriptRoot, $xml)
+}
+
 # var = new XslCompiledTransform(true);
 $xslt = New-Object -TypeName "System.Xml.Xsl.XslCompiledTransform"
 
 # xslt.Load(stylesheet);
-$xslt.Load($xsl)
+$xslt.Load($TemplateFile)
 
 # xslt.Transform(sourceFile, null, sw);
-$xslt.Transform($xml, $output)
+$xslt.Transform($XmlDoc, $output)

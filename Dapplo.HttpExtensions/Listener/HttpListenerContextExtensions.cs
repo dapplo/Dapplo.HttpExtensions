@@ -30,6 +30,9 @@ using Dapplo.LogFacade;
 
 namespace Dapplo.HttpExtensions.Listener
 {
+	/// <summary>
+	/// Extensions for the HttpListener
+	/// </summary>
 	public static class HttpListenerContextExtensions
 	{
 		private static readonly LogSource Log = new LogSource();

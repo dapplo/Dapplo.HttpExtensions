@@ -27,8 +27,17 @@ using System.Threading.Tasks;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
+	/// <summary>
+	/// This is the interface for the OAuth code receiver
+	/// </summary>
 	public interface IOAuthCodeReceiver
 	{
+		/// <summary>
+		/// The actual code receiving code
+		/// </summary>
+		/// <param name="oauth2Settings">OAuth2Settings with the OAuth 2 settings</param>
+		/// <param name="cancellationToken">CancellationToken</param>
+		/// <returns>Dictionary with the returned key-values</returns>
 		Task<IDictionary<string, string>> ReceiveCodeAsync(OAuth2Settings oauth2Settings, CancellationToken cancellationToken = default(CancellationToken));
 	}
 }

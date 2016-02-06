@@ -26,10 +26,10 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;SIMPLE_JSON_DATACONTRACT;SIMPLE_JSON_DYNAMIC;SIMPLE_JSON_READONLY_COLLECTIONS</DefineConstants>
+    <DefineConstants>TRACE;DESKTOP,SIMPLE_JSON_DATACONTRACT;SIMPLE_JSON_DYNAMIC;SIMPLE_JSON_READONLY_COLLECTIONS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\Dapplo.Config.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\Dapplo.HttpExtensions.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Dapplo.LogFacade, Version=0.1.3.0, Culture=neutral, processorArchitecture=MSIL">

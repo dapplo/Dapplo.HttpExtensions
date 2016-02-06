@@ -78,7 +78,7 @@ namespace Dapplo.HttpExtensions.Test
 		{
 			var feed = await new Uri("http://getgreenshot.org/project-feed/").GetAsAsync<SyndicationFeed>();
 			Assert.IsNotNull(feed);
-			Assert.IsTrue(feed.Items.Count() > 0);
+			Assert.IsTrue(feed.Items.Any());
 		}
 
 		/// <summary>

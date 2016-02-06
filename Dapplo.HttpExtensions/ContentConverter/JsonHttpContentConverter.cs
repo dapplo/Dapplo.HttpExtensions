@@ -60,9 +60,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		/// <summary>
 		/// This is the amount of characters that are written to the log, if the json content is any longer that it will be cut (and AppendedWhenCut is appended)
 		/// </summary>
-		public int LogThreshold { get; set; } = 512;
-
-
+		public int LogThreshold { get; set; }
 
 		public bool CanConvertFromHttpContent<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null)
 			where TResult : class
@@ -94,7 +92,14 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			// Check if verbose is enabled, if so log but only up to a certain size
 			if (Log.IsVerboseEnabled())
 			{
-				Log.Verbose().WriteLine("Read Json content: {0}{1}", jsonString.Substring(0, Math.Min(jsonString.Length, LogThreshold)), jsonString.Length > LogThreshold ? AppendedWhenCut : string.Empty);
+				if (LogThreshold > 0)
+				{
+					Log.Verbose().WriteLine("Read Json content: {0}{1}", jsonString.Substring(0, Math.Min(jsonString.Length, LogThreshold)), jsonString.Length > LogThreshold ? AppendedWhenCut : string.Empty);
+				}
+				else
+				{
+					Log.Verbose().WriteLine("Read Json content: {0}", jsonString);
+				}
 			}
 			return httpBehaviour.JsonSerializer.DeserializeJson(resultType == typeof(object) ? null : resultType, jsonString);
 		}

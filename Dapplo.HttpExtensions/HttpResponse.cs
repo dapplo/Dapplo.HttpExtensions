@@ -23,42 +23,60 @@
 
 using System.Net;
 using System.Net.Http.Headers;
+using Dapplo.HttpExtensions.Support;
 
 namespace Dapplo.HttpExtensions
 {
 	/// <summary>
-	/// This interface returns the information of a HTTP request
-	/// Makes it possible to process the error information too
+	/// This container can be used to get the details of a response.
+	/// It also makes it possible to process the error information, and eventually do something different.
+	/// You can specify your own container, by using the HttpAttribute.
 	/// </summary>
 	/// <typeparam name="TResponse">Type for the normal response</typeparam>
 	/// <typeparam name="TErrorResponse">Type for the error response</typeparam>
-	public interface IHttpResponse<TResponse, TErrorResponse>
+	[Http(HttpParts.Response)]
+	public class HttpResponse<TResponse, TErrorResponse>
 		where TResponse : class
 		where TErrorResponse : class
 	{
 		/// <summary>
-		/// The response when an "OK" status was returned
+		/// The Content-Type of the response
+		/// Will be filled due to the annotation
 		/// </summary>
-		TResponse Response { get; set; }
+		[Http(HttpParts.ResponseContentType)]
+		public string ContentType { get; set; }
 
 		/// <summary>
-		/// The response when an "OK" status was returned
+		/// The response, if there was no error
+		/// Will be filled due to the annotation
 		/// </summary>
-		TErrorResponse ErrorResponse { get; set; }
+		[Http(HttpParts.ResponseContent)]
+		public TResponse Response { get; set; }
 
 		/// <summary>
-		/// true if the reponse has an error
+		/// The response if there was an error
+		/// Will be filled due to the annotation
 		/// </summary>
-		bool HasError { get; }
+		[Http(HttpParts.ResponseErrorContent)]
+		public TErrorResponse ErrorResponse { get; set; }
 
 		/// <summary>
-		/// Headers of the response
+		/// The reponse headers
+		/// Will be filled due to the annotation
 		/// </summary>
-		HttpResponseHeaders Headers { get; set; }
+		[Http(HttpParts.ResponseHeaders)]
+		public HttpResponseHeaders Headers { get; set; }
 
 		/// <summary>
-		/// The response HTTP status code
+		/// The response http status code
+		/// Will be filled due to the annotation
 		/// </summary>
-		HttpStatusCode StatusCode { get; set; }
+		[Http(HttpParts.ResponseStatuscode)]
+		public HttpStatusCode StatusCode { get; set; }
+
+		/// <summary>
+		/// Was there an error?
+		/// </summary>
+		public bool HasError => ErrorResponse != null;
 	}
 }

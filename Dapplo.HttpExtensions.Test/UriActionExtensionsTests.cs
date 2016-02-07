@@ -21,10 +21,8 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Dapplo.HttpExtensions.Test.TestEntities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -103,35 +101,6 @@ namespace Dapplo.HttpExtensions.Test
 			var stream = await _bitmapUri.GetAsAsync<MemoryStream>();
 			Assert.IsNotNull(stream);
 			Assert.IsTrue(stream.Length > 0);
-		}
-
-		/// <summary>
-		/// To make sure we test some of the functionality, we call the GitHub API to get the releases for this project.
-		/// </summary>
-		/// <returns></returns>
-		[TestMethod]
-		public async Task TestGetAsJsonAsync_GitHubApiReleases()
-		{
-			var githubApiUri = new Uri("https://api.github.com");
-			var releasesUri = githubApiUri.AppendSegments("repos", "dapplo", "Dapplo.HttpExtensions", "releases");
-
-			// This is needed when running in AppVeyor, as AppVeyor has multiple request to GitHub, the rate-limit is exceeded.
-			var username = Environment.GetEnvironmentVariable("github_username");
-			var password = Environment.GetEnvironmentVariable("github_token");
-			if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
-			{
-				releasesUri = releasesUri.SetCredentials(username, password);
-			}
-
-			var releases = await releasesUri.GetAsAsync<List<GitHubRelease>, GitHubError>();
-			Assert.IsNotNull(releases);
-			Assert.IsFalse(releases.HasError, $"{releases.StatusCode}: {releases.ErrorResponse?.Message} {releases.ErrorResponse?.DocumentationUrl}");
-
-			var latestRelease = releases.Response
-					.Where(x => !x.Prerelease)
-					.OrderByDescending(x => x.PublishedAt)
-					.FirstOrDefault();
-			Assert.IsNotNull(latestRelease);
 		}
 	}
 }

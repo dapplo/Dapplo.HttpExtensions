@@ -46,6 +46,9 @@ namespace Dapplo.HttpExtensions.Factory
 			{
 				return content as HttpContent;
 			}
+
+			// TODO: Add HttpAttribute logic here
+
 			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 			var httpContentConverter = httpBehaviour.HttpContentConverters.OrderBy(x => x.Order).FirstOrDefault(x => x.CanConvertToHttpContent(content, httpBehaviour));
 			if (httpContentConverter == null) return null;

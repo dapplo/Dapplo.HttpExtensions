@@ -24,7 +24,10 @@
 using Dapplo.LogFacade;
 using Dapplo.HttpExtensions.Support;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -38,6 +41,19 @@ namespace Dapplo.HttpExtensions
 		private static readonly LogSource Log = new LogSource();
 
 		/// <summary>
+		/// Find the PropertyInfo for the matching property
+		/// </summary>
+		/// <param name="properties">Ienumerable with PropertyInfo</param>
+		/// <param name="part">HttpParts specifying which property to find</param>
+		/// <param name="propertyInfo">PropertyInfo out parameter</param>
+		/// <returns>bool if found</returns>
+		private static bool TryFindTarget(this IEnumerable<PropertyInfo> properties, HttpParts part, out PropertyInfo propertyInfo)
+		{
+			propertyInfo = properties.FirstOrDefault(t => t.GetCustomAttribute<HttpAttribute>().Part == part);
+			return propertyInfo != null;
+		}
+
+		/// <summary>
 		/// Extension method reading the HttpResponseMessage to a Type object
 		/// Currently we support Json objects which are annotated with the DataContract/DataMember attributes
 		/// We might support other object, e.g MemoryStream, Bitmap etc soon
@@ -49,11 +65,63 @@ namespace Dapplo.HttpExtensions
 		/// <returns>the deserialized object of type T or default(T)</returns>
 		public static async Task<TResult> GetAsAsync<TResult>(this HttpResponseMessage httpResponseMessage, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
-			if (typeof (TResult) == typeof (HttpResponseMessage))
+			Log.Verbose().WriteLine("Response status code: {0}", httpResponseMessage.StatusCode);
+			var resultType = typeof(TResult);
+			// Quick exit if the caller just wants the HttpResponseMessage
+			if (resultType == typeof(HttpResponseMessage))
 			{
 				return httpResponseMessage as TResult;
 			}
-			await httpResponseMessage.HandleErrorAsync(httpBehaviour, token).ConfigureAwait(false);
+			// See if we have a container
+			var httpAttribute = resultType.GetCustomAttribute<HttpAttribute>();
+			if (httpAttribute != null && httpAttribute.Part == HttpParts.Response)
+			{
+				Log.Info().WriteLine("Filling type {0}", resultType.Name);
+				// special type
+				var instance = Activator.CreateInstance<TResult>();
+				var properties = resultType.GetProperties().Where(x => x.GetCustomAttribute<HttpAttribute>() != null).ToList();
+
+				PropertyInfo targetPropertyInfo;
+				// Headers
+				if (properties.TryFindTarget(HttpParts.ResponseHeaders, out targetPropertyInfo))
+				{
+					targetPropertyInfo.SetValue(instance, httpResponseMessage.Headers);
+				}
+				// StatusCode
+				if (properties.TryFindTarget(HttpParts.ResponseStatuscode, out targetPropertyInfo))
+				{
+					targetPropertyInfo.SetValue(instance, httpResponseMessage.StatusCode);
+				}
+
+				var responsePart = httpResponseMessage.IsSuccessStatusCode
+					? HttpParts.ResponseContent
+					: HttpParts.ResponseErrorContent;
+				bool contentSet = false;
+				// Try to find the target for the error response
+				if (properties.TryFindTarget(responsePart, out targetPropertyInfo))
+				{
+					contentSet = true;
+					// get the response
+					var httpContent = httpResponseMessage.Content;
+
+					// Convert the HttpContent to the value type 
+					var convertedContent = await httpContent.GetAsAsync(targetPropertyInfo.PropertyType, httpBehaviour, token);
+
+					// Now set the value
+					targetPropertyInfo.SetValue(instance, convertedContent);
+
+					// Cleanup, but only if the value is not passed onto the container 
+					if (!typeof (HttpContent).IsAssignableFrom(targetPropertyInfo.PropertyType))
+					{
+						httpContent?.Dispose();
+					}
+				}
+				if (!contentSet && !httpResponseMessage.IsSuccessStatusCode)
+				{
+					await httpResponseMessage.HandleErrorAsync(httpBehaviour, token).ConfigureAwait(false);
+				}
+				return instance;
+			}
 			if (httpResponseMessage.IsSuccessStatusCode)
 			{
 				var httpContent = httpResponseMessage.Content;
@@ -66,53 +134,8 @@ namespace Dapplo.HttpExtensions
 
 				return result;
 			}
+			await httpResponseMessage.HandleErrorAsync(httpBehaviour, token).ConfigureAwait(false);
 			return default(TResult);
-		}
-
-		/// <summary>
-		/// Extension method reading the HttpResponseMessage to a Type object
-		/// Currently we support Json objects which are annotated with the DataContract/DataMember attributes
-		/// We might support other object, e.g MemoryStream, Bitmap etc soon
-		/// </summary>
-		/// <typeparam name="TResponse">The Type to read into</typeparam>
-		/// <typeparam name="TErrorResponse">The type to read into when an error occurs</typeparam>
-		/// <param name="httpResponseMessage">HttpResponseMessage</param>
-		/// <param name="httpBehaviour">HttpBehaviour</param>
-		/// <param name="token">CancellationToken</param>
-		/// <returns>HttpResponse</returns>
-		public static async Task<IHttpResponse<TResponse,TErrorResponse>> GetAsAsync<TResponse, TErrorResponse>(this HttpResponseMessage httpResponseMessage, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResponse : class where TErrorResponse : class
-		{
-			var response = new HttpResponse<TResponse, TErrorResponse>
-			{
-				StatusCode = httpResponseMessage.StatusCode,
-				Headers = httpResponseMessage.Headers
-			};
-
-			var httpContent = httpResponseMessage.Content;
-			if (httpResponseMessage.IsSuccessStatusCode)
-			{
-				// Write log for success
-				Log.Debug().WriteLine("Http response {0} ({1}) from {2}", (int)httpResponseMessage.StatusCode, httpResponseMessage.StatusCode, httpResponseMessage.RequestMessage?.RequestUri);
-				response.Response = await httpContent.GetAsAsync<TResponse>(httpBehaviour, token).ConfigureAwait(false);
-				// Make sure the httpContent is only disposed when it's not the return type
-				if (!typeof(HttpContent).IsAssignableFrom(typeof(TResponse)))
-				{
-					httpContent?.Dispose();
-				}
-			}
-			else
-			{
-				// Write log if an error occured.
-				Log.Error().WriteLine("Http response {0} ({1}) from {2}", (int)httpResponseMessage.StatusCode, httpResponseMessage.StatusCode, httpResponseMessage.RequestMessage?.RequestUri);
-				response.ErrorResponse = await httpContent.GetAsAsync<TErrorResponse>(httpBehaviour, token).ConfigureAwait(false);
-
-				// Make sure the httpContent is only disposed when it's not the return type
-				if (!typeof(HttpContent).IsAssignableFrom(typeof(TErrorResponse)))
-				{
-					httpContent?.Dispose();
-				}
-			}
-			return response;
 		}
 
 		/// <summary>

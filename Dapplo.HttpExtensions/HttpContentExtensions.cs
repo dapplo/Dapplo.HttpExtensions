@@ -51,15 +51,31 @@ namespace Dapplo.HttpExtensions
 		public static async Task<TResult> GetAsAsync<TResult>(this HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
 			var resultType = typeof(TResult);
+			return (TResult) await httpContent.GetAsAsync(resultType, httpBehaviour, token);
+		}
+
+		/// <summary>
+		/// Extension method reading the httpContent to a Typed object, depending on the returned content-type
+		/// Currently we support:
+		///		Json objects which are annotated with the DataContract/DataMember attributes
+		/// </summary>
+		/// <param name="httpContent">HttpContent</param>
+		/// <param name="resultType">The Type to read into</param>
+		/// <param name="httpBehaviour">HttpBehaviour</param>
+		/// <param name="token">CancellationToken</param>
+		/// <returns>the deserialized object of type T</returns>
+		public static async Task<object> GetAsAsync(this HttpContent httpContent, Type resultType, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		{
+			// Quick exit when the requested type is from HttpContent
 			if (typeof(HttpContent).IsAssignableFrom(resultType))
 			{
-				return httpContent as TResult;
+				return httpContent;
 			}
 			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 			var converter = httpBehaviour.HttpContentConverters.OrderBy(x => x.Order).FirstOrDefault(x => x.CanConvertFromHttpContent(resultType, httpContent, httpBehaviour));
 			if (converter != null)
 			{
-				return await converter.ConvertFromHttpContentAsync(resultType, httpContent, httpBehaviour, token).ConfigureAwait(false) as TResult;
+				return await converter.ConvertFromHttpContentAsync(resultType, httpContent, httpBehaviour, token).ConfigureAwait(false);
 			}
 
 			// For everything that comes here, a fitting converter should be written, or the ValidateResponseContentType can be set to false

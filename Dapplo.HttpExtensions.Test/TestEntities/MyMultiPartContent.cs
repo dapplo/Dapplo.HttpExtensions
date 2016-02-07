@@ -26,19 +26,28 @@ using Dapplo.HttpExtensions.Support;
 
 namespace Dapplo.HttpExtensions.Test.TestEntities
 {
-	[MultiPartContent]
+	/// <summary>
+	/// Example class wich is filled automatically
+	/// </summary>
+	[Http(HttpParts.MultiPart)]
 	public class MyMultiPartContent
 	{
-		[HttpContent(ContentType = "application/json", Order = 0)]
+		[Http(HttpParts.RequestContentType, Order = 0)]
+		public string ContentType { get; set; } = "application/json";
+
+		[Http(HttpParts.RequestContent, Order = 0)]
 		public JsonObject JsonInformation { get; set; }
 
-		[Name(Order = 1)]
+		[Http(HttpParts.MultipartName, Order = 1)]
 		public string BitmapContentName { get; set; }
 
-		[Filename(Order = 1)]
+		[Http(HttpParts.MultipartFilename, Order = 1)]
 		public string BitmapFileName { get; set; }
 
-		[HttpContent(ContentType = "image/png", Order = 1)]
+		[Http(HttpParts.RequestContent, Order = 1)]
 		public Bitmap OurBitmap { get; set; }
+
+		[Http(HttpParts.RequestContentType, Order = 1)]
+		public string BitmapContentType { get; set; } = "image/png";
 	}
 }

@@ -26,15 +26,37 @@ using System;
 namespace Dapplo.HttpExtensions.Support
 {
 	/// <summary>
-	/// This attribute marks a property as a filename for the multi-part content
+	/// This attribute marks a property as "http content"
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Property)]
-	public class FilenameAttribute : Attribute
+	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Class)]
+	public class HttpAttribute : Attribute
 	{
+		public HttpAttribute(object part)
+		{
+			if (part == null)
+			{
+				throw new ArgumentNullException(nameof(part));
+			}
+			if (typeof(HttpParts) != part.GetType())
+			{
+				throw new ArgumentException(nameof(part));
+			}
+			Part = (HttpParts)part;
+		}
+
 		/// <summary>
 		/// Order of the content when using multi-part content
 		/// </summary>
 		public int Order
+		{
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// Use this to specify what the property is representing
+		/// </summary>
+		public HttpParts Part
 		{
 			get;
 			set;

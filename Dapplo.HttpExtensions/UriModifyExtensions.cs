@@ -36,7 +36,6 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		///     Adds query string value to an existing url, both absolute and relative URI's are supported.
 		/// </summary>
-		/// <example>
 		/// <code>
 		///     // returns "www.domain.com/test?param1=val1&amp;param2=val2&amp;param3=val3"
 		///     new Uri("www.domain.com/test?param1=val1").ExtendQuery(new Dictionary&lt;string, string&gt; { { "param2", "val2" }, { "param3", "val3" } }); 
@@ -44,7 +43,6 @@ namespace Dapplo.HttpExtensions
 		///     // returns "/test?param1=val1&amp;param2=val2&amp;param3=val3"
 		///     new Uri("/test?param1=val1").ExtendQuery(new Dictionary&lt;string, string&gt; { { "param2", "val2" }, { "param3", "val3" } }); 
 		/// </code>
-		/// </example>
 		/// <param name="uri">Uri to extend</param>
 		/// <param name="name">string name of value</param>
 		/// <param name="value">value</param>
@@ -67,7 +65,6 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		///     Adds query string value to an existing url, both absolute and relative URI's are supported.
 		/// </summary>
-		/// <example>
 		/// <code>
 		///     // returns "www.domain.com/test?param1=val1&amp;param2=val2&amp;param3=val3"
 		///     new Uri("www.domain.com/test?param1=val1").ExtendQuery(new Dictionary&lt;string, string&gt; { { "param2", "val2" }, { "param3", "val3" } }); 
@@ -75,7 +72,6 @@ namespace Dapplo.HttpExtensions
 		///     // returns "/test?param1=val1&amp;param2=val2&amp;param3=val3"
 		///     new Uri("/test?param1=val1").ExtendQuery(new Dictionary&lt;string, string&gt; { { "param2", "val2" }, { "param3", "val3" } }); 
 		/// </code>
-		/// </example>
 		/// <param name="uri">Uri to extend</param>
 		/// <param name="values">IDictionary with values</param>
 		/// <returns>Uri with extended query</returns>
@@ -97,7 +93,6 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		///     Adds query string value to an existing url, both absolute and relative URI's are supported.
 		/// </summary>
-		/// <example>
 		/// <code>
 		///     // returns "www.domain.com/test?param1=val1&amp;param2=val2&amp;param3=val3"
 		///     new Uri("www.domain.com/test?param1=val1").ExtendQuery(new Dictionary&lt;string, string&gt; { { "param2", "val2" }, { "param3", "val3" } }); 
@@ -105,7 +100,6 @@ namespace Dapplo.HttpExtensions
 		///     // returns "/test?param1=val1&amp;param2=val2&amp;param3=val3"
 		///     new Uri("/test?param1=val1").ExtendQuery(new Dictionary&lt;string, string&gt; { { "param2", "val2" }, { "param3", "val3" } }); 
 		/// </code>
-		/// </example>
 		/// <param name="uri">Uri to extend the query for</param>
 		/// <param name="values">ILookup with values</param>
 		/// <returns>Uri with extended query</returns>

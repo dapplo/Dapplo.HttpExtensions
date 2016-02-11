@@ -80,7 +80,10 @@ namespace Dapplo.HttpExtensions.OAuth
 
 		/// <summary>
 		/// The autorization Uri where the values of this class will be "injected"
-		/// Example how this can be created: new Uri("http://server").AppendSegments("auth").Query("client_id", "{ClientId}");
+		/// Example how this can be created:
+		/// <code>
+		/// new Uri("http://server").AppendSegments("auth").Query("client_id", "{ClientId}");
+		/// </code>
 		/// </summary>
 		public Uri AuthorizationUri
 		{

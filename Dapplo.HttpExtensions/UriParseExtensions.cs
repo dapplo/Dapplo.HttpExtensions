@@ -41,7 +41,7 @@ namespace Dapplo.HttpExtensions
 		public static IDictionary<string, string> QueryToDictionary(this Uri uri)
 		{
 			var parameters = new SortedDictionary<string, string>();
-            foreach (var keyValuePair in uri.QueryToKeyValuePairs())
+			foreach (var keyValuePair in uri.QueryToKeyValuePairs())
 			{
 				if (parameters.ContainsKey(keyValuePair.Key))
 				{
@@ -63,6 +63,28 @@ namespace Dapplo.HttpExtensions
 		public static IEnumerable<KeyValuePair<string, string>> QueryToKeyValuePairs(this Uri uri)
 		{
 			return QueryStringToKeyValuePairs(uri?.Query);
+		}
+
+		/// <summary>
+		/// Query-string To Dictionary creates a IDictionary
+		/// </summary>
+		/// <param name="queryString">query string which is processed</param>
+		/// <returns>IDictionary string, string</returns>
+		public static IDictionary<string, string> QueryStringToDictionary(string queryString)
+		{
+			var parameters = new SortedDictionary<string, string>();
+			foreach (var keyValuePair in QueryStringToKeyValuePairs(queryString))
+			{
+				if (parameters.ContainsKey(keyValuePair.Key))
+				{
+					parameters[keyValuePair.Key] = keyValuePair.Value;
+				}
+				else
+				{
+					parameters.Add(keyValuePair.Key, keyValuePair.Value);
+				}
+			}
+			return parameters;
 		}
 
 		/// <summary>

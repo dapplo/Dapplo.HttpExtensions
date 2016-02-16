@@ -21,23 +21,20 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+using System;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
 	/// <summary>
-	/// This is the interface for the OAuth code receiver
+	/// A default implementation for the IOAuth2Token, nothing fancy
+	/// For more information, see the IOAuth2Token interface
 	/// </summary>
-	public interface IOAuthCodeReceiver
+	internal class OAuth2TokenInformation : IOAuth2Token
 	{
-		/// <summary>
-		/// The actual code receiving code
-		/// </summary>
-		/// <param name="oauthSettings">IOAuthSettings with the OAuth (2) settings</param>
-		/// <param name="cancellationToken">CancellationToken</param>
-		/// <returns>Dictionary with the returned key-values</returns>
-		Task<IDictionary<string, string>> ReceiveCodeAsync(IOAuthSettings oauthSettings, CancellationToken cancellationToken = default(CancellationToken));
+		public string OAuth2AccessToken { get; set; }
+
+		public DateTimeOffset OAuth2AccessTokenExpires { get; set; }
+
+		public string OAuth2RefreshToken { get; set; }
 	}
 }

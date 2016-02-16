@@ -21,46 +21,29 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Dapplo.HttpExtensions.Support;
-using System;
-using System.ComponentModel;
+using System.Runtime.Serialization;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
 	/// <summary>
-	/// The credentials which should be stored.
-	/// This can be used to extend your Dapplo.Config.IIniSection extending interface.
+	/// Provides a predefined set of algorithms that are supported officially by the OAuth 1.x protocol
 	/// </summary>
-	public interface IOAuth2Token
+	public enum OAuthSignatureTypes
 	{
 		/// <summary>
-		/// Bearer token for accessing OAuth 2 services
+		///  Hash-based Message Authentication Code (HMAC) using the SHA1 hash function.
 		/// </summary>
-		[Description("Contains the OAuth 2 access token (encrypted)"), TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
-		string OAuth2AccessToken
-		{
-			get;
-			set;
-		}
-
+		[EnumMember(Value = "HMAC-SHA1")]
+		HMacSha1,
 		/// <summary>
-		/// Expire time for the AccessToken, this time (-HttpExtensionsGlobals.OAuth2ExpireOffset) is check to know if a new AccessToken needs to be generated with the RefreshToken
+		/// The PLAINTEXT method does not provide any security protection and SHOULD only be used over a secure channel such as HTTPS. It does not use the Signature Base String.
 		/// </summary>
-		[Description("When does the OAuth 2 AccessToken expire")]
-		DateTimeOffset OAuth2AccessTokenExpires
-		{
-			get;
-			set;
-		}
-
+		[EnumMember(Value = "PLAINTEXT")]
+		PlainText,
 		/// <summary>
-		/// Token used to get a new Access Token
+		/// RSA-SHA1 signature method uses the RSASSA-PKCS1-v1_5 signature algorithm as defined in [RFC3447] section 8.2 (more simply known as PKCS#1)
 		/// </summary>
-		[Description("Contains the OAuth 2 refresh token (encrypted)"), TypeConverter(typeof (DelegatingStringEncryptionTypeConverter))]
-		string OAuth2RefreshToken
-		{
-			get;
-			set;
-		}
+		[EnumMember(Value = "RSA-SHA1")]
+		RsaSha1
 	}
 }

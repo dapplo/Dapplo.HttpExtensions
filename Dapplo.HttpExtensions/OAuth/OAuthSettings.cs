@@ -23,16 +23,26 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
 	/// <summary>
-	/// Settings for the OAuth 2 protocol
+	/// Settings for the OAuth protocol, if possible this should not be used and OAuth 2.0 is a better choice
 	/// </summary>
-	public class OAuth2Settings : IOAuthSettings
+	public class OAuthSettings : IOAuthSettings
 	{
 		/// <summary>
-		/// The AuthorizeMode for this OAuth 2 settings
+		/// The type of signature that is used, mostly this is HMacSha1
+		/// </summary>
+		public OAuthSignatureTypes SignatureType
+		{
+			get;
+			set;
+		} = OAuthSignatureTypes.HMacSha1;
+
+		/// <summary>
+		/// The AuthorizeMode for this OAuth settings
 		/// </summary>
 		public AuthorizeModes AuthorizeMode
 		{
@@ -50,7 +60,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		} = "the remote server";
 
 		/// <summary>
-		/// The OAuth 2 client id
+		/// The OAuth client id
 		/// </summary>
 		public string ClientId
 		{
@@ -59,7 +69,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		}
 
 		/// <summary>
-		/// The OAuth 2 client secret
+		/// The OAuth client secret
 		/// </summary>
 		public string ClientSecret
 		{
@@ -68,7 +78,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		}
 
 		/// <summary>
-		/// The OAuth 2 state, this is something that is passed to the server, is not processed but returned back to the client.
+		/// The OAuth state, this is something that is passed to the server, is not processed but returned back to the client.
 		/// e.g. a correlation ID
 		/// Default this is filled with a new Guid
 		/// </summary>
@@ -91,8 +101,30 @@ namespace Dapplo.HttpExtensions.OAuth
 			set;
 		}
 
+
+		public HttpMethod AccessTokenMethod
+		{
+			get;
+			set;
+		} = HttpMethod.Get;
+
 		/// <summary>
-		/// The URL to get a Token
+		/// The URL to get an access token
+		/// </summary>
+		public Uri AccessTokenUrl
+		{
+			get;
+			set;
+		}
+
+		public HttpMethod TokenMethod
+		{
+			get;
+			set;
+		} = HttpMethod.Post;
+
+		/// <summary>
+		/// The URL to get a request token
 		/// </summary>
 		public Uri TokenUrl
 		{
@@ -107,40 +139,18 @@ namespace Dapplo.HttpExtensions.OAuth
 		public string RedirectUrl { get; set; }
 
 		/// <summary>
-		/// Return true if the access token is expired.
-		/// Important "side-effect": if true is returned the AccessToken will be set to null!
-		/// </summary>
-		public bool IsAccessTokenExpired
-		{
-			get
-			{
-				bool expired = true;
-				if (!string.IsNullOrEmpty(Token.OAuth2AccessToken) && Token.OAuth2AccessTokenExpires != default(DateTimeOffset))
-				{
-					expired = DateTimeOffset.Now.AddSeconds(HttpExtensionsGlobals.OAuth2ExpireOffset) > Token.OAuth2AccessTokenExpires;
-				}
-				// Make sure the token is not usable
-				if (expired)
-				{
-					Token.OAuth2AccessToken = null;
-				}
-				return expired;
-			}
-		}
-
-		/// <summary>
 		/// The actualy token information, placed in an interface for usage with the Dapplo.Config project
-		/// the OAuth2Token, a default implementation is assigned when the settings are created.
-		/// When using a Dapplo.Config IIniSection for your settings, this can/should be overwritten with your interface, and make it extend IOAuth2Token
+		/// the OAuthToken, a default implementation is assigned when the settings are created.
+		/// When using a Dapplo.Config IIniSection for your settings, this property can/should be overwritten with an instance of your interface by makeing it extend IOAuthToken
 		/// </summary>
-		public IOAuth2Token Token
+		public IOAuthToken Token
 		{
 			get;
 			set;
-		} = new OAuth2TokenInformation();
+		} = new OAuthTokenInformation();
 
 		/// <summary>
-		/// Put anything in here which is needed for the OAuth 2 implementation of this specific service but isn't generic, e.g. for Google there is a "scope"
+		/// Put anything in here which is needed for the OAuth implementation of this specific service but isn't generic, e.g. for Google there is a "scope"
 		/// </summary>
 		public IDictionary<string, string> AdditionalAttributes
 		{

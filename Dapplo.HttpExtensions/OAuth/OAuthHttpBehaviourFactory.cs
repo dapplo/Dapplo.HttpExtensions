@@ -21,20 +21,27 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
 	/// <summary>
-	/// A default implementation for the IOAuth2Token, nothing fancy
-	/// For more information, see the IOAuth2Token interface
+	/// This factory can be used to create a IHttpBehaviour which handles OAuth requests
 	/// </summary>
-	internal class OAuth2Token : IOAuth2Token
+	public static class OAuthHttpBehaviourFactory
 	{
-		public string OAuth2AccessToken { get; set; }
-
-		public DateTimeOffset OAuth2AccessTokenExpires { get; set; }
-
-		public string OAuth2RefreshToken { get; set; }
+		/// <summary>
+		/// Create a specify OAuth IHttpBehaviour
+		/// </summary>
+		/// <param name="oAuthSettings">OAuthSettings</param>
+		/// <param name="fromHttpBehaviour">IHttpBehaviour to clone, null if a new needs to be generated</param>
+		/// <returns>IHttpBehaviour</returns>
+		public static IHttpBehaviour Create(OAuthSettings oAuthSettings, IHttpBehaviour fromHttpBehaviour = null)
+		{
+			// Get a clone of a IHttpBehaviour or create new
+			var oauthHttpBehaviour = fromHttpBehaviour == null ? new HttpBehaviour() : fromHttpBehaviour.Clone() as IHttpBehaviour;
+			// Add a wrapper (delegate handler) which wraps all new HttpMessageHandlers
+			oauthHttpBehaviour.OnHttpMessageHandlerCreated = httpMessageHandler => new OAuthHttpMessageHandler(oAuthSettings, oauthHttpBehaviour, httpMessageHandler);
+			return oauthHttpBehaviour;
+		}
 	}
 }

@@ -119,5 +119,7 @@ namespace Dapplo.HttpExtensions.Support
 		}
 
 		public RequestCacheLevel RequestCacheLevel { get; set; } = RequestCacheLevel.Default;
+
+		public bool Expect100Continue { get; set; } = false;
 	}
 }

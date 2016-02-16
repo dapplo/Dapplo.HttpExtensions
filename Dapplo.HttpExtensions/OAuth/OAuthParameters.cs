@@ -21,23 +21,31 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
-	/// <summary>
-	/// This is the interface for the OAuth code receiver
-	/// </summary>
-	public interface IOAuthCodeReceiver
+	public enum OAuthParameters
 	{
-		/// <summary>
-		/// The actual code receiving code
-		/// </summary>
-		/// <param name="oauthSettings">IOAuthSettings with the OAuth (2) settings</param>
-		/// <param name="cancellationToken">CancellationToken</param>
-		/// <returns>Dictionary with the returned key-values</returns>
-		Task<IDictionary<string, string>> ReceiveCodeAsync(IOAuthSettings oauthSettings, CancellationToken cancellationToken = default(CancellationToken));
+		[EnumMember(Value = "oauth_consumer_key")]
+		OauthConsumerKeyKey,
+		[EnumMember(Value = "oauth_callback")]
+		OauthCallbackKey,
+		[EnumMember(Value = "oauth_version")]
+		OauthVersionKey,
+		[EnumMember(Value = "oauth_signature_method")]
+		OauthSignatureMethodKey,
+		[EnumMember(Value = "oauth_timestamp")]
+		OauthTimestampKey,
+		[EnumMember(Value = "oauth_nonce")]
+		OauthNonceKey,
+		[EnumMember(Value = "oauth_token")]
+		OauthTokenKey,
+		[EnumMember(Value = "oauth_verifier")]
+		OauthVerifierKey,
+		[EnumMember(Value = "oauth_token_secret")]
+		OauthTokenSecretKey,
+		[EnumMember(Value = "oauth_signature")]
+		OauthSignatureKey
 	}
 }

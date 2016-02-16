@@ -68,7 +68,7 @@ The authentication process received information from CloudServiceName. You can c
 		/// <param name="oauth2Settings"></param>
 		/// <param name="cancellationToken"></param>
 		/// <returns>Dictionary with values</returns>
-		public async Task<IDictionary<string, string>> ReceiveCodeAsync(OAuth2Settings oauth2Settings, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<IDictionary<string, string>> ReceiveCodeAsync(IOAuthSettings oauth2Settings, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			Uri redirectUri;
 			if (oauth2Settings.RedirectUrl == null)

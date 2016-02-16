@@ -46,8 +46,9 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <param name="oauth2Settings"></param>
 		/// <param name="cancellationToken"></param>
 		/// <returns>Dictionary with values</returns>
-		public async Task<IDictionary<string, string>> ReceiveCodeAsync(OAuth2Settings oauth2Settings, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<IDictionary<string, string>> ReceiveCodeAsync(IOAuthSettings oauthSettings, CancellationToken cancellationToken = default(CancellationToken))
 		{
+			var oauth2Settings = oauthSettings as OAuth2Settings;
 			// Force OOB Uri
 			switch (oauth2Settings.AuthorizeMode)
 			{

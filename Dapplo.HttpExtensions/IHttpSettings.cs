@@ -187,5 +187,8 @@ namespace Dapplo.HttpExtensions
 
 		[DefaultValue(true), Description("When true the configured proxy will used the default user credentials"), DataMember(EmitDefaultValue = true)]
 		bool UseDefaultCredentialsForProy { get; set; }
+
+		[DefaultValue(false), Description("When true the configured proxy will used the default user credentials"), DataMember(EmitDefaultValue = true)]
+		bool Expect100Continue { get; set; }
 	}
 }

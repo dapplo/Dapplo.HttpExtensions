@@ -31,33 +31,33 @@ namespace Dapplo.HttpExtensions.OAuth
 	/// The credentials which should be stored.
 	/// This can be used to extend your Dapplo.Config.IIniSection extending interface.
 	/// </summary>
-	public interface IOAuth2Token
+	public interface IOAuthToken
 	{
 		/// <summary>
-		/// Bearer token for accessing OAuth 2 services
+		/// Token for accessing OAuth services
 		/// </summary>
-		[Description("Contains the OAuth 2 access token (encrypted)"), TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
-		string OAuth2AccessToken
+		[Description("Contains the OAuth token (encrypted)"), TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
+		string OAuthToken
 		{
 			get;
 			set;
 		}
 
 		/// <summary>
-		/// Expire time for the AccessToken, this time (-HttpExtensionsGlobals.OAuth2ExpireOffset) is check to know if a new AccessToken needs to be generated with the RefreshToken
+		/// OAuth token secret
 		/// </summary>
-		[Description("When does the OAuth 2 AccessToken expire")]
-		DateTimeOffset OAuth2AccessTokenExpires
+		[Description("OAuth token secret (encrypted)"), TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
+		string OAuthTokenSecret
 		{
 			get;
 			set;
 		}
 
 		/// <summary>
-		/// Token used to get a new Access Token
+		/// OAuth token verifier
 		/// </summary>
-		[Description("Contains the OAuth 2 refresh token (encrypted)"), TypeConverter(typeof (DelegatingStringEncryptionTypeConverter))]
-		string OAuth2RefreshToken
+		[Description("OAuth token verifier (encrypted)"), TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
+		string OAuthTokenVerifier
 		{
 			get;
 			set;

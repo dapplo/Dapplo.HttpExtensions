@@ -22,9 +22,12 @@
  */
 
 using Dapplo.HttpExtensions.OAuth;
+using Dapplo.LogFacade;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Dapplo.HttpExtensions.Test.OAuth
@@ -35,28 +38,28 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 	//[TestClass]
 	public class OAuthTests
 	{
-		private static readonly Uri GoogleApiUri = new Uri("https://www.googleapis.com");
+		private static readonly Uri PhotobucketOAuthUri = new Uri("http://api.photobucket.com");
+		private static readonly Uri PhotobucketApiUri = new Uri("http://api123.photobucket.com");
+
 		private static IHttpBehaviour _oAuthHttpBehaviour;
 
 		[ClassInitialize]
 		public static void SetupOAuth(TestContext context)
 		{
-			var oAuth2Settings = new OAuth2Settings
+			var oAuthSettings = new OAuthSettings
 			{
-				ClientId = "<client id from google developer console>",
-				ClientSecret = "<client id from google developer console>",
+				ClientId = "<client key from Photobucket developer console>",
+				ClientSecret = "<client secret from Photobucket developer console>",
 				CloudServiceName = "Google",
-				AuthorizeMode = AuthorizeModes.LocalhostServer,
-				TokenUrl = GoogleApiUri.AppendSegments("oauth2","v4","token"),
-				AuthorizationUri = new Uri("https://accounts.google.com").AppendSegments("o", "oauth2", "v2", "auth"). ExtendQuery(new Dictionary<string, string>{
-						{ "response_type", "code"},
-						{ "client_id", "{ClientId}" },
-						{ "redirect_uri", "{RedirectUrl}" },
-						{ "state", "{State}"},
-						{ "scope" , GoogleApiUri.AppendSegments("auth","calendar").AbsoluteUri}
-				})
+				AuthorizeMode = AuthorizeModes.EmbeddedBrowser,
+				TokenUrl = PhotobucketOAuthUri.AppendSegments("login", "request").ExtendQuery("format", "json"),
+				AuthorizationUri = PhotobucketOAuthUri.AppendSegments("apilogin", "login")
+				 .ExtendQuery(new Dictionary<string, string>{
+						{ OAuthParameters.OauthTokenKey.EnumValueOf(), "{OAuthToken}"},
+						{ OAuthParameters.OauthCallbackKey.EnumValueOf(), "{RedirectUrl}"}
+				 })
 			};
-			_oAuthHttpBehaviour = OAuth2HttpBehaviourFactory.Create(oAuth2Settings);
+			_oAuthHttpBehaviour = OAuthHttpBehaviourFactory.Create(oAuthSettings);
 		}
 		/// <summary>
 		/// This will test Oauth with a LocalServer "code" receiver against a demo oauth server provided by brentertainment.com
@@ -65,10 +68,19 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 		[TestMethod]
 		public async Task TestOAuthHttpMessageHandler()
 		{
-			var calendarApiUri = GoogleApiUri.AppendSegments("calendar", "v3");
-			var response = await calendarApiUri.AppendSegments("users","me","calendarList").GetAsAsync<dynamic>(_oAuthHttpBehaviour);
-			Assert.IsTrue(response.ContainsKey("items"));
-			Assert.IsTrue(response["items"].Count > 0);
+			var userInformationUri = PhotobucketApiUri.AppendSegments("user", "pbapi").ExtendQuery("format","json");
+			var response = await userInformationUri.GetAsAsync<dynamic>(_oAuthHttpBehaviour);
+			Assert.IsTrue(response.ContainsKey("response"));
+		}
+
+		[TestMethod]
+		public void TestHmacSha1Hash()
+		{
+			// See: http://oauth.net/core/1.0a/#RFC2104
+			var hmacsha1 = new HMACSHA1 { Key = Encoding.UTF8.GetBytes("kd94hf93k423kf44&pfkkdhi9sl3r4s00") };
+			var digest = OAuthHttpMessageHandler.ComputeHash(hmacsha1, "GET&http%3A%2F%2Fphotos.example.net%2Fphotos&file%3Dvacation.jpg%26oauth_consumer_key%3Ddpf43f3p2l4k3l03%26oauth_nonce%3Dkllo9940pd9333jh%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1191242096%26oauth_token%3Dnnch734d00sl2jdk%26oauth_version%3D1.0%26size%3Doriginal");
+
+			Assert.AreEqual("tR3+Ty81lMeYAr/Fid0kMTYa/WM=", digest);
 		}
 	}
 }

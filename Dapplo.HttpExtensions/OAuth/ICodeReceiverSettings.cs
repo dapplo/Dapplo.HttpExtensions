@@ -29,7 +29,7 @@ namespace Dapplo.HttpExtensions.OAuth
 	/// <summary>
 	/// Settings interface the OAuth (2) protocol
 	/// </summary>
-	public interface IOAuthSettings
+	public interface ICodeReceiverSettings
 	{
 		/// <summary>
 		/// Specify the name of the cloud service, so it can be used in window titles, logs etc
@@ -37,12 +37,12 @@ namespace Dapplo.HttpExtensions.OAuth
 		string CloudServiceName { get; set; }
 
 		/// <summary>
-		/// The OAuth (2) client id
+		/// The OAuth (2) client id / consumer key
 		/// </summary>
 		string ClientId { get; set; }
 
 		/// <summary>
-		/// The OAuth (2) client secret
+		/// The OAuth (2) client secret / consumer secret
 		/// </summary>
 		string ClientSecret { get; set; }
 
@@ -67,15 +67,6 @@ namespace Dapplo.HttpExtensions.OAuth
 		}
 
 		/// <summary>
-		/// The URL to get a Token
-		/// </summary>
-		Uri TokenUrl
-		{
-			get;
-			set;
-		}
-
-		/// <summary>
 		/// This is the redirect URL, in some implementations this is automatically set (LocalServerCodeReceiver)
 		/// In some implementations this could be e.g. urn:ietf:wg:oauth:2.0:oob or urn:ietf:wg:oauth:2.0:oob:auto
 		/// </summary>
@@ -85,5 +76,10 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// Put anything in here which is needed for the OAuth (2) implementation of this specific service but isn't generic, e.g. for Google there is a "scope"
 		/// </summary>
 		IDictionary<string, string> AdditionalAttributes { get; set; }
+
+		/// <summary>
+		/// This contains any additional parameters which are needed for formating the AuthorizeUrl
+		/// </summary>
+		IList<object> AuthorizeFormattingParameters { get; }
 	}
 }

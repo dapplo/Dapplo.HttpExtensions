@@ -49,7 +49,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		public string ClosePageResponse { get; set; } = @"<html>
 <head><title>OAuth 2.0 Authentication CloudServiceName</title></head>
 <body>
-The authentication process received information from CloudServiceName. You can close this browser / tab if it is not closed itself...
+The authentication process received information from CloudServiceName. You can close this browser window / tab if it is not closed automatically...
 <script type='text/javascript'>
     window.setTimeout(function() {
         window.open('', '_self', ''); 
@@ -65,27 +65,29 @@ The authentication process received information from CloudServiceName. You can c
 		/// <summary>
 		/// The OAuth code receiver
 		/// </summary>
-		/// <param name="oauth2Settings"></param>
-		/// <param name="cancellationToken"></param>
+		/// <param name="authorizeMode">AuthorizeModes tells you which mode was used to call this</param>
+		/// <param name="codeReceiverSettings"></param>
+		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>Dictionary with values</returns>
-		public async Task<IDictionary<string, string>> ReceiveCodeAsync(IOAuthSettings oauth2Settings, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<IDictionary<string, string>> ReceiveCodeAsync(AuthorizeModes authorizeMode, ICodeReceiverSettings codeReceiverSettings, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			Uri redirectUri;
-			if (oauth2Settings.RedirectUrl == null)
+			if (codeReceiverSettings.RedirectUrl == null)
 			{
 				redirectUri = new int[] { 0 }.CreateLocalHostUri();
-				// Needs to be escaped as this is replaced in the uri that is opened in the browser, and escaped before creating the Uri
-				oauth2Settings.RedirectUrl = redirectUri.AbsoluteUri;
+				// TODO: This will create a problem that with the next "authorize" call it will try to use the same Url, while it might not work
+				// But not setting it, will create a problem in the replacement
+				codeReceiverSettings.RedirectUrl = redirectUri.AbsoluteUri;
 			}
 			else
 			{
-				if (!oauth2Settings.RedirectUrl.StartsWith("http:"))
+				if (!codeReceiverSettings.RedirectUrl.StartsWith("http:"))
 				{
 					var message = $"The LocalServerCodeReceiver only works for http URLs, not for {0}, use a different AuthorizeMode.";
 					Log.Error().WriteLine(message);
-					throw new ArgumentException(message, nameof(oauth2Settings.RedirectUrl));
+					throw new ArgumentException(message, nameof(codeReceiverSettings.RedirectUrl));
 				}
-				redirectUri = new Uri(oauth2Settings.RedirectUrl);
+				redirectUri = new Uri(codeReceiverSettings.RedirectUrl);
 			}
 
 			var listenTask = redirectUri.ListenAsync(async httpListenerContext =>
@@ -98,7 +100,7 @@ The authentication process received information from CloudServiceName. You can c
 
 				try
 				{
-					var htmlContent = HttpContentFactory.Create(ClosePageResponse.Replace("CloudServiceName", oauth2Settings.CloudServiceName));
+					var htmlContent = HttpContentFactory.Create(ClosePageResponse.Replace("CloudServiceName", codeReceiverSettings.CloudServiceName));
 					htmlContent.SetContentType(MediaTypes.Html.EnumValueOf());
 					await httpListenerContext.RespondAsync(htmlContent, null, cancellationToken);
 				}
@@ -109,12 +111,12 @@ The authentication process received information from CloudServiceName. You can c
 				return result;
 			}, cancellationToken);
 
+			var formattingObjects = new object[] { codeReceiverSettings}.Concat(codeReceiverSettings.AuthorizeFormattingParameters).ToArray();
 			// while the listener is beging starter in the "background", here we prepare opening the browser
-
-			var uriBuilder = new UriBuilder(oauth2Settings.AuthorizationUri)
+			var uriBuilder = new UriBuilder(codeReceiverSettings.AuthorizationUri)
 			{
-				Query = oauth2Settings.AuthorizationUri.QueryToKeyValuePairs()
-					.Select(x => new KeyValuePair<string, string>(x.Key, x.Value.FormatWith(oauth2Settings)))
+				Query = codeReceiverSettings.AuthorizationUri.QueryToKeyValuePairs()
+					.Select(x => new KeyValuePair<string, string>(x.Key, x.Value.FormatWith(formattingObjects)))
 					.ToQueryString()
 			};
 

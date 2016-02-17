@@ -43,14 +43,15 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <summary>
 		/// The OAuth code receiver
 		/// </summary>
+		/// <param name="authorizeMode">which of the AuthorizeModes was used to call the method</param>
 		/// <param name="oauth2Settings"></param>
-		/// <param name="cancellationToken"></param>
+		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>Dictionary with values</returns>
-		public async Task<IDictionary<string, string>> ReceiveCodeAsync(IOAuthSettings oauthSettings, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<IDictionary<string, string>> ReceiveCodeAsync(AuthorizeModes authorizeMode, ICodeReceiverSettings oauthSettings, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			var oauth2Settings = oauthSettings as OAuth2Settings;
 			// Force OOB Uri
-			switch (oauth2Settings.AuthorizeMode)
+			switch (authorizeMode)
 			{
 				case AuthorizeModes.OutOfBound:
 					oauth2Settings.RedirectUrl = "urn:ietf:wg:oauth:2.0:oob";

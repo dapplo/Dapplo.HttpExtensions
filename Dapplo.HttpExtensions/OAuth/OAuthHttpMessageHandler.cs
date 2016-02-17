@@ -70,6 +70,10 @@ namespace Dapplo.HttpExtensions.OAuth
 				AuthorizeModes.OutOfBound,
 				new OutOfBoundCodeReceiver()
 			);
+			CodeReceivers.Add(
+				AuthorizeModes.EmbeddedBrowser,
+				new EmbeddedBrowserCodeReceiver()
+			);
 #endif
 		}
 
@@ -106,7 +110,8 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <summary>
 		/// Get the request token using the consumer id and secret.  Also initializes token secret
 		/// </summary>
-		private async Task GetTokenAsync()
+		/// <param name="cancellationToken">CancellationToken</param>
+		private async Task GetRequestTokenAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
 			var parameters = new Dictionary<string, string>();
 			Sign(_oAuthSettings.TokenMethod, _oAuthSettings.TokenUrl, parameters);
@@ -116,12 +121,12 @@ namespace Dapplo.HttpExtensions.OAuth
 			httpClient.SetAuthorization("OAuth", string.Join(", ", parameters.Where(x => x.Key.StartsWith("oauth_")).Select(x => $"{x.Key}=\"{ Uri.EscapeDataString(x.Value)}\"")));
 			if (_oAuthSettings.TokenMethod == HttpMethod.Get)
 			{
-			   response = await httpClient.GetAsAsync<string>(_oAuthSettings.TokenUrl, _httpBehaviour).ConfigureAwait(false);
+			   response = await httpClient.GetAsAsync<string>(_oAuthSettings.TokenUrl, _httpBehaviour, cancellationToken).ConfigureAwait(false);
 			}
 			else
 			{
 				// Post with no content (don't know why some services want this...)
-				response = await httpClient.PostAsync<string, object>(_oAuthSettings.TokenUrl, null, _httpBehaviour).ConfigureAwait(false);
+				response = await httpClient.PostAsync<string, object>(_oAuthSettings.TokenUrl, null, _httpBehaviour, cancellationToken).ConfigureAwait(false);
 			}
 			if (!string.IsNullOrEmpty(response))
 			{
@@ -132,6 +137,49 @@ namespace Dapplo.HttpExtensions.OAuth
 				{
 					_oAuthSettings.Token.OAuthToken = value;
 					_oAuthSettings.Token.OAuthTokenSecret = resultParameters[OAuthParameters.OauthTokenSecretKey.EnumValueOf()];
+				}
+			}
+		}
+
+		/// <summary>
+		/// Authorize the token by showing the authorization uri of the oauth service
+		/// </summary>
+		/// <param name="cancellationToken">CancellationToken</param>
+		private async Task GetAuthorizeTokenAsync(CancellationToken cancellationToken = default(CancellationToken))
+		{
+			if (string.IsNullOrEmpty(_oAuthSettings.Token.OAuthToken))
+			{
+				throw new ArgumentNullException("The request token is not set");
+			}
+			_oAuthSettings.AuthorizeFormattingParameters.Clear();
+			_oAuthSettings.AuthorizeFormattingParameters.Add(_oAuthSettings.Token);
+			IOAuthCodeReceiver codeReceiver;
+
+			if (!CodeReceivers.TryGetValue(_oAuthSettings.AuthorizeMode, out codeReceiver))
+			{
+				throw new NotImplementedException($"Authorize mode '{_oAuthSettings.AuthorizeMode}' is not implemented/registered.");
+			}
+			Log.Debug().WriteLine("Calling code receiver : {0}", _oAuthSettings.AuthorizeMode);
+			var result = await codeReceiver.ReceiveCodeAsync(_oAuthSettings.AuthorizeMode, _oAuthSettings, cancellationToken);
+
+			if (result != null)
+			{
+				string tokenValue;
+				if (result.TryGetValue(OAuthParameters.OauthTokenKey.EnumValueOf(), out tokenValue))
+				{
+					_oAuthSettings.Token.OAuthToken = tokenValue;
+				}
+				string verifierValue;
+				if (result.TryGetValue(OAuthParameters.OauthVerifierKey.EnumValueOf(), out verifierValue))
+				{
+					_oAuthSettings.Token.OAuthTokenVerifier = verifierValue;
+				}
+			}
+			if (_oAuthSettings.CheckVerifier)
+			{
+				if (!string.IsNullOrEmpty(_oAuthSettings.Token.OAuthTokenVerifier))
+				{
+					throw new ApplicationException("Token verifier is not set, while CheckVerifier is set to true");
 				}
 			}
 		}
@@ -318,7 +366,8 @@ namespace Dapplo.HttpExtensions.OAuth
 		{
 			if (string.IsNullOrEmpty(_oAuthSettings.Token.OAuthToken))
 			{
-				await GetTokenAsync();
+				await GetRequestTokenAsync(cancellationToken);
+				await GetAuthorizeTokenAsync(cancellationToken);
 			}
 			var result = await base.SendAsync(httpRequestMessage, cancellationToken);
 			return result;

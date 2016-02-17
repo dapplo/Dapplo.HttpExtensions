@@ -30,7 +30,7 @@ namespace Dapplo.HttpExtensions.OAuth
 	/// <summary>
 	/// Settings for the OAuth protocol, if possible this should not be used and OAuth 2.0 is a better choice
 	/// </summary>
-	public class OAuthSettings : IOAuthSettings
+	public class OAuthSettings : ICodeReceiverSettings
 	{
 		/// <summary>
 		/// The type of signature that is used, mostly this is HMacSha1
@@ -150,6 +150,15 @@ namespace Dapplo.HttpExtensions.OAuth
 		} = new OAuthTokenInformation();
 
 		/// <summary>
+		/// If this is set, the value of the verifier will be validated (not null)
+		/// </summary>
+		public bool CheckVerifier
+		{
+			get;
+			set;
+		} = true;
+
+		/// <summary>
 		/// Put anything in here which is needed for the OAuth implementation of this specific service but isn't generic, e.g. for Google there is a "scope"
 		/// </summary>
 		public IDictionary<string, string> AdditionalAttributes
@@ -158,15 +167,12 @@ namespace Dapplo.HttpExtensions.OAuth
 			set;
 		} = new Dictionary<string, string>();
 
-
 		/// <summary>
-		/// This contains the code returned from the authorization, but only shortly after it was received.
-		/// It will be cleared as soon as it was used.
+		/// any additional objects which are used to format the AuthorizeUrl
 		/// </summary>
-		internal string Code
+		public IList<object> AuthorizeFormattingParameters
 		{
 			get;
-			set;
-		}
+		} = new List<object>();
 	}
 }

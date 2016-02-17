@@ -29,7 +29,7 @@ namespace Dapplo.HttpExtensions.OAuth
 	/// <summary>
 	/// Settings for the OAuth 2 protocol
 	/// </summary>
-	public class OAuth2Settings : IOAuthSettings
+	public class OAuth2Settings : ICodeReceiverSettings
 	{
 		/// <summary>
 		/// The AuthorizeMode for this OAuth 2 settings
@@ -158,5 +158,13 @@ namespace Dapplo.HttpExtensions.OAuth
 			get;
 			set;
 		}
+
+		/// <summary>
+		/// any additional objects which are used to format the AuthorizeUrl
+		/// </summary>
+		public IList<object> AuthorizeFormattingParameters
+		{
+			get;
+		} = new List<object>();
 	}
 }

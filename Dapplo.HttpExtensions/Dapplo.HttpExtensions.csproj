@@ -39,11 +39,13 @@
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.XML" />
     <Reference Include="System.Xml.Linq" />
@@ -53,6 +55,15 @@
     <Compile Include="ContentConverter\ByteArrayHttpContentConverter.cs" />
     <Compile Include="ContentConverter\XDocumentHttpContentConverter.cs" />
     <Compile Include="ContentConverter\SyndicationFeedHttpContentConverter.cs" />
+    <Compile Include="Desktop\ExtendedWebBrowserForms.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Desktop\OAuthLoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Desktop\OAuthLoginForm.Designer.cs">
+      <DependentUpon>OAuthLoginForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Factory\HttpContentFactory.cs" />
     <Compile Include="HttpExtensionsGlobals.cs" />
     <Compile Include="Factory\HttpRequestMessageFactory.cs" />
@@ -62,11 +73,12 @@
     <Compile Include="Listener\ListenerPortExtensions.cs" />
     <Compile Include="Listener\UriHttpListenerExtensions.cs" />
     <Compile Include="OAuth\AuthorizeModes.cs" />
+    <Compile Include="OAuth\EmbeddedBrowserCodeReceiver.cs" />
     <Compile Include="OAuth\GrantTypes.cs" />
     <Compile Include="OAuth\IOAuthToken.cs" />
     <Compile Include="OAuth\IOAuth2Token.cs" />
     <Compile Include="OAuth\IOAuthCodeReceiver.cs" />
-    <Compile Include="OAuth\IOAuthSettings.cs" />
+    <Compile Include="OAuth\ICodeReceiverSettings.cs" />
     <Compile Include="OAuth\OAuthHttpMessageHandler.cs" />
     <Compile Include="OAuth\OAuthHttpBehaviourFactory.cs" />
     <Compile Include="OAuth\OAuthParameters.cs" />

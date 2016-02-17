@@ -64,6 +64,10 @@ namespace Dapplo.HttpExtensions.OAuth
 				AuthorizeModes.OutOfBound,
 				new OutOfBoundCodeReceiver()
 			);
+			CodeReceivers.Add(
+				AuthorizeModes.EmbeddedBrowser,
+				new EmbeddedBrowserCodeReceiver()
+			);
 #endif
 		}
 
@@ -106,10 +110,11 @@ namespace Dapplo.HttpExtensions.OAuth
 		{
 			IOAuthCodeReceiver codeReceiver;
 
-			if (!CodeReceivers.TryGetValue(_oAuth2Settings.AuthorizeMode, out codeReceiver)) {
-				throw new NotImplementedException($"Authorize mode '{_oAuth2Settings.AuthorizeMode}' is not specified.");
+			if (!CodeReceivers.TryGetValue(_oAuth2Settings.AuthorizeMode, out codeReceiver))
+			{
+				throw new NotImplementedException($"Authorize mode '{_oAuth2Settings.AuthorizeMode}' is not implemented/registered.");
 			}
-			var result = await codeReceiver.ReceiveCodeAsync(_oAuth2Settings, cancellationToken);
+			var result = await codeReceiver.ReceiveCodeAsync(_oAuth2Settings.AuthorizeMode, _oAuth2Settings, cancellationToken);
 
 			string error;
 			if (result.TryGetValue(OAuth2Fields.Error.EnumValueOf(), out error))

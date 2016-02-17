@@ -35,9 +35,10 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <summary>
 		/// The actual code receiving code
 		/// </summary>
-		/// <param name="oauthSettings">IOAuthSettings with the OAuth (2) settings</param>
+		/// <param name="authorizeMode">AuthorizeModes will tell you for what mode you were called</param>
+		/// <param name="codeReceiverSettings">ICodeReceiverSettings with the settings for the code receiver</param>
 		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>Dictionary with the returned key-values</returns>
-		Task<IDictionary<string, string>> ReceiveCodeAsync(IOAuthSettings oauthSettings, CancellationToken cancellationToken = default(CancellationToken));
+		Task<IDictionary<string, string>> ReceiveCodeAsync(AuthorizeModes authorizeMode, ICodeReceiverSettings codeReceiverSettings, CancellationToken cancellationToken = default(CancellationToken));
 	}
 }

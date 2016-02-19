@@ -1,15 +1,16 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Dapplo.HttpExtensions.Test")]
+[assembly: AssemblyTitle("Dappo.HttpExtensions.UnitTests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Dapplo")]
-[assembly: AssemblyProduct("Dapplo.HttpExtensions.Test")]
-[assembly: AssemblyCopyright("Copyright © Dapplo 2015-2016")]
+[assembly: AssemblyCompany("ING-DiBa AG")]
+[assembly: AssemblyProduct("Dappo.HttpExtensions.UnitTests")]
+[assembly: AssemblyCopyright("Copyright © ING-DiBa AG 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -19,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("4fb2d0a9-c201-4d92-9b68-315771fa0b07")]
+[assembly: Guid("03ab37ff-1220-4ece-9964-fa6070c778d3")]
 
 // Version information for an assembly consists of the following four values:
 //

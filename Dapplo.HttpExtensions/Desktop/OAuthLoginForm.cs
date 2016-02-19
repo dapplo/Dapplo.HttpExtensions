@@ -36,15 +36,17 @@ namespace Dapplo.HttpExtensions.Desktop
 			_browser.Navigated += Browser_Navigated;
 			_browser.Navigating += Browser_Navigating;
 			_browser.Navigate(authorizationLink);
+			Load += OAuthLoginForm_Load;
 		}
 
 		/// <summary>
 		/// Make sure the form is visible
 		/// </summary>
+		/// <param name="sender">sender object</param>
 		/// <param name="e">EventArgs</param>
-		protected override void OnShown(EventArgs e)
+		private void OAuthLoginForm_Load(object sender, EventArgs e)
 		{
-			base.OnShown(e);
+			Visible = true;
 			SetForegroundWindow(Handle);
 		}
 

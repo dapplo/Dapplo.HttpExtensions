@@ -21,17 +21,17 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Xunit.Abstractions;
 
 namespace Dapplo.HttpExtensions.Test
 {
 	/// <summary>
 	/// These are the tests for the UriParseExtensions
 	/// </summary>
-	[TestClass]
 	public class UriParseExtensionsTests
 	{
 		private const string TestKey = "value1";
@@ -39,46 +39,51 @@ namespace Dapplo.HttpExtensions.Test
 		private static readonly Uri TestUriSimple = new Uri("http://jira/name?somevalue=42").ExtendQuery(TestKey, TestValue);
 		private readonly Uri _testUriComplex = TestUriSimple.ExtendQuery(TestKey, TestValue);
 
-		[TestMethod]
+		public UriParseExtensionsTests(ITestOutputHelper testOutputHelper)
+		{
+			XUnitLogger.RegisterLogger(testOutputHelper);
+		}
+
+		[Fact]
 		public void TestQueryToDictionary()
 		{
 			var dictionary = _testUriComplex.QueryToDictionary();
-			Assert.IsNotNull(dictionary);
-			Assert.IsTrue(dictionary.ContainsKey(TestKey));
-			Assert.AreEqual(TestValue, dictionary[TestKey]);
+			Assert.NotNull(dictionary);
+			Assert.True(dictionary.ContainsKey(TestKey));
+			Assert.Equal(TestValue, dictionary[TestKey]);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void TestQueryToKeyValuePairs()
 		{
 			var keyValuePairs = _testUriComplex.QueryToKeyValuePairs();
-			Assert.IsNotNull(keyValuePairs);
-			Assert.IsTrue(keyValuePairs.Any(x => x.Key == TestKey && x.Value == TestValue));
+			Assert.NotNull(keyValuePairs);
+			Assert.True(keyValuePairs.Any(x => x.Key == TestKey && x.Value == TestValue));
 		}
 
-		[TestMethod]
+		[Fact]
 		public void TestQueryToLookup()
 		{
 			var loopkup = TestUriSimple.QueryToLookup();
-			Assert.IsNotNull(loopkup);
-			Assert.IsTrue(loopkup.Any(x => x.Key == TestKey && x.Contains(TestValue)));
+			Assert.NotNull(loopkup);
+			Assert.True(loopkup.Any(x => x.Key == TestKey && x.Contains(TestValue)));
 		}
 
-		[TestMethod]
+		[Fact]
 		public void TestQueryToLookup_WithDuplicates()
 		{
 			var loopkup = _testUriComplex.QueryToLookup();
-			Assert.IsNotNull(loopkup);
-			Assert.AreEqual(2, loopkup[TestKey].Count(x => x == TestValue));
+			Assert.NotNull(loopkup);
+			Assert.Equal(2, loopkup[TestKey].Count(x => x == TestValue));
 		}
 
-		[TestMethod]
+		[Fact]
 		public void TestExtendQuery_empty_dictionary()
 		{
 			var simpleUri = new Uri("http://dapplo.net");
 			var newUri = simpleUri.ExtendQuery(new Dictionary<string,string>());
-			Assert.IsNotNull(newUri);
-			Assert.AreEqual(simpleUri, newUri);
+			Assert.NotNull(newUri);
+			Assert.Equal(simpleUri, newUri);
 		}
 	}
 }

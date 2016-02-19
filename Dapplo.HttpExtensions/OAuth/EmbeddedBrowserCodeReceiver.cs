@@ -19,6 +19,10 @@ namespace Dapplo.HttpExtensions.OAuth
 
 		public async Task<IDictionary<string, string>> ReceiveCodeAsync(AuthorizeModes authorizeMode, ICodeReceiverSettings codeReceiverSettings, CancellationToken cancellationToken = default(CancellationToken))
 		{
+			if (codeReceiverSettings.RedirectUrl == null)
+			{
+				throw new ArgumentNullException("The EmbeddedBrowserCodeReceiver needs a redirect url.", nameof(codeReceiverSettings.RedirectUrl));
+			}
 			var formattingObjects = new object[] { codeReceiverSettings }.Concat(codeReceiverSettings.AuthorizeFormattingParameters).ToArray();
 			// while the listener is beging starter in the "background", here we prepare opening the browser
 			var uriBuilder = new UriBuilder(codeReceiverSettings.AuthorizationUri)
@@ -30,10 +34,11 @@ namespace Dapplo.HttpExtensions.OAuth
 
 			return await Task.Factory.StartNew(() =>
 			{
-				var oAuthLoginForm = new OAuthLoginForm("Authorize", new System.Drawing.Size(864, 587), uriBuilder.Uri, codeReceiverSettings.RedirectUrl);
+				var oAuthLoginForm = new OAuthLoginForm(codeReceiverSettings.CloudServiceName, new System.Drawing.Size(codeReceiverSettings.EmbeddedBrowserWidth, codeReceiverSettings.EmbeddedBrowserHeight), uriBuilder.Uri, codeReceiverSettings.RedirectUrl);
+
 				oAuthLoginForm.ShowDialog();
 				return oAuthLoginForm.CallbackParameters;
-			});
+			}, cancellationToken, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
 		}
 	}
 }

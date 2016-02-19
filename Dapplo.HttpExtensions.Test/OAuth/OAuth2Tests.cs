@@ -22,10 +22,11 @@
  */
 
 using Dapplo.HttpExtensions.OAuth;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Xunit;
+using Xunit.Abstractions;
 
 namespace Dapplo.HttpExtensions.Test.OAuth
 {
@@ -36,11 +37,11 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 	public class OAuth2Tests
 	{
 		private static readonly Uri GoogleApiUri = new Uri("https://www.googleapis.com");
-		private static IHttpBehaviour _oAuthHttpBehaviour;
+		private IHttpBehaviour _oAuthHttpBehaviour;
 
-		[ClassInitialize]
-		public static void SetupOAuth2(TestContext context)
+		public OAuth2Tests(ITestOutputHelper testOutputHelper)
 		{
+			XUnitLogger.RegisterLogger(testOutputHelper);
 			var oAuth2Settings = new OAuth2Settings
 			{
 				ClientId = "<client id from google developer console>",
@@ -58,17 +59,18 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 			};
 			_oAuthHttpBehaviour = OAuth2HttpBehaviourFactory.Create(oAuth2Settings);
 		}
+	
 		/// <summary>
 		/// This will test Oauth with a LocalServer "code" receiver against a demo oauth server provided by brentertainment.com
 		/// </summary>
 		/// <returns>Task</returns>
-		[TestMethod]
+		//[Fact]
 		public async Task TestOAuth2HttpMessageHandler()
 		{
 			var calendarApiUri = GoogleApiUri.AppendSegments("calendar", "v3");
 			var response = await calendarApiUri.AppendSegments("users","me","calendarList").GetAsAsync<dynamic>(_oAuthHttpBehaviour);
-			Assert.IsTrue(response.ContainsKey("items"));
-			Assert.IsTrue(response["items"].Count > 0);
+			Assert.True(response.ContainsKey("items"));
+			Assert.True(response["items"].Count > 0);
 		}
 	}
 }

@@ -166,5 +166,23 @@ namespace Dapplo.HttpExtensions.OAuth
 		{
 			get;
 		} = new List<object>();
+
+		/// <summary>
+		/// This can be used to specify the width of the embedded browser window
+		/// </summary>
+		public int EmbeddedBrowserWidth
+		{
+			get;
+			set;
+		} = 600;
+
+		/// <summary>
+		/// This can be used to specify the height of the embedded browser window
+		/// </summary>
+		public int EmbeddedBrowserHeight
+		{
+			get;
+			set;
+		} = 400;
 	}
 }

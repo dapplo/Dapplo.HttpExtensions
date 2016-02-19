@@ -21,32 +21,36 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Xunit;
+using Xunit.Abstractions;
 
 namespace Dapplo.HttpExtensions.Test
 {
 	/// <summary>
 	/// Should write some tests which use http://httpbin.org/
 	/// </summary>
-	[TestClass]
 	public class UriActionExtensionsMultiPartTests
 	{
 		private readonly Uri _bitmapUri = new Uri("http://beta.getgreenshot.org/assets/greenshot-logo.png");
+
+		public UriActionExtensionsMultiPartTests(ITestOutputHelper testOutputHelper)
+		{
+			XUnitLogger.RegisterLogger(testOutputHelper);
+		}
 
 		/// <summary>
 		/// Test getting the Uri as MemoryStream
 		/// </summary>
 		/// <returns></returns>
-		[TestMethod]
+		[Fact]
 		public async Task TestGetAsAsyncMemoryStream()
 		{
 			var stream = await _bitmapUri.GetAsAsync<MemoryStream>();
-			Assert.IsNotNull(stream);
-			Assert.IsTrue(stream.Length > 0);
+			Assert.NotNull(stream);
+			Assert.True(stream.Length > 0);
 		}
-
 	}
 }

@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dapplo.HttpExtensions", "Dapplo.HttpExtensions\Dapplo.HttpExtensions.csproj", "{89151CB1-A5D0-414E-80D9-BB1A08B556DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dapplo.HttpExtensions.Test", "Dapplo.HttpExtensions.Test\Dapplo.HttpExtensions.Test.csproj", "{4FB2D0A9-C201-4D92-9B68-315771FA0B07}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dapplo.HttpExtensions.Test", "Dapplo.HttpExtensions.Test\Dapplo.HttpExtensions.Test.csproj", "{03AB37FF-1220-4ECE-9964-FA6070C778D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{89151CB1-A5D0-414E-80D9-BB1A08B556DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89151CB1-A5D0-414E-80D9-BB1A08B556DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89151CB1-A5D0-414E-80D9-BB1A08B556DA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4FB2D0A9-C201-4D92-9B68-315771FA0B07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4FB2D0A9-C201-4D92-9B68-315771FA0B07}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4FB2D0A9-C201-4D92-9B68-315771FA0B07}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4FB2D0A9-C201-4D92-9B68-315771FA0B07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03AB37FF-1220-4ECE-9964-FA6070C778D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03AB37FF-1220-4ECE-9964-FA6070C778D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03AB37FF-1220-4ECE-9964-FA6070C778D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03AB37FF-1220-4ECE-9964-FA6070C778D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

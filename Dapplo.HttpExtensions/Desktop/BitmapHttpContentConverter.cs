@@ -82,7 +82,7 @@ namespace Dapplo.HttpExtensions.Desktop
 			set
 			{
 				_quality = value;
-				Log.Debug().WriteLine("Setting Quality to ", value);
+				Log.Verbose().WriteLine("Setting Quality to {0}", value);
 				var qualityParameter = EncoderParameters.FirstOrDefault(x => x.Encoder.Guid == Encoder.Quality.Guid);
 				if (qualityParameter != null)
 				{

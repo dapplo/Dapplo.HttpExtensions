@@ -26,21 +26,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Test.TestEntities;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
+using Xunit.Abstractions;
 
 namespace Dapplo.HttpExtensions.Test
 {
 	/// <summary>
 	/// Summary description for GithubTests
 	/// </summary>
-	[TestClass]
 	public class GithubTests
 	{
+		public GithubTests(ITestOutputHelper testOutputHelper)
+		{
+			XUnitLogger.RegisterLogger(testOutputHelper);
+		}
+	
 		/// <summary>
 		/// To make sure we test some of the functionality, we call the GitHub API to get the releases for this project.
 		/// </summary>
 		/// <returns></returns>
-		[TestMethod]
+		[Fact]
 		public async Task TestGetAsJsonAsync_GitHubApiReleases()
 		{
 			var githubApiUri = new Uri("https://api.github.com");
@@ -55,14 +60,14 @@ namespace Dapplo.HttpExtensions.Test
 			}
 
 			var releases = await releasesUri.GetAsAsync<HttpResponse<List<GitHubRelease>, GitHubError>>();
-			Assert.IsNotNull(releases);
-			Assert.IsFalse(releases.HasError, $"{releases.StatusCode}: {releases.ErrorResponse?.Message} {releases.ErrorResponse?.DocumentationUrl}");
+			Assert.NotNull(releases);
+			Assert.False(releases.HasError, $"{releases.StatusCode}: {releases.ErrorResponse?.Message} {releases.ErrorResponse?.DocumentationUrl}");
 
 			var latestRelease = releases.Response
 					.Where(x => !x.Prerelease)
 					.OrderByDescending(x => x.PublishedAt)
 					.FirstOrDefault();
-			Assert.IsNotNull(latestRelease);
+			Assert.NotNull(latestRelease);
 		}
 	}
 }

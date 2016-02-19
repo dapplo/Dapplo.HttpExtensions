@@ -21,17 +21,17 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Xunit.Abstractions;
 
 namespace Dapplo.HttpExtensions.Test
 {
 	/// <summary>
 	/// These are the tests for the UriModifyExtensions
 	/// </summary>
-	[TestClass]
 	public class UriModifyExtensionsTests
 	{
 		private const string Key = "key";
@@ -39,15 +39,20 @@ namespace Dapplo.HttpExtensions.Test
 		private const string TestUriSingleValue = "http://jira/issue?value1=4321";
 		private const string TestUriDuplicateValues = "http://jira/issue?value1=4321&value1=1234";
 
-		[TestMethod]
+		public UriModifyExtensionsTests(ITestOutputHelper testOutputHelper)
+		{
+			XUnitLogger.RegisterLogger(testOutputHelper);
+		}
+
+		[Fact]
 		public void TestAppendSegments()
 		{
 			var uri = new Uri("http://jira/name?value1=1234");
 			uri = uri.AppendSegments("joost");
-			Assert.AreEqual("http://jira/name/joost?value1=1234", uri.AbsoluteUri);
+			Assert.Equal("http://jira/name/joost?value1=1234", uri.AbsoluteUri);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void TestExtendQuery_WithDictionary()
 		{
 			var uri = new Uri(TestUriSingleValue);
@@ -58,10 +63,10 @@ namespace Dapplo.HttpExtensions.Test
 				}
 			});
 
-			Assert.AreEqual($"{TestUriSingleValue}&{Key}={Value}", uri.AbsoluteUri);
+			Assert.Equal($"{TestUriSingleValue}&{Key}={Value}", uri.AbsoluteUri);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void TestExtendQuery_WithDictionary_MultipleValuesInSource()
 		{
 			var uri = new Uri(TestUriDuplicateValues);
@@ -72,10 +77,10 @@ namespace Dapplo.HttpExtensions.Test
 				}
 			});
 
-			Assert.AreEqual($"{TestUriDuplicateValues}&{Key}={Value}", uri.AbsoluteUri);
+			Assert.Equal($"{TestUriDuplicateValues}&{Key}={Value}", uri.AbsoluteUri);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void TestExtendQuery_WithLookup_MultipleValuesInSource()
 		{
 			var uri = new Uri(TestUriDuplicateValues);
@@ -86,22 +91,22 @@ namespace Dapplo.HttpExtensions.Test
 			};
 			var lookup = testValues.ToLookup(x => x.Key, x => x.Value);
 			// Make sure we have one Key, which has multiple values
-			Assert.IsTrue(lookup.Count() == 1);
+			Assert.True(lookup.Count() == 1);
 
 			uri = uri.ExtendQuery(lookup);
-			Assert.AreEqual($"{TestUriDuplicateValues}&{Key}={Value}&{Key}={Value}", uri.AbsoluteUri);
+			Assert.Equal($"{TestUriDuplicateValues}&{Key}={Value}&{Key}={Value}", uri.AbsoluteUri);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void TestExtendQuery_WithNameValue()
 		{
 			var uri = new Uri(TestUriDuplicateValues);
 			uri = uri.ExtendQuery(Key, Value);
 
-			Assert.AreEqual($"{TestUriDuplicateValues}&{Key}={Value}", uri.AbsoluteUri);
+			Assert.Equal($"{TestUriDuplicateValues}&{Key}={Value}", uri.AbsoluteUri);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void TestExtendQuery_WithNameValue_EncodingNeeded()
 		{
 			var uri = new Uri(TestUriDuplicateValues);
@@ -111,10 +116,10 @@ namespace Dapplo.HttpExtensions.Test
 
 			uri = uri.ExtendQuery("url", uriValue);
 
-			Assert.AreEqual($"{TestUriDuplicateValues}&url={encodedUri}", uri.AbsoluteUri);
+			Assert.Equal($"{TestUriDuplicateValues}&url={encodedUri}", uri.AbsoluteUri);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void TestSetCredentials()
 		{
 			const string username = "myusername";
@@ -122,7 +127,7 @@ namespace Dapplo.HttpExtensions.Test
 			var uri = new Uri(TestUriDuplicateValues);
 			uri = uri.SetCredentials(username, password);
 
-			Assert.AreEqual($"http://{username}:{password}@{TestUriDuplicateValues.Replace("http://","")}", uri.AbsoluteUri);
+			Assert.Equal($"http://{username}:{password}@{TestUriDuplicateValues.Replace("http://","")}", uri.AbsoluteUri);
 		}
 	}
 }

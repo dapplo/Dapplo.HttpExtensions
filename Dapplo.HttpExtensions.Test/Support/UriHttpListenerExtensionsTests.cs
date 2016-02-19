@@ -22,15 +22,20 @@
  */
 
 using Dapplo.HttpExtensions.Listener;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
+using Xunit;
+using Xunit.Abstractions;
 
 namespace Dapplo.HttpExtensions.Test.Support
 {
-	[TestClass]
 	public class UriHttpListenerExtensionsTests
 	{
-		[TestMethod]
+		public UriHttpListenerExtensionsTests(ITestOutputHelper testOutputHelper)
+		{
+			XUnitLogger.RegisterLogger(testOutputHelper);
+		}
+
+		[Fact]
 		public async Task TestListenAsync()
 		{
 			// Try listening on 8080, if this doesn't work take the first free port
@@ -47,10 +52,10 @@ namespace Dapplo.HttpExtensions.Test.Support
 			//await Task.Delay(100);
 			var testUri = listenUri.ExtendQuery("name", "dapplo");
 			var okResponse = await testUri.GetAsAsync<string>();
-			Assert.AreEqual("OK", okResponse);
+			Assert.Equal("OK", okResponse);
 			var actionResult = await listenTask;
-			Assert.IsTrue(actionResult.ContainsKey("name"));
-			Assert.IsTrue(actionResult["name"] == "dapplo");
+			Assert.True(actionResult.ContainsKey("name"));
+			Assert.True(actionResult["name"] == "dapplo");
 		}
 	}
 }

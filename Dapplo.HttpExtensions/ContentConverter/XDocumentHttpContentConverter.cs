@@ -21,13 +21,12 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Dapplo.LogFacade;
 using Dapplo.HttpExtensions.Support;
+using Dapplo.LogFacade;
 using System;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.ServiceModel.Syndication;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;

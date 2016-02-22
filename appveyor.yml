@@ -22,7 +22,7 @@ environment:
     secure: eBQPtXg53XgcvdcVY3wQAw6kkwNh+QhcsTDwzyQLLh6IOPyiePEaEhJR0D2YBjAj
 build:
   project: Dapplo.HttpExtensions.sln
-  publish_nuget: false
+  publish_nuget: true
   publish_nuget_symbols: false
   verbosity: minimal
 artifacts:
@@ -43,7 +43,7 @@ deploy:
   auth_token:
     secure: eBQPtXg53XgcvdcVY3wQAw6kkwNh+QhcsTDwzyQLLh6IOPyiePEaEhJR0D2YBjAj
   artifact: /.*\.nupkg/
-  draft: true
+  draft: false
 - provider: NuGet
   skip_symbols: true
   api_key:

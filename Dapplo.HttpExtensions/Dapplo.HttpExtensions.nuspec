@@ -17,8 +17,8 @@
 			<frameworkAssembly assemblyName="System.Net.Http" targetFramework="net45" />
 			<frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework="net45" />			
 		</frameworkAssemblies>
-		<files>
-			<file src="bin\release\$id$.pdb" target="lib\net451" />
-		</files>
 	</metadata>
+	<files>
+		<file src="bin\release\$id$.pdb" target="lib\net451" />
+	</files>
 </package>

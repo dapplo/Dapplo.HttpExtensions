@@ -30,7 +30,6 @@
     <DefineConstants>TRACE;DESKTOP,SIMPLE_JSON_DATACONTRACT;SIMPLE_JSON_DYNAMIC;SIMPLE_JSON_READONLY_COLLECTIONS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\Dapplo.HttpExtensions.XML</DocumentationFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
@@ -67,6 +66,7 @@
       <DependentUpon>OAuthLoginForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Factory\HttpContentFactory.cs" />
+    <Compile Include="HttpRequestMessageExtensions.cs" />
     <Compile Include="HttpExtensionsGlobals.cs" />
     <Compile Include="Factory\HttpRequestMessageFactory.cs" />
     <Compile Include="IHttpBehaviour.cs" />
@@ -81,12 +81,14 @@
     <Compile Include="OAuth\IOAuth2Token.cs" />
     <Compile Include="OAuth\IOAuthCodeReceiver.cs" />
     <Compile Include="OAuth\ICodeReceiverSettings.cs" />
+    <Compile Include="OAuth\OAuthHttpBehaviour.cs" />
     <Compile Include="OAuth\OAuthHttpMessageHandler.cs" />
     <Compile Include="OAuth\OAuthHttpBehaviourFactory.cs" />
     <Compile Include="OAuth\OAuthParameters.cs" />
     <Compile Include="OAuth\OAuthSettings.cs" />
     <Compile Include="OAuth\OAuthSignatureTypes.cs" />
     <Compile Include="OAuth\OAuthTokenInformation.cs" />
+    <Compile Include="OAuth\OAuthUriActions.cs" />
     <Compile Include="OAuth\OutOfBoundCodeReceiver.cs" />
     <Compile Include="OAuth\LocalServerCodeReceiver.cs" />
     <Compile Include="OAuth\OAuth2Fields.cs" />

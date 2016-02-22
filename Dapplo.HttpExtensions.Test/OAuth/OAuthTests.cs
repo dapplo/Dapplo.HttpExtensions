@@ -21,10 +21,12 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using Dapplo.HttpExtensions.Factory;
 using Dapplo.HttpExtensions.OAuth;
 using Dapplo.LogFacade;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,29 +40,50 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 	/// </summary>
 	public class OAuthTests
 	{
-		private static readonly Uri PhotobucketOAuthUri = new Uri("http://api.photobucket.com");
-		private static readonly Uri PhotobucketApiUri = new Uri("http://api123.photobucket.com");
+		private static readonly Uri PhotobucketApiUri = new Uri("http://api.photobucket.com");
 
 		private IHttpBehaviour _oAuthHttpBehaviour;
 
 		public OAuthTests(ITestOutputHelper testOutputHelper)
 		{
-			XUnitLogger.RegisterLogger(testOutputHelper);
+			XUnitLogger.RegisterLogger(testOutputHelper, LogLevel.Verbose);
 			var oAuthSettings = new OAuthSettings
 			{
-				ClientId = "<client key>",
-				ClientSecret = "<client secret>",
+				ClientId = "<Photobucket client id>",
+				ClientSecret = "<Photobucket client secret>",
 				CloudServiceName = "Photo bucket",
+				EmbeddedBrowserWidth = 1010,
+				EmbeddedBrowserHeight = 400,
 				AuthorizeMode = AuthorizeModes.EmbeddedBrowser,
-				TokenUrl = PhotobucketOAuthUri.AppendSegments("login", "request").ExtendQuery("format", "json"),
-				AuthorizationUri = PhotobucketOAuthUri.AppendSegments("apilogin", "login")
+				TokenUrl = PhotobucketApiUri.AppendSegments("login", "request"),
+				TokenMethod = HttpMethod.Post,
+				AccessTokenUrl = new Uri("http://api.photobucket.com/login/access"),
+				AccessTokenMethod = HttpMethod.Post,
+				AuthorizationUri = PhotobucketApiUri.AppendSegments("apilogin", "login")
 				 .ExtendQuery(new Dictionary<string, string>{
 						{ OAuthParameters.OauthTokenKey.EnumValueOf(), "{OAuthToken}"},
 						{ OAuthParameters.OauthCallbackKey.EnumValueOf(), "{RedirectUrl}"}
 				 }),
-				RedirectUrl = "http://getgreenshot.org"
+				RedirectUrl = "http://getgreenshot.org",
+				CheckVerifier = false,
 			};
-			_oAuthHttpBehaviour = OAuthHttpBehaviourFactory.Create(oAuthSettings);
+			var oAuthHttpBehaviour = OAuthHttpBehaviourFactory.Create(oAuthSettings);
+			// Store the leftover values
+			oAuthHttpBehaviour.OnAccessToken = (values) =>
+			{
+				oAuthHttpBehaviour.AccessParameters = values;
+			};
+			// Process the leftover values
+			oAuthHttpBehaviour.BeforeSend = (httpRequestMessage) =>
+			{
+				if (oAuthHttpBehaviour.AccessParameters != null && oAuthHttpBehaviour.AccessParameters.ContainsKey("subdomain"))
+				{
+					var uriBuilder = new UriBuilder(httpRequestMessage.RequestUri);
+					uriBuilder.Host = oAuthHttpBehaviour.AccessParameters["subdomain"];
+					httpRequestMessage.RequestUri = uriBuilder.Uri;
+				}
+			};
+			_oAuthHttpBehaviour = oAuthHttpBehaviour;
 		}
 
 		/// <summary>
@@ -70,9 +93,12 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 		//[WinFormsFact]
 		public async Task TestOAuthHttpMessageHandler()
 		{
-			var userInformationUri = PhotobucketApiUri.AppendSegments("user", "pbapi").ExtendQuery("format","json");
-			var response = await userInformationUri.GetAsAsync<dynamic>(_oAuthHttpBehaviour);
-			Assert.True(response.ContainsKey("response"));
+			var userInformationUri = PhotobucketApiUri.AppendSegments("user").ExtendQuery("format", "json");
+
+			// Make sure you use your special IHttpBehaviour for the OAuth requests!
+			_oAuthHttpBehaviour.MakeCurrent();
+			var response = await userInformationUri.OAuthGetAsAsync<dynamic>();
+			Assert.True(response.status == "OK");
 		}
 
 		[Fact]

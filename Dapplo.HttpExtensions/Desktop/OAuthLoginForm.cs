@@ -52,29 +52,30 @@ namespace Dapplo.HttpExtensions.Desktop
 
 		private void Browser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
 		{
-			Log.Debug().WriteLine("document completed with url: {0}", _browser.Url);
-			CheckUrl();
+			Log.Verbose().WriteLine("document completed with url: {0}", e.Url);
+			CheckUrl(e.Url);
 		}
 
 		private void Browser_Navigating(object sender, WebBrowserNavigatingEventArgs e)
 		{
-			Log.Debug().WriteLine("Navigating to url: {0}", _browser.Url);
+			Log.Verbose().WriteLine("Navigating to url: {0}", e.Url);
 			_addressTextBox.Text = e.Url.ToString();
+			CheckUrl(e.Url);
 		}
 
 		private void Browser_Navigated(object sender, WebBrowserNavigatedEventArgs e)
 		{
-			Log.Debug().WriteLine("Navigated to url: {0}", _browser.Url);
-			CheckUrl();
+			Log.Verbose().WriteLine("Navigated to url: {0}", e.Url);
+			CheckUrl(e.Url);
 		}
 
-		private void CheckUrl()
+		private void CheckUrl(Uri uri)
 		{
-			if (!_browser.Url.AbsoluteUri.StartsWith(_callbackUrl))
+			if (uri == null || !uri.AbsoluteUri.StartsWith(_callbackUrl))
 			{
 				return;
 			}
-			CallbackParameters = _browser.Url.QueryToDictionary();
+			CallbackParameters = uri.QueryToDictionary();
 			DialogResult = DialogResult.OK;
 		}
 	}

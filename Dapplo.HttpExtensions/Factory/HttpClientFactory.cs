@@ -35,15 +35,14 @@ namespace Dapplo.HttpExtensions.Factory
 		/// Create a HttpClient which is modified by the settings specified in the IHttpSettings of the HttpBehaviour.
 		/// If nothing is passed, the GlobalSettings are used
 		/// </summary>
-		/// <param name="httpBehaviour">HttpBehaviour instance or null if the global settings need to be used</param>
 		/// <param name="uriForConfiguration">If a Uri is supplied, this is used to configure the HttpClient. Currently the Uri.UserInfo is used to set the basic authorization.</param>
 		/// <returns>HttpClient</returns>
-		public static HttpClient Create(IHttpBehaviour httpBehaviour = null, Uri uriForConfiguration = null)
+		public static HttpClient Create(Uri uriForConfiguration = null)
 		{
-			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
+			var httpBehaviour = HttpBehaviour.Current;
 			var httpSettings = httpBehaviour.HttpSettings ?? HttpExtensionsGlobals.HttpSettings;
 
-			var httpClient = new HttpClient(HttpMessageHandlerFactory.Create(httpBehaviour))
+			var httpClient = new HttpClient(HttpMessageHandlerFactory.Create())
 			{
 				Timeout = httpSettings.RequestTimeout,
 				MaxResponseContentBufferSize = httpSettings.MaxResponseContentBufferSize,

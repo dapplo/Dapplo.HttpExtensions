@@ -102,7 +102,7 @@ The authentication process received information from CloudServiceName. You can c
 				{
 					var htmlContent = HttpContentFactory.Create(ClosePageResponse.Replace("CloudServiceName", codeReceiverSettings.CloudServiceName));
 					htmlContent.SetContentType(MediaTypes.Html.EnumValueOf());
-					await httpListenerContext.RespondAsync(htmlContent, null, cancellationToken);
+					await httpListenerContext.RespondAsync(htmlContent, cancellationToken).ConfigureAwait(false);
 				}
 				catch (Exception ex)
 				{

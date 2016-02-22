@@ -38,7 +38,7 @@ namespace Dapplo.HttpExtensions.OAuth
 
 				oAuthLoginForm.ShowDialog();
 				return oAuthLoginForm.CallbackParameters;
-			}, cancellationToken, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
+			}, cancellationToken, TaskCreationOptions.None, HttpExtensionsGlobals.UITaskScheduler).ConfigureAwait(false);
 		}
 	}
 }

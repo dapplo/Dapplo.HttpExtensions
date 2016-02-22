@@ -21,27 +21,33 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
-	/// <summary>
-	/// This factory can be used to create a IHttpBehaviour which handles OAuth 2 requests
-	/// </summary>
-	public static class OAuth2HttpBehaviourFactory
+	public class OAuthHttpBehaviour : HttpBehaviour
 	{
 		/// <summary>
-		/// Create a specify OAuth2 IHttpBehaviour
+		/// This contains the values returns from the access token without the token/token secret
 		/// </summary>
-		/// <param name="oAuth2Settings">OAuth2Settings</param>
-		/// <param name="fromHttpBehaviour">IHttpBehaviour to clone, null if a new needs to be generated</param>
-		/// <returns>IHttpBehaviour</returns>
-		public static IHttpBehaviour Create(OAuth2Settings oAuth2Settings, IHttpBehaviour fromHttpBehaviour = null)
+		public IDictionary<string, string> AccessParameters { get; set; }
+
+		/// <summary>
+		/// Set this function if you want to process any additional access token values
+		/// </summary>
+		public Action<IDictionary<string, string>> OnAccessToken { get; set; }
+
+
+	/// <summary>
+	/// Set this function if you want to modify the request message that is send to the service
+	/// </summary>
+	public Action<HttpRequestMessage> BeforeSend { get; set; }
+
+		new public OAuthHttpBehaviour Clone()
 		{
-			// Get a clone of a IHttpBehaviour or create new
-			var oauthHttpBehaviour = fromHttpBehaviour == null ? new HttpBehaviour() : fromHttpBehaviour.Clone();
-			// Add a wrapper (delegate handler) which wraps all new HttpMessageHandlers
-			oauthHttpBehaviour.OnHttpMessageHandlerCreated = httpMessageHandler => new OAuth2HttpMessageHandler(oAuth2Settings, oauthHttpBehaviour, httpMessageHandler);
-			return oauthHttpBehaviour;
+			return (OAuthHttpBehaviour)MemberwiseClone();
 		}
 	}
 }

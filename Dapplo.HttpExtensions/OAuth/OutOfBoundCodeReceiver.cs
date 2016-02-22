@@ -79,7 +79,7 @@ namespace Dapplo.HttpExtensions.OAuth
 
 			// TODO: Get the response here
 
-			await Task.Delay(10 * 1000);
+			await Task.Delay(10 * 1000).ConfigureAwait(false);
 			// Return result of the listening
 			return null;
 		}

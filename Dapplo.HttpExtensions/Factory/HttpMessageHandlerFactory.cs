@@ -36,10 +36,9 @@ namespace Dapplo.HttpExtensions.Factory
 		/// Apply settings on the HttpClientHandler
 		/// </summary>
 		/// <param name="httpClientHandler"></param>
-		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
-		public static void SetDefaults(HttpClientHandler httpClientHandler, IHttpBehaviour httpBehaviour = null)
+		public static void SetDefaults(HttpClientHandler httpClientHandler)
 		{
-			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
+			var httpBehaviour = HttpBehaviour.Current;
 			var httpSettings = httpBehaviour.HttpSettings ?? HttpExtensionsGlobals.HttpSettings;
 
 			httpClientHandler.AllowAutoRedirect = httpSettings.AllowAutoRedirect;
@@ -50,7 +49,7 @@ namespace Dapplo.HttpExtensions.Factory
 			httpClientHandler.MaxRequestContentBufferSize = httpSettings.MaxRequestContentBufferSize;
 			httpClientHandler.UseCookies = httpSettings.UseCookies;
 			httpClientHandler.UseDefaultCredentials = httpSettings.UseDefaultCredentials;
-			httpClientHandler.Proxy = httpSettings.UseProxy ? WebProxyFactory.Create(httpBehaviour) : null;
+			httpClientHandler.Proxy = httpSettings.UseProxy ? WebProxyFactory.Create() : null;
 			httpClientHandler.UseProxy = httpSettings.UseProxy;
 			httpClientHandler.PreAuthenticate = httpSettings.PreAuthenticate;
 		}
@@ -59,11 +58,10 @@ namespace Dapplo.HttpExtensions.Factory
 		/// Apply settings on the WebRequestHandler, this also calls the SetDefaults for the underlying HttpClientHandler
 		/// </summary>
 		/// <param name="webRequestHandler">WebRequestHandler to set the defaults to</param>
-		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
-		public static void SetDefaults(WebRequestHandler webRequestHandler, IHttpBehaviour httpBehaviour = null)
+		public static void SetDefaults(WebRequestHandler webRequestHandler)
 		{
-			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
-			SetDefaults(webRequestHandler as HttpClientHandler, httpBehaviour);
+			var httpBehaviour = HttpBehaviour.Current;
+			SetDefaults(webRequestHandler as HttpClientHandler);
 
 			var httpSettings = httpBehaviour.HttpSettings ?? HttpExtensionsGlobals.HttpSettings;
 
@@ -79,13 +77,11 @@ namespace Dapplo.HttpExtensions.Factory
 		/// <summary>
 		/// This creates an HttpClientHandler, normally one should use CreateWebRequestHandler
 		/// </summary>
-		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <returns>HttpMessageHandler (HttpClientHandler)</returns>
-		private static HttpMessageHandler CreateHttpClientHandler(IHttpBehaviour httpBehaviour = null)
+		private static HttpMessageHandler CreateHttpClientHandler()
 		{
-			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 			var httpClientHandler = new HttpClientHandler();
-			SetDefaults(httpClientHandler, httpBehaviour);
+			SetDefaults(httpClientHandler);
 			return httpClientHandler;
 		}
 
@@ -93,13 +89,11 @@ namespace Dapplo.HttpExtensions.Factory
 		/// This creates an advanced HttpMessageHandler, used in desktop applications
 		/// Should be preferred
 		/// </summary>
-		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <returns>HttpMessageHandler (WebRequestHandler)</returns>
-		private static HttpMessageHandler CreateWebRequestHandler(IHttpBehaviour httpBehaviour = null)
+		private static HttpMessageHandler CreateWebRequestHandler()
 		{
-			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
 			var webRequestHandler = new WebRequestHandler();
-			SetDefaults(webRequestHandler, httpBehaviour);
+			SetDefaults(webRequestHandler);
 			return webRequestHandler;
 		}
 
@@ -107,12 +101,11 @@ namespace Dapplo.HttpExtensions.Factory
 		/// This creates a HttpMessageHandler
 		/// Should be the preferred method to use to create a HttpMessageHandler
 		/// </summary>
-		/// <param name="httpBehaviour">HttpBehaviour which specifies the IHttpSettings and other non default behaviour</param>
 		/// <returns>HttpMessageHandler (WebRequestHandler)</returns>
-		public static HttpMessageHandler Create(IHttpBehaviour httpBehaviour = null)
+		public static HttpMessageHandler Create()
 		{
-			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
-			var baseMessageHandler = CreateWebRequestHandler(httpBehaviour);
+			var httpBehaviour = HttpBehaviour.Current;
+			var baseMessageHandler = CreateWebRequestHandler();
 			if (httpBehaviour.OnHttpMessageHandlerCreated != null)
 			{
 				return httpBehaviour.OnHttpMessageHandlerCreated.Invoke(baseMessageHandler);

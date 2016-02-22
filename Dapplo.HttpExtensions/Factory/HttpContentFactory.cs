@@ -21,6 +21,7 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Linq;
 using System.Net.Http;
 
@@ -36,30 +37,40 @@ namespace Dapplo.HttpExtensions.Factory
 		/// </summary>
 		/// <typeparam name="TInput">type for the content</typeparam>
 		/// <param name="content">content</param>
-		/// <param name="httpBehaviour">IHttpBehaviour</param>
 		/// <returns>HttpContent</returns>
-		public static HttpContent Create<TInput>(TInput content, IHttpBehaviour httpBehaviour = null) where TInput : class
+		public static HttpContent Create(Type inputType, object content)
 		{
 			if (content == null) return null;
 
-			if (typeof(HttpContent).IsAssignableFrom(typeof(TInput)))
+			if (typeof(HttpContent).IsAssignableFrom(inputType))
 			{
 				return content as HttpContent;
 			}
 
 			// TODO: Add HttpAttribute logic here
 
-			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
-			var httpContentConverter = httpBehaviour.HttpContentConverters.OrderBy(x => x.Order).FirstOrDefault(x => x.CanConvertToHttpContent(content, httpBehaviour));
+			var httpBehaviour = HttpBehaviour.Current;
+			var httpContentConverter = httpBehaviour.HttpContentConverters.OrderBy(x => x.Order).FirstOrDefault(x => x.CanConvertToHttpContent(inputType, content));
 			if (httpContentConverter == null) return null;
 
-			var httpContent = httpContentConverter.ConvertToHttpContent(content, httpBehaviour);
+			var httpContent = httpContentConverter.ConvertToHttpContent(inputType, content);
 			// Make sure the OnHttpContentCreated function is called
 			if (httpBehaviour.OnHttpContentCreated != null)
 			{
 				return httpBehaviour.OnHttpContentCreated.Invoke(httpContent);
 			}
 			return httpContent;
+		}
+
+		/// <summary>
+		/// Create a HttpContent object from the supplied content
+		/// </summary>
+		/// <typeparam name="TInput">type for the content</typeparam>
+		/// <param name="content">content</param>
+		/// <returns>HttpContent</returns>
+		public static HttpContent Create<TInput>(TInput content) where TInput : class
+		{
+			return Create(typeof(TInput), content);
 		}
 	}
 }

@@ -62,28 +62,27 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		/// </summary>
 		public int LogThreshold { get; set; }
 
-		public bool CanConvertFromHttpContent<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null)
+		public bool CanConvertFromHttpContent<TResult>(HttpContent httpContent)
 			where TResult : class
 		{
-			return CanConvertFromHttpContent(typeof (TResult), httpContent, httpBehaviour);
+			return CanConvertFromHttpContent(typeof (TResult), httpContent);
 		}
 
-		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent, IHttpBehaviour httpBehaviour = null)
+		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent)
 		{
-			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
+			var httpBehaviour = HttpBehaviour.Current;
 			return !httpBehaviour.ValidateResponseContentType || SupportedContentTypes.Contains(httpContent.GetContentType());
 		}
 
-		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, CancellationToken token = default(CancellationToken))
 			where TResult : class
 		{
-			return await ConvertFromHttpContentAsync(typeof (TResult), httpContent, httpBehaviour, token).ConfigureAwait(false) as TResult;
+			return await ConvertFromHttpContentAsync(typeof (TResult), httpContent, token).ConfigureAwait(false) as TResult;
 		}
 
-		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken token = default(CancellationToken))
 		{
-			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
-			if (!CanConvertFromHttpContent(resultType, httpContent, httpBehaviour))
+			if (!CanConvertFromHttpContent(resultType, httpContent))
 			{
 				throw new NotSupportedException("CanConvertFromHttpContent resulted in false, this is not supposed to be called.");
 			}
@@ -101,32 +100,33 @@ namespace Dapplo.HttpExtensions.ContentConverter
 					Log.Verbose().WriteLine("Read Json content: {0}", jsonString);
 				}
 			}
+			var httpBehaviour = HttpBehaviour.Current;
 			return httpBehaviour.JsonSerializer.DeserializeJson(resultType == typeof(object) ? null : resultType, jsonString);
 		}
 
-		public bool CanConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
+		public bool CanConvertToHttpContent(Type typeToConvert, object content)
 		{
 			return typeToConvert != typeof (string);
 		}
 
-		public bool CanConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null)
+		public bool CanConvertToHttpContent<TInput>(TInput content)
 			where TInput : class
 		{
-			return CanConvertToHttpContent(typeof (TInput), content, httpBehaviour);
+			return CanConvertToHttpContent(typeof (TInput), content);
 		}
 
-		public HttpContent ConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
+		public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
 		{
-			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
+			var httpBehaviour = HttpBehaviour.Current;
 			var jsonString = httpBehaviour.JsonSerializer.SerializeJson(content);
 			Log.Debug().WriteLine("Created HttpContent for Json: {0}", jsonString);
 			return new StringContent(jsonString, httpBehaviour.DefaultEncoding, MediaTypes.Json.EnumValueOf());
 		}
 
-		public HttpContent ConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null)
+		public HttpContent ConvertToHttpContent<TInput>(TInput content)
 			where TInput : class
 		{
-			return ConvertToHttpContent(typeof (TInput), content, httpBehaviour);
+			return ConvertToHttpContent(typeof (TInput), content);
 		}
 
 		/// <summary>
@@ -135,8 +135,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		/// </summary>
 		/// <param name="resultType">Result type, this where to a conversion from HttpContent is made</param>
 		/// <param name="httpRequestMessage">HttpRequestMessage</param>
-		/// <param name="httpBehaviour">IHttpBehaviour</param>
-		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage, IHttpBehaviour httpBehaviour = null)
+		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage)
 		{
 			if (resultType == null)
 			{

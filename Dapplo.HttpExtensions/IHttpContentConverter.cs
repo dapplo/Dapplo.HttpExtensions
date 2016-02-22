@@ -43,81 +43,72 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="resultType">Type to read into</param>
 		/// <param name="httpRequestMessage">HttpClient for the response headers</param>
-		/// <param name="httpBehaviour">IHttpBehaviour, currently not used</param>
-		void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage, IHttpBehaviour httpBehaviour = null);
+		void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage);
 
 		/// <summary>
 		/// Check if this IHttpContentProcessor can convert the specified object to a HttpContent
 		/// </summary>
 		/// <typeparam name="TInput">content type to place into a HttpContent</typeparam>
 		/// <param name="content">Content to place into a HttpContent</param>
-		/// <param name="httpBehaviour">IHttpBehaviour which controls the validation</param>
 		/// <returns>true if this processor can do the conversion</returns>
-		bool CanConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null) where TInput : class;
+		bool CanConvertToHttpContent<TInput>(TInput content) where TInput : class;
 
 		/// <summary>
 		/// Check if this IHttpContentProcessor can convert the specified type to a HttpContent
 		/// </summary>
 		/// <param name="typeToConvertFrom">Type to convert</param>
 		/// <param name="content">Content to place into a HttpContent</param>
-		/// <param name="httpBehaviour">IHttpBehaviour which controls the validation</param>
 		/// <returns>true if this processor can do the conversion</returns>
-		bool CanConvertToHttpContent(Type typeToConvertFrom, object content, IHttpBehaviour httpBehaviour = null);
+		bool CanConvertToHttpContent(Type typeToConvertFrom, object content);
 
 		/// <summary>
 		/// Create HttpContent for the supplied object/type
 		/// </summary>
 		/// <typeparam name="TInput">Type of the content</typeparam>
 		/// <param name="content">Content to place into a HttpContent</param>
-		/// <param name="httpBehaviour">IHttpBehaviour which controls the validation</param>
 		/// <returns>HttpContent</returns>
-		HttpContent ConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null) where TInput : class;
+		HttpContent ConvertToHttpContent<TInput>(TInput content) where TInput : class;
 
 		/// <summary>
 		/// Create HttpContent for the supplied object/type
 		/// </summary>
 		/// <param name="typeToConvert">Type of the content to convert</param>
 		/// <param name="content">Content to place into a HttpContent</param>
-		/// <param name="httpBehaviour">IHttpBehaviour which controls the validation</param>
 		/// <returns>HttpContent</returns>
-		HttpContent ConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null);
+		HttpContent ConvertToHttpContent(Type typeToConvert, object content);
 
 		/// <summary>
 		/// Check if this IHttpContentProcessor can convert the HttpContent into the specified type
 		/// </summary>
 		/// <typeparam name="TResult">Type to which a convertion should be made</typeparam>
 		/// <param name="httpContent">HttpContent object to process</param>
-		/// <param name="httpBehaviour">IHttpBehaviour which controls the validation</param>
 		/// <returns>true if this processor can do the conversion</returns>
-		bool CanConvertFromHttpContent<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null) where TResult : class;
+		bool CanConvertFromHttpContent<TResult>(HttpContent httpContent) where TResult : class;
 
 		/// <summary>
 		/// Check if this IHttpContentProcessor can convert the HttpContent into the specified type
 		/// </summary>
 		/// <param name="typeToConvertTo">Type from which a conversion should be made</param>
 		/// <param name="httpContent">HttpContent object to process</param>
-		/// <param name="httpBehaviour">IHttpBehaviour which controls the validation</param>
 		/// <returns>true if this processor can do the conversion</returns>
-		bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent, IHttpBehaviour httpBehaviour = null);
+		bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent);
 
 		/// <summary>
 		/// Create the target object from the supplied HttpContent
 		/// </summary>
 		/// <typeparam name="TResult">Typ to process the HttpContent to</typeparam>
 		/// <param name="httpContent">HttpContent</param>
-		/// <param name="httpBehaviour">IHttpBehaviour which controls the validation</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>TResult</returns>
-		Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class;
+		Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, CancellationToken token = default(CancellationToken)) where TResult : class;
 
 		/// <summary>
 		/// Create the target object from the supplied HttpContent
 		/// </summary>
 		/// <param name="resultType">Typ to process the HttpContent to</param>
 		/// <param name="httpContent">HttpContent</param>
-		/// <param name="httpBehaviour">IHttpBehaviour which controls the validation</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>object of type resultType</returns>
-		Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken));
+		Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken token = default(CancellationToken));
 	}
 }

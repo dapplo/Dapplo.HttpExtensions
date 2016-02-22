@@ -52,55 +52,54 @@ namespace Dapplo.HttpExtensions.ContentConverter
 
 		public int Order => int.MaxValue;
 
-		public bool CanConvertFromHttpContent<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null) where TResult : class
+		public bool CanConvertFromHttpContent<TResult>(HttpContent httpContent) where TResult : class
 		{
-			return CanConvertFromHttpContent(typeof(TResult), httpContent, httpBehaviour);
+			return CanConvertFromHttpContent(typeof(TResult), httpContent);
 		}
 
-		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent, IHttpBehaviour httpBehaviour = null)
+		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent)
 		{
 			if (typeToConvertTo != typeof(string))
 			{
 				return false;
 			}
-			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
+			var httpBehaviour = HttpBehaviour.Current;
 			// Set ValidateResponseContentType to false to "catch" all
 			return !httpBehaviour.ValidateResponseContentType || SupportedContentTypes.Contains(httpContent.GetContentType());
 		}
 
-		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
+		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
-			return await ConvertFromHttpContentAsync(typeof (TResult), httpContent, httpBehaviour, token).ConfigureAwait(false) as TResult;
+			return await ConvertFromHttpContentAsync(typeof (TResult), httpContent, token).ConfigureAwait(false) as TResult;
 		}
 
-		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken token = default(CancellationToken))
 		{
-			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
-			if (!CanConvertFromHttpContent(resultType, httpContent, httpBehaviour))
+			if (!CanConvertFromHttpContent(resultType, httpContent))
 			{
 				throw new NotSupportedException("CanConvertFromHttpContent resulted in false, this is not supposed to be called.");
 			}
 			return await httpContent.ReadAsStringAsync().ConfigureAwait(false);
 		}
 
-		public bool CanConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
+		public bool CanConvertToHttpContent(Type typeToConvert, object content)
 		{
 			return typeof(string) == typeToConvert;
 		}
 
-		public bool CanConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null) where TInput : class
+		public bool CanConvertToHttpContent<TInput>(TInput content) where TInput : class
 		{
-			return CanConvertToHttpContent(typeof(TInput), content, httpBehaviour);
+			return CanConvertToHttpContent(typeof(TInput), content);
 		}
 
-		public HttpContent ConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
+		public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
 		{
 			return new StringContent(content as string);
 		}
 
-		public HttpContent ConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null) where TInput : class
+		public HttpContent ConvertToHttpContent<TInput>(TInput content) where TInput : class
 		{
-			return ConvertToHttpContent(typeof(TInput), content, httpBehaviour);
+			return ConvertToHttpContent(typeof(TInput), content);
 		}
 
 		/// <summary>
@@ -109,8 +108,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		/// </summary>
 		/// <param name="typeToConvertTo">Result type, this where to a conversion from HttpContent is made</param>
 		/// <param name="httpRequestMessage">HttpRequestMessage</param>
-		/// <param name="httpBehaviour">IHttpBehaviour</param>
-		public void AddAcceptHeadersForType(Type typeToConvertTo, HttpRequestMessage httpRequestMessage, IHttpBehaviour httpBehaviour = null)
+		public void AddAcceptHeadersForType(Type typeToConvertTo, HttpRequestMessage httpRequestMessage)
 		{
 			if (typeToConvertTo == null)
 			{

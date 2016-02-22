@@ -39,23 +39,21 @@ namespace Dapplo.HttpExtensions.Factory
 		/// Create a HttpRequestMessage for the HEAD method
 		/// </summary>
 		/// <param name="requestUri">the target uri for this message</param>
-		/// <param name="httpBehaviour">HttpBehaviour instance or null if the global settings need to be used</param>
 		/// <returns>HttpRequestMessage</returns>
-		public static HttpRequestMessage CreateHead(Uri requestUri, IHttpBehaviour httpBehaviour = null)
+		public static HttpRequestMessage CreateHead(Uri requestUri)
 		{
-			return Create(HttpMethod.Head, requestUri, null, null, httpBehaviour);
+			return Create(HttpMethod.Head, requestUri);
 		}
 
 		/// <summary>
 		/// Create a HttpRequestMessage for the GET method
 		/// </summary>
 		/// <param name="requestUri">the target uri for this message</param>
-		/// <param name="httpBehaviour">HttpBehaviour instance or null if the global settings need to be used</param>
 		/// <returns>HttpRequestMessage</returns>
-		public static HttpRequestMessage CreateGet<TResponse>(Uri requestUri, IHttpBehaviour httpBehaviour = null)
+		public static HttpRequestMessage CreateGet<TResponse>(Uri requestUri)
 			where TResponse : class
 		{
-			return Create<TResponse>(HttpMethod.Get, requestUri, null, httpBehaviour);
+			return Create<TResponse>(HttpMethod.Get, requestUri);
 		}
 
 		/// <summary>
@@ -64,11 +62,11 @@ namespace Dapplo.HttpExtensions.Factory
 		/// <param name="requestUri">the target uri for this message</param>
 		/// <param name="resultType">Type to return into, this influences the Accept headers</param>
 		/// <param name="content">HttpContent</param>
-		/// <param name="httpBehaviour">HttpBehaviour instance or null if the global settings need to be used</param>
 		/// <returns>HttpRequestMessage</returns>
-		public static HttpRequestMessage CreatePost(Uri requestUri, Type resultType = null, HttpContent content = null, IHttpBehaviour httpBehaviour = null)
+		public static HttpRequestMessage CreatePost<TResponse, TContent>(Uri requestUri, TContent content = default(TContent))
+			where TResponse : class
 		{
-			return Create(HttpMethod.Post, requestUri, resultType, content, httpBehaviour);
+			return Create(HttpMethod.Post, requestUri, typeof(TResponse), typeof(TContent), content);
 		}
 
 		/// <summary>
@@ -76,19 +74,18 @@ namespace Dapplo.HttpExtensions.Factory
 		/// </summary>
 		/// <param name="method">Method to create the request message for</param>
 		/// <param name="requestUri">the target uri for this message</param>
-		/// <param name="resultType">Type to return into, this influences the Accept headers</param>
-		/// <param name="content">HttpContent</param>
-		/// <param name="httpBehaviour">HttpBehaviour instance or null if the global settings need to be used</param>
+		/// <param name="resultType">Type</param>
+		/// <param name="contentType">Type</param>
+		/// <param name="content">content to convert to HttpContent</param>
 		/// <returns>HttpRequestMessage</returns>
-		public static HttpRequestMessage Create(HttpMethod method, Uri requestUri, Type resultType = null, HttpContent content = null, IHttpBehaviour httpBehaviour = null)
+		public static HttpRequestMessage Create(HttpMethod method, Uri requestUri, Type resultType = null, Type contentType = null, object content = null)
 		{
-			Log.Verbose().WriteLine("Created request for {0}", requestUri);
-
-			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
+			Log.Verbose().WriteLine("Creating request for {0}", requestUri);
+			var httpBehaviour = HttpBehaviour.Current;
 
 			var httpRequestMessage = new HttpRequestMessage(method, requestUri)
 			{
-				Content = content
+				Content = HttpContentFactory.Create(contentType, content)
 			};
 			if (resultType != null)
 			{
@@ -110,12 +107,24 @@ namespace Dapplo.HttpExtensions.Factory
 		/// <param name="method">Method to create the request message for</param>
 		/// <param name="requestUri">the target uri for this message</param>
 		/// <param name="content">HttpContent</param>
-		/// <param name="httpBehaviour">HttpBehaviour instance or null if the global settings need to be used</param>
 		/// <returns>HttpRequestMessage</returns>
-		public static HttpRequestMessage Create<TResponse>(HttpMethod method, Uri requestUri, HttpContent content = null, IHttpBehaviour httpBehaviour = null)
+		public static HttpRequestMessage Create<TResponse, TContent>(HttpMethod method, Uri requestUri, TContent content = default(TContent))
+			where TResponse : class where TContent : class
+		{
+			return Create(method, requestUri, typeof(TResponse), typeof(TContent), content);
+		}
+
+		/// <summary>
+		/// Create a HttpRequestMessage for the specified method
+		/// </summary>
+		/// <typeparam name="TResponse">The type for the response, this modifies the Accep headers</typeparam>
+		/// <param name="method">Method to create the request message for</param>
+		/// <param name="requestUri">the target uri for this message</param>
+		/// <returns>HttpRequestMessage</returns>
+		public static HttpRequestMessage Create<TResponse>(HttpMethod method, Uri requestUri)
 			where TResponse : class
 		{
-			return Create(method, requestUri, typeof(TResponse), content, httpBehaviour);
+			return Create(method, requestUri, typeof(TResponse));
 		}
 	}
 }

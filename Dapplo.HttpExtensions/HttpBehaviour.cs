@@ -24,6 +24,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 
 namespace Dapplo.HttpExtensions
@@ -32,7 +33,7 @@ namespace Dapplo.HttpExtensions
 	/// This is the default implementation of the IHttpBehaviour, see IHttpBehaviour for details
 	/// Most values are initialized via the HttpExtensionsGlobals
 	/// </summary>
-	public class HttpBehaviour : IHttpBehaviour
+	public class HttpBehaviour : IChangeableHttpBehaviour
 	{
 		public IHttpSettings HttpSettings { get; set; } = HttpExtensionsGlobals.HttpSettings;
 
@@ -66,9 +67,41 @@ namespace Dapplo.HttpExtensions
 
 		public int ReadBufferSize { get; set; } = HttpExtensionsGlobals.ReadBufferSize;
 
-		public object Clone()
+		public IChangeableHttpBehaviour Clone()
 		{
-			return MemberwiseClone();
+			return (HttpBehaviour)MemberwiseClone();
+		}
+
+		/// <summary>
+		/// Explicit IClonable interface implementation
+		/// </summary>
+		/// <returns></returns>
+		object ICloneable.Clone()
+		{
+			return Clone();
+		}
+
+		public void MakeCurrent()
+		{
+			CallContext.LogicalSetData(typeof(IHttpBehaviour).Name, this);
+		}
+
+		/// <summary>
+		/// Retrieve the current IHttpBehaviour from the CallContext, if there is nothing available, create and make it current
+		/// This never returns null
+		/// </summary>
+		public static IHttpBehaviour Current
+		{
+			get
+			{
+				var httpBehaviour = CallContext.LogicalGetData(typeof(IHttpBehaviour).Name) as IHttpBehaviour;
+				if (httpBehaviour == null)
+				{
+					httpBehaviour = new HttpBehaviour();
+					httpBehaviour.MakeCurrent();
+				}
+				return httpBehaviour;
+			}
 		}
 	}
 }

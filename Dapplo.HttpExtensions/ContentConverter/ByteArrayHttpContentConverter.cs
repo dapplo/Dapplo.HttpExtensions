@@ -52,11 +52,10 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		/// </summary>
 		/// <typeparam name="TResult">To what type will the result be assigned</typeparam>
 		/// <param name="httpContent">HttpContent</param>
-		/// <param name="httpBehaviour">IHttpBehaviour</param>
 		/// <returns>true if we can convert the HttpContent to a ByteArray</returns>
-		public bool CanConvertFromHttpContent<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null) where TResult : class
+		public bool CanConvertFromHttpContent<TResult>(HttpContent httpContent) where TResult : class
 		{
-			return CanConvertFromHttpContent(typeof(TResult), httpContent, httpBehaviour);
+			return CanConvertFromHttpContent(typeof(TResult), httpContent);
 		}
 
 		/// <summary>
@@ -64,9 +63,8 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		/// </summary>
 		/// <param name="typeToConvertTo">To what type will the result be assigned</param>
 		/// <param name="httpContent">HttpContent</param>
-		/// <param name="httpBehaviour">IHttpBehaviour</param>
 		/// <returns>true if we can convert the HttpContent to a ByteArray</returns>
-		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent, IHttpBehaviour httpBehaviour = null)
+		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent)
 		{
 			return typeToConvertTo == typeof(byte[]);
 		}
@@ -76,12 +74,11 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		/// </summary>
 		/// <typeparam name="TResult">Type to convert to</typeparam>
 		/// <param name="httpContent">HttpContent</param>
-		/// <param name="httpBehaviour">IHttpBehaviour</param>
 		/// <param name="token">CancellationToken, used as the HttpContent might be read async</param>
 		/// <returns>Task with result</returns>
-		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
+		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
-			return await ConvertFromHttpContentAsync(typeof(TResult), httpContent, httpBehaviour, token).ConfigureAwait(false) as TResult;
+			return await ConvertFromHttpContentAsync(typeof(TResult), httpContent, token).ConfigureAwait(false) as TResult;
 		}
 
 		/// <summary>
@@ -89,13 +86,11 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		/// </summary>
 		/// <param name="resultType">Type to convert to</param>
 		/// <param name="httpContent">HttpContent</param>
-		/// <param name="httpBehaviour">IHttpBehaviour</param>
 		/// <param name="token">CancellationToken, used as the HttpContent might be read async</param>
 		/// <returns>Task with result</returns>
-		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken token = default(CancellationToken))
 		{
-			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
-			if (!CanConvertFromHttpContent(resultType, httpContent, httpBehaviour))
+			if (!CanConvertFromHttpContent(resultType, httpContent))
 			{
 				throw new NotSupportedException("CanConvertFromHttpContent resulted in false, this is not supposed to be called.");
 			}
@@ -109,9 +104,8 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		/// </summary>
 		/// <param name="typeToConvert">Type to convert to</param>
 		/// <param name="content">some object</param>
-		/// <param name="httpBehaviour">IHttpBehaviour</param>
 		/// <returns>true if a conversion can be made</returns>
-		public bool CanConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
+		public bool CanConvertToHttpContent(Type typeToConvert, object content)
 		{
 			return typeToConvert == typeof(byte[]);
 		}
@@ -121,11 +115,10 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		/// </summary>
 		/// <typeparam name="TInput">type to process</typeparam>
 		/// <param name="content">some object</param>
-		/// <param name="httpBehaviour">IHttpBehaviour</param>
 		/// <returns>true if a conversion can be made</returns>
-		public bool CanConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null) where TInput : class
+		public bool CanConvertToHttpContent<TInput>(TInput content) where TInput : class
 		{
-			return CanConvertToHttpContent(typeof(TInput), content, httpBehaviour);
+			return CanConvertToHttpContent(typeof(TInput), content);
 		}
 
 		/// <summary>
@@ -133,9 +126,8 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		/// </summary>
 		/// <param name="typeToConvert">Type to convert from</param>
 		/// <param name="content">Some object</param>
-		/// <param name="httpBehaviour">IHttpBehaviour</param>
 		/// <returns>HttpContent</returns>
-		public HttpContent ConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
+		public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
 		{
 			var byteArray = content as byte[];
 			return new ByteArrayContent(byteArray);
@@ -146,11 +138,10 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		/// </summary>
 		/// <typeparam name="TInput">Type to convert from</typeparam>
 		/// <param name="content">Some object</param>
-		/// <param name="httpBehaviour">IHttpBehaviour</param>
 		/// <returns>HttpContent</returns>
-		public HttpContent ConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null) where TInput : class
+		public HttpContent ConvertToHttpContent<TInput>(TInput content) where TInput : class
 		{
-			return ConvertToHttpContent(typeof(TInput), content, httpBehaviour);
+			return ConvertToHttpContent(typeof(TInput), content);
 		}
 
 		/// <summary>
@@ -159,8 +150,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		/// </summary>
 		/// <param name="resultType">Result type, this where to a conversion from HttpContent is made</param>
 		/// <param name="httpRequestMessage">HttpRequestMessage</param>
-		/// <param name="httpBehaviour">IHttpBehaviour</param>
-		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage, IHttpBehaviour httpBehaviour = null)
+		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage)
 		{
 			if (resultType == null)
 			{

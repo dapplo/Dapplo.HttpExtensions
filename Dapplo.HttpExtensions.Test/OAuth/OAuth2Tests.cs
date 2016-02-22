@@ -33,7 +33,6 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 	/// <summary>
 	/// This test is more an integration test, SHOULD NOT RUN on a headless server, as it opens a browser where a user should do something
 	/// </summary>
-	//[TestClass]
 	public class OAuth2Tests
 	{
 		private static readonly Uri GoogleApiUri = new Uri("https://www.googleapis.com");
@@ -41,7 +40,7 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 
 		public OAuth2Tests(ITestOutputHelper testOutputHelper)
 		{
-			XUnitLogger.RegisterLogger(testOutputHelper);
+			XUnitLogger.RegisterLogger(testOutputHelper, LogFacade.LogLevel.Verbose);
 			var oAuth2Settings = new OAuth2Settings
 			{
 				ClientId = "<client id from google developer console>",
@@ -68,7 +67,9 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 		public async Task TestOAuth2HttpMessageHandler()
 		{
 			var calendarApiUri = GoogleApiUri.AppendSegments("calendar", "v3");
-			var response = await calendarApiUri.AppendSegments("users","me","calendarList").GetAsAsync<dynamic>(_oAuthHttpBehaviour);
+			// Make sure you use your special IHttpBehaviour before the requests which need OAuth
+			_oAuthHttpBehaviour.MakeCurrent();
+			var response = await calendarApiUri.AppendSegments("users","me","calendarList").GetAsAsync<dynamic>();
 			Assert.True(response.ContainsKey("items"));
 			Assert.True(response["items"].Count > 0);
 		}

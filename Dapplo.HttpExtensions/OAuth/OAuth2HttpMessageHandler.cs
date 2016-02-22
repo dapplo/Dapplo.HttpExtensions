@@ -96,9 +96,11 @@ namespace Dapplo.HttpExtensions.OAuth
 			}
 
 			_oAuth2Settings = oAuth2Settings;
-			_httpBehaviour = (IHttpBehaviour) httpBehaviour.Clone();
+			var newHttpBehaviour = httpBehaviour.Clone();
 			// Remove the OnHttpMessageHandlerCreated
-			_httpBehaviour.OnHttpMessageHandlerCreated = null;
+			newHttpBehaviour.OnHttpMessageHandlerCreated = null;
+			// Use it for internal communication
+			_httpBehaviour = newHttpBehaviour;
 		}
 
 		/// <summary>
@@ -114,7 +116,7 @@ namespace Dapplo.HttpExtensions.OAuth
 			{
 				throw new NotImplementedException($"Authorize mode '{_oAuth2Settings.AuthorizeMode}' is not implemented/registered.");
 			}
-			var result = await codeReceiver.ReceiveCodeAsync(_oAuth2Settings.AuthorizeMode, _oAuth2Settings, cancellationToken);
+			var result = await codeReceiver.ReceiveCodeAsync(_oAuth2Settings.AuthorizeMode, _oAuth2Settings, cancellationToken).ConfigureAwait(false);
 
 			string error;
 			if (result.TryGetValue(OAuth2Fields.Error.EnumValueOf(), out error))
@@ -135,7 +137,7 @@ namespace Dapplo.HttpExtensions.OAuth
 			{
 				_oAuth2Settings.Code = code;
 				Log.Debug().WriteLine("Retrieving a first time refresh token.");
-				await GenerateRefreshTokenAsync(cancellationToken);
+				await GenerateRefreshTokenAsync(cancellationToken).ConfigureAwait(false);
 				return true;
 			}
 			return false;
@@ -169,7 +171,7 @@ namespace Dapplo.HttpExtensions.OAuth
 				}
 			}
 
-			var accessTokenResult = await _oAuth2Settings.TokenUrl.PostAsync<OAuth2TokenResponse, IDictionary<string, string>>(data, null, cancellationToken).ConfigureAwait(false);
+			var accessTokenResult = await _oAuth2Settings.TokenUrl.PostAsync<OAuth2TokenResponse, IDictionary<string, string>>(data, cancellationToken).ConfigureAwait(false);
 
 			if (accessTokenResult.HasError)
 			{
@@ -235,10 +237,12 @@ namespace Dapplo.HttpExtensions.OAuth
 					data.Add(key, _oAuth2Settings.AdditionalAttributes[key]);
 				}
 			}
-			var normalHttpBehaviour = (IHttpBehaviour)_httpBehaviour.Clone();
-			normalHttpBehaviour.OnHttpMessageHandlerCreated = null;
 
-			var refreshTokenResult = await _oAuth2Settings.TokenUrl.PostAsync<OAuth2TokenResponse, IDictionary<string, string>>(data, normalHttpBehaviour, cancellationToken).ConfigureAwait(false);
+			var normalHttpBehaviour = _httpBehaviour.Clone();
+			normalHttpBehaviour.OnHttpMessageHandlerCreated = null;
+			normalHttpBehaviour.MakeCurrent();
+
+			var refreshTokenResult = await _oAuth2Settings.TokenUrl.PostAsync<OAuth2TokenResponse, IDictionary<string, string>>(data, cancellationToken).ConfigureAwait(false);
 			if (refreshTokenResult.HasError)
 			{
 				if (!string.IsNullOrEmpty(refreshTokenResult.ErrorDescription))
@@ -308,7 +312,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		{
 			await CheckAndAuthenticateOrRefreshAsync(cancellationToken).ConfigureAwait(false);
 			httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _oAuth2Settings.Token.OAuth2AccessToken);
-			var result = await base.SendAsync(httpRequestMessage, cancellationToken);
+			var result = await base.SendAsync(httpRequestMessage, cancellationToken).ConfigureAwait(false);
 			return result;
 		}
 	}

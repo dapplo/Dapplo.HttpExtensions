@@ -1,4 +1,4 @@
-version: 0.3.{build}
+version: 0.4.{build}
 skip_tags: true
 configuration: Release
 platform: Any CPU
@@ -44,7 +44,7 @@ deploy:
     secure: eBQPtXg53XgcvdcVY3wQAw6kkwNh+QhcsTDwzyQLLh6IOPyiePEaEhJR0D2YBjAj
   artifact: /.*\.nupkg/
   draft: true
-#- provider: NuGet
-#  skip_symbols: true
-#  api_key:
-#    secure: xkDQ385+smLqdzhESsXBJvnUjK4FZ4Djjrqi9tFR29dwESIvPYOrQAqgri5Nf/fA
+- provider: NuGet
+  skip_symbols: true
+  api_key:
+    secure: xkDQ385+smLqdzhESsXBJvnUjK4FZ4Djjrqi9tFR29dwESIvPYOrQAqgri5Nf/fA

@@ -103,11 +103,10 @@ namespace Dapplo.HttpExtensions.Desktop
 		/// </summary>
 		/// <typeparam name="TResult">Type to convert to</typeparam>
 		/// <param name="httpContent">HttpContent to process</param>
-		/// <param name="httpBehaviour">HttpBehaviour</param>
 		/// <returns>true if it can convert</returns>
-		public bool CanConvertFromHttpContent<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null) where TResult : class
+		public bool CanConvertFromHttpContent<TResult>(HttpContent httpContent) where TResult : class
 		{
-			return CanConvertFromHttpContent(typeof (TResult), httpContent, httpBehaviour);
+			return CanConvertFromHttpContent(typeof (TResult), httpContent);
 		}
 
 		/// <summary>
@@ -115,55 +114,53 @@ namespace Dapplo.HttpExtensions.Desktop
 		/// </summary>
 		/// <param name="typeToConvertTo">This should be something we can assign Bitmap to</param>
 		/// <param name="httpContent">HttpContent to process</param>
-		/// <param name="httpBehaviour">IHttpBehaviour which supports the behaviour</param>
 		/// <returns>true if it can convert</returns>
-		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent, IHttpBehaviour httpBehaviour = null)
+		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent)
 		{
 			if (typeToConvertTo == typeof(object) || !typeToConvertTo.IsAssignableFrom(typeof (Bitmap)))
 			{
 				return false;
 			}
-			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
+			var httpBehaviour = HttpBehaviour.Current;
 			return !httpBehaviour.ValidateResponseContentType || SupportedContentTypes.Contains(httpContent.GetContentType());
 		}
 
-		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
+		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
-			return await ConvertFromHttpContentAsync(typeof(TResult), httpContent, httpBehaviour, token).ConfigureAwait(false) as TResult;
+			return await ConvertFromHttpContentAsync(typeof(TResult), httpContent, token).ConfigureAwait(false) as TResult;
 		}
 
-		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken token = default(CancellationToken))
 		{
-			if (!CanConvertFromHttpContent(resultType, httpContent, httpBehaviour))
+			if (!CanConvertFromHttpContent(resultType, httpContent))
 			{
 				var exMessage = "CanConvertFromHttpContent resulted in false, ConvertFromHttpContentAsync is not supposed to be called.";
 				Log.Error().WriteLine(exMessage);
 				throw new NotSupportedException(exMessage);
 			}
-			var memoryStream = await StreamHttpContentConverter.Instance.ConvertFromHttpContentAsync<MemoryStream>(httpContent, httpBehaviour, token).ConfigureAwait(false);
+			var memoryStream = await StreamHttpContentConverter.Instance.ConvertFromHttpContentAsync<MemoryStream>(httpContent, token).ConfigureAwait(false);
 			Log.Debug().WriteLine("Creating a Bitmap from the MemoryStream.");
 			return new Bitmap(memoryStream);
 		}
 
-		public bool CanConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null) where TInput : class
+		public bool CanConvertToHttpContent<TInput>(TInput content) where TInput : class
 		{
-			return CanConvertToHttpContent(typeof(TInput), content, httpBehaviour);
+			return CanConvertToHttpContent(typeof(TInput), content);
 		}
 
-		public bool CanConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
+		public bool CanConvertToHttpContent(Type typeToConvert, object content)
 		{
 			return typeof(Bitmap).IsAssignableFrom(typeToConvert) && content != null;
 		}
 
-		public HttpContent ConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null) where TInput : class
+		public HttpContent ConvertToHttpContent<TInput>(TInput content) where TInput : class
 		{
-			return ConvertToHttpContent(typeof(TInput), content, httpBehaviour);
+			return ConvertToHttpContent(typeof(TInput), content);
 		}
 
-		public HttpContent ConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
+		public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
 		{
-			httpBehaviour = httpBehaviour ?? new HttpBehaviour();
-			if (!CanConvertToHttpContent(typeToConvert, content, httpBehaviour)) return null;
+			if (!CanConvertToHttpContent(typeToConvert, content)) return null;
 
 			var bitmap = content as Bitmap;
 			if (bitmap == null) return null;
@@ -185,6 +182,7 @@ namespace Dapplo.HttpExtensions.Desktop
 			}
 			memoryStream.Seek(0, SeekOrigin.Begin);
 			HttpContent httpContent;
+			var httpBehaviour = HttpBehaviour.Current;
 			if (httpBehaviour.UseProgressStreamContent)
 			{
 				httpContent = new ProgressStreamContent(memoryStream, httpBehaviour.UploadProgress);
@@ -197,7 +195,7 @@ namespace Dapplo.HttpExtensions.Desktop
 			return httpContent;
 		}
 
-		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage, IHttpBehaviour httpBehaviour = null)
+		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage)
 		{
 			if (resultType == null)
 			{

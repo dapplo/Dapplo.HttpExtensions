@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Text;
 using Dapplo.HttpExtensions.ContentConverter;
 using Dapplo.HttpExtensions.Support;
+using System.Threading.Tasks;
 
 #if DESKTOP
 using Dapplo.HttpExtensions.Desktop;
@@ -96,5 +97,10 @@ namespace Dapplo.HttpExtensions
 		/// Now + this > OAuth2AccessTokenExpires
 		/// </summary>
 		public static int OAuth2ExpireOffset { get; set; } = 5;
+
+		/// <summary>
+		/// This value is used when a Task needs to run on the UI Thread, e.g. the EmbeddedBrowserCodeReceiver
+		/// </summary>
+		public static TaskScheduler UITaskScheduler { get; set; } = TaskScheduler.FromCurrentSynchronizationContext();
 	}
 }

@@ -33,6 +33,8 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Security.Authentication;
+using System.Net.Http.Headers;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
@@ -78,7 +80,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		}
 
 		private readonly OAuthSettings _oAuthSettings;
-		private readonly IHttpBehaviour _httpBehaviour;
+		private readonly OAuthHttpBehaviour _httpBehaviour;
 
 		/// <summary>
 		/// Create a HttpMessageHandler which handles the OAuth communication for you
@@ -86,7 +88,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <param name="oAuthSettings">OAuthSettings</param>
 		/// <param name="httpBehaviour">IHttpBehaviour</param>
 		/// <param name="innerHandler">HttpMessageHandler</param>
-		public OAuthHttpMessageHandler(OAuthSettings oAuthSettings, IHttpBehaviour httpBehaviour, HttpMessageHandler innerHandler) : base(innerHandler)
+		public OAuthHttpMessageHandler(OAuthSettings oAuthSettings, OAuthHttpBehaviour httpBehaviour, HttpMessageHandler innerHandler) : base(innerHandler)
 		{
 			if (oAuthSettings.ClientId == null)
 			{
@@ -102,9 +104,12 @@ namespace Dapplo.HttpExtensions.OAuth
 			}
 
 			_oAuthSettings = oAuthSettings;
-			_httpBehaviour = (IHttpBehaviour) httpBehaviour.Clone();
+
+			var newHttpBehaviour = httpBehaviour.Clone();
 			// Remove the OnHttpMessageHandlerCreated
-			_httpBehaviour.OnHttpMessageHandlerCreated = null;
+			newHttpBehaviour.OnHttpMessageHandlerCreated = null;
+			// Use it for internal communication
+			_httpBehaviour = newHttpBehaviour;
 		}
 
 		/// <summary>
@@ -113,30 +118,27 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <param name="cancellationToken">CancellationToken</param>
 		private async Task GetRequestTokenAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
-			var parameters = new Dictionary<string, string>();
-			Sign(_oAuthSettings.TokenMethod, _oAuthSettings.TokenUrl, parameters);
-			string response;
-			var httpClient = HttpClientFactory.Create(_httpBehaviour, _oAuthSettings.TokenUrl);
-			// Generate OAuth authorization header
-			httpClient.SetAuthorization("OAuth", string.Join(", ", parameters.Where(x => x.Key.StartsWith("oauth_")).Select(x => $"{x.Key}=\"{ Uri.EscapeDataString(x.Value)}\"")));
-			if (_oAuthSettings.TokenMethod == HttpMethod.Get)
-			{
-			   response = await httpClient.GetAsAsync<string>(_oAuthSettings.TokenUrl, _httpBehaviour, cancellationToken).ConfigureAwait(false);
-			}
-			else
-			{
-				// Post with no content (don't know why some services want this...)
-				response = await httpClient.PostAsync<string, object>(_oAuthSettings.TokenUrl, null, _httpBehaviour, cancellationToken).ConfigureAwait(false);
-			}
+			_httpBehaviour.MakeCurrent();
+			// Create a HttpRequestMessage for the Token-Url
+			var httpRequestMessage = HttpRequestMessageFactory.Create(_oAuthSettings.TokenMethod, _oAuthSettings.TokenUrl);
+			// sign it
+			Sign(httpRequestMessage);
+			// Use it to get the response
+			string response = await httpRequestMessage.SendAsync<string>(cancellationToken).ConfigureAwait(false);
+
 			if (!string.IsNullOrEmpty(response))
 			{
 				Log.Verbose().WriteLine("Request token response: {0}", response);
 				var resultParameters = UriParseExtensions.QueryStringToDictionary(response);
-				string value;
-				if (resultParameters.TryGetValue(OAuthParameters.OauthTokenKey.EnumValueOf(), out value))
+				string tokenValue;
+				if (resultParameters.TryGetValue(OAuthParameters.OauthTokenKey.EnumValueOf(), out tokenValue))
 				{
-					_oAuthSettings.Token.OAuthToken = value;
-					_oAuthSettings.Token.OAuthTokenSecret = resultParameters[OAuthParameters.OauthTokenSecretKey.EnumValueOf()];
+					_oAuthSettings.Token.OAuthToken = tokenValue;
+				}
+				string tokenSecretValue;
+				if (resultParameters.TryGetValue(OAuthParameters.OauthTokenSecretKey.EnumValueOf(), out tokenSecretValue))
+				{
+					_oAuthSettings.Token.OAuthTokenSecret = tokenSecretValue;
 				}
 			}
 		}
@@ -160,7 +162,7 @@ namespace Dapplo.HttpExtensions.OAuth
 				throw new NotImplementedException($"Authorize mode '{_oAuthSettings.AuthorizeMode}' is not implemented/registered.");
 			}
 			Log.Debug().WriteLine("Calling code receiver : {0}", _oAuthSettings.AuthorizeMode);
-			var result = await codeReceiver.ReceiveCodeAsync(_oAuthSettings.AuthorizeMode, _oAuthSettings, cancellationToken);
+			var result = await codeReceiver.ReceiveCodeAsync(_oAuthSettings.AuthorizeMode, _oAuthSettings, cancellationToken).ConfigureAwait(false);
 
 			if (result != null)
 			{
@@ -185,26 +187,68 @@ namespace Dapplo.HttpExtensions.OAuth
 		}
 
 		/// <summary>
-		/// OAuth sign the parameters, meaning all oauth parameters are added to the supplied dictionary.
+		/// Get the access token
+		/// </summary>
+		/// <param name="cancellationToken">CancellationToken</param>
+		/// <returns>The access token.</returns>		
+		private async Task GetAccessTokenAsync(CancellationToken cancellationToken = default(CancellationToken))
+		{
+			if (string.IsNullOrEmpty(_oAuthSettings.Token.OAuthToken))
+			{
+				throw new ArgumentNullException("The request token is not set");
+			}
+			if (_oAuthSettings.CheckVerifier && string.IsNullOrEmpty(_oAuthSettings.Token.OAuthTokenVerifier))
+			{
+				throw new ArgumentNullException("The verifier is not set");
+			}
+
+			_httpBehaviour.MakeCurrent();
+			// Create a HttpRequestMessage for the Token-Url
+			var httpRequestMessage = HttpRequestMessageFactory.Create(_oAuthSettings.AccessTokenMethod, _oAuthSettings.AccessTokenUrl);
+			// sign it
+			Sign(httpRequestMessage);
+
+			// Use it to get the response
+			string response = await httpRequestMessage.SendAsync<string>(cancellationToken).ConfigureAwait(false);
+
+			if (!string.IsNullOrEmpty(response))
+			{
+				Log.Verbose().WriteLine("Access token response: {0}", response);
+				var resultParameters = UriParseExtensions.QueryStringToDictionary(response);
+				string tokenValue;
+				if (resultParameters.TryGetValue(OAuthParameters.OauthTokenKey.EnumValueOf(), out tokenValue))
+				{
+					_oAuthSettings.Token.OAuthToken = tokenValue;
+					resultParameters.Remove(OAuthParameters.OauthTokenKey.EnumValueOf());
+				}
+				string secretValue;
+				if (resultParameters.TryGetValue(OAuthParameters.OauthTokenSecretKey.EnumValueOf(), out secretValue))
+				{
+					_oAuthSettings.Token.OAuthTokenSecret = secretValue;
+					resultParameters.Remove(OAuthParameters.OauthTokenSecretKey.EnumValueOf());
+				}
+				// Process the rest, if someone registed, some services return more values
+				_httpBehaviour?.OnAccessToken(resultParameters);
+			}
+		}
+
+		/// <summary>
+		/// Create a signature for the supplied HttpRequestMessage
 		/// And additionally a signature is added to the parameters
 		/// </summary>
-		/// <param name="method">Method (POST,PUT,GET)</param>
-		/// <param name="requestUri">Url to call</param>
-		/// <param name="parameters">IDictionar&lt;string, string&gt;</param>
-		private void Sign(HttpMethod method, Uri requestUri, IDictionary<string, string> parameters)
+		/// <param name="httpRequestMessage">HttpRequestMessage with method & Uri</param>
+		/// <returns>HttpRequestMessage for fluent usage</returns>
+		private HttpRequestMessage Sign(HttpRequestMessage httpRequestMessage)
 		{
-			if (parameters == null)
-			{
-				throw new ArgumentNullException(nameof(parameters));
-			}
+			var parameters = new Dictionary<string, object>(httpRequestMessage.Properties);
 			// Build the signature base
 			var signatureBase = new StringBuilder();
 
 			// Add Method to signature base
-			signatureBase.Append(method).Append("&");
+			signatureBase.Append(httpRequestMessage.Method).Append("&");
 
 			// Add normalized URL, most of it is already normalized by using AbsoluteUri, but we need the Uri without Query and Fragment
-			var normalizedUri = new UriBuilder(requestUri)
+			var normalizedUri = new UriBuilder(httpRequestMessage.RequestUri)
 			{
 				Query = null,
 				Fragment = null
@@ -220,7 +264,7 @@ namespace Dapplo.HttpExtensions.OAuth
 
 			parameters.Add(OAuthParameters.OauthConsumerKeyKey.EnumValueOf(), _oAuthSettings.ClientId);
 
-			if (_oAuthSettings.RedirectUrl != null && _oAuthSettings.TokenUrl != null && requestUri.Equals(_oAuthSettings.TokenUrl))
+			if (_oAuthSettings.RedirectUrl != null && _oAuthSettings.TokenUrl != null && httpRequestMessage.RequestUri.Equals(_oAuthSettings.TokenUrl))
 			{
 				parameters.Add(OAuthParameters.OauthCallbackKey.EnumValueOf(), _oAuthSettings.RedirectUrl);
 			}
@@ -233,8 +277,8 @@ namespace Dapplo.HttpExtensions.OAuth
 				parameters.Add(OAuthParameters.OauthTokenKey.EnumValueOf(), _oAuthSettings.Token.OAuthToken);
 			}
 			// Create a copy of the parameters, so we add the query parameters as signle parameters to the signature base
-			var signatureParameters = new Dictionary<string, string>(parameters);
-			foreach (var valuePair in requestUri.QueryToKeyValuePairs())
+			var signatureParameters = new Dictionary<string, object>(parameters);
+			foreach (var valuePair in httpRequestMessage.RequestUri.QueryToKeyValuePairs())
 			{
 				if (!signatureParameters.ContainsKey(valuePair.Key))
 				{
@@ -245,6 +289,7 @@ namespace Dapplo.HttpExtensions.OAuth
 			Log.Verbose().WriteLine("Signature base: {0}", signatureBase);
 
 			string key = string.Format(CultureInfo.InvariantCulture, "{0}&{1}", Uri.EscapeDataString(_oAuthSettings.ClientSecret), string.IsNullOrEmpty(_oAuthSettings.Token.OAuthTokenSecret) ? string.Empty : Uri.EscapeDataString(_oAuthSettings.Token.OAuthTokenSecret));
+			Log.Verbose().WriteLine("Signing with key {0}", key);
 			switch (_oAuthSettings.SignatureType)
 			{
 				case OAuthSignatureTypes.RsaSha1:
@@ -282,6 +327,11 @@ namespace Dapplo.HttpExtensions.OAuth
 					parameters.Add(OAuthParameters.OauthSignatureKey.EnumValueOf(), signature);
 					break;
 			}
+
+
+			// Add the OAuth to the headers
+			httpRequestMessage.SetAuthorization("OAuth", string.Join(", ", parameters.Where(x => x.Key.StartsWith("oauth_") && x.Value is string).OrderBy(x => x.Key).Select(x => $"{x.Key}=\"{ Uri.EscapeDataString(x.Value as string)}\"")));
+			return httpRequestMessage;
 		}
 
 		/// <summary>
@@ -289,14 +339,14 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// </summary>
 		/// <param name="queryParameters">the list of query parameters</param>
 		/// <returns>a string with the normalized query parameters</returns>
-		private static string GenerateNormalizedParametersString(IDictionary<string, string> queryParameters)
+		private static string GenerateNormalizedParametersString<T>(IDictionary<string, T> queryParameters)
 		{
 			if (queryParameters == null || queryParameters.Count == 0)
 			{
 				return string.Empty;
 			}
 
-			queryParameters = new SortedDictionary<string, string>(queryParameters);
+			queryParameters = new SortedDictionary<string, T>(queryParameters);
 
 			var sb = new StringBuilder();
 			foreach (var key in queryParameters.Keys)
@@ -366,11 +416,21 @@ namespace Dapplo.HttpExtensions.OAuth
 		{
 			if (string.IsNullOrEmpty(_oAuthSettings.Token.OAuthToken))
 			{
-				await GetRequestTokenAsync(cancellationToken);
-				await GetAuthorizeTokenAsync(cancellationToken);
+				await GetRequestTokenAsync(cancellationToken).ConfigureAwait(false);
+				await GetAuthorizeTokenAsync(cancellationToken).ConfigureAwait(false);
+				await GetAccessTokenAsync().ConfigureAwait(false);
 			}
-			var result = await base.SendAsync(httpRequestMessage, cancellationToken);
-			return result;
+			if (string.IsNullOrEmpty(_oAuthSettings.Token.OAuthToken))
+			{
+				throw new AuthenticationException("Not possible to authenticate the OAuth request.");
+			}
+
+			// sign the HttpRequestMessage
+			Sign(httpRequestMessage);
+
+			_httpBehaviour?.BeforeSend(httpRequestMessage);
+
+			return await base.SendAsync(httpRequestMessage, cancellationToken).ConfigureAwait(false);
 		}
 	}
 }

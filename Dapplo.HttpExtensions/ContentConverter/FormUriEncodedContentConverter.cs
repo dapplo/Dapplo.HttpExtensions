@@ -45,12 +45,12 @@ namespace Dapplo.HttpExtensions.ContentConverter
 
 		public int Order => 0;
 
-		public bool CanConvertFromHttpContent<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null) where TResult : class
+		public bool CanConvertFromHttpContent<TResult>(HttpContent httpContent) where TResult : class
 		{
-			return CanConvertFromHttpContent(typeof(TResult), httpContent, httpBehaviour);
+			return CanConvertFromHttpContent(typeof(TResult), httpContent);
 		}
 
-		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent, IHttpBehaviour httpBehaviour = null)
+		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent)
 		{
 			// Check if the return-type can be assigned
 			if (typeToConvertTo == typeof(object) || !typeToConvertTo.IsAssignableFrom(typeof(IEnumerable<KeyValuePair<string, string>>)))
@@ -60,12 +60,12 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			return httpContent.GetContentType() == MediaTypes.WwwFormUrlEncoded.EnumValueOf();
 		}
 
-		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken)) where TResult : class
+		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
-			return await ConvertFromHttpContentAsync(typeof (TResult), httpContent, httpBehaviour, token).ConfigureAwait(false) as TResult;
+			return await ConvertFromHttpContentAsync(typeof (TResult), httpContent, token).ConfigureAwait(false) as TResult;
 		}
 
-		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken token = default(CancellationToken))
 		{
 			if (resultType == null)
 			{
@@ -75,7 +75,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			{
 				throw new ArgumentNullException(nameof(httpContent));
 			}
-			if (!CanConvertFromHttpContent(resultType, httpContent, httpBehaviour))
+			if (!CanConvertFromHttpContent(resultType, httpContent))
 			{
 				throw new NotSupportedException("Don't calls this, when the CanConvertFromHttpContent returns false!");
 			}
@@ -87,26 +87,26 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			return UriParseExtensions.QueryStringToKeyValuePairs(formUriEncodedString);
 		}
 
-		public bool CanConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
+		public bool CanConvertToHttpContent(Type typeToConvert, object content)
 		{
 			return typeof(IEnumerable<KeyValuePair<string, string>>).IsAssignableFrom(typeToConvert);
 		}
 
-		public bool CanConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null) where TInput : class
+		public bool CanConvertToHttpContent<TInput>(TInput content) where TInput : class
 		{
-			return CanConvertToHttpContent(typeof(TInput), content, httpBehaviour);
+			return CanConvertToHttpContent(typeof(TInput), content);
 		}
 
-		public HttpContent ConvertToHttpContent(Type typeToConvert, object content, IHttpBehaviour httpBehaviour = null)
+		public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
 		{
 			var nameValueCollection = content as IEnumerable<KeyValuePair<string, string>>;
 			Log.Debug().WriteLine("Created HttpContent with WwwUriEncodedForm data: {0}", nameValueCollection);
 			return new FormUrlEncodedContent(nameValueCollection);
 		}
 
-		public HttpContent ConvertToHttpContent<TInput>(TInput content, IHttpBehaviour httpBehaviour = null) where TInput : class
+		public HttpContent ConvertToHttpContent<TInput>(TInput content) where TInput : class
 		{
-			return ConvertToHttpContent(typeof(TInput), content, httpBehaviour);
+			return ConvertToHttpContent(typeof(TInput), content);
 		}
 
 		/// <summary>
@@ -115,8 +115,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		/// </summary>
 		/// <param name="resultType">Result type, this where to a conversion from HttpContent is made</param>
 		/// <param name="httpRequestMessage">HttpRequestMessage</param>
-		/// <param name="httpBehaviour">IHttpBehaviour</param>
-		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage, IHttpBehaviour httpBehaviour = null)
+		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage)
 		{
 			if (resultType == null)
 			{

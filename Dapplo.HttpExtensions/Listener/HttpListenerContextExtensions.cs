@@ -45,10 +45,9 @@ namespace Dapplo.HttpExtensions.Listener
 		/// <typeparam name="TContent">Type of the content</typeparam>
 		/// <param name="httpListenerContext">HttpListenerContext</param>
 		/// <param name="content">TContent object</param>
-		/// <param name="httpBehaviour">IHttpBehaviour</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>Task</returns>
-		public static async Task RespondAsync<TContent>(this HttpListenerContext httpListenerContext, TContent content, IHttpBehaviour httpBehaviour = null, CancellationToken token = default(CancellationToken))
+		public static async Task RespondAsync<TContent>(this HttpListenerContext httpListenerContext, TContent content, CancellationToken token = default(CancellationToken))
 			where TContent : class
 		{
 			HttpContent httpContent;
@@ -58,7 +57,7 @@ namespace Dapplo.HttpExtensions.Listener
 			}
 			else
 			{
-				httpContent = HttpContentFactory.Create(content, httpBehaviour);
+				httpContent = HttpContentFactory.Create(content);
 			}
 
 			using (var response = httpListenerContext.Response)
@@ -76,7 +75,7 @@ namespace Dapplo.HttpExtensions.Listener
 				Log.Debug().WriteLine("Responding with {0}", response.ContentType);
 				using (var stream = response.OutputStream)
 				{
-					await httpContent.CopyToAsync(stream);
+					await httpContent.CopyToAsync(stream).ConfigureAwait(false);
 				}
 			}
 		}

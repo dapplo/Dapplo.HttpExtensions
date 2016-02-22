@@ -21,11 +21,13 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Dapplo.HttpExtensions.ContentConverter;
 using Dapplo.HttpExtensions.Support;
-using System.Threading.Tasks;
+using Dapplo.LogFacade;
 
 #if DESKTOP
 using Dapplo.HttpExtensions.Desktop;
@@ -39,6 +41,24 @@ namespace Dapplo.HttpExtensions
 	/// </summary>
 	public static class HttpExtensionsGlobals
 	{
+		private static readonly LogSource Log = new LogSource();
+
+		// Used for UI stuff, e.g. EmbeddedBrowserCodeReceiver
+		private static TaskScheduler _uiTaskScheduler;
+
+		static HttpExtensionsGlobals()
+		{
+			// Try to store the current SynchronizationContext
+			try
+			{
+				_uiTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+			}
+			catch (Exception ex)
+			{
+				Log.Warn().WriteLine(ex, "Can't capture the UI TaskScheduler, this might cause issues when an EmbeddedBrowserCodeReceiver is used.");
+			}
+		}
+
 		/// <summary>
 		/// The global IHttpSettings
 		/// </summary>
@@ -101,6 +121,26 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// This value is used when a Task needs to run on the UI Thread, e.g. the EmbeddedBrowserCodeReceiver
 		/// </summary>
-		public static TaskScheduler UITaskScheduler { get; set; } = TaskScheduler.FromCurrentSynchronizationContext();
+		public static TaskScheduler UITaskScheduler
+		{
+			get
+			{
+				if (_uiTaskScheduler == null)
+				{
+					try {
+						_uiTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+					}
+					catch (Exception ex)
+					{
+						throw new InvalidOperationException("The framework needed a TaskScheduler for the UI, maybe you are not running ", ex);
+					}
+				}
+				return _uiTaskScheduler;
+			}
+			set
+			{
+				_uiTaskScheduler = value;
+			}
+		}
 	}
 }

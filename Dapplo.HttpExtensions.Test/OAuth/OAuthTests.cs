@@ -91,7 +91,7 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 		/// This will test Oauth with a EmbeddedBrowser "code" receiver against an oauth server provided by Photo bucket
 		/// </summary>
 		/// <returns>Task</returns>
-		[WinFormsFact]
+		//[WinFormsFact]
 		public async Task TestOAuthHttpMessageHandler()
 		{
 			var userInformationUri = PhotobucketApiUri.AppendSegments("user").ExtendQuery("format", "json");

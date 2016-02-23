@@ -71,12 +71,19 @@ namespace Dapplo.HttpExtensions.Desktop
 
 		private void CheckUrl(Uri uri)
 		{
-			if (uri == null || !uri.AbsoluteUri.StartsWith(_callbackUrl))
+			if (uri == null)
 			{
 				return;
 			}
-			CallbackParameters = uri.QueryToDictionary();
-			DialogResult = DialogResult.OK;
+			if (uri.AbsoluteUri.Contains("error"))
+			{
+				DialogResult = DialogResult.Abort;
+			}
+			else if (uri.AbsoluteUri.StartsWith(_callbackUrl))
+			{
+				CallbackParameters = uri.QueryToDictionary();
+				DialogResult = DialogResult.OK;
+			}
 		}
 	}
 }

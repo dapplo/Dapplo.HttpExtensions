@@ -158,6 +158,34 @@ namespace Dapplo.HttpExtensions.OAuth
 			set;
 		} = true;
 
+
+		/// <summary>
+		/// OAuth request token
+		/// </summary>
+		public string RequestToken
+		{
+			get;
+			internal set;
+		}
+
+		/// <summary>
+		/// OAuth request token secret
+		/// </summary>
+		public string RequestTokenSecret
+		{
+			get;
+			internal set;
+		}
+
+		/// <summary>
+		/// OAuth authorize token
+		/// </summary>
+		public string AuthorizeToken
+		{
+			get;
+			internal set;
+		}
+
 		/// <summary>
 		/// Put anything in here which is needed for the OAuth implementation of this specific service but isn't generic, e.g. for Google there is a "scope"
 		/// </summary>
@@ -166,14 +194,6 @@ namespace Dapplo.HttpExtensions.OAuth
 			get;
 			set;
 		} = new Dictionary<string, string>();
-
-		/// <summary>
-		/// any additional objects which are used to format the AuthorizeUrl
-		/// </summary>
-		public IList<object> AuthorizeFormattingParameters
-		{
-			get;
-		} = new List<object>();
 
 		/// <summary>
 		/// This can be used to specify the width of the embedded browser window

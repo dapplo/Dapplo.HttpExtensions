@@ -111,12 +111,11 @@ The authentication process received information from CloudServiceName. You can c
 				return result;
 			}, cancellationToken);
 
-			var formattingObjects = new object[] { codeReceiverSettings}.Concat(codeReceiverSettings.AuthorizeFormattingParameters).ToArray();
 			// while the listener is beging starter in the "background", here we prepare opening the browser
 			var uriBuilder = new UriBuilder(codeReceiverSettings.AuthorizationUri)
 			{
 				Query = codeReceiverSettings.AuthorizationUri.QueryToKeyValuePairs()
-					.Select(x => new KeyValuePair<string, string>(x.Key, x.Value.FormatWith(formattingObjects)))
+					.Select(x => new KeyValuePair<string, string>(x.Key, x.Value.FormatWith(codeReceiverSettings)))
 					.ToQueryString()
 			};
 

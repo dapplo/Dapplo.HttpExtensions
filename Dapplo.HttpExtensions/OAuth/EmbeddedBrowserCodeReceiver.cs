@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
@@ -21,12 +22,11 @@ namespace Dapplo.HttpExtensions.OAuth
 			{
 				throw new ArgumentNullException(nameof(codeReceiverSettings.RedirectUrl), "The EmbeddedBrowserCodeReceiver needs a redirect url.");
 			}
-			var formattingObjects = new object[] { codeReceiverSettings }.Concat(codeReceiverSettings.AuthorizeFormattingParameters).ToArray();
 			// while the listener is beging starter in the "background", here we prepare opening the browser
 			var uriBuilder = new UriBuilder(codeReceiverSettings.AuthorizationUri)
 			{
 				Query = codeReceiverSettings.AuthorizationUri.QueryToKeyValuePairs()
-					.Select(x => new KeyValuePair<string, string>(x.Key, x.Value.FormatWith(formattingObjects)))
+					.Select(x => new KeyValuePair<string, string>(x.Key, x.Value.FormatWith(codeReceiverSettings)))
 					.ToQueryString()
 			};
 			Log.Verbose().WriteLine("Opening Uri {0}", uriBuilder.Uri.AbsoluteUri);
@@ -35,8 +35,11 @@ namespace Dapplo.HttpExtensions.OAuth
 			{
 				var oAuthLoginForm = new OAuthLoginForm(codeReceiverSettings.CloudServiceName, new System.Drawing.Size(codeReceiverSettings.EmbeddedBrowserWidth, codeReceiverSettings.EmbeddedBrowserHeight), uriBuilder.Uri, codeReceiverSettings.RedirectUrl);
 
-				oAuthLoginForm.ShowDialog();
-				return oAuthLoginForm.CallbackParameters;
+				if (oAuthLoginForm.ShowDialog() == DialogResult.OK)
+				{
+					return oAuthLoginForm.CallbackParameters;
+				}
+				return null;
 			}, cancellationToken, TaskCreationOptions.None, HttpExtensionsGlobals.UiTaskScheduler).ConfigureAwait(false);
 		}
 	}

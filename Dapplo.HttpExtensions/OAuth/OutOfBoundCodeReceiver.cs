@@ -59,7 +59,7 @@ namespace Dapplo.HttpExtensions.OAuth
 					codeReceiverSettings.RedirectUrl = "urn:ietf:wg:oauth:2.0:oob:auto";
 					break;
 				default:
-					throw new NotSupportedException(string.Format("Only {0} and {1} are supported modes for this receiver", AuthorizeModes.OutOfBound, AuthorizeModes.OutOfBoundAuto));
+					throw new NotSupportedException($"Only {AuthorizeModes.OutOfBound} and {AuthorizeModes.OutOfBoundAuto} are supported modes for this receiver");
 			}
 
 			// while the listener is beging starter in the "background", here we prepare opening the browser

@@ -60,7 +60,7 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 				AccessTokenMethod = HttpMethod.Post,
 				AuthorizationUri = PhotobucketApiUri.AppendSegments("apilogin", "login")
 				 .ExtendQuery(new Dictionary<string, string>{
-						{ OAuthParameters.Token.EnumValueOf(), "{OAuthToken}"},
+						{ OAuthParameters.Token.EnumValueOf(), "{RequestToken}"},
 						{ OAuthParameters.Callback.EnumValueOf(), "{RedirectUrl}"}
 				 }),
 				RedirectUrl = "http://getgreenshot.org",
@@ -91,7 +91,7 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 		/// This will test Oauth with a EmbeddedBrowser "code" receiver against an oauth server provided by Photo bucket
 		/// </summary>
 		/// <returns>Task</returns>
-		//[WinFormsFact]
+		[WinFormsFact]
 		public async Task TestOAuthHttpMessageHandler()
 		{
 			var userInformationUri = PhotobucketApiUri.AppendSegments("user").ExtendQuery("format", "json");

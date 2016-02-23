@@ -133,13 +133,13 @@ namespace Dapplo.HttpExtensions.OAuth
 				if (resultParameters.TryGetValue(OAuthParameters.Token.EnumValueOf(), out tokenValue))
 				{
 					Log.Verbose().WriteLine("Storing token {0}", tokenValue);
-					_oAuthSettings.Token.OAuthToken = tokenValue;
+					_oAuthSettings.RequestToken = tokenValue;
 				}
 				string tokenSecretValue;
 				if (resultParameters.TryGetValue(OAuthParameters.TokenSecret.EnumValueOf(), out tokenSecretValue))
 				{
 					Log.Verbose().WriteLine("Storing token secret {0}", tokenSecretValue);
-					_oAuthSettings.Token.OAuthTokenSecret = tokenSecretValue;
+					_oAuthSettings.RequestTokenSecret = tokenSecretValue;
 				}
 			}
 		}
@@ -150,12 +150,10 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <param name="cancellationToken">CancellationToken</param>
 		private async Task GetAuthorizeTokenAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
-			if (string.IsNullOrEmpty(_oAuthSettings.Token.OAuthToken))
+			if (string.IsNullOrEmpty(_oAuthSettings.RequestToken))
 			{
-				throw new ArgumentNullException(nameof(_oAuthSettings.Token.OAuthToken),"The request token is not set");
+				throw new ArgumentNullException(nameof(_oAuthSettings.RequestToken),"The request token is not set");
 			}
-			_oAuthSettings.AuthorizeFormattingParameters.Clear();
-			_oAuthSettings.AuthorizeFormattingParameters.Add(_oAuthSettings.Token);
 			IOAuthCodeReceiver codeReceiver;
 
 			if (!CodeReceivers.TryGetValue(_oAuthSettings.AuthorizeMode, out codeReceiver))
@@ -170,7 +168,7 @@ namespace Dapplo.HttpExtensions.OAuth
 				string tokenValue;
 				if (result.TryGetValue(OAuthParameters.Token.EnumValueOf(), out tokenValue))
 				{
-					_oAuthSettings.Token.OAuthToken = tokenValue;
+					_oAuthSettings.AuthorizeToken = tokenValue;
 				}
 				string verifierValue;
 				if (result.TryGetValue(OAuthParameters.Verifier.EnumValueOf(), out verifierValue))
@@ -194,9 +192,9 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <returns>The access token.</returns>		
 		private async Task GetAccessTokenAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
-			if (string.IsNullOrEmpty(_oAuthSettings.Token.OAuthToken))
+			if (string.IsNullOrEmpty(_oAuthSettings.AuthorizeToken))
 			{
-				throw new ArgumentNullException(nameof(_oAuthSettings.Token.OAuthToken),"The request token is not set");
+				throw new ArgumentNullException(nameof(_oAuthSettings.AuthorizeToken),"The authorize token is not set");
 			}
 			if (_oAuthSettings.CheckVerifier && string.IsNullOrEmpty(_oAuthSettings.Token.OAuthTokenVerifier))
 			{
@@ -277,6 +275,10 @@ namespace Dapplo.HttpExtensions.OAuth
 			{
 				parameters.Add(OAuthParameters.Token.EnumValueOf(), _oAuthSettings.Token.OAuthToken);
 			}
+			else
+			{
+				parameters.Add(OAuthParameters.Token.EnumValueOf(), _oAuthSettings.AuthorizeToken);
+			}
 			// Create a copy of the parameters, so we add the query parameters as signle parameters to the signature base
 			var signatureParameters = new Dictionary<string, object>(parameters);
 			foreach (var valuePair in httpRequestMessage.RequestUri.QueryToKeyValuePairs())
@@ -288,8 +290,8 @@ namespace Dapplo.HttpExtensions.OAuth
 			}
 			signatureBase.Append(Uri.EscapeDataString(GenerateNormalizedParametersString(signatureParameters)));
 			Log.Verbose().WriteLine("Signature base: {0}", signatureBase);
-
-			string key = string.Format(CultureInfo.InvariantCulture, "{0}&{1}", Uri.EscapeDataString(_oAuthSettings.ClientSecret), string.IsNullOrEmpty(_oAuthSettings.Token.OAuthTokenSecret) ? string.Empty : Uri.EscapeDataString(_oAuthSettings.Token.OAuthTokenSecret));
+			var secret = string.IsNullOrEmpty(_oAuthSettings.Token.OAuthTokenSecret) ? string.IsNullOrEmpty(_oAuthSettings.RequestTokenSecret) ? string.Empty : _oAuthSettings.RequestTokenSecret : _oAuthSettings.Token.OAuthTokenSecret;
+			var key = string.Format(CultureInfo.InvariantCulture, "{0}&{1}", Uri.EscapeDataString(_oAuthSettings.ClientSecret), Uri.EscapeDataString(secret));
 			Log.Verbose().WriteLine("Signing with key {0}", key);
 			switch (_oAuthSettings.SignatureType)
 			{
@@ -421,7 +423,11 @@ namespace Dapplo.HttpExtensions.OAuth
 			{
 				await GetRequestTokenAsync(cancellationToken).ConfigureAwait(false);
 				await GetAuthorizeTokenAsync(cancellationToken).ConfigureAwait(false);
-				await GetAccessTokenAsync().ConfigureAwait(false);
+				await GetAccessTokenAsync(cancellationToken).ConfigureAwait(false);
+			}
+			else
+			{
+				Log.Verbose().WriteLine("Continueing, already a token available.");
 			}
 			if (string.IsNullOrEmpty(_oAuthSettings.Token.OAuthToken))
 			{

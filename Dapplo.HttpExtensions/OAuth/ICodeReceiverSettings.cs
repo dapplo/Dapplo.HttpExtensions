@@ -78,11 +78,6 @@ namespace Dapplo.HttpExtensions.OAuth
 		IDictionary<string, string> AdditionalAttributes { get; set; }
 
 		/// <summary>
-		/// This contains any additional parameters which are needed for formating the AuthorizeUrl
-		/// </summary>
-		IList<object> AuthorizeFormattingParameters { get; }
-
-		/// <summary>
 		/// The width of the embedded browser, default
 		/// </summary>
 		int EmbeddedBrowserWidth { get; set; }

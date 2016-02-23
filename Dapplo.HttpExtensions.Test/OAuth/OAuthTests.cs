@@ -25,10 +25,13 @@ using Dapplo.HttpExtensions.OAuth;
 using Dapplo.LogFacade;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -39,17 +42,20 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 	/// </summary>
 	public class OAuthTests
 	{
-		private static readonly Uri PhotobucketApiUri = new Uri("http://api.photobucket.com");
+		private static readonly LogSource Log = new LogSource();
 
+		private static readonly Uri PhotobucketApiUri = new Uri("http://api.photobucket.com");
 		private readonly IHttpBehaviour _oAuthHttpBehaviour;
+		private string _subdomain;
+		private string _username;
 
 		public OAuthTests(ITestOutputHelper testOutputHelper)
 		{
 			XUnitLogger.RegisterLogger(testOutputHelper, LogLevel.Verbose);
 			var oAuthSettings = new OAuthSettings
 			{
-				ClientId = "149833145",
-				ClientSecret = "ebd828180b11103c010c7e71c66f6bcb",
+				ClientId = "<photobucket consumer key>",
+				ClientSecret = "<photobucket consumer secret>",
 				CloudServiceName = "Photo bucket",
 				EmbeddedBrowserWidth = 1010,
 				EmbeddedBrowserHeight = 400,
@@ -70,16 +76,23 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 			// Store the leftover values
 			oAuthHttpBehaviour.OnAccessToken = values =>
 			{
-				oAuthHttpBehaviour.AccessParameters = values;
+				if (values.ContainsKey("subdomain"))
+				{
+					_subdomain = values["subdomain"];
+				}
+				if (values.ContainsKey("username"))
+				{
+					_username = values["username"];
+				}
 			};
 			// Process the leftover values
 			oAuthHttpBehaviour.BeforeSend = httpRequestMessage =>
 			{
-				if (oAuthHttpBehaviour.AccessParameters != null && oAuthHttpBehaviour.AccessParameters.ContainsKey("subdomain"))
+				if (_subdomain != null)
 				{
 					var uriBuilder = new UriBuilder(httpRequestMessage.RequestUri)
 					{
-						Host = oAuthHttpBehaviour.AccessParameters["subdomain"]
+						Host = _subdomain
 					};
 					httpRequestMessage.RequestUri = uriBuilder.Uri;
 				}
@@ -92,14 +105,59 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 		/// </summary>
 		/// <returns>Task</returns>
 		//[WinFormsFact]
-		public async Task TestOAuthHttpMessageHandler()
+		public async Task TestOAuthHttpMessageHandler_Get()
 		{
 			var userInformationUri = PhotobucketApiUri.AppendSegments("user").ExtendQuery("format", "json");
 
 			// Make sure you use your special IHttpBehaviour for the OAuth requests!
 			_oAuthHttpBehaviour.MakeCurrent();
 			var response = await userInformationUri.OAuthGetAsAsync<dynamic>();
+
+
 			Assert.True(response.status == "OK");
+		}
+
+		[WinFormsFact]
+		public async Task TestOAuthHttpMessageHandler_PostImage()
+		{
+			_oAuthHttpBehaviour.MakeCurrent();
+
+			// This request is important, as the username is not available without having an access token.
+			await PhotobucketApiUri.AppendSegments("users").OAuthGetAsAsync<XDocument>();
+
+			var uploadUri = PhotobucketApiUri.AppendSegments("album", _username, "upload");
+
+			var filename = "d.png";
+			var signedParameters = new Dictionary<string, object>
+			{
+				{"type", "image"},
+				{"title", "Dapplo logo"},
+				{"filename", filename}
+			};
+			// Add image
+			using (var fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read))
+			{
+				using (var streamContent = new StreamContent(fileStream))
+				{
+					streamContent.Headers.ContentType = new MediaTypeHeaderValue("image/png");
+					streamContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+					{
+						Name = "\"uploadfile\"",
+						FileName = "\"" + filename + "\"",
+					};
+
+					try
+					{
+						var responseString = await uploadUri.OAuthPostAsync<string, HttpContent>(streamContent, signedParameters);
+						Log.Info().WriteLine(responseString);
+					}
+					catch (Exception ex)
+					{
+						Log.Error().WriteLine(ex, "Error uploading to Photobucket.");
+						throw;
+					}
+				}
+			}
 		}
 
 		[Fact]

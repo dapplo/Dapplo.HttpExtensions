@@ -337,6 +337,26 @@ namespace Dapplo.HttpExtensions.OAuth
 					.Select(x => $"{x.Key}=\"{Uri.EscapeDataString((string) x.Value)}\""));
 			// Add the OAuth to the headers
 			httpRequestMessage.SetAuthorization("OAuth", authorizationHeaderValues);
+
+			if (httpRequestMessage.Method == HttpMethod.Post && httpRequestMessage.Properties.Count > 0)
+			{
+				var multipartFormDataContent = new MultipartFormDataContent();
+				foreach (var propertyName in httpRequestMessage.Properties.Keys)
+				{
+					var requestObject = httpRequestMessage.Properties[propertyName];
+					var formattedKey = $"\"{propertyName}\"";
+					if (requestObject is HttpContent)
+					{
+						multipartFormDataContent.Add(requestObject as HttpContent, formattedKey);
+					}
+					else
+					{
+						multipartFormDataContent.Add(new StringContent(requestObject as string), formattedKey);
+					}
+				}
+				multipartFormDataContent.Add(httpRequestMessage.Content);
+				httpRequestMessage.Content = multipartFormDataContent;
+			}
 		}
 
 		/// <summary>

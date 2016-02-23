@@ -30,20 +30,15 @@ namespace Dapplo.HttpExtensions.OAuth
 	public class OAuthHttpBehaviour : HttpBehaviour
 	{
 		/// <summary>
-		/// This contains the values returns from the access token without the token/token secret
-		/// </summary>
-		public IDictionary<string, string> AccessParameters { get; set; }
-
-		/// <summary>
 		/// Set this function if you want to process any additional access token values
 		/// </summary>
 		public Action<IDictionary<string, string>> OnAccessToken { get; set; }
 
 
-	/// <summary>
-	/// Set this function if you want to modify the request message that is send to the service
-	/// </summary>
-	public Action<HttpRequestMessage> BeforeSend { get; set; }
+		/// <summary>
+		/// Set this function if you want to modify the request message that is send to the service
+		/// </summary>
+		public Action<HttpRequestMessage> BeforeSend { get; set; }
 
 		new public OAuthHttpBehaviour Clone()
 		{

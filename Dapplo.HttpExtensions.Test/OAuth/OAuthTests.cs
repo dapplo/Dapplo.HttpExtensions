@@ -117,7 +117,7 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 			Assert.True(response.status == "OK");
 		}
 
-		[WinFormsFact]
+		//[WinFormsFact]
 		public async Task TestOAuthHttpMessageHandler_PostImage()
 		{
 			_oAuthHttpBehaviour.MakeCurrent();

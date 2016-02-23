@@ -74,7 +74,7 @@ The authentication process received information from CloudServiceName. You can c
 			Uri redirectUri;
 			if (codeReceiverSettings.RedirectUrl == null)
 			{
-				redirectUri = new int[] { 0 }.CreateLocalHostUri();
+				redirectUri = new[] { 0 }.CreateLocalHostUri();
 				// TODO: This will create a problem that with the next "authorize" call it will try to use the same Url, while it might not work
 				// But not setting it, will create a problem in the replacement
 				codeReceiverSettings.RedirectUrl = redirectUri.AbsoluteUri;

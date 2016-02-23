@@ -22,7 +22,6 @@
  */
 
 using Dapplo.HttpExtensions.Support;
-using System;
 using System.ComponentModel;
 
 namespace Dapplo.HttpExtensions.OAuth

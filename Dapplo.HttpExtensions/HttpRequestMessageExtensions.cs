@@ -68,7 +68,7 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// Use the UserInfo from the Uri to set the basic authorization information
 		/// </summary>
-		/// <param name="HttpRequestMessage">httpRequestMessage</param>
+		/// <param name="httpRequestMessage">HttpRequestMessage</param>
 		/// <param name="uri">Uri with UserInfo</param>
 		/// <returns>HttpRequestMessage for fluent usage</returns>
 		public static HttpRequestMessage SetBasicAuthorization(this HttpRequestMessage httpRequestMessage, Uri uri)

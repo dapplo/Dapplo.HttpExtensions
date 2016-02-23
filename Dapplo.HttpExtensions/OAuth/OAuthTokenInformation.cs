@@ -21,8 +21,6 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
-
 namespace Dapplo.HttpExtensions.OAuth
 {
 	/// <summary>

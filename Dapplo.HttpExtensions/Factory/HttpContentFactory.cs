@@ -35,7 +35,7 @@ namespace Dapplo.HttpExtensions.Factory
 		/// <summary>
 		/// Create a HttpContent object from the supplied content
 		/// </summary>
-		/// <typeparam name="TInput">type for the content</typeparam>
+		/// <param name="inputType">type for the content</param>
 		/// <param name="content">content</param>
 		/// <returns>HttpContent</returns>
 		public static HttpContent Create(Type inputType, object content)

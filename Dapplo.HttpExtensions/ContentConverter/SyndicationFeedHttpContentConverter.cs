@@ -56,7 +56,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 
 		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
-			return await ConvertFromHttpContentAsync(typeof (TResult), httpContent, token).ConfigureAwait(false) as TResult;
+			return await ConvertFromHttpContentAsync(typeof(TResult), httpContent, token).ConfigureAwait(false) as TResult;
 		}
 
 		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken token = default(CancellationToken))
@@ -89,6 +89,10 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
 		{
 			var feed = content as SyndicationFeed;
+			if (feed == null)
+			{
+				return null;
+			}
 			using (var stringWriter = new StringWriter())
 			using (var xmlTextWriter = new XmlTextWriter(stringWriter))
 			{
@@ -96,7 +100,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 				rss2Formatter.WriteTo(xmlTextWriter);
 				var httpContent = new StringContent(stringWriter.ToString());
 				httpContent.SetContentType($"{MediaTypes.Rss.EnumValueOf()}; charset={stringWriter.Encoding.EncodingName}");
-                return httpContent;
+				return httpContent;
 			}
 		}
 

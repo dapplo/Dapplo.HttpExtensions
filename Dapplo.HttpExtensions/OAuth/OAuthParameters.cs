@@ -28,24 +28,24 @@ namespace Dapplo.HttpExtensions.OAuth
 	public enum OAuthParameters
 	{
 		[EnumMember(Value = "oauth_consumer_key")]
-		OauthConsumerKeyKey,
+		ConsumerKey,
 		[EnumMember(Value = "oauth_callback")]
-		OauthCallbackKey,
+		Callback,
 		[EnumMember(Value = "oauth_version")]
-		OauthVersionKey,
+		Version,
 		[EnumMember(Value = "oauth_signature_method")]
-		OauthSignatureMethodKey,
+		SignatureMethod,
 		[EnumMember(Value = "oauth_timestamp")]
-		OauthTimestampKey,
+		Timestamp,
 		[EnumMember(Value = "oauth_nonce")]
-		OauthNonceKey,
+		Nonce,
 		[EnumMember(Value = "oauth_token")]
-		OauthTokenKey,
+		Token,
 		[EnumMember(Value = "oauth_verifier")]
-		OauthVerifierKey,
+		Verifier,
 		[EnumMember(Value = "oauth_token_secret")]
-		OauthTokenSecretKey,
+		TokenSecret,
 		[EnumMember(Value = "oauth_signature")]
-		OauthSignatureKey
+		Signature
 	}
 }

@@ -86,6 +86,10 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
 		{
 			var xDocument = content as XDocument;
+			if (xDocument == null)
+			{
+				return null;
+			}
 			using (var stringWriter = new StringWriter())
 			using (var xmlTextWriter = new XmlTextWriter(stringWriter))
 			{

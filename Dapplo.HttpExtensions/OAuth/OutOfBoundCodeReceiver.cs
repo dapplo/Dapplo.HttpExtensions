@@ -44,30 +44,29 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// The OAuth code receiver
 		/// </summary>
 		/// <param name="authorizeMode">which of the AuthorizeModes was used to call the method</param>
-		/// <param name="oauth2Settings"></param>
+		/// <param name="codeReceiverSettings"></param>
 		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>Dictionary with values</returns>
-		public async Task<IDictionary<string, string>> ReceiveCodeAsync(AuthorizeModes authorizeMode, ICodeReceiverSettings oauthSettings, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<IDictionary<string, string>> ReceiveCodeAsync(AuthorizeModes authorizeMode, ICodeReceiverSettings codeReceiverSettings, CancellationToken cancellationToken = default(CancellationToken))
 		{
-			var oauth2Settings = oauthSettings as OAuth2Settings;
 			// Force OOB Uri
 			switch (authorizeMode)
 			{
 				case AuthorizeModes.OutOfBound:
-					oauth2Settings.RedirectUrl = "urn:ietf:wg:oauth:2.0:oob";
+					codeReceiverSettings.RedirectUrl = "urn:ietf:wg:oauth:2.0:oob";
 					break;
 				case AuthorizeModes.OutOfBoundAuto:
-					oauth2Settings.RedirectUrl = "urn:ietf:wg:oauth:2.0:oob:auto";
+					codeReceiverSettings.RedirectUrl = "urn:ietf:wg:oauth:2.0:oob:auto";
 					break;
 				default:
 					throw new NotSupportedException(string.Format("Only {0} and {1} are supported modes for this receiver", AuthorizeModes.OutOfBound, AuthorizeModes.OutOfBoundAuto));
 			}
 
 			// while the listener is beging starter in the "background", here we prepare opening the browser
-			var uriBuilder = new UriBuilder(oauth2Settings.AuthorizationUri)
+			var uriBuilder = new UriBuilder(codeReceiverSettings.AuthorizationUri)
 			{
-				Query = oauth2Settings.AuthorizationUri.QueryToKeyValuePairs()
-					.Select(x => new KeyValuePair<string, string>(x.Key, x.Value.FormatWith(oauth2Settings)))
+				Query = codeReceiverSettings.AuthorizationUri.QueryToKeyValuePairs()
+					.Select(x => new KeyValuePair<string, string>(x.Key, x.Value.FormatWith(codeReceiverSettings)))
 					.ToQueryString()
 			};
 

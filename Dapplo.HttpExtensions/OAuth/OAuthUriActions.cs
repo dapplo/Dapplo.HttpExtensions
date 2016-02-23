@@ -37,6 +37,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// Make an OAuth GET, returns the response as the specified type
 		/// </summary>
 		/// <typeparam name="TResponse">Type to deserialize into</typeparam>
+		/// <typeparam name="T">Dictionary value type</typeparam>
 		/// <param name="uri">An Uri to specify the download location</param>
 		/// <param name="properties">Properties for the OAuth request</param>
 		/// <param name="cancellationToken">CancellationToken</param>
@@ -97,9 +98,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// Make an OAuth POST, returns the response as the specified type
 		/// </summary>
 		/// <typeparam name="TResponse">the generic type to return the result into, use HttpContent or HttpResponseMessage to get those unprocessed</typeparam>
-		/// <typeparam name="TContent">Generic type for the content to upload</typeparam>
 		/// <param name="uri">Uri to post to</param>
-		/// <param name="content">Content to post</param>
 		/// <param name="properties">properties to post</param>
 		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>TResponse</returns>

@@ -121,7 +121,7 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// This value is used when a Task needs to run on the UI Thread, e.g. the EmbeddedBrowserCodeReceiver
 		/// </summary>
-		public static TaskScheduler UITaskScheduler
+		public static TaskScheduler UiTaskScheduler
 		{
 			get
 			{

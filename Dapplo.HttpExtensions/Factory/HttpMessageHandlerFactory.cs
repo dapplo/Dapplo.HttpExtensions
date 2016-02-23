@@ -76,8 +76,10 @@ namespace Dapplo.HttpExtensions.Factory
 
 		/// <summary>
 		/// This creates an HttpClientHandler, normally one should use CreateWebRequestHandler
+		/// But this might be needed for Apps
 		/// </summary>
 		/// <returns>HttpMessageHandler (HttpClientHandler)</returns>
+		// ReSharper disable once UnusedMember.Local
 		private static HttpMessageHandler CreateHttpClientHandler()
 		{
 			var httpClientHandler = new HttpClientHandler();

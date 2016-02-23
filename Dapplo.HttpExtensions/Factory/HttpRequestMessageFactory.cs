@@ -59,8 +59,9 @@ namespace Dapplo.HttpExtensions.Factory
 		/// <summary>
 		/// Create a HttpRequestMessage for the POST method
 		/// </summary>
+		/// <typeparam name="TResponse">Type to return into, this influences the Accept headers</typeparam>
+		/// <typeparam name="TContent"></typeparam>
 		/// <param name="requestUri">the target uri for this message</param>
-		/// <param name="resultType">Type to return into, this influences the Accept headers</param>
 		/// <param name="content">HttpContent</param>
 		/// <returns>HttpRequestMessage</returns>
 		public static HttpRequestMessage CreatePost<TResponse, TContent>(Uri requestUri, TContent content = default(TContent))
@@ -104,6 +105,7 @@ namespace Dapplo.HttpExtensions.Factory
 		/// Create a HttpRequestMessage for the specified method
 		/// </summary>
 		/// <typeparam name="TResponse">The type for the response, this modifies the Accep headers</typeparam>
+		/// <typeparam name="TContent"></typeparam>
 		/// <param name="method">Method to create the request message for</param>
 		/// <param name="requestUri">the target uri for this message</param>
 		/// <param name="content">HttpContent</param>

@@ -21,7 +21,6 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Dapplo.HttpExtensions.Factory;
 using Dapplo.HttpExtensions.OAuth;
 using Dapplo.LogFacade;
 using System;
@@ -42,15 +41,15 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 	{
 		private static readonly Uri PhotobucketApiUri = new Uri("http://api.photobucket.com");
 
-		private IHttpBehaviour _oAuthHttpBehaviour;
+		private readonly IHttpBehaviour _oAuthHttpBehaviour;
 
 		public OAuthTests(ITestOutputHelper testOutputHelper)
 		{
 			XUnitLogger.RegisterLogger(testOutputHelper, LogLevel.Verbose);
 			var oAuthSettings = new OAuthSettings
 			{
-				ClientId = "<Photobucket client id>",
-				ClientSecret = "<Photobucket client secret>",
+				ClientId = "149833145",
+				ClientSecret = "ebd828180b11103c010c7e71c66f6bcb",
 				CloudServiceName = "Photo bucket",
 				EmbeddedBrowserWidth = 1010,
 				EmbeddedBrowserHeight = 400,
@@ -61,25 +60,27 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 				AccessTokenMethod = HttpMethod.Post,
 				AuthorizationUri = PhotobucketApiUri.AppendSegments("apilogin", "login")
 				 .ExtendQuery(new Dictionary<string, string>{
-						{ OAuthParameters.OauthTokenKey.EnumValueOf(), "{OAuthToken}"},
-						{ OAuthParameters.OauthCallbackKey.EnumValueOf(), "{RedirectUrl}"}
+						{ OAuthParameters.Token.EnumValueOf(), "{OAuthToken}"},
+						{ OAuthParameters.Callback.EnumValueOf(), "{RedirectUrl}"}
 				 }),
 				RedirectUrl = "http://getgreenshot.org",
 				CheckVerifier = false,
 			};
 			var oAuthHttpBehaviour = OAuthHttpBehaviourFactory.Create(oAuthSettings);
 			// Store the leftover values
-			oAuthHttpBehaviour.OnAccessToken = (values) =>
+			oAuthHttpBehaviour.OnAccessToken = values =>
 			{
 				oAuthHttpBehaviour.AccessParameters = values;
 			};
 			// Process the leftover values
-			oAuthHttpBehaviour.BeforeSend = (httpRequestMessage) =>
+			oAuthHttpBehaviour.BeforeSend = httpRequestMessage =>
 			{
 				if (oAuthHttpBehaviour.AccessParameters != null && oAuthHttpBehaviour.AccessParameters.ContainsKey("subdomain"))
 				{
-					var uriBuilder = new UriBuilder(httpRequestMessage.RequestUri);
-					uriBuilder.Host = oAuthHttpBehaviour.AccessParameters["subdomain"];
+					var uriBuilder = new UriBuilder(httpRequestMessage.RequestUri)
+					{
+						Host = oAuthHttpBehaviour.AccessParameters["subdomain"]
+					};
 					httpRequestMessage.RequestUri = uriBuilder.Uri;
 				}
 			};

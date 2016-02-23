@@ -2,9 +2,7 @@
 using Dapplo.LogFacade;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,7 +19,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		{
 			if (codeReceiverSettings.RedirectUrl == null)
 			{
-				throw new ArgumentNullException("The EmbeddedBrowserCodeReceiver needs a redirect url.", nameof(codeReceiverSettings.RedirectUrl));
+				throw new ArgumentNullException(nameof(codeReceiverSettings.RedirectUrl), "The EmbeddedBrowserCodeReceiver needs a redirect url.");
 			}
 			var formattingObjects = new object[] { codeReceiverSettings }.Concat(codeReceiverSettings.AuthorizeFormattingParameters).ToArray();
 			// while the listener is beging starter in the "background", here we prepare opening the browser
@@ -31,6 +29,7 @@ namespace Dapplo.HttpExtensions.OAuth
 					.Select(x => new KeyValuePair<string, string>(x.Key, x.Value.FormatWith(formattingObjects)))
 					.ToQueryString()
 			};
+			Log.Verbose().WriteLine("Opening Uri {0}", uriBuilder.Uri.AbsoluteUri);
 
 			return await Task.Factory.StartNew(() =>
 			{
@@ -38,7 +37,7 @@ namespace Dapplo.HttpExtensions.OAuth
 
 				oAuthLoginForm.ShowDialog();
 				return oAuthLoginForm.CallbackParameters;
-			}, cancellationToken, TaskCreationOptions.None, HttpExtensionsGlobals.UITaskScheduler).ConfigureAwait(false);
+			}, cancellationToken, TaskCreationOptions.None, HttpExtensionsGlobals.UiTaskScheduler).ConfigureAwait(false);
 		}
 	}
 }

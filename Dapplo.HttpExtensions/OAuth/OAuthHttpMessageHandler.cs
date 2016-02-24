@@ -34,6 +34,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Security.Authentication;
+using Dapplo.HttpExtensions.Support;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
@@ -44,6 +45,7 @@ namespace Dapplo.HttpExtensions.OAuth
 	{
 		private static readonly LogSource Log = new LogSource();
 		private static readonly Random RandomForNonce = new Random();
+		private readonly AsyncLock _asyncLock = new AsyncLock();
 
 		/// <summary>
 		/// Register your special OAuth handler for the AuthorizeMode here
@@ -439,16 +441,21 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <returns>HttpResponseMessage</returns>
 		protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken)
 		{
-			if (string.IsNullOrEmpty(_oAuthSettings.Token.OAuthToken))
+			// Make sure the first call does the authorization, and all others wait for it.
+			using (await _asyncLock.LockAsync().ConfigureAwait(false))
 			{
-				await GetRequestTokenAsync(cancellationToken).ConfigureAwait(false);
-				await GetAuthorizeTokenAsync(cancellationToken).ConfigureAwait(false);
-				await GetAccessTokenAsync(cancellationToken).ConfigureAwait(false);
+				if (string.IsNullOrEmpty(_oAuthSettings.Token.OAuthToken))
+				{
+					await GetRequestTokenAsync(cancellationToken).ConfigureAwait(false);
+					await GetAuthorizeTokenAsync(cancellationToken).ConfigureAwait(false);
+					await GetAccessTokenAsync(cancellationToken).ConfigureAwait(false);
+				}
+				else
+				{
+					Log.Verbose().WriteLine("Continueing, already a token available.");
+				}
 			}
-			else
-			{
-				Log.Verbose().WriteLine("Continueing, already a token available.");
-			}
+
 			if (string.IsNullOrEmpty(_oAuthSettings.Token.OAuthToken))
 			{
 				throw new AuthenticationException("Not possible to authenticate the OAuth request.");

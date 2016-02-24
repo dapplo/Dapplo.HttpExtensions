@@ -1350,7 +1350,7 @@ namespace Dapplo.HttpExtensions
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         public virtual object DeserializeObject(object value, Type type)
         {
-            if (type == null) throw new ArgumentNullException("type");
+            if (type == null) throw new ArgumentNullException(nameof(type));
             string str = value as string;
 
             if (type == typeof (Guid) && string.IsNullOrEmpty(str))

@@ -22,90 +22,14 @@
  */
 
 using System;
-using System.Collections.Generic;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
 	/// <summary>
 	/// Settings for the OAuth 2 protocol
 	/// </summary>
-	public class OAuth2Settings : ICodeReceiverSettings
+	public class OAuth2Settings : BaseOAuthSettings
 	{
-		/// <summary>
-		/// The AuthorizeMode for this OAuth 2 settings
-		/// </summary>
-		public AuthorizeModes AuthorizeMode
-		{
-			get;
-			set;
-		} = AuthorizeModes.Unknown;
-
-		/// <summary>
-		/// Specify the name of the cloud service, so it can be used in window titles, logs etc
-		/// </summary>
-		public string CloudServiceName
-		{
-			get;
-			set;
-		} = "the remote server";
-
-		/// <summary>
-		/// The OAuth 2 client id
-		/// </summary>
-		public string ClientId
-		{
-			get;
-			set;
-		}
-
-		/// <summary>
-		/// The OAuth 2 client secret
-		/// </summary>
-		public string ClientSecret
-		{
-			get;
-			set;
-		}
-
-		/// <summary>
-		/// The OAuth 2 state, this is something that is passed to the server, is not processed but returned back to the client.
-		/// e.g. a correlation ID
-		/// Default this is filled with a new Guid
-		/// </summary>
-		public string State
-		{
-			get;
-			set;
-		} = Guid.NewGuid().ToString();
-
-		/// <summary>
-		/// The autorization Uri where the values of this class will be "injected"
-		/// Example how this can be created:
-		/// <code>
-		/// new Uri("http://server").AppendSegments("auth").Query("client_id", "{ClientId}");
-		/// </code>
-		/// </summary>
-		public Uri AuthorizationUri
-		{
-			get;
-			set;
-		}
-
-		/// <summary>
-		/// The URL to get a Token
-		/// </summary>
-		public Uri TokenUrl
-		{
-			get;
-			set;
-		}
-
-		/// <summary>
-		/// This is the redirect URL, in some implementations this is automatically set (LocalServerCodeReceiver)
-		/// In some implementations this could be e.g. urn:ietf:wg:oauth:2.0:oob or urn:ietf:wg:oauth:2.0:oob:auto
-		/// </summary>
-		public string RedirectUrl { get; set; }
-
 		/// <summary>
 		/// Return true if the access token is expired.
 		/// Important "side-effect": if true is returned the AccessToken will be set to null!
@@ -140,16 +64,6 @@ namespace Dapplo.HttpExtensions.OAuth
 		} = new OAuth2TokenInformation();
 
 		/// <summary>
-		/// Put anything in here which is needed for the OAuth 2 implementation of this specific service but isn't generic, e.g. for Google there is a "scope"
-		/// </summary>
-		public IDictionary<string, string> AdditionalAttributes
-		{
-			get;
-			set;
-		} = new Dictionary<string, string>();
-
-
-		/// <summary>
 		/// This contains the code returned from the authorization, but only shortly after it was received.
 		/// It will be cleared as soon as it was used.
 		/// </summary>
@@ -158,31 +72,5 @@ namespace Dapplo.HttpExtensions.OAuth
 			get;
 			set;
 		}
-
-		/// <summary>
-		/// any additional objects which are used to format the AuthorizeUrl
-		/// </summary>
-		public IList<object> AuthorizeFormattingParameters
-		{
-			get;
-		} = new List<object>();
-
-		/// <summary>
-		/// This can be used to specify the width of the embedded browser window
-		/// </summary>
-		public int EmbeddedBrowserWidth
-		{
-			get;
-			set;
-		} = 600;
-
-		/// <summary>
-		/// This can be used to specify the height of the embedded browser window
-		/// </summary>
-		public int EmbeddedBrowserHeight
-		{
-			get;
-			set;
-		} = 400;
 	}
 }

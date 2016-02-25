@@ -52,7 +52,7 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 		public OAuthTests(ITestOutputHelper testOutputHelper)
 		{
 			XUnitLogger.RegisterLogger(testOutputHelper, LogLevel.Verbose);
-			var oAuthSettings = new OAuthSettings
+			var oAuthSettings = new OAuth1Settings
 			{
 				ClientId = "<photobucket consumer key>",
 				ClientSecret = "<photobucket consumer secret>",
@@ -66,13 +66,13 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 				AccessTokenMethod = HttpMethod.Post,
 				AuthorizationUri = PhotobucketApiUri.AppendSegments("apilogin", "login")
 				 .ExtendQuery(new Dictionary<string, string>{
-						{ OAuthParameters.Token.EnumValueOf(), "{RequestToken}"},
-						{ OAuthParameters.Callback.EnumValueOf(), "{RedirectUrl}"}
+						{ OAuth1Parameters.Token.EnumValueOf(), "{RequestToken}"},
+						{ OAuth1Parameters.Callback.EnumValueOf(), "{RedirectUrl}"}
 				 }),
 				RedirectUrl = "http://getgreenshot.org",
 				CheckVerifier = false,
 			};
-			var oAuthHttpBehaviour = OAuthHttpBehaviourFactory.Create(oAuthSettings);
+			var oAuthHttpBehaviour = OAuth1HttpBehaviourFactory.Create(oAuthSettings);
 			// Store the leftover values
 			oAuthHttpBehaviour.OnAccessToken = values =>
 			{
@@ -111,7 +111,7 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 
 			// Make sure you use your special IHttpBehaviour for the OAuth requests!
 			_oAuthHttpBehaviour.MakeCurrent();
-			var response = await userInformationUri.OAuthGetAsAsync<dynamic>();
+			var response = await userInformationUri.OAuth1GetAsAsync<dynamic>();
 
 
 			Assert.True(response.status == "OK");
@@ -123,7 +123,7 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 			_oAuthHttpBehaviour.MakeCurrent();
 
 			// This request is important, as the username is not available without having an access token.
-			await PhotobucketApiUri.AppendSegments("users").OAuthGetAsAsync<XDocument>();
+			await PhotobucketApiUri.AppendSegments("users").OAuth1GetAsAsync<XDocument>();
 
 			var uploadUri = PhotobucketApiUri.AppendSegments("album", _username, "upload");
 
@@ -148,7 +148,7 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 
 					try
 					{
-						var responseString = await uploadUri.OAuthPostAsync<string, HttpContent>(streamContent, signedParameters);
+						var responseString = await uploadUri.OAuth1PostAsync<string, HttpContent>(streamContent, signedParameters);
 						Log.Info().WriteLine(responseString);
 					}
 					catch (Exception ex)
@@ -165,7 +165,7 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 		{
 			// See: http://oauth.net/core/1.0a/#RFC2104
 			var hmacsha1 = new HMACSHA1 { Key = Encoding.UTF8.GetBytes("kd94hf93k423kf44&pfkkdhi9sl3r4s00") };
-			var digest = OAuthHttpMessageHandler.ComputeHash(hmacsha1, "GET&http%3A%2F%2Fphotos.example.net%2Fphotos&file%3Dvacation.jpg%26oauth_consumer_key%3Ddpf43f3p2l4k3l03%26oauth_nonce%3Dkllo9940pd9333jh%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1191242096%26oauth_token%3Dnnch734d00sl2jdk%26oauth_version%3D1.0%26size%3Doriginal");
+			var digest = OAuth1HttpMessageHandler.ComputeHash(hmacsha1, "GET&http%3A%2F%2Fphotos.example.net%2Fphotos&file%3Dvacation.jpg%26oauth_consumer_key%3Ddpf43f3p2l4k3l03%26oauth_nonce%3Dkllo9940pd9333jh%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1191242096%26oauth_token%3Dnnch734d00sl2jdk%26oauth_version%3D1.0%26size%3Doriginal");
 
 			Assert.Equal("tR3+Ty81lMeYAr/Fid0kMTYa/WM=", digest);
 		}

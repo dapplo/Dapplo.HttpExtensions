@@ -11,7 +11,7 @@ namespace Dapplo.HttpExtensions.OAuth
 	/// Due to the complexity of the Oauth requests, these extensions are supplied.
 	/// For Oauth 2.0 there is no need to have special extensions
 	/// </summary>
-	public static class OAuthUriActions
+	public static class OAuth1UriActions
 	{
 		/// <summary>
 		/// Make an OAuth GET, returns the response as the specified type
@@ -20,7 +20,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <param name="uri">An Uri to specify the download location</param>
 		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>TResponse</returns>
-		public static async Task<TResponse> OAuthGetAsAsync<TResponse>(this Uri uri, CancellationToken cancellationToken = default(CancellationToken)) where TResponse : class
+		public static async Task<TResponse> OAuth1GetAsAsync<TResponse>(this Uri uri, CancellationToken cancellationToken = default(CancellationToken)) where TResponse : class
 		{
 			if (uri == null)
 			{
@@ -42,7 +42,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <param name="properties">Properties for the OAuth request</param>
 		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>TResponse</returns>
-		public static async Task<TResponse> OAuthGetAsAsync<TResponse, T>(this Uri uri, IDictionary<string, T> properties, CancellationToken cancellationToken = default(CancellationToken)) where TResponse : class
+		public static async Task<TResponse> OAuth1GetAsAsync<TResponse, T>(this Uri uri, IDictionary<string, T> properties, CancellationToken cancellationToken = default(CancellationToken)) where TResponse : class
 		{
 			if (uri == null)
 			{
@@ -73,7 +73,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <param name="properties">properties to post</param>
 		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>TResponse</returns>
-		public static async Task<TResponse> OAuthPostAsync<TResponse, TContent>(this Uri uri, TContent content, IDictionary<string, object> properties = null, CancellationToken cancellationToken = default(CancellationToken)) where TResponse : class where TContent : class
+		public static async Task<TResponse> OAuth1PostAsync<TResponse, TContent>(this Uri uri, TContent content, IDictionary<string, object> properties = null, CancellationToken cancellationToken = default(CancellationToken)) where TResponse : class where TContent : class
 		{
 			if (uri == null)
 			{
@@ -102,7 +102,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <param name="properties">properties to post</param>
 		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>TResponse</returns>
-		public static async Task<TResponse> OAuthPostAsync<TResponse>(this Uri uri, IDictionary<string, object> properties = null, CancellationToken cancellationToken = default(CancellationToken)) where TResponse : class
+		public static async Task<TResponse> OAuth1PostAsync<TResponse>(this Uri uri, IDictionary<string, object> properties = null, CancellationToken cancellationToken = default(CancellationToken)) where TResponse : class
 		{
 			if (uri == null)
 			{

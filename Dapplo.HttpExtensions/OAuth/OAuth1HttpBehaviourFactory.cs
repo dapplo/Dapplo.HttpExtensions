@@ -21,29 +21,26 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System.Runtime.Serialization;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
 	/// <summary>
-	/// Provides a predefined set of algorithms that are supported officially by the OAuth 1.x protocol
+	/// This factory can be used to create a IHttpBehaviour which handles OAuth requests
 	/// </summary>
-	public enum OAuthSignatureTypes
+	public static class OAuth1HttpBehaviourFactory
 	{
 		/// <summary>
-		///  Hash-based Message Authentication Code (HMAC) using the SHA1 hash function.
+		/// Create a specify OAuth IHttpBehaviour
 		/// </summary>
-		[EnumMember(Value = "HMAC-SHA1")]
-		HMacSha1,
-		/// <summary>
-		/// The PLAINTEXT method does not provide any security protection and SHOULD only be used over a secure channel such as HTTPS. It does not use the Signature Base String.
-		/// </summary>
-		[EnumMember(Value = "PLAINTEXT")]
-		PlainText,
-		/// <summary>
-		/// RSA-SHA1 signature method uses the RSASSA-PKCS1-v1_5 signature algorithm as defined in [RFC3447] section 8.2 (more simply known as PKCS#1)
-		/// </summary>
-		[EnumMember(Value = "RSA-SHA1")]
-		RsaSha1
+		/// <param name="oAuthSettings">OAuthSettings</param>
+		/// <returns>IHttpBehaviour</returns>
+		public static OAuth1HttpBehaviour Create(OAuth1Settings oAuthSettings)
+		{
+			// Get a clone of a IHttpBehaviour or create new
+			var oauthHttpBehaviour = new OAuth1HttpBehaviour();
+			// Add a wrapper (delegate handler) which wraps all new HttpMessageHandlers
+			oauthHttpBehaviour.OnHttpMessageHandlerCreated = httpMessageHandler => new OAuth1HttpMessageHandler(oAuthSettings, oauthHttpBehaviour, httpMessageHandler);
+			return oauthHttpBehaviour;
+		}
 	}
 }

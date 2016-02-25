@@ -28,7 +28,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using Dapplo.HttpExtensions.Support;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
@@ -38,7 +37,8 @@ namespace Dapplo.HttpExtensions.OAuth
 	public class OAuth2HttpMessageHandler : DelegatingHandler
 	{
 		private static readonly LogSource Log = new LogSource();
-		private readonly AsyncLock _asyncLock = new AsyncLock();
+		private readonly OAuth2Settings _oAuth2Settings;
+		private readonly IHttpBehaviour _httpBehaviour;
 
 		/// <summary>
 		/// Register your special OAuth handler for the AuthorizeMode here
@@ -72,9 +72,6 @@ namespace Dapplo.HttpExtensions.OAuth
 			);
 #endif
 		}
-
-		private readonly OAuth2Settings _oAuth2Settings;
-		private readonly IHttpBehaviour _httpBehaviour;
 
 		/// <summary>
 		/// Create a HttpMessageHandler which handles the OAuth 2 communication for you
@@ -313,7 +310,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken)
 		{
 			// Make sure the first call does the authorization, and all others wait for it.
-			using (await _asyncLock.LockAsync().ConfigureAwait(false))
+			using (await _oAuth2Settings.Lock.LockAsync().ConfigureAwait(false))
 			{
 				await CheckAndAuthenticateOrRefreshAsync(cancellationToken).ConfigureAwait(false);
 			}

@@ -73,11 +73,6 @@ namespace Dapplo.HttpExtensions.OAuth
 		string RedirectUrl { get; set; }
 
 		/// <summary>
-		/// Put anything in here which is needed for the OAuth (2) implementation of this specific service but isn't generic, e.g. for Google there is a "scope"
-		/// </summary>
-		IDictionary<string, string> AdditionalAttributes { get; set; }
-
-		/// <summary>
 		/// The width of the embedded browser, default
 		/// </summary>
 		int EmbeddedBrowserWidth { get; set; }

@@ -21,20 +21,31 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System;
+using System.Runtime.Serialization;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
-	/// <summary>
-	/// A default implementation for the IOAuthToken, nothing fancy
-	/// For more information, see the IOAuthToken interface
-	/// </summary>
-	internal class OAuthTokenInformation : IOAuthToken
+	public enum OAuth1Parameters
 	{
-		public string OAuthTokenSecret { get; set; }
-
-		public string OAuthToken { get; set; }
-
-		public string OAuthTokenVerifier { get; set; }
+		[EnumMember(Value = "oauth_consumer_key")]
+		ConsumerKey,
+		[EnumMember(Value = "oauth_callback")]
+		Callback,
+		[EnumMember(Value = "oauth_version")]
+		Version,
+		[EnumMember(Value = "oauth_signature_method")]
+		SignatureMethod,
+		[EnumMember(Value = "oauth_timestamp")]
+		Timestamp,
+		[EnumMember(Value = "oauth_nonce")]
+		Nonce,
+		[EnumMember(Value = "oauth_token")]
+		Token,
+		[EnumMember(Value = "oauth_verifier")]
+		Verifier,
+		[EnumMember(Value = "oauth_token_secret")]
+		TokenSecret,
+		[EnumMember(Value = "oauth_signature")]
+		Signature
 	}
 }

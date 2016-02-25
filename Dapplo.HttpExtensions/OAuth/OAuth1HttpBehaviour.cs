@@ -27,7 +27,7 @@ using System.Net.Http;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
-	public class OAuthHttpBehaviour : HttpBehaviour
+	public class OAuth1HttpBehaviour : HttpBehaviour
 	{
 		/// <summary>
 		/// Set this function if you want to process any additional access token values
@@ -40,9 +40,9 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// </summary>
 		public Action<HttpRequestMessage> BeforeSend { get; set; }
 
-		new public OAuthHttpBehaviour Clone()
+		new public OAuth1HttpBehaviour Clone()
 		{
-			return (OAuthHttpBehaviour)MemberwiseClone();
+			return (OAuth1HttpBehaviour)MemberwiseClone();
 		}
 	}
 }

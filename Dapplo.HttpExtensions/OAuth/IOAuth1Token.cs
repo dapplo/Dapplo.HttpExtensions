@@ -21,31 +21,45 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
-using System.Runtime.Serialization;
+using Dapplo.HttpExtensions.Support;
+using System.ComponentModel;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
-	public enum OAuthParameters
+	/// <summary>
+	/// The credentials which should be stored.
+	/// This can be used to extend your Dapplo.Config.IIniSection extending interface.
+	/// </summary>
+	public interface IOAuth1Token
 	{
-		[EnumMember(Value = "oauth_consumer_key")]
-		ConsumerKey,
-		[EnumMember(Value = "oauth_callback")]
-		Callback,
-		[EnumMember(Value = "oauth_version")]
-		Version,
-		[EnumMember(Value = "oauth_signature_method")]
-		SignatureMethod,
-		[EnumMember(Value = "oauth_timestamp")]
-		Timestamp,
-		[EnumMember(Value = "oauth_nonce")]
-		Nonce,
-		[EnumMember(Value = "oauth_token")]
-		Token,
-		[EnumMember(Value = "oauth_verifier")]
-		Verifier,
-		[EnumMember(Value = "oauth_token_secret")]
-		TokenSecret,
-		[EnumMember(Value = "oauth_signature")]
-		Signature
+		/// <summary>
+		/// Token for accessing OAuth services
+		/// </summary>
+		[Description("Contains the OAuth token (encrypted)"), TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
+		string OAuthToken
+		{
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// OAuth token secret
+		/// </summary>
+		[Description("OAuth token secret (encrypted)"), TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
+		string OAuthTokenSecret
+		{
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// OAuth token verifier
+		/// </summary>
+		[Description("OAuth token verifier (encrypted)"), TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
+		string OAuthTokenVerifier
+		{
+			get;
+			set;
+		}
 	}
 }

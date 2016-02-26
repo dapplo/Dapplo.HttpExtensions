@@ -35,7 +35,7 @@ using Xunit.Abstractions;
 namespace Dapplo.HttpExtensions.Test
 {
 	/// <summary>
-	/// Should write some tests which use http://httpbin.org/
+	/// Some tests which use http://httpbin.org/
 	/// </summary>
 	public class UriActionExtensionsTests
 	{

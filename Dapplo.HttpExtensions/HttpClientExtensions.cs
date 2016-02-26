@@ -103,29 +103,64 @@ namespace Dapplo.HttpExtensions
 		}
 
 		/// <summary>
-		/// Method to post without content
+		/// Post the content, and get the reponse
 		/// </summary>
 		/// <typeparam name="TResponse">the generic type to return the result into, use HttpContent or HttpResponseMessage to get those unprocessed</typeparam>
 		/// <typeparam name="TContent">the generic type to for the content</typeparam>
-		/// <param name="client">HttpClient</param>
+		/// <param name="httpClient">HttpClient</param>
 		/// <param name="uri">Uri to post an empty request to</param>
 		/// <param name="content">TContent with the content to post</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>TResult</returns>
-		public static async Task<TResponse> PostAsync<TResponse, TContent>(this HttpClient client, Uri uri, TContent content, CancellationToken token = default(CancellationToken)) where TResponse : class where TContent : class
+		public static async Task<TResponse> PostAsync<TResponse, TContent>(this HttpClient httpClient, Uri uri, TContent content, CancellationToken token = default(CancellationToken)) where TResponse : class where TContent : class
 		{
-			if (content != null)
+			if (content == null)
 			{
-				using (var httpRequestMessage = HttpRequestMessageFactory.CreatePost<TResponse, TContent>(uri, content))
-				{
-					return await httpRequestMessage.SendAsync<TResponse>(token).ConfigureAwait(false);
-				}
+				throw new ArgumentNullException(nameof(content), "Content should not be null");
 			}
 
+			using (var httpRequestMessage = HttpRequestMessageFactory.CreatePost<TResponse, TContent>(uri, content))
+			{
+				return await httpRequestMessage.SendAsync<TResponse>(httpClient, token).ConfigureAwait(false);
+			}
+		}
+
+		/// <summary>
+		/// Post the content, and don't expect (ignore) the response
+		/// </summary>
+		/// <typeparam name="TContent">the generic type to for the content</typeparam>
+		/// <param name="httpClient">HttpClient</param>
+		/// <param name="uri">Uri to post an empty request to</param>
+		/// <param name="content">TContent with the content to post</param>
+		/// <param name="token">CancellationToken</param>
+		public static async Task PostAsync<TContent>(this HttpClient httpClient, Uri uri, TContent content, CancellationToken token = default(CancellationToken))
+			where TContent : class
+		{
+			if (content == null)
+			{
+				throw new ArgumentNullException(nameof(content), "Content should not be null");
+			}
+
+			using (var httpRequestMessage = HttpRequestMessageFactory.CreatePost(uri, content))
+			{
+				await httpRequestMessage.SendAsync(httpClient, token).ConfigureAwait(false);
+			}
+		}
+
+		/// <summary>
+		/// Method to post without content
+		/// </summary>
+		/// <typeparam name="TResponse">the generic type to return the result into, use HttpContent or HttpResponseMessage to get those unprocessed</typeparam>
+		/// <param name="httpClient">HttpClient</param>
+		/// <param name="uri">Uri to post an empty request to</param>
+		/// <param name="token">CancellationToken</param>
+		/// <returns>TResult</returns>
+		public static async Task<TResponse> PostAsync<TResponse>(this HttpClient httpClient, Uri uri, CancellationToken token = default(CancellationToken)) where TResponse : class
+		{
 			// No content, send empty post
 			using (var httpRequestMessage = HttpRequestMessageFactory.Create<TResponse>(HttpMethod.Post, uri))
 			{
-				return await httpRequestMessage.SendAsync<TResponse>(token).ConfigureAwait(false);
+				return await httpRequestMessage.SendAsync<TResponse>(httpClient, token).ConfigureAwait(false);
 			}
 		}
 

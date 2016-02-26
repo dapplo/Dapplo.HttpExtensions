@@ -112,6 +112,27 @@ namespace Dapplo.HttpExtensions
 		}
 
 		/// <summary>
+		/// Method to Post content
+		/// </summary>
+		/// <typeparam name="TContent">Generic type for the content to upload</typeparam>
+		/// <param name="uri">Uri to post to</param>
+		/// <param name="content">HttpContent to post</param>
+		/// <param name="token">CancellationToken</param>
+		public static async Task PostAsync<TContent>(this Uri uri, TContent content, CancellationToken token = default(CancellationToken))
+			where TContent : class
+		{
+			if (uri == null)
+			{
+				throw new ArgumentNullException(nameof(uri));
+			}
+
+			using (var client = HttpClientFactory.Create(uri))
+			{
+				await client.PostAsync(uri, content, token).ConfigureAwait(false);
+			}
+		}
+
+		/// <summary>
 		/// Get the response as the specified type
 		/// </summary>
 		/// <typeparam name="TResponse">Type to deserialize into</typeparam>

@@ -21,28 +21,32 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
 using System.Drawing;
 using Dapplo.HttpExtensions.Support;
 
 namespace Dapplo.HttpExtensions.Test.TestEntities
 {
 	/// <summary>
-	/// Example class wich is filled automatically
+	/// Example class wich is posted & filled automatically from the response information
 	/// </summary>
-	[Http(HttpParts.MultiPart)]
-	public class MyMultiPartContent
+	[Http(HttpParts.Request)]
+	public class MyMultiPartRequest
 	{
+		[Http(HttpParts.RequestHeaders)]
+		public IDictionary<string, string> Headers  { get; } = new Dictionary<string,string>();
+
 		[Http(HttpParts.RequestContentType, Order = 0)]
 		public string ContentType { get; set; } = "application/json";
 
 		[Http(HttpParts.RequestContent, Order = 0)]
-		public JsonObject JsonInformation { get; set; }
+		public object JsonInformation { get; set; }
 
-		[Http(HttpParts.MultipartName, Order = 1)]
-		public string BitmapContentName { get; set; }
+		[Http(HttpParts.RequestMultipartName, Order = 1)]
+		public string BitmapContentName { get; set; } = "File";
 
-		[Http(HttpParts.MultipartFilename, Order = 1)]
-		public string BitmapFileName { get; set; }
+		[Http(HttpParts.RequestMultipartFilename, Order = 1)]
+		public string BitmapFileName { get; set; } = "empty.png";
 
 		[Http(HttpParts.RequestContent, Order = 1)]
 		public Bitmap OurBitmap { get; set; }

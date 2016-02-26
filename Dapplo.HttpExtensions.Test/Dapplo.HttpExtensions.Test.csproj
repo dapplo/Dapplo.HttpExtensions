@@ -81,8 +81,9 @@
     <Compile Include="Support\UriHttpListenerExtensionsTests.cs" />
     <Compile Include="TestEntities\GitHubError.cs" />
     <Compile Include="TestEntities\GitHubRelease.cs" />
-    <Compile Include="TestEntities\MyMultiPartContent.cs" />
+    <Compile Include="TestEntities\MyMultiPartRequest.cs" />
     <Compile Include="UriActionExtensionsMultiPartTests.cs" />
+    <Compile Include="HttpPartsPostTest.cs" />
     <Compile Include="UriActionExtensionsTests.cs" />
     <Compile Include="UriModifyExtensionsTests.cs" />
     <Compile Include="UriParseExtensionsTests.cs" />

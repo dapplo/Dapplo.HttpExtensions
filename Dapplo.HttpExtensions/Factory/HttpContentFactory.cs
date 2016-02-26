@@ -22,8 +22,11 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
+using Dapplo.HttpExtensions.Support;
 
 namespace Dapplo.HttpExtensions.Factory
 {
@@ -40,18 +43,113 @@ namespace Dapplo.HttpExtensions.Factory
 		/// <returns>HttpContent</returns>
 		public static HttpContent Create(Type inputType, object content)
 		{
-			if (content == null) return null;
+			if (content == null)
+			{
+				return null;
+			}
 
 			if (typeof(HttpContent).IsAssignableFrom(inputType))
 			{
 				return content as HttpContent;
 			}
 
-			// TODO: Add HttpAttribute logic here
-
 			var httpBehaviour = HttpBehaviour.Current;
+
+			// Process the input type
+			if (inputType.GetCustomAttribute<HttpAttribute>()?.Part == HttpParts.Request)
+			{
+				var contentItems = new List<ContentItem>();
+				// We have a type which specifies the request content
+				foreach (var propertyInfo in inputType.GetProperties())
+				{
+					var httpAttribute = propertyInfo.GetCustomAttribute<HttpAttribute>();
+					if (httpAttribute == null)
+					{
+						continue;
+					}
+
+					if (!httpAttribute.Part.ToString().StartsWith("Request"))
+					{
+						continue;
+					}
+
+					var order = httpAttribute.Order;
+					var contentItem = contentItems.FirstOrDefault(ci => ci.Order == order) ?? new ContentItem {Order = order};
+
+					switch (httpAttribute.Part)
+					{
+						case HttpParts.RequestContent:
+							var value = propertyInfo.GetValue(content);
+							if (value == null)
+							{
+								continue;
+							}
+							contentItem.Content = value;
+							break;
+						case HttpParts.RequestContentType:
+							contentItem.ContentType = propertyInfo.GetValue(content) as string;
+							break;
+						case HttpParts.RequestMultipartName:
+							contentItem.ContentName = propertyInfo.GetValue(content) as string;
+							break;
+						case HttpParts.RequestMultipartFilename:
+							contentItem.ContentFileName = propertyInfo.GetValue(content) as string;
+							break;
+						default:
+							// No know request value, go to the next
+							continue;
+					}
+					if (contentItems.All(x => x.Order != contentItem.Order))
+					{
+						contentItems.Add(contentItem);
+					}
+				}
+				if (contentItems.Count == 1)
+				{
+					var contentItem = contentItems[0];
+					return Create(httpBehaviour, contentItem.Content.GetType(), contentItem.Content);
+				}
+				if (contentItems.Count > 1)
+				{
+					var multipartContent = new MultipartFormDataContent();
+
+					foreach (var contentItem in contentItems.OrderBy(x => x.Order))
+					{
+						var httpContent = Create(httpBehaviour, contentItem.Content.GetType(), contentItem.Content);
+						if (contentItem.ContentType != null)
+						{
+							httpContent.SetContentType(contentItem.ContentType);
+						}
+						if (contentItem.ContentName != null && contentItem.ContentFileName != null)
+						{
+							multipartContent.Add(httpContent, contentItem.ContentName, contentItem.ContentFileName);
+						}
+						else
+						{
+							multipartContent.Add(httpContent);
+						}
+					}
+					return multipartContent;
+				}
+			}
+
+			return Create(httpBehaviour, inputType, content);
+		}
+
+		/// <summary>
+		/// Helper method to create content
+		/// </summary>
+		/// <param name="httpBehaviour">IHttpBehaviour</param>
+		/// <param name="inputType">Type</param>
+		/// <param name="content">object</param>
+		/// <returns>HttpContent</returns>
+		private static HttpContent Create(IHttpBehaviour httpBehaviour, Type inputType, object content)
+		{
 			var httpContentConverter = httpBehaviour.HttpContentConverters.OrderBy(x => x.Order).FirstOrDefault(x => x.CanConvertToHttpContent(inputType, content));
-			if (httpContentConverter == null) return null;
+			if (httpContentConverter == null)
+			{
+				return null;
+			}
 
 			var httpContent = httpContentConverter.ConvertToHttpContent(inputType, content);
 			// Make sure the OnHttpContentCreated function is called

@@ -99,6 +99,7 @@
     <Compile Include="OAuth\OAuth2TokenResponse.cs" />
     <Compile Include="OAuth\OAuth2TokenInformation.cs" />
     <Compile Include="Support\AsyncLock.cs" />
+    <Compile Include="Support\ContentItem.cs" />
     <Compile Include="Support\DelegatingTypeConverter.cs" />
     <Compile Include="Support\DelegatingStringEncryptionTypeConverter.cs" />
     <Compile Include="Support\HttpAttribute.cs" />

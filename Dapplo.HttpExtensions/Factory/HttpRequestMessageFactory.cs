@@ -23,7 +23,12 @@
 
 using Dapplo.LogFacade;
 using System;
+using System.Collections;
+using System.Linq;
 using System.Net.Http;
+using System.Reflection;
+using Dapplo.HttpExtensions.Support;
+using System.Collections.Generic;
 
 namespace Dapplo.HttpExtensions.Factory
 {
@@ -59,15 +64,28 @@ namespace Dapplo.HttpExtensions.Factory
 		/// <summary>
 		/// Create a HttpRequestMessage for the POST method
 		/// </summary>
-		/// <typeparam name="TResponse">Type to return into, this influences the Accept headers</typeparam>
+		/// <typeparam name="TResponse">Type to return into, this only influences the Accept headers</typeparam>
 		/// <typeparam name="TContent"></typeparam>
 		/// <param name="requestUri">the target uri for this message</param>
 		/// <param name="content">HttpContent</param>
 		/// <returns>HttpRequestMessage</returns>
 		public static HttpRequestMessage CreatePost<TResponse, TContent>(Uri requestUri, TContent content = default(TContent))
-			where TResponse : class
+			where TResponse : class where TContent : class
 		{
 			return Create(HttpMethod.Post, requestUri, typeof(TResponse), typeof(TContent), content);
+		}
+
+		/// <summary>
+		/// Create a HttpRequestMessage for the POST method
+		/// </summary>
+		/// <typeparam name="TContent"></typeparam>
+		/// <param name="requestUri">the target uri for this message</param>
+		/// <param name="content">HttpContent</param>
+		/// <returns>HttpRequestMessage</returns>
+		public static HttpRequestMessage CreatePost<TContent>(Uri requestUri, TContent content = default(TContent))
+			where TContent : class
+		{
+			return Create(HttpMethod.Post, requestUri, null, typeof(TContent), content);
 		}
 
 		/// <summary>
@@ -83,11 +101,29 @@ namespace Dapplo.HttpExtensions.Factory
 		{
 			Log.Verbose().WriteLine("Creating request for {0}", requestUri);
 			var httpBehaviour = HttpBehaviour.Current;
+			contentType = contentType ?? content?.GetType();
 
 			var httpRequestMessage = new HttpRequestMessage(method, requestUri)
 			{
-				Content = HttpContentFactory.Create(contentType, content)
+				Content = HttpContentFactory.Create(contentType, content),
 			};
+
+			// if the type has a HttpAttribute with HttpPart.Request
+			if (contentType != null && contentType.GetCustomAttribute<HttpAttribute>()?.Part == HttpParts.Request)
+			{
+				// And a property has a HttpAttribute with HttpPart.RequestHeaders
+				var headersPropertyInfo = contentType.GetProperties().FirstOrDefault(t => t.GetCustomAttribute<HttpAttribute>()?.Part == HttpParts.RequestHeaders);
+				var headersValue = headersPropertyInfo?.GetValue(content) as IDictionary<string, string>;
+				if (headersValue != null)
+				{
+					foreach (var headerName in headersValue.Keys)
+					{
+						var headerValue = headersValue[headerName];
+						httpRequestMessage.Headers.TryAddWithoutValidation(headerName, headerValue);
+					}
+				}
+			}
+
 			if (resultType != null)
 			{
 				httpBehaviour.HttpContentConverters?.ForEach(x => x.AddAcceptHeadersForType(resultType, httpRequestMessage));

@@ -24,7 +24,6 @@
 using Dapplo.HttpExtensions.Factory;
 using Dapplo.LogFacade;
 using System;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
@@ -59,9 +58,9 @@ namespace Dapplo.HttpExtensions
 					return headers.LastModified.Value;
 				}
 			}
-			catch
+			catch (Exception ex)
 			{
-				// Ignore
+				Log.Warn().WriteLine(ex, "Couldn't read last modified value.");
 			}
 			// Pretend it is old
 			return DateTimeOffset.MinValue;
@@ -79,26 +78,21 @@ namespace Dapplo.HttpExtensions
 			{
 				throw new ArgumentNullException(nameof(uri));
 			}
-			Log.Verbose().WriteLine("Requesting headers for: {0}", uri);
-			using (var client = HttpClientFactory.Create(uri))
-			using (var httpRequestMessage = HttpRequestMessageFactory.CreateHead(uri))
-			using (var httpResponseMessage = await client.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false))
+			using (var httpClient = HttpClientFactory.Create(uri))
 			{
-				await httpResponseMessage.HandleErrorAsync(token).ConfigureAwait(false);
-				return httpResponseMessage.Content.Headers;
+				return await httpClient.HeadAsync(uri, token);
 			}
 		}
 
 		/// <summary>
-		/// Method to Post content
+		/// Method to Delete content
 		/// </summary>
 		/// <typeparam name="TResponse">the generic type to return the result into, use HttpContent or HttpResponseMessage to get those unprocessed</typeparam>
-		/// <typeparam name="TContent">Generic type for the content to upload</typeparam>
-		/// <param name="uri">Uri to post to</param>
-		/// <param name="content">HttpContent to post</param>
+		/// <param name="uri">Uri to send the delete to</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>TResponse</returns>
-		public static async Task<TResponse> PostAsync<TResponse, TContent>(this Uri uri, TContent content, CancellationToken token = default(CancellationToken)) where TResponse : class where TContent : class
+		public static async Task<TResponse> DeleteAsync<TResponse>(this Uri uri, CancellationToken token = default(CancellationToken))
+			where TResponse : class
 		{
 			if (uri == null)
 			{
@@ -107,19 +101,61 @@ namespace Dapplo.HttpExtensions
 
 			using (var client = HttpClientFactory.Create(uri))
 			{
-				return await client.PostAsync<TResponse, TContent>(uri, content, token).ConfigureAwait(false);
+				return await client.DeleteAsync<TResponse>(uri, token).ConfigureAwait(false);
+			}
+		}
+
+		/// <summary>
+		/// Method to Put content
+		/// </summary>
+		/// <typeparam name="TResponse">the generic type to return the result into, use HttpContent or HttpResponseMessage to get those unprocessed</typeparam>
+		/// <param name="uri">Uri to post to</param>
+		/// <param name="content">Content to post</param>
+		/// <param name="token">CancellationToken</param>
+		/// <returns>TResponse</returns>
+		public static async Task<TResponse> PutAsync<TResponse>(this Uri uri, object content, CancellationToken token = default(CancellationToken))
+			where TResponse : class
+		{
+			if (uri == null)
+			{
+				throw new ArgumentNullException(nameof(uri));
+			}
+
+			using (var client = HttpClientFactory.Create(uri))
+			{
+				return await client.PutAsync<TResponse>(uri, content, token).ConfigureAwait(false);
 			}
 		}
 
 		/// <summary>
 		/// Method to Post content
 		/// </summary>
-		/// <typeparam name="TContent">Generic type for the content to upload</typeparam>
+		/// <typeparam name="TResponse">the generic type to return the result into, use HttpContent or HttpResponseMessage to get those unprocessed</typeparam>
 		/// <param name="uri">Uri to post to</param>
-		/// <param name="content">HttpContent to post</param>
+		/// <param name="content">Content to post</param>
 		/// <param name="token">CancellationToken</param>
-		public static async Task PostAsync<TContent>(this Uri uri, TContent content, CancellationToken token = default(CancellationToken))
-			where TContent : class
+		/// <returns>TResponse</returns>
+		public static async Task<TResponse> PostAsync<TResponse>(this Uri uri, object content, CancellationToken token = default(CancellationToken))
+			where TResponse : class
+		{
+			if (uri == null)
+			{
+				throw new ArgumentNullException(nameof(uri));
+			}
+
+			using (var client = HttpClientFactory.Create(uri))
+			{
+				return await client.PostAsync<TResponse>(uri, content, token).ConfigureAwait(false);
+			}
+		}
+
+		/// <summary>
+		/// Method to Post content, ignore response
+		/// </summary>
+		/// <param name="uri">Uri to post to</param>
+		/// <param name="content">Content to post</param>
+		/// <param name="token">CancellationToken</param>
+		public static async Task PostAsync(this Uri uri, object content, CancellationToken token = default(CancellationToken))
 		{
 			if (uri == null)
 			{

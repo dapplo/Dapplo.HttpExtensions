@@ -67,20 +67,20 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// Make an OAuth POST, returns the response as the specified type
 		/// </summary>
 		/// <typeparam name="TResponse">the generic type to return the result into, use HttpContent or HttpResponseMessage to get those unprocessed</typeparam>
-		/// <typeparam name="TContent">Generic type for the content to upload</typeparam>
 		/// <param name="uri">Uri to post to</param>
 		/// <param name="content">Content to post</param>
 		/// <param name="properties">properties to post</param>
 		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>TResponse</returns>
-		public static async Task<TResponse> OAuth1PostAsync<TResponse, TContent>(this Uri uri, TContent content, IDictionary<string, object> properties = null, CancellationToken cancellationToken = default(CancellationToken)) where TResponse : class where TContent : class
+		public static async Task<TResponse> OAuth1PostAsync<TResponse>(this Uri uri, object content, IDictionary<string, object> properties = null, CancellationToken cancellationToken = default(CancellationToken))
+			where TResponse : class
 		{
 			if (uri == null)
 			{
 				throw new ArgumentNullException(nameof(uri));
 			}
 
-			using (var httpRequestMessage = HttpRequestMessageFactory.CreatePost<TResponse, TContent>(uri, content))
+			using (var httpRequestMessage = HttpRequestMessageFactory.CreatePost<TResponse>(uri, content))
 			{
 				if (properties != null)
 				{

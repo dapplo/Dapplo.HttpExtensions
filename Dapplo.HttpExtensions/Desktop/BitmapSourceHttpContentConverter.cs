@@ -92,17 +92,6 @@ namespace Dapplo.HttpExtensions.Desktop
 		/// <summary>
 		/// This checks if the HttpContent can be converted to a Bitmap and is assignable to the specified Type 
 		/// </summary>
-		/// <typeparam name="TResult">Type to convert to</typeparam>
-		/// <param name="httpContent">HttpContent to process</param>
-		/// <returns>true if it can convert</returns>
-		public bool CanConvertFromHttpContent<TResult>(HttpContent httpContent) where TResult : class
-		{
-			return CanConvertFromHttpContent(typeof (TResult), httpContent);
-		}
-
-		/// <summary>
-		/// This checks if the HttpContent can be converted to a Bitmap and is assignable to the specified Type 
-		/// </summary>
 		/// <param name="typeToConvertTo">This should be something we can assign Bitmap to</param>
 		/// <param name="httpContent">HttpContent to process</param>
 		/// <returns>true if it can convert</returns>
@@ -116,18 +105,13 @@ namespace Dapplo.HttpExtensions.Desktop
 			return !httpBehaviour.ValidateResponseContentType || SupportedContentTypes.Contains(httpContent.GetContentType());
 		}
 
-		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, CancellationToken token = default(CancellationToken)) where TResult : class
-		{
-			return await ConvertFromHttpContentAsync(typeof(TResult), httpContent, token).ConfigureAwait(false) as TResult;
-		}
-
 		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken token = default(CancellationToken))
 		{
 			if (!CanConvertFromHttpContent(resultType, httpContent))
 			{
 				throw new NotSupportedException("CanConvertFromHttpContent resulted in false, this is not supposed to be called.");
 			}
-			using (var memoryStream = await StreamHttpContentConverter.Instance.ConvertFromHttpContentAsync<MemoryStream>(httpContent, token).ConfigureAwait(false))
+			using (var memoryStream = (MemoryStream)await StreamHttpContentConverter.Instance.ConvertFromHttpContentAsync(typeof(MemoryStream), httpContent, token).ConfigureAwait(false))
 			{
 				Log.Debug().WriteLine("Creating a BitmapImage from the MemoryStream.");
 				var bitmap = new BitmapImage();
@@ -142,19 +126,9 @@ namespace Dapplo.HttpExtensions.Desktop
 			}
 		}
 
-		public bool CanConvertToHttpContent<TInput>(TInput content) where TInput : class
-		{
-			return CanConvertToHttpContent(typeof(TInput), content);
-		}
-
 		public bool CanConvertToHttpContent(Type typeToConvert, object content)
 		{
 			return typeof(BitmapSource).IsAssignableFrom(typeToConvert)  && content != null;
-		}
-
-		public HttpContent ConvertToHttpContent<TInput>(TInput content) where TInput : class
-		{
-			return ConvertToHttpContent(typeof(TInput), content);
 		}
 
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content)

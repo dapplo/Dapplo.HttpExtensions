@@ -41,19 +41,9 @@ namespace Dapplo.HttpExtensions.ContentConverter
 
 		public int Order => 0;
 
-		public bool CanConvertFromHttpContent<TResult>(HttpContent httpContent) where TResult : class
-		{
-			return CanConvertFromHttpContent(typeof(TResult), httpContent);
-		}
-
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent)
 		{
 			return typeToConvertTo != typeof(object) && typeToConvertTo.IsAssignableFrom(typeof(MemoryStream));
-		}
-
-		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, CancellationToken token = default(CancellationToken)) where TResult : class
-		{
-			return await ConvertFromHttpContentAsync(typeof (TResult), httpContent, token).ConfigureAwait(false) as TResult;
 		}
 
 		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken token = default(CancellationToken))
@@ -80,11 +70,6 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			return typeof(Stream).IsAssignableFrom(typeToConvert);
 		}
 
-		public bool CanConvertToHttpContent<TInput>(TInput content) where TInput : class
-		{
-			return CanConvertToHttpContent(typeof(TInput), content);
-		}
-
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
 		{
 			var httpBehaviour = HttpBehaviour.Current;
@@ -100,11 +85,6 @@ namespace Dapplo.HttpExtensions.ContentConverter
 				httpContent = new StreamContent(stream);
 			}
 			return httpContent;
-		}
-
-		public HttpContent ConvertToHttpContent<TInput>(TInput content) where TInput : class
-		{
-			return ConvertToHttpContent(typeof(TInput), content);
 		}
 
 		/// <summary>

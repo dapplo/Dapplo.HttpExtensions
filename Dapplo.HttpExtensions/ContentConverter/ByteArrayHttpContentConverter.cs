@@ -50,35 +50,12 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		/// <summary>
 		/// Check if we can convert from the HttpContent to a byte array
 		/// </summary>
-		/// <typeparam name="TResult">To what type will the result be assigned</typeparam>
-		/// <param name="httpContent">HttpContent</param>
-		/// <returns>true if we can convert the HttpContent to a ByteArray</returns>
-		public bool CanConvertFromHttpContent<TResult>(HttpContent httpContent) where TResult : class
-		{
-			return CanConvertFromHttpContent(typeof(TResult), httpContent);
-		}
-
-		/// <summary>
-		/// Check if we can convert from the HttpContent to a byte array
-		/// </summary>
 		/// <param name="typeToConvertTo">To what type will the result be assigned</param>
 		/// <param name="httpContent">HttpContent</param>
 		/// <returns>true if we can convert the HttpContent to a ByteArray</returns>
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent)
 		{
 			return typeToConvertTo == typeof(byte[]);
-		}
-
-		/// <summary>
-		/// Convert a HttpContent to the specified type
-		/// </summary>
-		/// <typeparam name="TResult">Type to convert to</typeparam>
-		/// <param name="httpContent">HttpContent</param>
-		/// <param name="token">CancellationToken, used as the HttpContent might be read async</param>
-		/// <returns>Task with result</returns>
-		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, CancellationToken token = default(CancellationToken)) where TResult : class
-		{
-			return await ConvertFromHttpContentAsync(typeof(TResult), httpContent, token).ConfigureAwait(false) as TResult;
 		}
 
 		/// <summary>
@@ -111,17 +88,6 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		}
 
 		/// <summary>
-		/// Checks if the content of type typeToConvert can be converted into a HttpContent
-		/// </summary>
-		/// <typeparam name="TInput">type to process</typeparam>
-		/// <param name="content">some object</param>
-		/// <returns>true if a conversion can be made</returns>
-		public bool CanConvertToHttpContent<TInput>(TInput content) where TInput : class
-		{
-			return CanConvertToHttpContent(typeof(TInput), content);
-		}
-
-		/// <summary>
 		/// Actually convert the passed object into a HttpContent
 		/// </summary>
 		/// <param name="typeToConvert">Type to convert from</param>
@@ -131,17 +97,6 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		{
 			var byteArray = content as byte[];
 			return new ByteArrayContent(byteArray);
-		}
-
-		/// <summary>
-		/// Actually convert the passed object into a HttpContent
-		/// </summary>
-		/// <typeparam name="TInput">Type to convert from</typeparam>
-		/// <param name="content">Some object</param>
-		/// <returns>HttpContent</returns>
-		public HttpContent ConvertToHttpContent<TInput>(TInput content) where TInput : class
-		{
-			return ConvertToHttpContent(typeof(TInput), content);
 		}
 
 		/// <summary>

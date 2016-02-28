@@ -23,7 +23,6 @@
 
 using Dapplo.LogFacade;
 using System;
-using System.Collections;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
@@ -62,30 +61,51 @@ namespace Dapplo.HttpExtensions.Factory
 		}
 
 		/// <summary>
-		/// Create a HttpRequestMessage for the POST method
+		/// Create a HttpRequestMessage for the DELETE method
+		/// </summary>
+		/// <param name="requestUri">the target uri for this message</param>
+		/// <returns>HttpRequestMessage</returns>
+		public static HttpRequestMessage CreateDelete<TResponse>(Uri requestUri)
+			where TResponse : class
+		{
+			return Create<TResponse>(HttpMethod.Delete, requestUri);
+		}
+
+		/// <summary>
+		/// Create a HttpRequestMessage for the PUT method
 		/// </summary>
 		/// <typeparam name="TResponse">Type to return into, this only influences the Accept headers</typeparam>
-		/// <typeparam name="TContent"></typeparam>
 		/// <param name="requestUri">the target uri for this message</param>
 		/// <param name="content">HttpContent</param>
 		/// <returns>HttpRequestMessage</returns>
-		public static HttpRequestMessage CreatePost<TResponse, TContent>(Uri requestUri, TContent content = default(TContent))
-			where TResponse : class where TContent : class
+		public static HttpRequestMessage CreatePut<TResponse>(Uri requestUri, object content = null)
+			where TResponse : class
 		{
-			return Create(HttpMethod.Post, requestUri, typeof(TResponse), typeof(TContent), content);
+			return Create(HttpMethod.Put, requestUri, typeof(TResponse), content?.GetType(), content);
 		}
 
 		/// <summary>
 		/// Create a HttpRequestMessage for the POST method
 		/// </summary>
-		/// <typeparam name="TContent"></typeparam>
+		/// <typeparam name="TResponse">Type to return into, this only influences the Accept headers</typeparam>
 		/// <param name="requestUri">the target uri for this message</param>
 		/// <param name="content">HttpContent</param>
 		/// <returns>HttpRequestMessage</returns>
-		public static HttpRequestMessage CreatePost<TContent>(Uri requestUri, TContent content = default(TContent))
-			where TContent : class
+		public static HttpRequestMessage CreatePost<TResponse>(Uri requestUri, object content = null)
+			where TResponse : class
 		{
-			return Create(HttpMethod.Post, requestUri, null, typeof(TContent), content);
+			return Create(HttpMethod.Post, requestUri, typeof(TResponse), content?.GetType(), content);
+		}
+
+		/// <summary>
+		/// Create a HttpRequestMessage for the POST method
+		/// </summary>
+		/// <param name="requestUri">the target uri for this message</param>
+		/// <param name="content">HttpContent</param>
+		/// <returns>HttpRequestMessage</returns>
+		public static HttpRequestMessage CreatePost(Uri requestUri, object content = null)
+		{
+			return Create(HttpMethod.Post, requestUri, null, content?.GetType(), content);
 		}
 
 		/// <summary>

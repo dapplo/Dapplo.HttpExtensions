@@ -107,7 +107,7 @@ namespace Dapplo.HttpExtensions.Factory
 				if (contentItems.Count == 1)
 				{
 					var contentItem = contentItems[0];
-					return Create(httpBehaviour, contentItem.Content.GetType(), contentItem.Content);
+					return Create(httpBehaviour, contentItem);
 				}
 				if (contentItems.Count > 1)
 				{
@@ -115,11 +115,7 @@ namespace Dapplo.HttpExtensions.Factory
 
 					foreach (var contentItem in contentItems.OrderBy(x => x.Order))
 					{
-						var httpContent = Create(httpBehaviour, contentItem.Content.GetType(), contentItem.Content);
-						if (contentItem.ContentType != null)
-						{
-							httpContent.SetContentType(contentItem.ContentType);
-						}
+						var httpContent = Create(httpBehaviour, contentItem);
 						if (contentItem.ContentName != null && contentItem.ContentFileName != null)
 						{
 							multipartContent.Add(httpContent, contentItem.ContentName, contentItem.ContentFileName);
@@ -140,24 +136,51 @@ namespace Dapplo.HttpExtensions.Factory
 		/// Helper method to create content
 		/// </summary>
 		/// <param name="httpBehaviour">IHttpBehaviour</param>
+		/// <param name="contentItem"></param>
+		/// <returns>HttpContent</returns>
+		private static HttpContent Create(IHttpBehaviour httpBehaviour, ContentItem contentItem)
+		{
+			return Create(httpBehaviour, contentItem.Content.GetType(), contentItem.Content, contentItem.ContentType);
+		}
+
+		/// <summary>
+		/// Helper method to create content
+		/// </summary>
+		/// <param name="httpBehaviour">IHttpBehaviour</param>
 		/// <param name="inputType">Type</param>
 		/// <param name="content">object</param>
+		/// <param name="contentType">if a specific content-Type is needed, specify it</param>
 		/// <returns>HttpContent</returns>
-		private static HttpContent Create(IHttpBehaviour httpBehaviour, Type inputType, object content)
+		private static HttpContent Create(IHttpBehaviour httpBehaviour, Type inputType, object content, string contentType = null)
 		{
-			var httpContentConverter = httpBehaviour.HttpContentConverters.OrderBy(x => x.Order).FirstOrDefault(x => x.CanConvertToHttpContent(inputType, content));
-			if (httpContentConverter == null)
+			HttpContent resultHttpContent;
+
+			if (typeof (HttpContent).IsAssignableFrom(inputType))
 			{
-				return null;
+				resultHttpContent = content as HttpContent;
+			}
+			else
+			{
+				var httpContentConverter = httpBehaviour.HttpContentConverters.OrderBy(x => x.Order).FirstOrDefault(x => x.CanConvertToHttpContent(inputType, content));
+				if (httpContentConverter == null)
+				{
+					return null;
+				}
+
+				resultHttpContent = httpContentConverter.ConvertToHttpContent(inputType, content);
 			}
 
-			var httpContent = httpContentConverter.ConvertToHttpContent(inputType, content);
+			if (contentType != null)
+			{
+				resultHttpContent?.SetContentType(contentType);
+			}
+
 			// Make sure the OnHttpContentCreated function is called
 			if (httpBehaviour.OnHttpContentCreated != null)
 			{
-				return httpBehaviour.OnHttpContentCreated.Invoke(httpContent);
+				return httpBehaviour.OnHttpContentCreated.Invoke(resultHttpContent);
 			}
-			return httpContent;
+			return resultHttpContent;
 		}
 
 		/// <summary>

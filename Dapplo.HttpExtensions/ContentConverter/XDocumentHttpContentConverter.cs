@@ -44,19 +44,9 @@ namespace Dapplo.HttpExtensions.ContentConverter
 
 		public int Order => 0;
 
-		public bool CanConvertFromHttpContent<TResult>(HttpContent httpContent) where TResult : class
-		{
-			return CanConvertFromHttpContent(typeof(TResult), httpContent);
-		}
-
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent)
 		{
 			return typeToConvertTo == typeof(XDocument);
-		}
-
-		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, CancellationToken token = default(CancellationToken)) where TResult : class
-		{
-			return await ConvertFromHttpContentAsync(typeof (TResult), httpContent, token).ConfigureAwait(false) as TResult;
 		}
 
 		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken token = default(CancellationToken))
@@ -78,11 +68,6 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			return typeToConvert == typeof(XDocument);
 		}
 
-		public bool CanConvertToHttpContent<TInput>(TInput content) where TInput : class
-		{
-			return CanConvertToHttpContent(typeof(TInput), content);
-		}
-
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
 		{
 			var xDocument = content as XDocument;
@@ -98,11 +83,6 @@ namespace Dapplo.HttpExtensions.ContentConverter
 				httpContent.SetContentType($"{MediaTypes.Xml.EnumValueOf()}; charset={stringWriter.Encoding.EncodingName}");
                 return httpContent;
 			}
-		}
-
-		public HttpContent ConvertToHttpContent<TInput>(TInput content) where TInput : class
-		{
-			return ConvertToHttpContent(typeof(TInput), content);
 		}
 
 		/// <summary>

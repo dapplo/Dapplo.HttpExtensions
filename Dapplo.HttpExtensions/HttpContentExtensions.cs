@@ -27,6 +27,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using Dapplo.HttpExtensions.Support;
 using Dapplo.LogFacade;
 
 namespace Dapplo.HttpExtensions
@@ -79,6 +80,11 @@ namespace Dapplo.HttpExtensions
 			var contentType = httpContent.GetContentType();
 			var message = $"Unsupported result type {resultType} / {contentType} combination.";
 			Log.Error().WriteLine(message);
+			if (MediaTypes.Txt.EnumValueOf() == contentType && Log.IsErrorEnabled())
+			{
+				message = await httpContent.ReadAsStringAsync();
+				Log.Error().WriteLine("Unprocessable result: {0}", message);
+			}
 			throw new NotSupportedException(message);
 		}
 

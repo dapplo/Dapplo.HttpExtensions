@@ -45,11 +45,6 @@ namespace Dapplo.HttpExtensions.ContentConverter
 
 		public int Order => 0;
 
-		public bool CanConvertFromHttpContent<TResult>(HttpContent httpContent) where TResult : class
-		{
-			return CanConvertFromHttpContent(typeof(TResult), httpContent);
-		}
-
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent)
 		{
 			// Check if the return-type can be assigned
@@ -58,11 +53,6 @@ namespace Dapplo.HttpExtensions.ContentConverter
 				return false;
 			}
 			return httpContent.GetContentType() == MediaTypes.WwwFormUrlEncoded.EnumValueOf();
-		}
-
-		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, CancellationToken token = default(CancellationToken)) where TResult : class
-		{
-			return await ConvertFromHttpContentAsync(typeof (TResult), httpContent, token).ConfigureAwait(false) as TResult;
 		}
 
 		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken token = default(CancellationToken))
@@ -92,21 +82,11 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			return typeof(IEnumerable<KeyValuePair<string, string>>).IsAssignableFrom(typeToConvert);
 		}
 
-		public bool CanConvertToHttpContent<TInput>(TInput content) where TInput : class
-		{
-			return CanConvertToHttpContent(typeof(TInput), content);
-		}
-
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
 		{
 			var nameValueCollection = content as IEnumerable<KeyValuePair<string, string>>;
 			Log.Debug().WriteLine("Created HttpContent with WwwUriEncodedForm data: {0}", nameValueCollection);
 			return new FormUrlEncodedContent(nameValueCollection);
-		}
-
-		public HttpContent ConvertToHttpContent<TInput>(TInput content) where TInput : class
-		{
-			return ConvertToHttpContent(typeof(TInput), content);
 		}
 
 		/// <summary>

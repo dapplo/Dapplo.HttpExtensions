@@ -62,22 +62,10 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		/// </summary>
 		public int LogThreshold { get; set; }
 
-		public bool CanConvertFromHttpContent<TResult>(HttpContent httpContent)
-			where TResult : class
-		{
-			return CanConvertFromHttpContent(typeof (TResult), httpContent);
-		}
-
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent)
 		{
 			var httpBehaviour = HttpBehaviour.Current;
 			return !httpBehaviour.ValidateResponseContentType || SupportedContentTypes.Contains(httpContent.GetContentType());
-		}
-
-		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, CancellationToken token = default(CancellationToken))
-			where TResult : class
-		{
-			return await ConvertFromHttpContentAsync(typeof (TResult), httpContent, token).ConfigureAwait(false) as TResult;
 		}
 
 		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken token = default(CancellationToken))
@@ -109,24 +97,12 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			return typeToConvert != typeof (string);
 		}
 
-		public bool CanConvertToHttpContent<TInput>(TInput content)
-			where TInput : class
-		{
-			return CanConvertToHttpContent(typeof (TInput), content);
-		}
-
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
 		{
 			var httpBehaviour = HttpBehaviour.Current;
 			var jsonString = httpBehaviour.JsonSerializer.SerializeJson(content);
 			Log.Debug().WriteLine("Created HttpContent for Json: {0}", jsonString);
 			return new StringContent(jsonString, httpBehaviour.DefaultEncoding, MediaTypes.Json.EnumValueOf());
-		}
-
-		public HttpContent ConvertToHttpContent<TInput>(TInput content)
-			where TInput : class
-		{
-			return ConvertToHttpContent(typeof (TInput), content);
 		}
 
 		/// <summary>

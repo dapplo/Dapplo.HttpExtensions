@@ -148,7 +148,7 @@ namespace Dapplo.HttpExtensions.Test.OAuth
 
 					try
 					{
-						var responseString = await uploadUri.OAuth1PostAsync<string, HttpContent>(streamContent, signedParameters);
+						var responseString = await uploadUri.OAuth1PostAsync<string>(streamContent, signedParameters);
 						Log.Info().WriteLine(responseString);
 					}
 					catch (Exception ex)

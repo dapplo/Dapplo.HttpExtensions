@@ -28,6 +28,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Dapplo.LogFacade;
 
 namespace Dapplo.HttpExtensions
 {
@@ -36,6 +37,8 @@ namespace Dapplo.HttpExtensions
 	/// </summary>
 	public static class HttpClientExtensions
 	{
+		private static readonly LogSource Log = new LogSource();
+
 		/// <summary>
 		/// Set Basic Authentication for the current client
 		/// </summary>
@@ -103,23 +106,90 @@ namespace Dapplo.HttpExtensions
 		}
 
 		/// <summary>
-		/// Post the content, and get the reponse
+		/// Retrieve only the content headers, by using the HTTP HEAD method
+		/// </summary>
+		/// <param name="httpClient"></param>
+		/// <param name="uri">Uri to get HEAD for</param>
+		/// <param name="token">CancellationToken</param>
+		/// <returns>HttpContentHeaders</returns>
+		public static async Task<HttpContentHeaders> HeadAsync(this HttpClient httpClient, Uri uri, CancellationToken token = default(CancellationToken))
+		{
+			if (uri == null)
+			{
+				throw new ArgumentNullException(nameof(uri));
+			}
+			Log.Verbose().WriteLine("Requesting headers for: {0}", uri);
+			using (var httpRequestMessage = HttpRequestMessageFactory.CreateHead(uri))
+			using (var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false))
+			{
+				await httpResponseMessage.HandleErrorAsync(token).ConfigureAwait(false);
+				return httpResponseMessage.Content.Headers;
+			}
+		}
+
+		/// <summary>
+		/// Send a Delete request to the server
 		/// </summary>
 		/// <typeparam name="TResponse">the generic type to return the result into, use HttpContent or HttpResponseMessage to get those unprocessed</typeparam>
-		/// <typeparam name="TContent">the generic type to for the content</typeparam>
 		/// <param name="httpClient">HttpClient</param>
-		/// <param name="uri">Uri to post an empty request to</param>
-		/// <param name="content">TContent with the content to post</param>
+		/// <param name="uri">Uri to send the delete request to</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>TResult</returns>
-		public static async Task<TResponse> PostAsync<TResponse, TContent>(this HttpClient httpClient, Uri uri, TContent content, CancellationToken token = default(CancellationToken)) where TResponse : class where TContent : class
+		public static async Task<TResponse> DeleteAsync<TResponse>(this HttpClient httpClient, Uri uri, CancellationToken token = default(CancellationToken))
+			where TResponse : class
+		{
+			if (uri == null)
+			{
+				throw new ArgumentNullException(nameof(uri), "No uri supplied");
+			}
+
+			using (var httpRequestMessage = HttpRequestMessageFactory.CreateDelete<TResponse>(uri))
+			{
+				return await httpRequestMessage.SendAsync<TResponse>(httpClient, token).ConfigureAwait(false);
+			}
+		}
+
+		/// <summary>
+		/// Put the content, and get the reponse
+		/// </summary>
+		/// <typeparam name="TResponse">the generic type to return the result into, use HttpContent or HttpResponseMessage to get those unprocessed</typeparam>
+		/// <param name="httpClient">HttpClient</param>
+		/// <param name="uri">Uri to put the request to</param>
+		/// <param name="content">Content to put</param>
+		/// <param name="token">CancellationToken</param>
+		/// <returns>TResult</returns>
+		public static async Task<TResponse> PutAsync<TResponse>(this HttpClient httpClient, Uri uri, object content, CancellationToken token = default(CancellationToken))
+			where TResponse : class
 		{
 			if (content == null)
 			{
-				throw new ArgumentNullException(nameof(content), "Content should not be null");
+				Log.Warn().WriteLine("No content supplied, this is ok but unusual.");
 			}
 
-			using (var httpRequestMessage = HttpRequestMessageFactory.CreatePost<TResponse, TContent>(uri, content))
+			using (var httpRequestMessage = HttpRequestMessageFactory.CreatePut<TResponse>(uri, content))
+			{
+				return await httpRequestMessage.SendAsync<TResponse>(httpClient, token).ConfigureAwait(false);
+			}
+		}
+
+		/// <summary>
+		/// Post the content, and get the reponse
+		/// </summary>
+		/// <typeparam name="TResponse">the generic type to return the result into, use HttpContent or HttpResponseMessage to get those unprocessed</typeparam>
+		/// <param name="httpClient">HttpClient</param>
+		/// <param name="uri">Uri to post request to</param>
+		/// <param name="content">Content to post</param>
+		/// <param name="token">CancellationToken</param>
+		/// <returns>TResult</returns>
+		public static async Task<TResponse> PostAsync<TResponse>(this HttpClient httpClient, Uri uri, object content, CancellationToken token = default(CancellationToken))
+			where TResponse : class
+		{
+			if (content == null)
+			{
+				Log.Warn().WriteLine("No content supplied, this is ok but unusual.");
+			}
+
+			using (var httpRequestMessage = HttpRequestMessageFactory.CreatePost<TResponse>(uri, content))
 			{
 				return await httpRequestMessage.SendAsync<TResponse>(httpClient, token).ConfigureAwait(false);
 			}
@@ -128,39 +198,20 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// Post the content, and don't expect (ignore) the response
 		/// </summary>
-		/// <typeparam name="TContent">the generic type to for the content</typeparam>
 		/// <param name="httpClient">HttpClient</param>
 		/// <param name="uri">Uri to post an empty request to</param>
-		/// <param name="content">TContent with the content to post</param>
+		/// <param name="content">Content to post</param>
 		/// <param name="token">CancellationToken</param>
-		public static async Task PostAsync<TContent>(this HttpClient httpClient, Uri uri, TContent content, CancellationToken token = default(CancellationToken))
-			where TContent : class
+		public static async Task PostAsync(this HttpClient httpClient, Uri uri, object content, CancellationToken token = default(CancellationToken))
 		{
 			if (content == null)
 			{
-				throw new ArgumentNullException(nameof(content), "Content should not be null");
+				Log.Warn().WriteLine("No content supplied, this is ok but unusual.");
 			}
 
 			using (var httpRequestMessage = HttpRequestMessageFactory.CreatePost(uri, content))
 			{
 				await httpRequestMessage.SendAsync(httpClient, token).ConfigureAwait(false);
-			}
-		}
-
-		/// <summary>
-		/// Method to post without content
-		/// </summary>
-		/// <typeparam name="TResponse">the generic type to return the result into, use HttpContent or HttpResponseMessage to get those unprocessed</typeparam>
-		/// <param name="httpClient">HttpClient</param>
-		/// <param name="uri">Uri to post an empty request to</param>
-		/// <param name="token">CancellationToken</param>
-		/// <returns>TResult</returns>
-		public static async Task<TResponse> PostAsync<TResponse>(this HttpClient httpClient, Uri uri, CancellationToken token = default(CancellationToken)) where TResponse : class
-		{
-			// No content, send empty post
-			using (var httpRequestMessage = HttpRequestMessageFactory.Create<TResponse>(HttpMethod.Post, uri))
-			{
-				return await httpRequestMessage.SendAsync<TResponse>(httpClient, token).ConfigureAwait(false);
 			}
 		}
 

@@ -52,11 +52,6 @@ namespace Dapplo.HttpExtensions.ContentConverter
 
 		public int Order => int.MaxValue;
 
-		public bool CanConvertFromHttpContent<TResult>(HttpContent httpContent) where TResult : class
-		{
-			return CanConvertFromHttpContent(typeof(TResult), httpContent);
-		}
-
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent)
 		{
 			if (typeToConvertTo != typeof(string))
@@ -66,11 +61,6 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			var httpBehaviour = HttpBehaviour.Current;
 			// Set ValidateResponseContentType to false to "catch" all
 			return !httpBehaviour.ValidateResponseContentType || SupportedContentTypes.Contains(httpContent.GetContentType());
-		}
-
-		public async Task<TResult> ConvertFromHttpContentAsync<TResult>(HttpContent httpContent, CancellationToken token = default(CancellationToken)) where TResult : class
-		{
-			return await ConvertFromHttpContentAsync(typeof (TResult), httpContent, token).ConfigureAwait(false) as TResult;
 		}
 
 		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken token = default(CancellationToken))
@@ -87,19 +77,9 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			return typeof(string) == typeToConvert;
 		}
 
-		public bool CanConvertToHttpContent<TInput>(TInput content) where TInput : class
-		{
-			return CanConvertToHttpContent(typeof(TInput), content);
-		}
-
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
 		{
 			return new StringContent(content as string);
-		}
-
-		public HttpContent ConvertToHttpContent<TInput>(TInput content) where TInput : class
-		{
-			return ConvertToHttpContent(typeof(TInput), content);
 		}
 
 		/// <summary>

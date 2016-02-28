@@ -38,7 +38,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		{
 			get
 			{
-				bool expired = true;
+				bool expired = false;
 				if (!string.IsNullOrEmpty(Token.OAuth2AccessToken) && Token.OAuth2AccessTokenExpires != default(DateTimeOffset))
 				{
 					expired = DateTimeOffset.Now.AddSeconds(HttpExtensionsGlobals.OAuth2ExpireOffset) > Token.OAuth2AccessTokenExpires;

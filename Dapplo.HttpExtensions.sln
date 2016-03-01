@@ -7,7 +7,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dapplo.HttpExtensions", "Da
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dapplo.HttpExtensions.Test", "Dapplo.HttpExtensions.Test\Dapplo.HttpExtensions.Test.csproj", "{03AB37FF-1220-4ECE-9964-FA6070C778D3}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Dapplo.HttpExtensions.Shared", "Dapplo.HttpExtensions.Shared\Dapplo.HttpExtensions.Shared.shproj", "{CD6F5F7F-2963-40DF-8D48-0563071DFA13}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dapplo.HttpExtensions.PCL", "Dapplo.HttpExtensions.PCL\Dapplo.HttpExtensions.PCL.csproj", "{B3CD22AA-764E-4EF3-AA9D-FD6879518505}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Dapplo.HttpExtensions.Shared\Dapplo.HttpExtensions.Shared.projitems*{cd6f5f7f-2963-40df-8d48-0563071dfa13}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -21,6 +28,10 @@ Global
 		{03AB37FF-1220-4ECE-9964-FA6070C778D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03AB37FF-1220-4ECE-9964-FA6070C778D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03AB37FF-1220-4ECE-9964-FA6070C778D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3CD22AA-764E-4EF3-AA9D-FD6879518505}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3CD22AA-764E-4EF3-AA9D-FD6879518505}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3CD22AA-764E-4EF3-AA9D-FD6879518505}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3CD22AA-764E-4EF3-AA9D-FD6879518505}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

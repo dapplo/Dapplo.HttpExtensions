@@ -1382,7 +1382,7 @@ namespace Dapplo.HttpExtensions
 						return null;
                     }
 
-					if (type.IsEnum || (ReflectionUtils.IsNullableType(type) && Nullable.GetUnderlyingType(type).IsEnum))
+					if (type.GetTypeInfo().IsEnum || (ReflectionUtils.IsNullableType(type) && Nullable.GetUnderlyingType(type).GetTypeInfo().IsEnum))
 					{
 						return Enum.Parse(ReflectionUtils.IsNullableType(type) ? Nullable.GetUnderlyingType(type) : type, str, true);
 					}

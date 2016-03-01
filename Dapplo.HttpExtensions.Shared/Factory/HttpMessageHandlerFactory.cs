@@ -22,7 +22,6 @@
  */
 
 using System.Net;
-using System.Net.Cache;
 using System.Net.Http;
 
 namespace Dapplo.HttpExtensions.Factory
@@ -30,13 +29,13 @@ namespace Dapplo.HttpExtensions.Factory
 	/// <summary>
 	/// Creating a HttpMessageHandler is not very straightforward, that is why the logic is capsulated in the HttpMessageHandlerFactory.
 	/// </summary>
-	public static class HttpMessageHandlerFactory
+	public static partial class HttpMessageHandlerFactory
 	{
 		/// <summary>
 		/// Apply settings on the HttpClientHandler
 		/// </summary>
 		/// <param name="httpClientHandler"></param>
-		public static void SetDefaults(HttpClientHandler httpClientHandler)
+		private static void SetDefaults(HttpClientHandler httpClientHandler)
 		{
 			var httpBehaviour = HttpBehaviour.Current;
 			var httpSettings = httpBehaviour.HttpSettings ?? HttpExtensionsGlobals.HttpSettings;
@@ -55,26 +54,6 @@ namespace Dapplo.HttpExtensions.Factory
 		}
 
 		/// <summary>
-		/// Apply settings on the WebRequestHandler, this also calls the SetDefaults for the underlying HttpClientHandler
-		/// </summary>
-		/// <param name="webRequestHandler">WebRequestHandler to set the defaults to</param>
-		public static void SetDefaults(WebRequestHandler webRequestHandler)
-		{
-			var httpBehaviour = HttpBehaviour.Current;
-			SetDefaults(webRequestHandler as HttpClientHandler);
-
-			var httpSettings = httpBehaviour.HttpSettings ?? HttpExtensionsGlobals.HttpSettings;
-
-			webRequestHandler.AllowPipelining = httpSettings.AllowPipelining;
-            webRequestHandler.ReadWriteTimeout = httpSettings.ReadWriteTimeout;
-			webRequestHandler.AuthenticationLevel = httpSettings.AuthenticationLevel;
-			webRequestHandler.ContinueTimeout = httpSettings.ContinueTimeout;
-			webRequestHandler.ImpersonationLevel = httpSettings.ImpersonationLevel;
-			webRequestHandler.MaxResponseHeadersLength = httpSettings.MaxResponseHeadersLength;
-			webRequestHandler.CachePolicy = new RequestCachePolicy(httpSettings.RequestCacheLevel);
-		}
-
-		/// <summary>
 		/// This creates an HttpClientHandler, normally one should use CreateWebRequestHandler
 		/// But this might be needed for Apps
 		/// </summary>
@@ -87,17 +66,6 @@ namespace Dapplo.HttpExtensions.Factory
 			return httpClientHandler;
 		}
 
-		/// <summary>
-		/// This creates an advanced HttpMessageHandler, used in desktop applications
-		/// Should be preferred
-		/// </summary>
-		/// <returns>HttpMessageHandler (WebRequestHandler)</returns>
-		private static HttpMessageHandler CreateWebRequestHandler()
-		{
-			var webRequestHandler = new WebRequestHandler();
-			SetDefaults(webRequestHandler);
-			return webRequestHandler;
-		}
 
 		/// <summary>
 		/// This creates a HttpMessageHandler
@@ -107,7 +75,7 @@ namespace Dapplo.HttpExtensions.Factory
 		public static HttpMessageHandler Create()
 		{
 			var httpBehaviour = HttpBehaviour.Current;
-			var baseMessageHandler = CreateWebRequestHandler();
+			var baseMessageHandler = CreateHandler();
 			if (httpBehaviour.OnHttpMessageHandlerCreated != null)
 			{
 				return httpBehaviour.OnHttpMessageHandlerCreated.Invoke(baseMessageHandler);

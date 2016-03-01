@@ -25,7 +25,6 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Globalization;
-using System.Runtime.Remoting;
 
 namespace Dapplo.HttpExtensions.Support
 {
@@ -44,7 +43,7 @@ namespace Dapplo.HttpExtensions.Support
 		/// <param name="typeName">string</param>
 		public DelegatingTypeConverter(string assemblyName, string typeName)
 		{
-			ObjectHandle handle = Activator.CreateInstance(assemblyName, typeName);
+			var handle = Activator.CreateInstance(assemblyName, typeName);
 			_innerTypeConverter = handle.Unwrap() as TypeConverter;
 		}
 		public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)

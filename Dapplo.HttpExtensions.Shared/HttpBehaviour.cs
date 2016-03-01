@@ -24,8 +24,8 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Runtime.Remoting.Messaging;
 using System.Text;
+using System.Threading;
 
 namespace Dapplo.HttpExtensions
 {
@@ -35,6 +35,8 @@ namespace Dapplo.HttpExtensions
 	/// </summary>
 	public class HttpBehaviour : IChangeableHttpBehaviour
 	{
+		static AsyncLocal<IHttpBehaviour> _asyncLocalBehavior = new AsyncLocal<IHttpBehaviour>();
+
 		public IHttpSettings HttpSettings { get; set; } = HttpExtensionsGlobals.HttpSettings;
 
 		public IJsonSerializer JsonSerializer { get; set; } = HttpExtensionsGlobals.JsonSerializer;
@@ -72,18 +74,9 @@ namespace Dapplo.HttpExtensions
 			return (HttpBehaviour)MemberwiseClone();
 		}
 
-		/// <summary>
-		/// Explicit IClonable interface implementation
-		/// </summary>
-		/// <returns></returns>
-		object ICloneable.Clone()
-		{
-			return Clone();
-		}
-
 		public void MakeCurrent()
 		{
-			CallContext.LogicalSetData(typeof(IHttpBehaviour).Name, this);
+			_asyncLocalBehavior.Value = this;
 		}
 
 		/// <summary>
@@ -94,7 +87,7 @@ namespace Dapplo.HttpExtensions
 		{
 			get
 			{
-				var httpBehaviour = CallContext.LogicalGetData(typeof(IHttpBehaviour).Name) as IHttpBehaviour;
+				var httpBehaviour = _asyncLocalBehavior.Value;
 				if (httpBehaviour == null)
 				{
 					httpBehaviour = new HttpBehaviour();

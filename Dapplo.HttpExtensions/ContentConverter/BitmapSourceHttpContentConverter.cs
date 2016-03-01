@@ -23,30 +23,28 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using Dapplo.LogFacade;
+using System.Windows.Media.Imaging;
 using Dapplo.HttpExtensions.Support;
-using Dapplo.HttpExtensions.ContentConverter;
+using Dapplo.LogFacade;
 
-namespace Dapplo.HttpExtensions.Desktop
+namespace Dapplo.HttpExtensions.ContentConverter
 {
 	/// <summary>
-	/// This can convert HttpContent from/to a GDI Bitmap
+	/// This can convert HttpContent from/to a WPF BitmapImage
 	/// </summary>
-	public class BitmapHttpContentConverter : IHttpContentConverter
+	public class BitmapSourceHttpContentConverter : IHttpContentConverter
 	{
-		private static readonly LogSource Log = new LogSource();
 		private static readonly IList<string> SupportedContentTypes = new List<string>();
-		public static readonly BitmapHttpContentConverter Instance = new BitmapHttpContentConverter();
+		private static readonly LogSource Log = new LogSource();
+		public static readonly BitmapSourceHttpContentConverter Instance = new BitmapSourceHttpContentConverter();
 
-		static BitmapHttpContentConverter()
+		static BitmapSourceHttpContentConverter()
 		{
 			SupportedContentTypes.Add(MediaTypes.Bmp.EnumValueOf());
 			SupportedContentTypes.Add(MediaTypes.Gif.EnumValueOf());
@@ -54,8 +52,6 @@ namespace Dapplo.HttpExtensions.Desktop
 			SupportedContentTypes.Add(MediaTypes.Png.EnumValueOf());
 			SupportedContentTypes.Add(MediaTypes.Tiff.EnumValueOf());
 		}
-
-		private int _quality;
 
 		public int Order => 0;
 
@@ -65,37 +61,31 @@ namespace Dapplo.HttpExtensions.Desktop
 			set;
 		} = ImageFormat.Png;
 
-		/// <summary>
-		/// Check the parameters for the encoder, like setting Jpg quality
-		/// </summary>
-		public IList<EncoderParameter> EncoderParameters { get; } = new List<EncoderParameter>();
+		public int Quality { get; set; } = 80;
 
-		/// <summary>
-		/// Set the quality EncoderParameter, for the Jpg format 0-100
-		/// </summary>
-		public int Quality
+		private BitmapEncoder CreateEncoder()
 		{
-			get
+			if (Format.Guid == ImageFormat.Bmp.Guid)
 			{
-				return _quality;
+				return new BmpBitmapEncoder();
 			}
-			set
+			if (Format.Guid == ImageFormat.Gif.Guid)
 			{
-				_quality = value;
-				Log.Verbose().WriteLine("Setting Quality to {0}", value);
-				var qualityParameter = EncoderParameters.FirstOrDefault(x => x.Encoder.Guid == Encoder.Quality.Guid);
-				if (qualityParameter != null)
-				{
-					EncoderParameters.Remove(qualityParameter);
-				}
-				EncoderParameters.Add(new EncoderParameter(Encoder.Quality, value));
+				return new GifBitmapEncoder();
 			}
-		}
-
-		public BitmapHttpContentConverter()
-		{
-			// Default quality
-			Quality = 80;
+			if (Format.Guid == ImageFormat.Jpeg.Guid)
+			{
+				return new JpegBitmapEncoder();
+			}
+			if (Format.Guid == ImageFormat.Tiff.Guid)
+			{
+				return new TiffBitmapEncoder();
+			}
+			if (Format.Guid == ImageFormat.Png.Guid)
+			{
+				return new PngBitmapEncoder();
+			}
+			throw new NotSupportedException($"Unsupported image format {Format}");
 		}
 
 		/// <summary>
@@ -106,7 +96,7 @@ namespace Dapplo.HttpExtensions.Desktop
 		/// <returns>true if it can convert</returns>
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent)
 		{
-			if (typeToConvertTo == typeof(object) || !typeToConvertTo.IsAssignableFrom(typeof (Bitmap)))
+			if (typeToConvertTo == typeof(object) || !typeToConvertTo.IsAssignableFrom(typeof (BitmapImage)))
 			{
 				return false;
 			}
@@ -118,55 +108,55 @@ namespace Dapplo.HttpExtensions.Desktop
 		{
 			if (!CanConvertFromHttpContent(resultType, httpContent))
 			{
-				var exMessage = "CanConvertFromHttpContent resulted in false, ConvertFromHttpContentAsync is not supposed to be called.";
-				Log.Error().WriteLine(exMessage);
-				throw new NotSupportedException(exMessage);
+				throw new NotSupportedException("CanConvertFromHttpContent resulted in false, this is not supposed to be called.");
 			}
-			var memoryStream = (MemoryStream)await StreamHttpContentConverter.Instance.ConvertFromHttpContentAsync(typeof(MemoryStream),httpContent, token).ConfigureAwait(false);
-			Log.Debug().WriteLine("Creating a Bitmap from the MemoryStream.");
-			return new Bitmap(memoryStream);
+			using (var memoryStream = (MemoryStream)await StreamHttpContentConverter.Instance.ConvertFromHttpContentAsync(typeof(MemoryStream), httpContent, token).ConfigureAwait(false))
+			{
+				Log.Debug().WriteLine("Creating a BitmapImage from the MemoryStream.");
+				var bitmap = new BitmapImage();
+				bitmap.BeginInit();
+				bitmap.StreamSource = memoryStream;
+				bitmap.CacheOption = BitmapCacheOption.OnLoad;
+				bitmap.EndInit();
+
+				// This is very important to make the bitmap usable in the UI thread:
+				bitmap.Freeze();
+				return bitmap;
+			}
 		}
 
 		public bool CanConvertToHttpContent(Type typeToConvert, object content)
 		{
-			return typeof(Bitmap).IsAssignableFrom(typeToConvert) && content != null;
+			return typeof(BitmapSource).IsAssignableFrom(typeToConvert)  && content != null;
 		}
 
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
 		{
-			if (!CanConvertToHttpContent(typeToConvert, content)) return null;
-
-			var bitmap = content as Bitmap;
-			if (bitmap == null) return null;
-
-			var memoryStream = new MemoryStream();
-			var encoder = ImageCodecInfo.GetImageEncoders().FirstOrDefault(x => x.FormatID == Format.Guid);
-			if (encoder != null)
+			if (CanConvertToHttpContent(typeToConvert, content))
 			{
-				var parameters = new EncoderParameters(EncoderParameters.Count);
-				int index = 0;
-				EncoderParameters.ForEach(parameter => parameters.Param[index++] = parameter);
-				bitmap.Save(memoryStream, encoder, parameters);
+				var bitmapSource = content as BitmapSource;
+				if (bitmapSource != null)
+				{
+					var memoryStream = new MemoryStream();
+					var encoder = CreateEncoder();
+					encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+					encoder.Save(memoryStream);
+					memoryStream.Seek(0, SeekOrigin.Begin);
+					HttpContent httpContent;
+					var httpBehaviour = HttpBehaviour.Current;
+					if (httpBehaviour.UseProgressStreamContent)
+					{
+						httpContent = new ProgressStreamContent(memoryStream, httpBehaviour.UploadProgress);
+					}
+					else
+					{
+						httpContent = new StreamContent(memoryStream);
+					}
+					httpContent.Headers.Add("Content-Type", "image/" + Format.ToString().ToLowerInvariant());
+					return httpContent;
+				}
 			}
-			else
-			{
-				var exMessage = $"Can't find an encoder for {Format}";
-				Log.Error().WriteLine(exMessage);
-				throw new NotSupportedException(exMessage);
-			}
-			memoryStream.Seek(0, SeekOrigin.Begin);
-			HttpContent httpContent;
-			var httpBehaviour = HttpBehaviour.Current;
-			if (httpBehaviour.UseProgressStreamContent)
-			{
-				httpContent = new ProgressStreamContent(memoryStream, httpBehaviour.UploadProgress);
-			}
-			else
-			{
-				httpContent = new StreamContent(memoryStream);
-			}
-			httpContent.Headers.Add("Content-Type", "image/" + Format.ToString().ToLowerInvariant());
-			return httpContent;
+			return null;
 		}
 
 		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage)
@@ -179,7 +169,7 @@ namespace Dapplo.HttpExtensions.Desktop
 			{
 				throw new ArgumentNullException(nameof(httpRequestMessage));
 			}
-			if (resultType == typeof(object) || !resultType.IsAssignableFrom(typeof (Bitmap)))
+			if (resultType == typeof(object) || !resultType.IsAssignableFrom(typeof(BitmapSource)))
 			{
 				return;
 			}

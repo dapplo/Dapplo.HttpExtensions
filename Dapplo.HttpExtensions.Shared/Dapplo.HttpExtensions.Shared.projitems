@@ -9,5 +9,39 @@
     <Import_RootNamespace>Dapplo.HttpExtensions</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)ContentConverter\ByteArrayHttpContentConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ContentConverter\FormUriEncodedContentConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ContentConverter\JsonHttpContentConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ContentConverter\StreamHttpContentConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ContentConverter\StringHttpContentConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Factory\HttpClientFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Factory\HttpContentFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Factory\HttpMessageHandlerFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Factory\HttpRequestMessageFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Factory\WebProxyFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HttpBehaviour.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HttpClientExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HttpContentExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HttpExtensionsGlobals.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HttpRequestMessageExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HttpResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HttpResponseMessageExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IHttpBehaviour.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IHttpContentConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IHttpSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IJsonSerializer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MiscExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SimpleJson.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Support\AsyncLock.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Support\ContentItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Support\HttpAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Support\HttpParts.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Support\HttpSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Support\MediaTypes.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Support\ProgressStreamContent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Support\SimpleJsonSerializer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UriActionExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UriModifyExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UriParseExtensions.cs" />
   </ItemGroup>
 </Project>

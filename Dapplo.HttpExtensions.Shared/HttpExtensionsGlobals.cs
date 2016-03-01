@@ -77,11 +77,11 @@ namespace Dapplo.HttpExtensions
 #if DESKTOP
 			BitmapHttpContentConverter.Instance,
 			BitmapSourceHttpContentConverter.Instance,
+			SyndicationFeedHttpContentConverter.Instance,
+			XDocumentHttpContentConverter.Instance,
 #endif
 			ByteArrayHttpContentConverter.Instance,
 			FormUriEncodedContentConverter.Instance,
-			SyndicationFeedHttpContentConverter.Instance,
-			XDocumentHttpContentConverter.Instance,
 			JsonHttpContentConverter.Instance,
 			StreamHttpContentConverter.Instance,
 			StringHttpContentConverter.Instance

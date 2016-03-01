@@ -23,7 +23,9 @@
 
 using System;
 using System.Net;
+#if !_PCL_
 using System.Net.Cache;
+#endif
 using System.Net.Security;
 using System.Reflection;
 using System.Security.Principal;
@@ -97,17 +99,12 @@ namespace Dapplo.HttpExtensions.Support
 			{
 				if (_userAgent == null)
 				{
-					var clientAssembly = Assembly.GetEntryAssembly() ?? Assembly.GetCallingAssembly();
-					var thisAssembly = GetType().Assembly;
+					
+					var clientAssembly = typeof(HttpSettings).GetTypeInfo().Assembly;
 					var userAgentBuilder = new StringBuilder();
 
-					if (clientAssembly != thisAssembly)
-					{
-						var clientAssemblyName = clientAssembly.GetName();
-						userAgentBuilder.Append($"{clientAssemblyName.Name}/{clientAssemblyName.Version} ");
-					}
-					var thisAssemblyName = thisAssembly.GetName();
-					userAgentBuilder.Append($"{thisAssemblyName.Name}/{thisAssemblyName.Version}");
+					var clientAssemblyName = clientAssembly.GetName();
+					userAgentBuilder.Append($"{clientAssemblyName.Name}/{clientAssemblyName.Version} ");
 					_userAgent = userAgentBuilder.ToString();
 				}
 				return _userAgent;
@@ -118,7 +115,9 @@ namespace Dapplo.HttpExtensions.Support
 			}
 		}
 
+#if !_PCL_
 		public RequestCacheLevel RequestCacheLevel { get; set; } = RequestCacheLevel.Default;
+#endif
 
 		public bool Expect100Continue { get; set; } = false;
 	}

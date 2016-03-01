@@ -31,7 +31,7 @@ namespace Dapplo.HttpExtensions
 	/// <summary>
 	/// The IHttpBehaviour is used to control the behaviour of all operations in the HttpExtensions library.
 	/// </summary>
-	public interface IHttpBehaviour : ICloneable
+	public interface IHttpBehaviour
 	{
 		/// <summary>
 		/// Pass your HttpSettings here, which will be used to create the HttpClient
@@ -120,7 +120,7 @@ namespace Dapplo.HttpExtensions
 		/// Clone this HttpBehavior and return an interface which can be used to write
 		/// </summary>
 		/// <returns>IChangeableHttpBehaviour</returns>
-		new IChangeableHttpBehaviour Clone();
+		IChangeableHttpBehaviour Clone();
 
 		/// <summary>
 		/// Set this IHttpBehaviour on the CallContext

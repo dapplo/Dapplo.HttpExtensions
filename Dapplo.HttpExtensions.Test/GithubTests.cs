@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Test.TestEntities;
+using Dapplo.LogFacade;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -38,7 +39,7 @@ namespace Dapplo.HttpExtensions.Test
 	{
 		public GithubTests(ITestOutputHelper testOutputHelper)
 		{
-			XUnitLogger.RegisterLogger(testOutputHelper);
+			XUnitLogger.RegisterLogger(testOutputHelper, LogLevel.Verbose);
 		}
 	
 		/// <summary>

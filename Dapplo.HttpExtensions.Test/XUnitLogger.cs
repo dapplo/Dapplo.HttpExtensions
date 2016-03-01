@@ -23,7 +23,7 @@
 
 using Dapplo.LogFacade;
 using System;
-using System.Runtime.Remoting.Messaging;
+using System.Threading;
 using Xunit.Abstractions;
 
 namespace Dapplo.HttpExtensions.Test
@@ -36,6 +36,8 @@ namespace Dapplo.HttpExtensions.Test
 	/// </summary>
 	public class XUnitLogger : ILogger
 	{
+		private static readonly AsyncLocal<ITestOutputHelper> TestOutputHelperAsyncLocal = new AsyncLocal<ITestOutputHelper>();
+		private static readonly AsyncLocal<LogLevel> LogLevelAsyncLocal = new AsyncLocal<LogLevel>();
 		/// <summary>
 		/// Register the XUnitLogger,  as the global LogFacade logger
 		/// This also places the ITestOutputHelper in the CallContext, so the output is mapped to the xUnit test
@@ -44,11 +46,8 @@ namespace Dapplo.HttpExtensions.Test
 		/// <param name="level">LogLevel, when none is given the LogSettings.DefaultLevel is used</param>
 		public static void RegisterLogger(ITestOutputHelper testOutputHelper, LogLevel level = default(LogLevel))
 		{
-			CallContext.LogicalSetData(typeof(ITestOutputHelper).Name, testOutputHelper);
-			if (level != LogLevel.None)
-			{
-				CallContext.LogicalSetData(typeof(LogLevel).Name, level);
-			}
+			TestOutputHelperAsyncLocal.Value = testOutputHelper;
+			LogLevelAsyncLocal.Value = level;
 			if (!(LogSettings.Logger is XUnitLogger))
 			{
 				LogSettings.Logger = new XUnitLogger();
@@ -71,20 +70,16 @@ namespace Dapplo.HttpExtensions.Test
 		{
 			get
 			{
-				var level = CallContext.LogicalGetData(typeof(LogLevel).Name);
-				if (level != null)
+				var logLevel = LogLevelAsyncLocal.Value;
+				if (logLevel != LogLevel.None)
 				{
-					var logLevel = (LogLevel)level;
-					if (logLevel != LogLevel.None)
-					{
-						return logLevel;
-					}
+					return logLevel;
 				}
 				return LogSettings.DefaultLevel;
 			}
 			set
 			{
-				CallContext.LogicalSetData(typeof(LogLevel).Name, value);
+				LogLevelAsyncLocal.Value = value;
 			}
 		}
 
@@ -101,20 +96,20 @@ namespace Dapplo.HttpExtensions.Test
 
 		public void Write(LogInfo logInfo, string messageTemplate, params object[] logParameters)
 		{
-			var testOutputHelper = CallContext.LogicalGetData(typeof(ITestOutputHelper).Name) as ITestOutputHelper;
+			var testOutputHelper = TestOutputHelperAsyncLocal.Value;
 			if (testOutputHelper == null)
 			{
-				throw new ArgumentNullException("Couldn't find a ITestOutputHelper in the CallContext", nameof(testOutputHelper));
+				throw new ArgumentNullException(nameof(testOutputHelper), "Couldn't find a ITestOutputHelper in the CallContext");
 			}
 			testOutputHelper.WriteLine($"{logInfo} - {messageTemplate}", logParameters);
 		}
 
 		public void Write(LogInfo logInfo, Exception exception, string messageTemplate, params object[] logParameters)
 		{
-			var testOutputHelper = CallContext.LogicalGetData(typeof(ITestOutputHelper).Name) as ITestOutputHelper;
+			var testOutputHelper = TestOutputHelperAsyncLocal.Value;
 			if (testOutputHelper == null)
 			{
-				throw new ArgumentNullException("Couldn't find a ITestOutputHelper in the CallContext", nameof(testOutputHelper));
+				throw new ArgumentNullException(nameof(testOutputHelper),"Couldn't find a ITestOutputHelper in the CallContext");
 			}
 			testOutputHelper.WriteLine($"{logInfo} - {messageTemplate}", logParameters);
 			testOutputHelper.WriteLine(exception.ToString());

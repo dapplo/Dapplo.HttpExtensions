@@ -72,7 +72,7 @@ namespace Dapplo.HttpExtensions
 				return httpResponseMessage as TResult;
 			}
 			// See if we have a container
-			var httpAttribute = resultType.GetCustomAttribute<HttpAttribute>();
+			var httpAttribute = resultType.GetTypeInfo().GetCustomAttribute<HttpAttribute>();
 			if (httpAttribute != null && httpAttribute.Part == HttpParts.Response)
 			{
 				Log.Info().WriteLine("Filling type {0}", resultType.Name);

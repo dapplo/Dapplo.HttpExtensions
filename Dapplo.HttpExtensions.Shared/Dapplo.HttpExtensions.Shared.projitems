@@ -18,7 +18,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Factory\HttpContentFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Factory\HttpMessageHandlerFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Factory\HttpRequestMessageFactory.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Factory\WebProxyFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpBehaviour.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpClientExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpContentExtensions.cs" />

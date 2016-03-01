@@ -26,6 +26,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit.Abstractions;
+using Dapplo.LogFacade;
 
 namespace Dapplo.HttpExtensions.Test
 {
@@ -41,7 +42,7 @@ namespace Dapplo.HttpExtensions.Test
 
 		public UriModifyExtensionsTests(ITestOutputHelper testOutputHelper)
 		{
-			XUnitLogger.RegisterLogger(testOutputHelper);
+			XUnitLogger.RegisterLogger(testOutputHelper, LogLevel.Verbose);
 		}
 
 		[Fact]

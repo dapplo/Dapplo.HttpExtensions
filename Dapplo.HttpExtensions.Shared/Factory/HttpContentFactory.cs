@@ -56,7 +56,7 @@ namespace Dapplo.HttpExtensions.Factory
 			var httpBehaviour = HttpBehaviour.Current;
 
 			// Process the input type
-			if (inputType.GetCustomAttribute<HttpAttribute>()?.Part == HttpParts.Request)
+			if (inputType.GetTypeInfo().GetCustomAttribute<HttpAttribute>()?.Part == HttpParts.Request)
 			{
 				var contentItems = new List<ContentItem>();
 				// We have a type which specifies the request content

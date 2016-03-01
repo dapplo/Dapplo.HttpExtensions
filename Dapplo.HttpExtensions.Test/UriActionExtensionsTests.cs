@@ -30,6 +30,7 @@ using System.ServiceModel.Syndication;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Xml.Linq;
+using Dapplo.LogFacade;
 using Xunit.Abstractions;
 
 namespace Dapplo.HttpExtensions.Test
@@ -43,7 +44,7 @@ namespace Dapplo.HttpExtensions.Test
 
 		public UriActionExtensionsTests(ITestOutputHelper testOutputHelper)
 		{
-			XUnitLogger.RegisterLogger(testOutputHelper);
+			XUnitLogger.RegisterLogger(testOutputHelper, LogLevel.Verbose);
 		}
 
 		/// <summary>

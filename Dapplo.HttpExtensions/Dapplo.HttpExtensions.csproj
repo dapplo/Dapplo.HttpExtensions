@@ -68,6 +68,7 @@
     <Compile Include="ContentConverter\BitmapSourceHttpContentConverter.cs" />
     <Compile Include="ContentConverter\BitmapHttpContentConverter.cs" />
     <Compile Include="Factory\HttpMessageHandlerFactory.cs" />
+    <Compile Include="Factory\WebProxyFactory.cs" />
     <Compile Include="Listener\HttpListenerContextExtensions.cs" />
     <Compile Include="Listener\ListenerPortExtensions.cs" />
     <Compile Include="Listener\UriHttpListenerExtensions.cs" />

@@ -50,6 +50,7 @@ namespace Dapplo.HttpExtensions.Factory
 			webRequestHandler.ImpersonationLevel = httpSettings.ImpersonationLevel;
 			webRequestHandler.MaxResponseHeadersLength = httpSettings.MaxResponseHeadersLength;
 			webRequestHandler.CachePolicy = new RequestCachePolicy(httpSettings.RequestCacheLevel);
+			webRequestHandler.Proxy = httpSettings.UseProxy ? WebProxyFactory.Create() : null;
 		}
 
 		/// <summary>

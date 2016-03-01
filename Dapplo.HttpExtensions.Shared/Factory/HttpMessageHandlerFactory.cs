@@ -48,7 +48,10 @@ namespace Dapplo.HttpExtensions.Factory
 			httpClientHandler.MaxRequestContentBufferSize = httpSettings.MaxRequestContentBufferSize;
 			httpClientHandler.UseCookies = httpSettings.UseCookies;
 			httpClientHandler.UseDefaultCredentials = httpSettings.UseDefaultCredentials;
-			httpClientHandler.Proxy = httpSettings.UseProxy ? WebProxyFactory.Create() : null;
+			if (!httpSettings.UseProxy)
+			{
+				httpClientHandler.Proxy = null;
+			}
 			httpClientHandler.UseProxy = httpSettings.UseProxy;
 			httpClientHandler.PreAuthenticate = httpSettings.PreAuthenticate;
 		}

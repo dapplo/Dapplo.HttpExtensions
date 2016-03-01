@@ -129,7 +129,7 @@ namespace Dapplo.HttpExtensions.Factory
 			};
 
 			// if the type has a HttpAttribute with HttpPart.Request
-			if (contentType != null && contentType.GetCustomAttribute<HttpAttribute>()?.Part == HttpParts.Request)
+			if (contentType != null && contentType.GetTypeInfo().GetCustomAttribute<HttpAttribute>()?.Part == HttpParts.Request)
 			{
 				// And a property has a HttpAttribute with HttpPart.RequestHeaders
 				var headersPropertyInfo = contentType.GetProperties().FirstOrDefault(t => t.GetCustomAttribute<HttpAttribute>()?.Part == HttpParts.RequestHeaders);

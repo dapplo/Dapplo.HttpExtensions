@@ -14,14 +14,22 @@
 		<copyright>Dapplo</copyright>
 		<tags>rest http oauth</tags>
 		<frameworkAssemblies>
-			<frameworkAssembly assemblyName="System.Net.Http" targetFramework="net45" />
-			<frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework="net45" />			
+			<frameworkAssembly assemblyName="System.Net.Http" targetFramework="net46" />
+			<frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework="net46" />			
 		</frameworkAssemblies>
+		<dependencies>
+		  <group targetFramework="dotnet">
+			<dependency id="System.ComponentModel" version="4.0.0" />
+			<dependency id="System.Runtime.Serialization.Primitives" version="4.0.10" />
+		  </group>
+		</dependencies>
 	</metadata>
 	<files>
-		<file src="bin\release\$id$.pdb" target="lib\net451" />
-		<file src="bin\release\$id$.dll" target="lib\net451" />
-		<file src="..\Dapplo.HttpExtensions.PCL\bin\release\$id$.pdb" target="lib\portable-net45+wp80+win8+wpa81+dnxcore50" />
-		<file src="..\Dapplo.HttpExtensions.PCL\bin\release\$id$.dll" target="lib\portable-net45+wp80+win8+wpa81+dnxcore50" />
+		<file src="bin\release\$id$.pdb" target="lib\net46" />
+		<file src="bin\release\$id$.dll" target="lib\net46" />
+		<file src="..\Dapplo.HttpExtensions.PCL\bin\release\$id$.pdb" target="lib\portable-net46+win10" />
+		<file src="..\Dapplo.HttpExtensions.PCL\bin\release\$id$.dll" target="lib\portable-net46+win10" />
+		<file src="..\Dapplo.HttpExtensions.PCL\bin\release\$id$.pdb" target="lib\dotnet" />
+		<file src="..\Dapplo.HttpExtensions.PCL\bin\release\$id$.dll" target="lib\dotnet" />
 	</files>
 </package>

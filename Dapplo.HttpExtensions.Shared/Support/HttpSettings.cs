@@ -23,7 +23,7 @@
 
 using System;
 using System.Net;
-#if !_PCL_
+#if DESKTOP
 using System.Net.Cache;
 #endif
 using System.Net.Security;
@@ -115,7 +115,7 @@ namespace Dapplo.HttpExtensions.Support
 			}
 		}
 
-#if !_PCL_
+#if DESKTOP
 		public RequestCacheLevel RequestCacheLevel { get; set; } = RequestCacheLevel.Default;
 #endif
 

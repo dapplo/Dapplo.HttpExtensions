@@ -38,7 +38,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// Bearer token for accessing OAuth 2 services
 		/// </summary>
 		[Display(Description = "Contains the OAuth 2 access token (encrypted)")]
-#if !_PCL_
+#if DESKTOP
 		[TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
 #endif
 		string OAuth2AccessToken
@@ -61,7 +61,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// Token used to get a new Access Token
 		/// </summary>
 		[Display(Description = "Contains the OAuth 2 refresh token (encrypted)")]
-#if !_PCL_
+#if DESKTOP
 		[TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
 #endif
 		string OAuth2RefreshToken

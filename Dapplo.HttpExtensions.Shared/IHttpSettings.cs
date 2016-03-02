@@ -25,7 +25,7 @@ using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
-#if !_PCL_
+#if DESKTOP
 using System.Net.Cache;
 #endif
 using System.Net.Security;
@@ -121,7 +121,7 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		[DefaultValue(256), Display(Description = "The max length, in kilobytes (1024 bytes), of the response headers")]
 		int MaxResponseHeadersLength { get; set; }
-#if !_PCL_
+#if DESKTOP
 		/// <summary>
 		/// For more details, click <a href="https://msdn.microsoft.com/en-us/library/system.net.cache.httprequestcachelevel.aspx">here</a>
 		/// Default is RequestCacheLevel.Default

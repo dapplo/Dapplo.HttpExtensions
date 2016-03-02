@@ -24,6 +24,7 @@
 using Dapplo.HttpExtensions.Support;
 using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
@@ -36,7 +37,10 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <summary>
 		/// Bearer token for accessing OAuth 2 services
 		/// </summary>
-		[Description("Contains the OAuth 2 access token (encrypted)"), TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
+		[Display(Description = "Contains the OAuth 2 access token (encrypted)")]
+#if !_PCL_
+		[TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
+#endif
 		string OAuth2AccessToken
 		{
 			get;
@@ -46,7 +50,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <summary>
 		/// Expire time for the AccessToken, this time (-HttpExtensionsGlobals.OAuth2ExpireOffset) is check to know if a new AccessToken needs to be generated with the RefreshToken
 		/// </summary>
-		[Description("When does the OAuth 2 AccessToken expire")]
+		[Display(Description = "When does the OAuth 2 AccessToken expire")]
 		DateTimeOffset OAuth2AccessTokenExpires
 		{
 			get;
@@ -56,7 +60,10 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <summary>
 		/// Token used to get a new Access Token
 		/// </summary>
-		[Description("Contains the OAuth 2 refresh token (encrypted)"), TypeConverter(typeof (DelegatingStringEncryptionTypeConverter))]
+		[Display(Description = "Contains the OAuth 2 refresh token (encrypted)")]
+#if !_PCL_
+		[TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
+#endif
 		string OAuth2RefreshToken
 		{
 			get;

@@ -23,6 +23,7 @@
 
 using Dapplo.HttpExtensions.Support;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
@@ -35,7 +36,10 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <summary>
 		/// Token for accessing OAuth services
 		/// </summary>
-		[Description("Contains the OAuth token (encrypted)"), TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
+#if !_PCL_
+		[TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
+#endif
+		[Display(Description = "Contains the OAuth token (encrypted)")]
 		string OAuthToken
 		{
 			get;
@@ -45,7 +49,10 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <summary>
 		/// OAuth token secret
 		/// </summary>
-		[Description("OAuth token secret (encrypted)"), TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
+		[Display(Description = "OAuth token secret (encrypted)")]
+#if !_PCL_
+		[TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
+#endif
 		string OAuthTokenSecret
 		{
 			get;
@@ -55,7 +62,10 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <summary>
 		/// OAuth token verifier
 		/// </summary>
-		[Description("OAuth token verifier (encrypted)"), TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
+		[Display(Description = "OAuth token verifier (encrypted)")]
+#if !_PCL_
+		[TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
+#endif
 		string OAuthTokenVerifier
 		{
 			get;

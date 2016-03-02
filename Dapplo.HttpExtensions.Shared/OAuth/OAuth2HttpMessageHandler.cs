@@ -57,11 +57,11 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// </summary>
 		static OAuth2HttpMessageHandler()
 		{
+#if DESKTOP
 			CodeReceivers.Add(
 				AuthorizeModes.LocalhostServer,
 				new LocalhostCodeReceiver()
 			);
-#if DESKTOP
 			CodeReceivers.Add(
 				AuthorizeModes.OutOfBound,
 				new OutOfBoundCodeReceiver()
@@ -128,13 +128,13 @@ namespace Dapplo.HttpExtensions.OAuth
 				string errorDescription;
 				if (result.TryGetValue(OAuth2Fields.ErrorDescription.EnumValueOf(), out errorDescription))
 				{
-					throw new ApplicationException(errorDescription);
+					throw new Exception(errorDescription);
 				}
 				if ("access_denied" == error)
 				{
 					throw new UnauthorizedAccessException("Access denied");
 				}
-				throw new ApplicationException(error);
+				throw new Exception(error);
 			}
 			string code;
 			if (result.TryGetValue(OAuth2Fields.Code.EnumValueOf(), out code) && !string.IsNullOrEmpty(code))
@@ -191,9 +191,9 @@ namespace Dapplo.HttpExtensions.OAuth
 				{
 					if (!string.IsNullOrEmpty(accessTokenResult.ErrorDescription))
 					{
-						throw new ApplicationException($"{accessTokenResult.Error} - {accessTokenResult.ErrorDescription}");
+						throw new Exception($"{accessTokenResult.Error} - {accessTokenResult.ErrorDescription}");
 					}
-					throw new ApplicationException(accessTokenResult.Error);
+					throw new Exception(accessTokenResult.Error);
 				}
 			}
 			else
@@ -251,9 +251,9 @@ namespace Dapplo.HttpExtensions.OAuth
 			{
 				if (!string.IsNullOrEmpty(refreshTokenResult.ErrorDescription))
 				{
-					throw new ApplicationException($"{refreshTokenResult.Error} - {refreshTokenResult.ErrorDescription}");
+					throw new Exception($"{refreshTokenResult.Error} - {refreshTokenResult.ErrorDescription}");
 				}
-				throw new ApplicationException(refreshTokenResult.Error);
+				throw new Exception(refreshTokenResult.Error);
 			}
 			// gives as described here: https://developers.google.com/identity/protocols/OAuth2InstalledApp
 			//  "access_token":"1/fFAGRNJru1FTz70BzhT3Zg",
@@ -285,7 +285,7 @@ namespace Dapplo.HttpExtensions.OAuth
 				Log.Debug().WriteLine("No token, performing an Authentication");
 				if (!await AuthenticateAsync(cancellationToken).ConfigureAwait(false))
 				{
-					throw new ApplicationException("Authentication cancelled");
+					throw new Exception("Authentication cancelled");
 				}
 			}
 			if (_oAuth2Settings.IsAccessTokenExpired)
@@ -297,14 +297,14 @@ namespace Dapplo.HttpExtensions.OAuth
 				{
 					if (!await AuthenticateAsync(cancellationToken).ConfigureAwait(false))
 					{
-						throw new ApplicationException("Authentication cancelled");
+						throw new Exception("Authentication cancelled");
 					}
 					await GenerateAccessTokenAsync(cancellationToken).ConfigureAwait(false);
 				}
 			}
 			if (_oAuth2Settings.IsAccessTokenExpired)
 			{
-				throw new ApplicationException("Authentication failed");
+				throw new Exception("Authentication failed");
 			}
 		}
 

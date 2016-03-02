@@ -179,7 +179,7 @@ namespace Dapplo.HttpExtensions.OAuth
 			{
 				if (!string.IsNullOrEmpty(_oAuth1Settings.Token.OAuthTokenVerifier))
 				{
-					throw new ApplicationException("Token verifier is not set, while CheckVerifier is set to true");
+					throw new Exception("Token verifier is not set, while CheckVerifier is set to true");
 				}
 			}
 		}

@@ -5,7 +5,7 @@
         <version>$version$</version>
         <authors>$author$</authors>
         <licenseUrl>http://www.gnu.org/licenses/lgpl-3.0.en.html</licenseUrl>
-        <projectUrl>http://www.dapplo.net/blocks/Dapplo.HttpExtensions.html</projectUrl>
+        <projectUrl>http://www.dapplo.net/blocks/Dapplo.HttpExtensions</projectUrl>
         <iconUrl>http://www.dapplo.net/favicon.ico</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Dapplo.HttpExtensions contains extensions which help with Http communication.</description>

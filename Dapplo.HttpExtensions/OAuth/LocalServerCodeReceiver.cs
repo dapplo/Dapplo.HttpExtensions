@@ -47,7 +47,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// You can use CloudServiceName where you want to show the CloudServiceName from your OAuth2 settings
 		/// </summary>
 		public string ClosePageResponse { get; set; } = @"<html>
-<head><title>OAuth 2.0 Authentication CloudServiceName</title></head>
+<head><title>OAuth Authentication CloudServiceName</title></head>
 <body>
 The authentication process received information from CloudServiceName. You can close this browser window / tab if it is not closed automatically...
 <script type='text/javascript'>

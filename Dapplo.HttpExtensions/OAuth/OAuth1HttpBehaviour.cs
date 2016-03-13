@@ -34,7 +34,6 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// </summary>
 		public Action<IDictionary<string, string>> OnAccessToken { get; set; }
 
-
 		/// <summary>
 		/// Set this function if you want to modify the request message that is send to the service
 		/// </summary>

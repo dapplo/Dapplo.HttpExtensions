@@ -226,7 +226,7 @@ namespace Dapplo.HttpExtensions.OAuth
 					resultParameters.Remove(OAuth1Parameters.TokenSecret.EnumValueOf());
 				}
 				// Process the rest, if someone registed, some services return more values
-				_oAuth1HttpBehaviour?.OnAccessToken(resultParameters);
+				_oAuth1HttpBehaviour?.OnAccessToken?.Invoke(resultParameters);
 			}
 		}
 
@@ -462,7 +462,7 @@ namespace Dapplo.HttpExtensions.OAuth
 			// sign the HttpRequestMessage
 			Sign(httpRequestMessage);
 
-			_oAuth1HttpBehaviour?.BeforeSend(httpRequestMessage);
+			_oAuth1HttpBehaviour?.BeforeSend?.Invoke(httpRequestMessage);
 
 			return await base.SendAsync(httpRequestMessage, cancellationToken).ConfigureAwait(false);
 		}

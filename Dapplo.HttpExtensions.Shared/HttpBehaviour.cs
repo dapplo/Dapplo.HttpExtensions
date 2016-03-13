@@ -35,7 +35,7 @@ namespace Dapplo.HttpExtensions
 	/// </summary>
 	public class HttpBehaviour : IChangeableHttpBehaviour
 	{
-		static AsyncLocal<IHttpBehaviour> _asyncLocalBehavior = new AsyncLocal<IHttpBehaviour>();
+		static readonly AsyncLocal<IHttpBehaviour> AsyncLocalBehavior = new AsyncLocal<IHttpBehaviour>();
 
 		public IHttpSettings HttpSettings { get; set; } = HttpExtensionsGlobals.HttpSettings;
 
@@ -76,7 +76,7 @@ namespace Dapplo.HttpExtensions
 
 		public void MakeCurrent()
 		{
-			_asyncLocalBehavior.Value = this;
+			AsyncLocalBehavior.Value = this;
 		}
 
 		/// <summary>
@@ -87,7 +87,7 @@ namespace Dapplo.HttpExtensions
 		{
 			get
 			{
-				var httpBehaviour = _asyncLocalBehavior.Value;
+				var httpBehaviour = AsyncLocalBehavior.Value;
 				if (httpBehaviour == null)
 				{
 					httpBehaviour = new HttpBehaviour();

@@ -29,6 +29,7 @@ using System.Threading.Tasks;
 using Dapplo.LogFacade;
 using Dapplo.HttpExtensions.Support;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace Dapplo.HttpExtensions.ContentConverter
 {
@@ -64,6 +65,10 @@ namespace Dapplo.HttpExtensions.ContentConverter
 
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent)
 		{
+			if (!typeToConvertTo.GetTypeInfo().IsClass)
+			{
+				return false;
+			}
 			var httpBehaviour = HttpBehaviour.Current;
 			return !httpBehaviour.ValidateResponseContentType || SupportedContentTypes.Contains(httpContent.GetContentType());
 		}
@@ -87,6 +92,11 @@ namespace Dapplo.HttpExtensions.ContentConverter
 				{
 					Log.Verbose().WriteLine("Read Json content: {0}", jsonString);
 				}
+			}
+			// Check if we can just pass it back, as the target is string
+			if (resultType == typeof(string))
+			{
+				return jsonString;
 			}
 			var httpBehaviour = HttpBehaviour.Current;
 			return httpBehaviour.JsonSerializer.DeserializeJson(resultType == typeof(object) ? null : resultType, jsonString);

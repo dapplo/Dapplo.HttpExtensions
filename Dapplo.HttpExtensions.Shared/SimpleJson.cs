@@ -1454,11 +1454,24 @@ namespace Dapplo.HttpExtensions
                                 object jsonValue;
                                 if (jsonObject.TryGetValue(setter.Key, out jsonValue))
                                 {
-                                    jsonValue = DeserializeObject(jsonValue, setter.Value.Key);
-	                                if (jsonValue != null)
-	                                {
-                                        setter.Value.Value(obj, jsonValue);
-                                    }
+									try
+									{
+										jsonValue = DeserializeObject(jsonValue, setter.Value.Key);
+										if (jsonValue != null)
+										{
+											setter.Value.Value(obj, jsonValue);
+										}
+									}
+									catch (Exception ex)
+									{
+										if (ex is ArgumentException)
+										{
+											throw;
+										}
+										// Added additiona information for easier debugging
+										throw new ArgumentException($"Json field \"{setter.Key}\" with Value \"{jsonValue}\" cannot be converted to Type {setter.Value.Key}", ex);
+									}
+
                                 }
                             }
                         }

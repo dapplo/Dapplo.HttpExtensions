@@ -354,7 +354,11 @@ namespace Dapplo.HttpExtensions.OAuth
 						multipartFormDataContent.Add(new StringContent(requestObject as string), formattedKey);
 					}
 				}
-				multipartFormDataContent.Add(httpRequestMessage.Content);
+				// It's possible that there was no content posted, so check before adding.
+				if (httpRequestMessage.Content != null)
+				{
+					multipartFormDataContent.Add(httpRequestMessage.Content);
+				}
 				httpRequestMessage.Content = multipartFormDataContent;
 			}
 		}

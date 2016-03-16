@@ -38,7 +38,6 @@ namespace Dapplo.HttpExtensions.Factory
 		private static HttpMessageHandler CreateHandler()
 		{
 			return CreateHttpClientHandler();
-
 		}
 	}
 }

@@ -25,9 +25,6 @@ using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
-#if DESKTOP
-using System.Net.Cache;
-#endif
 using System.Net.Security;
 using System.Runtime.Serialization;
 using System.Security.Principal;
@@ -44,7 +41,7 @@ namespace Dapplo.HttpExtensions
 	/// </code><br />
 	/// (Yes, it's can be empty, the settings are in the IHttpSettings interface) and than assign the generated instance to <see cref="HttpExtensionsGlobals"/>
 	/// </summary>
-	public interface IHttpSettings
+	public partial interface IHttpSettings
 	{
 		/// <summary>
 		/// For more details, click <a href="https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.allowautoredirect.aspx">here</a>
@@ -53,31 +50,11 @@ namespace Dapplo.HttpExtensions
 		bool AllowAutoRedirect { get; set; }
 
 		/// <summary>
-		/// For more details, click <a href="https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.allowpipelining.aspx">here</a>
-		/// </summary>
-		[DefaultValue(true), Display(Description = "When true, pipelined connections are allowed")]
-		bool AllowPipelining { get; set; }
-
-		/// <summary>
-		/// In mutual authentication, both the client and server present credentials to establish their identity. The MutualAuthRequired and MutualAuthRequested values are relevant for Kerberos authentication. Kerberos authentication can be supported directly, or can be used if the Negotiate security protocol is used to select the actual security protocol.
-		/// For more information about authentication protocols, see <a href="https://msdn.microsoft.com/en-us/library/47zhdx9d.aspx">Internet Authentication</a>
-		/// For more details, click <a href="https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.authenticationlevel.aspx">here</a>
-		/// </summary>
-		[DefaultValue(AuthenticationLevel.MutualAuthRequested), Display(Description = "The level of authentication and impersonation used for every request")]
-		AuthenticationLevel AuthenticationLevel { get; set; }
-
-		/// <summary>
 		/// For more details, click <a href="https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.credentials.aspx">here</a>
 		/// </summary>
 		[Display(Description = "The credentials for the request, only used when UseDefaultCredentials is set to false")]
 		ICredentials Credentials { get; set; }
 
-		/// <summary>
-		/// For more details, click <a href="https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.continuetimeout.aspx">here</a>
-		/// </summary>
-		[DefaultValue("0:0:0.350"), DataMember(EmitDefaultValue = true),
-		 Display(Description = "The amount of time (with milliseconds) the application will wait for 100-continue from the server before uploading data")]
-		TimeSpan ContinueTimeout { get; set; }
 
 		/// <summary>
 		/// For more details, click <a href="https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.automaticdecompression.aspx">here</a>
@@ -89,25 +66,12 @@ namespace Dapplo.HttpExtensions
 		string DefaultUserAgent { get; set; }
 
 		/// <summary>
-		/// The impersonation level determines how the server can use the client's credentials.
-		/// For more details, click <a href="https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.impersonationlevel.aspx">here</a>
-		/// </summary>
-		[DefaultValue(TokenImpersonationLevel.Delegation),
-		 Display(Description = "The impersonation level determines how the server can use the client's credentials")]
-		TokenImpersonationLevel ImpersonationLevel { get; set; }
-
-		/// <summary>
 		/// For more details, click <a href="https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.maxautomaticredirections.aspx">here</a>
 		/// and <a href="https://msdn.microsoft.com/en-us/library/system.net.httpwebrequest.allowautoredirect.aspx">here</a>
 		/// </summary>
 		[DefaultValue(50), Display(Description = "The maximum amount of redirections that are followed")]
 		int MaxAutomaticRedirections { get; set; }
 
-		/// <summary>
-		/// For more details, click <a href="https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.maxrequestcontentbuffersize.aspx">here</a>
-		/// </summary>
-		[DefaultValue(2 * 1024 * 1024 * 1024L - 1L), Display(Description = "Max request content buffer size")]
-		long MaxRequestContentBufferSize { get; set; }
 
 		/// <summary>
 		/// For more details, click <a href="https://msdn.microsoft.com/en-us/library/system.net.http.httpclient.maxresponsecontentbuffersize.aspx">here</a>
@@ -115,20 +79,6 @@ namespace Dapplo.HttpExtensions
 		[DefaultValue(2 * 1024 * 1024 * 1024L - 1L), Display(Description = "Max response content buffer size")]
 		long MaxResponseContentBufferSize { get; set; }
 
-		/// <summary>
-		/// For more details, click <a href="https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.maxresponseheaderslength.aspx">here</a>
-		/// Default would have been 64, this is increased to 256
-		/// </summary>
-		[DefaultValue(256), Display(Description = "The max length, in kilobytes (1024 bytes), of the response headers")]
-		int MaxResponseHeadersLength { get; set; }
-#if DESKTOP
-		/// <summary>
-		/// For more details, click <a href="https://msdn.microsoft.com/en-us/library/system.net.cache.httprequestcachelevel.aspx">here</a>
-		/// Default is RequestCacheLevel.Default
-		/// </summary>
-		[DefaultValue(RequestCacheLevel.Default), Display(Description = "The cache level for the request")]
-		RequestCacheLevel RequestCacheLevel { get; set; }
-#endif
 		/// <summary>
 		/// The Uri for the proxy to use, when the UseDefaultProxy is set to false
 		/// </summary>
@@ -167,12 +117,6 @@ namespace Dapplo.HttpExtensions
         TimeSpan RequestTimeout { get; set; }
 
 		/// <summary>
-		/// For more details, click <a href="https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.readwritetimeout.aspx">here</a>
-		/// </summary>
-		[DefaultValue(300000), Display(Description = "The number of milliseconds before the writing or reading times out"), DataMember(EmitDefaultValue = true)]
-        int ReadWriteTimeout { get; set; }
-
-		/// <summary>
 		/// For more details, click <a href="https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.usecookies.aspx">here</a>
 		/// And <a href="https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.cookiecontainer.aspx">here</a>
 		/// </summary>
@@ -181,9 +125,6 @@ namespace Dapplo.HttpExtensions
 
 		[DefaultValue(true), Display(Description = "When true every http request will supply the default user credentials when the server asks for them"), DataMember(EmitDefaultValue = true)]
 		bool UseDefaultCredentials { get; set; }
-
-		[DefaultValue(true), Display(Description = "If true, every request is made via the configured or default proxy"), DataMember(EmitDefaultValue = true)]
-		bool UseProxy { get; set; }
 
 		[DefaultValue(true), Display(Description = "When true the default system proxy is used"), DataMember(EmitDefaultValue = true)]
 		bool UseDefaultProxy { get; set; }

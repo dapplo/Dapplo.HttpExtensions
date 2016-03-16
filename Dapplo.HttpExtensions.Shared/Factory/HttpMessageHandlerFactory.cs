@@ -45,14 +45,19 @@ namespace Dapplo.HttpExtensions.Factory
 			httpClientHandler.CookieContainer = httpSettings.UseCookies ? new CookieContainer() : null;
 			httpClientHandler.Credentials = httpSettings.UseDefaultCredentials ? CredentialCache.DefaultCredentials : httpSettings.Credentials;
 			httpClientHandler.MaxAutomaticRedirections = httpSettings.MaxAutomaticRedirections;
-			//httpClientHandler.MaxRequestContentBufferSize = httpSettings.MaxRequestContentBufferSize;
-			httpClientHandler.UseCookies = httpSettings.UseCookies;
-			httpClientHandler.UseDefaultCredentials = httpSettings.UseDefaultCredentials;
+
+#if !_PCL_
+			httpClientHandler.MaxRequestContentBufferSize = httpSettings.MaxRequestContentBufferSize;
+
 			if (!httpSettings.UseProxy)
 			{
 				httpClientHandler.Proxy = null;
 			}
 			httpClientHandler.UseProxy = httpSettings.UseProxy;
+#endif
+
+			httpClientHandler.UseCookies = httpSettings.UseCookies;
+			httpClientHandler.UseDefaultCredentials = httpSettings.UseDefaultCredentials;
 			httpClientHandler.PreAuthenticate = httpSettings.PreAuthenticate;
 		}
 

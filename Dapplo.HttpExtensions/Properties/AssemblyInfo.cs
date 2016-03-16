@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Dapplo.HttpExtensions")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Extensions which simplify usage of Http services.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Dapplo")]
 [assembly: AssemblyProduct("Dapplo.HttpExtensions")]

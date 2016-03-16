@@ -13,13 +13,14 @@
         <language>en-us</language>
 		<copyright>$author$</copyright>
 		<tags>rest http oauth</tags>
+		<frameworkAssemblies>
+			<frameworkAssembly assemblyName="System.Net.Http" targetFramework="net40" />
+		</frameworkAssemblies>
 		<dependencies>
 			<group targetFramework="net46">
-				<dependency id="System.Net.Http" version="4.0.0" />
 				<dependency id="Dapplo.LogFacade" version="0.2.20" />
 			</group>
 			<group targetFramework="net45">
-				<dependency id="System.Net.Http" version="4.0.0" />
 				<dependency id="Dapplo.LogFacade" version="0.2.20" />
 			</group>
 			<group targetFramework="dnxcore50">

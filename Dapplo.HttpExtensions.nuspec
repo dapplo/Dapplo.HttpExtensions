@@ -16,34 +16,40 @@
 		<dependencies>
 			<group targetFramework="net46">
 				<dependency id="System.Net.Http" version="4.0.0" />
-				<dependency id="Dapplo.LogFacade" version="0.2.19" />
+				<dependency id="Dapplo.LogFacade" version="0.2.20" />
+			</group>
+			<group targetFramework="net45">
+				<dependency id="System.Net.Http" version="4.0.0" />
+				<dependency id="Dapplo.LogFacade" version="0.2.20" />
 			</group>
 			<group targetFramework="dnxcore50">
 				<dependency id="System.Net.Http" version="4.0.0" />
 				<dependency id="System.ComponentModel" version="4.0.0" />
 				<dependency id="System.Security.Principal" version="4.0.0" />
 				<dependency id="System.Runtime.Serialization.Primitives" version="4.0.10" />
-				<dependency id="Dapplo.LogFacade" version="0.2.19" />
+				<dependency id="Dapplo.LogFacade" version="0.2.20" />
 			</group>
 			<group targetFramework="uap10.0">
 				<dependency id="System.Net.Http" version="4.0.0" />
 				<dependency id="System.ComponentModel" version="4.0.0" />
 				<dependency id="System.Security.Principal" version="4.0.0" />
 				<dependency id="System.Runtime.Serialization.Primitives" version="4.0.10" />
-				<dependency id="Dapplo.LogFacade" version="0.2.19" />
+				<dependency id="Dapplo.LogFacade" version="0.2.20" />
 			</group>
 			<group targetFramework="dotnet">
 				<dependency id="System.Net.Http" version="4.0.0" />
 				<dependency id="System.ComponentModel" version="4.0.0" />
 				<dependency id="System.Security.Principal" version="4.0.0" />
 				<dependency id="System.Runtime.Serialization.Primitives" version="4.0.10" />
-				<dependency id="Dapplo.LogFacade" version="0.2.19" />
+				<dependency id="Dapplo.LogFacade" version="0.2.20" />
 			</group>
 		</dependencies>
 	</metadata>
 	<files>
 		<file src="Dapplo.HttpExtensions\bin\release\$id$.pdb" target="lib\net46" />
 		<file src="Dapplo.HttpExtensions\bin\release\$id$.dll" target="lib\net46" />
+		<file src="Dapplo.HttpExtensions.Net45\bin\release\$id$.pdb" target="lib\net45" />
+		<file src="Dapplo.HttpExtensions.Net45\bin\release\$id$.dll" target="lib\net45" />
 		<file src="Dapplo.HttpExtensions.PCL\bin\release\$id$.pdb" target="lib\dnxcore50" />
 		<file src="Dapplo.HttpExtensions.PCL\bin\release\$id$.dll" target="lib\dnxcore50" />
 		<file src="Dapplo.HttpExtensions.PCL\bin\release\$id$.pdb" target="lib\uap10.0" />

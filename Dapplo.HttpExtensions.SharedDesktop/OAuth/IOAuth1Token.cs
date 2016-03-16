@@ -36,7 +36,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <summary>
 		/// Token for accessing OAuth services
 		/// </summary>
-#if DESKTOP
+#if !_PCL_
 		[TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
 #endif
 		[Display(Description = "Contains the OAuth token (encrypted)")]
@@ -50,7 +50,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// OAuth token secret
 		/// </summary>
 		[Display(Description = "OAuth token secret (encrypted)")]
-#if DESKTOP
+#if !_PCL_
 		[TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
 #endif
 		string OAuthTokenSecret
@@ -63,7 +63,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// OAuth token verifier
 		/// </summary>
 		[Display(Description = "OAuth token verifier (encrypted)")]
-#if DESKTOP
+#if !_PCL_
 		[TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
 #endif
 		string OAuthTokenVerifier

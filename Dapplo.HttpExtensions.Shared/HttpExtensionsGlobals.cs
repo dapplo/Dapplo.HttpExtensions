@@ -29,7 +29,7 @@ using Dapplo.HttpExtensions.ContentConverter;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.LogFacade;
 
-#if DESKTOP
+#if !_PCL_
 using Dapplo.HttpExtensions.Desktop;
 #endif
 
@@ -74,7 +74,7 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		public static IList<IHttpContentConverter> HttpContentConverters { get; set; } = new List<IHttpContentConverter>
 		{
-#if DESKTOP
+#if !_PCL_
 			BitmapHttpContentConverter.Instance,
 			BitmapSourceHttpContentConverter.Instance,
 			SyndicationFeedHttpContentConverter.Instance,

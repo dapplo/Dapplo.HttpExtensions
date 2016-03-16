@@ -57,7 +57,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// </summary>
 		static OAuth2HttpMessageHandler()
 		{
-#if DESKTOP
+#if !_PCL_
 			CodeReceivers.Add(
 				AuthorizeModes.LocalhostServer,
 				new LocalhostCodeReceiver()

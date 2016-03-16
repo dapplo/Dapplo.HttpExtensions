@@ -68,7 +68,7 @@ namespace Dapplo.HttpExtensions.OAuth
 				AuthorizeModes.LocalhostServer,
 				new LocalhostCodeReceiver()
 			);
-#if DESKTOP
+#if !_PCL_
 			CodeReceivers.Add(
 				AuthorizeModes.OutOfBound,
 				new OutOfBoundCodeReceiver()

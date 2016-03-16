@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>5ccc9fc7-c4d0-46c9-896f-7ebcab2b0c95</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Dapplo.HttpExtensions.SharedDesktop</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)ContentConverter\BitmapHttpContentConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ContentConverter\BitmapSourceHttpContentConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ContentConverter\SyndicationFeedHttpContentConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ContentConverter\XDocumentHttpContentConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Desktop\ExtendedWebBrowserForms.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Desktop\OAuthLoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Desktop\OAuthLoginForm.Designer.cs">
+      <DependentUpon>OAuthLoginForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Factory\HttpMessageHandlerFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Factory\WebProxyFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IHttpSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Listener\HttpListenerContextExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Listener\ListenerPortExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Listener\UriHttpListenerExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OAuth\EmbeddedBrowserCodeReceiver.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OAuth\IOAuth1Token.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OAuth\LocalServerCodeReceiver.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OAuth\OAuth1HttpBehaviour.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OAuth\OAuth1HttpBehaviourFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OAuth\OAuth1HttpMessageHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OAuth\OAuth1Parameters.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OAuth\OAuth1Settings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OAuth\OAuth1SignatureTypes.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OAuth\OAuth1TokenInformation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OAuth\OAuth1UriActions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OAuth\OutOfBoundCodeReceiver.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Support\DelegatingStringEncryptionTypeConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Support\DelegatingTypeConverter.cs" />
+  </ItemGroup>
+</Project>

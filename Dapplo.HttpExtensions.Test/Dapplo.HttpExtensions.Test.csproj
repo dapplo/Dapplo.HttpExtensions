@@ -35,8 +35,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Dapplo.LogFacade, Version=0.2.19.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dapplo.LogFacade.0.2.19\lib\net45\Dapplo.LogFacade.dll</HintPath>
+    <Reference Include="Dapplo.LogFacade, Version=0.2.20.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapplo.LogFacade.0.2.20\lib\net45\Dapplo.LogFacade.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PresentationCore" />
@@ -75,20 +75,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GithubTests.cs" />
-    <Compile Include="OAuth\OAuth2Tests.cs" />
-    <Compile Include="OAuth\OAuthTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Support\UriHttpListenerExtensionsTests.cs" />
-    <Compile Include="TestEntities\GitHubError.cs" />
-    <Compile Include="TestEntities\GitHubRelease.cs" />
-    <Compile Include="TestEntities\MyMultiPartRequest.cs" />
-    <Compile Include="UriActionExtensionsMultiPartTests.cs" />
-    <Compile Include="HttpPartsPostTest.cs" />
-    <Compile Include="UriActionExtensionsTests.cs" />
-    <Compile Include="UriModifyExtensionsTests.cs" />
-    <Compile Include="UriParseExtensionsTests.cs" />
-    <Compile Include="XUnitLogger.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -107,6 +94,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <Import Project="..\Dapplo.HttpExtensions.Test.Shared\Dapplo.HttpExtensions.Test.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

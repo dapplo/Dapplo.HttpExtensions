@@ -26,6 +26,9 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
+#if DOTNET45
+using Nito.AsyncEx.AsyncLocal;
+#endif
 
 namespace Dapplo.HttpExtensions
 {
@@ -35,7 +38,8 @@ namespace Dapplo.HttpExtensions
 	/// </summary>
 	public class HttpBehaviour : IChangeableHttpBehaviour
 	{
-		static readonly AsyncLocal<IHttpBehaviour> AsyncLocalBehavior = new AsyncLocal<IHttpBehaviour>();
+
+		private static readonly AsyncLocal<IHttpBehaviour> AsyncLocalBehavior = new AsyncLocal<IHttpBehaviour>();
 
 		public IHttpSettings HttpSettings { get; set; } = HttpExtensionsGlobals.HttpSettings;
 
@@ -78,7 +82,6 @@ namespace Dapplo.HttpExtensions
 		{
 			AsyncLocalBehavior.Value = this;
 		}
-
 		/// <summary>
 		/// Retrieve the current IHttpBehaviour from the CallContext, if there is nothing available, create and make it current
 		/// This never returns null

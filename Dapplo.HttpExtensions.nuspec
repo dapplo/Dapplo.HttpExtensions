@@ -47,15 +47,15 @@
 		</dependencies>
 	</metadata>
 	<files>
-		<file src="Dapplo.HttpExtensions\bin\release\$id$.pdb" target="lib\net46" />
-		<file src="Dapplo.HttpExtensions\bin\release\$id$.dll" target="lib\net46" />
-		<file src="Dapplo.HttpExtensions.Net45\bin\release\$id$.pdb" target="lib\net45" />
-		<file src="Dapplo.HttpExtensions.Net45\bin\release\$id$.dll" target="lib\net45" />
-		<file src="Dapplo.HttpExtensions.PCL\bin\release\$id$.pdb" target="lib\dnxcore50" />
-		<file src="Dapplo.HttpExtensions.PCL\bin\release\$id$.dll" target="lib\dnxcore50" />
-		<file src="Dapplo.HttpExtensions.PCL\bin\release\$id$.pdb" target="lib\uap10.0" />
-		<file src="Dapplo.HttpExtensions.PCL\bin\release\$id$.dll" target="lib\uap10.0" />
-		<file src="Dapplo.HttpExtensions.PCL\bin\release\$id$.pdb" target="lib\dotnet" />
-		<file src="Dapplo.HttpExtensions.PCL\bin\release\$id$.dll" target="lib\dotnet" />
+		<file src="$id$\bin\release\$id$.pdb" target="lib\net46" />
+		<file src="$id$\bin\release\$id$.dll" target="lib\net46" />
+		<file src="$id$.Net45\bin\release\$id$.pdb" target="lib\net45" />
+		<file src="$id$.Net45\bin\release\$id$.dll" target="lib\net45" />
+		<file src="$id$.PCL\bin\release\$id$.pdb" target="lib\dnxcore50" />
+		<file src="$id$.PCL\bin\release\$id$.dll" target="lib\dnxcore50" />
+		<file src="$id$.PCL\bin\release\$id$.pdb" target="lib\uap10.0" />
+		<file src="$id$.PCL\bin\release\$id$.dll" target="lib\uap10.0" />
+		<file src="$id$.PCL\bin\release\$id$.pdb" target="lib\dotnet" />
+		<file src="$id$.PCL\bin\release\$id$.dll" target="lib\dotnet" />
 	</files>
 </package>

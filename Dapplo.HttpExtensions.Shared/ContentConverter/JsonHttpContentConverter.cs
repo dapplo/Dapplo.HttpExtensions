@@ -65,7 +65,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent)
 		{
-			if (!typeToConvertTo.GetTypeInfo().IsClass)
+			if (!typeToConvertTo.GetTypeInfo().IsClass && !typeToConvertTo.GetTypeInfo().IsInterface)
 			{
 				return false;
 			}

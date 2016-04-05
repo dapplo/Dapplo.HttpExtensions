@@ -1,22 +1,50 @@
-﻿using Dapplo.HttpExtensions.Desktop;
-using Dapplo.LogFacade;
+﻿//  Dapplo - building blocks for desktop applications
+//  Copyright (C) 2015-2016 Dapplo
+// 
+//  For more information see: http://dapplo.net/
+//  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
+// 
+//  This file is part of Dapplo.HttpExtensions
+// 
+//  Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU Lesser General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+// 
+//  Dapplo.HttpExtensions is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU Lesser General Public License for more details.
+// 
+//  You should have a copy of the GNU Lesser General Public License
+//  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
+
+#region using
+
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Dapplo.HttpExtensions.Desktop;
+using Dapplo.LogFacade;
+using Dapplo.Utils.Extensions;
+
+#endregion
 
 namespace Dapplo.HttpExtensions.OAuth
 {
 	/// <summary>
-	/// This will start an embedded browser to wait for the code
+	///     This will start an embedded browser to wait for the code
 	/// </summary>
 	public class EmbeddedBrowserCodeReceiver : IOAuthCodeReceiver
 	{
 		private static readonly LogSource Log = new LogSource();
 
-		public async Task<IDictionary<string, string>> ReceiveCodeAsync(AuthorizeModes authorizeMode, ICodeReceiverSettings codeReceiverSettings, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<IDictionary<string, string>> ReceiveCodeAsync(AuthorizeModes authorizeMode, ICodeReceiverSettings codeReceiverSettings,
+			CancellationToken cancellationToken = default(CancellationToken))
 		{
 			if (codeReceiverSettings.RedirectUrl == null)
 			{
@@ -33,7 +61,8 @@ namespace Dapplo.HttpExtensions.OAuth
 
 			return await Task.Factory.StartNew(() =>
 			{
-				var oAuthLoginForm = new OAuthLoginForm(codeReceiverSettings.CloudServiceName, new System.Drawing.Size(codeReceiverSettings.EmbeddedBrowserWidth, codeReceiverSettings.EmbeddedBrowserHeight), uriBuilder.Uri, codeReceiverSettings.RedirectUrl);
+				var oAuthLoginForm = new OAuthLoginForm(codeReceiverSettings.CloudServiceName, new Size(codeReceiverSettings.EmbeddedBrowserWidth, codeReceiverSettings.EmbeddedBrowserHeight), uriBuilder.Uri,
+					codeReceiverSettings.RedirectUrl);
 
 				if (oAuthLoginForm.ShowDialog() == DialogResult.OK)
 				{

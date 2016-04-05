@@ -1,25 +1,25 @@
-﻿/*
-	Dapplo - building blocks for desktop applications
-	Copyright (C) 2015-2016 Dapplo
+﻿//  Dapplo - building blocks for desktop applications
+//  Copyright (C) 2015-2016 Dapplo
+// 
+//  For more information see: http://dapplo.net/
+//  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
+// 
+//  This file is part of Dapplo.HttpExtensions
+// 
+//  Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU Lesser General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+// 
+//  Dapplo.HttpExtensions is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU Lesser General Public License for more details.
+// 
+//  You should have a copy of the GNU Lesser General Public License
+//  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-	For more information see: http://dapplo.net/
-	Dapplo repositories are hosted on GitHub: https://github.com/dapplo
-
-	This file is part of Dapplo.HttpExtensions.
-
-	Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
-
-	Dapplo.HttpExtensions is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
- */
+#region using
 
 using System;
 using System.Collections.Generic;
@@ -33,17 +33,22 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.LogFacade;
+using Dapplo.Utils.Extensions;
+
+#endregion
 
 namespace Dapplo.HttpExtensions.ContentConverter
 {
 	/// <summary>
-	/// This can convert HttpContent from/to a GDI Bitmap
+	///     This can convert HttpContent from/to a GDI Bitmap
 	/// </summary>
 	public class BitmapHttpContentConverter : IHttpContentConverter
 	{
 		private static readonly LogSource Log = new LogSource();
 		private static readonly IList<string> SupportedContentTypes = new List<string>();
 		public static readonly BitmapHttpContentConverter Instance = new BitmapHttpContentConverter();
+
+		private int _quality;
 
 		static BitmapHttpContentConverter()
 		{
@@ -54,30 +59,25 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			SupportedContentTypes.Add(MediaTypes.Tiff.EnumValueOf());
 		}
 
-		private int _quality;
-
-		public int Order => 0;
-
-		public ImageFormat Format
+		public BitmapHttpContentConverter()
 		{
-			get;
-			set;
-		} = ImageFormat.Png;
+			// Default quality
+			Quality = 80;
+		}
 
 		/// <summary>
-		/// Check the parameters for the encoder, like setting Jpg quality
+		///     Check the parameters for the encoder, like setting Jpg quality
 		/// </summary>
 		public IList<EncoderParameter> EncoderParameters { get; } = new List<EncoderParameter>();
 
+		public ImageFormat Format { get; set; } = ImageFormat.Png;
+
 		/// <summary>
-		/// Set the quality EncoderParameter, for the Jpg format 0-100
+		///     Set the quality EncoderParameter, for the Jpg format 0-100
 		/// </summary>
 		public int Quality
 		{
-			get
-			{
-				return _quality;
-			}
+			get { return _quality; }
 			set
 			{
 				_quality = value;
@@ -91,21 +91,17 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			}
 		}
 
-		public BitmapHttpContentConverter()
-		{
-			// Default quality
-			Quality = 80;
-		}
+		public int Order => 0;
 
 		/// <summary>
-		/// This checks if the HttpContent can be converted to a Bitmap and is assignable to the specified Type 
+		///     This checks if the HttpContent can be converted to a Bitmap and is assignable to the specified Type
 		/// </summary>
 		/// <param name="typeToConvertTo">This should be something we can assign Bitmap to</param>
 		/// <param name="httpContent">HttpContent to process</param>
 		/// <returns>true if it can convert</returns>
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent)
 		{
-			if (typeToConvertTo == typeof(object) || !typeToConvertTo.IsAssignableFrom(typeof (Bitmap)))
+			if (typeToConvertTo == typeof (object) || !typeToConvertTo.IsAssignableFrom(typeof (Bitmap)))
 			{
 				return false;
 			}
@@ -121,14 +117,14 @@ namespace Dapplo.HttpExtensions.ContentConverter
 				Log.Error().WriteLine(exMessage);
 				throw new NotSupportedException(exMessage);
 			}
-			var memoryStream = (MemoryStream)await StreamHttpContentConverter.Instance.ConvertFromHttpContentAsync(typeof(MemoryStream),httpContent, token).ConfigureAwait(false);
+			var memoryStream = (MemoryStream) await StreamHttpContentConverter.Instance.ConvertFromHttpContentAsync(typeof (MemoryStream), httpContent, token).ConfigureAwait(false);
 			Log.Debug().WriteLine("Creating a Bitmap from the MemoryStream.");
 			return new Bitmap(memoryStream);
 		}
 
 		public bool CanConvertToHttpContent(Type typeToConvert, object content)
 		{
-			return typeof(Bitmap).IsAssignableFrom(typeToConvert) && content != null;
+			return typeof (Bitmap).IsAssignableFrom(typeToConvert) && content != null;
 		}
 
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
@@ -143,7 +139,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			if (encoder != null)
 			{
 				var parameters = new EncoderParameters(EncoderParameters.Count);
-				int index = 0;
+				var index = 0;
 				EncoderParameters.ForEach(parameter => parameters.Param[index++] = parameter);
 				bitmap.Save(memoryStream, encoder, parameters);
 			}
@@ -178,7 +174,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			{
 				throw new ArgumentNullException(nameof(httpRequestMessage));
 			}
-			if (resultType == typeof(object) || !resultType.IsAssignableFrom(typeof (Bitmap)))
+			if (resultType == typeof (object) || !resultType.IsAssignableFrom(typeof (Bitmap)))
 			{
 				return;
 			}

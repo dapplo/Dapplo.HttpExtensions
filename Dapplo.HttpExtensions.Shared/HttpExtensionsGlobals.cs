@@ -30,7 +30,7 @@ using Dapplo.HttpExtensions.Support;
 using Dapplo.LogFacade;
 
 #if !_PCL_
-using Dapplo.HttpExtensions.Desktop;
+
 #endif
 
 namespace Dapplo.HttpExtensions

@@ -25,9 +25,7 @@ using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
-using System.Net.Security;
 using System.Runtime.Serialization;
-using System.Security.Principal;
 
 namespace Dapplo.HttpExtensions
 {

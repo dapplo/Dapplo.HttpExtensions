@@ -1,87 +1,78 @@
-﻿/*
-	Dapplo - building blocks for desktop applications
-	Copyright (C) 2015-2016 Dapplo
+﻿//  Dapplo - building blocks for desktop applications
+//  Copyright (C) 2015-2016 Dapplo
+// 
+//  For more information see: http://dapplo.net/
+//  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
+// 
+//  This file is part of Dapplo.HttpExtensions
+// 
+//  Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU Lesser General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+// 
+//  Dapplo.HttpExtensions is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU Lesser General Public License for more details.
+// 
+//  You should have a copy of the GNU Lesser General Public License
+//  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-	For more information see: http://dapplo.net/
-	Dapplo repositories are hosted on GitHub: https://github.com/dapplo
+#region using
 
-	This file is part of Dapplo.HttpExtensions.
-
-	Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
-
-	Dapplo.HttpExtensions is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
- */
-
-using Dapplo.HttpExtensions.Factory;
-using Dapplo.LogFacade;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Net.Http;
+using System.Security.Authentication;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
-using System.Security.Authentication;
+using System.Threading.Tasks;
+using Dapplo.HttpExtensions.Factory;
+using Dapplo.LogFacade;
+using Dapplo.Utils.Extensions;
+
+#endregion
 
 namespace Dapplo.HttpExtensions.OAuth
 {
 	/// <summary>
-	/// This DelegatingHandler handles the OAuth specific stuff and delegates the "final" SendAsync to the InnerHandler
+	///     This DelegatingHandler handles the OAuth specific stuff and delegates the "final" SendAsync to the InnerHandler
 	/// </summary>
 	public class OAuth1HttpMessageHandler : DelegatingHandler
 	{
 		private static readonly LogSource Log = new LogSource();
 		private static readonly Random RandomForNonce = new Random();
-		private readonly OAuth1Settings _oAuth1Settings;
 		private readonly OAuth1HttpBehaviour _oAuth1HttpBehaviour;
+		private readonly OAuth1Settings _oAuth1Settings;
 
 		/// <summary>
-		/// Register your special OAuth handler for the AuthorizeMode here
-		/// Default the AuthorizeModes.LocalServer is registered.
-		/// Your implementation is a function which returns a Task with a IDictionary string,string.
-		/// It receives the OAuthSettings and a CancellationToken.
-		/// The return value should be that which the OAuth server gives as return values, no processing.
-		/// </summary>
-		public static IDictionary<AuthorizeModes, IOAuthCodeReceiver> CodeReceivers
-		{
-			get;
-		} = new Dictionary<AuthorizeModes, IOAuthCodeReceiver>();
-
-		/// <summary>
-		/// Add the local server handler.
+		///     Add the local server handler.
 		/// </summary>
 		static OAuth1HttpMessageHandler()
 		{
 			CodeReceivers.Add(
 				AuthorizeModes.LocalhostServer,
 				new LocalhostCodeReceiver()
-			);
+				);
 #if !_PCL_
 			CodeReceivers.Add(
 				AuthorizeModes.OutOfBound,
 				new OutOfBoundCodeReceiver()
-			);
+				);
 			CodeReceivers.Add(
 				AuthorizeModes.EmbeddedBrowser,
 				new EmbeddedBrowserCodeReceiver()
-			);
+				);
 #endif
 		}
 
 		/// <summary>
-		/// Create a HttpMessageHandler which handles the OAuth communication for you
+		///     Create a HttpMessageHandler which handles the OAuth communication for you
 		/// </summary>
 		/// <param name="oAuth1Settings">OAuth1Settings</param>
 		/// <param name="oAuth1HttpBehaviour">OAuth1HttpBehaviour</param>
@@ -111,47 +102,144 @@ namespace Dapplo.HttpExtensions.OAuth
 		}
 
 		/// <summary>
-		/// Get the request token using the consumer id and secret.  Also initializes token secret
+		///     Register your special OAuth handler for the AuthorizeMode here
+		///     Default the AuthorizeModes.LocalServer is registered.
+		///     Your implementation is a function which returns a Task with a IDictionary string,string.
+		///     It receives the OAuthSettings and a CancellationToken.
+		///     The return value should be that which the OAuth server gives as return values, no processing.
+		/// </summary>
+		public static IDictionary<AuthorizeModes, IOAuthCodeReceiver> CodeReceivers { get; } = new Dictionary<AuthorizeModes, IOAuthCodeReceiver>();
+
+		/// <summary>
+		///     Helper function to compute a hash value
+		/// </summary>
+		/// <param name="hashAlgorithm">
+		///     The hashing algorithm used. If that algorithm needs some initialization, like HMAC and its
+		///     derivatives, they should be initialized prior to passing it to this function
+		/// </param>
+		/// <param name="data">The data to hash</param>
+		/// <returns>a Base64 string of the hash value</returns>
+		public static string ComputeHash(HashAlgorithm hashAlgorithm, string data)
+		{
+			if (hashAlgorithm == null)
+			{
+				throw new ArgumentNullException(nameof(hashAlgorithm));
+			}
+
+			if (string.IsNullOrEmpty(data))
+			{
+				throw new ArgumentNullException(nameof(data));
+			}
+
+			var dataBuffer = Encoding.UTF8.GetBytes(data);
+			var hashBytes = hashAlgorithm.ComputeHash(dataBuffer);
+
+			return Convert.ToBase64String(hashBytes);
+		}
+
+		/// <summary>
+		///     Generate a nonce
+		/// </summary>
+		/// <returns></returns>
+		public static string GenerateNonce()
+		{
+			// Just a simple implementation of a random number between 123400 and 9999999
+			return RandomForNonce.Next(123400, 9999999).ToString();
+		}
+
+		/// <summary>
+		///     Generate the normalized paramter string
+		/// </summary>
+		/// <param name="queryParameters">the list of query parameters</param>
+		/// <returns>a string with the normalized query parameters</returns>
+		private static string GenerateNormalizedParametersString<T>(IDictionary<string, T> queryParameters)
+		{
+			if (queryParameters == null || queryParameters.Count == 0)
+			{
+				return string.Empty;
+			}
+
+			queryParameters = new SortedDictionary<string, T>(queryParameters);
+
+			var sb = new StringBuilder();
+			foreach (var key in queryParameters.Keys)
+			{
+				if (queryParameters[key] is string)
+				{
+					sb.AppendFormat(CultureInfo.InvariantCulture, "{0}={1}&", key, Uri.EscapeDataString($"{queryParameters[key]}"));
+				}
+			}
+			sb.Remove(sb.Length - 1, 1);
+
+			return sb.ToString();
+		}
+
+		/// <summary>
+		///     Generate the timestamp for the signature
+		/// </summary>
+		/// <returns></returns>
+		public static string GenerateTimeStamp()
+		{
+			// Default implementation of UNIX time of the current UTC time
+			var timespan = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0);
+			return Convert.ToInt64(timespan.TotalSeconds).ToString();
+		}
+
+		/// <summary>
+		///     Get the access token
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken</param>
-		private async Task GetRequestTokenAsync(CancellationToken cancellationToken = default(CancellationToken))
+		/// <returns>The access token.</returns>
+		private async Task GetAccessTokenAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
+			if (string.IsNullOrEmpty(_oAuth1Settings.AuthorizeToken))
+			{
+				throw new ArgumentNullException(nameof(_oAuth1Settings.AuthorizeToken), "The authorize token is not set");
+			}
+			if (_oAuth1Settings.CheckVerifier && string.IsNullOrEmpty(_oAuth1Settings.Token.OAuthTokenVerifier))
+			{
+				throw new ArgumentNullException(nameof(_oAuth1Settings.Token.OAuthTokenVerifier), "The verifier is not set");
+			}
+
 			_oAuth1HttpBehaviour.MakeCurrent();
 			// Create a HttpRequestMessage for the Token-Url
-			var httpRequestMessage = HttpRequestMessageFactory.Create(_oAuth1Settings.TokenMethod, _oAuth1Settings.TokenUrl);
+			var httpRequestMessage = HttpRequestMessageFactory.Create(_oAuth1Settings.AccessTokenMethod, _oAuth1Settings.AccessTokenUrl);
 			// sign it
 			Sign(httpRequestMessage);
+
 			// Use it to get the response
-			string response = await httpRequestMessage.SendAsync<string>(cancellationToken).ConfigureAwait(false);
+			var response = await httpRequestMessage.SendAsync<string>(cancellationToken).ConfigureAwait(false);
 
 			if (!string.IsNullOrEmpty(response))
 			{
-				Log.Verbose().WriteLine("Request token response: {0}", response);
+				Log.Verbose().WriteLine("Access token response: {0}", response);
 				var resultParameters = UriParseExtensions.QueryStringToDictionary(response);
 				string tokenValue;
 				if (resultParameters.TryGetValue(OAuth1Parameters.Token.EnumValueOf(), out tokenValue))
 				{
-					Log.Verbose().WriteLine("Storing token {0}", tokenValue);
-					_oAuth1Settings.RequestToken = tokenValue;
+					_oAuth1Settings.Token.OAuthToken = tokenValue;
+					resultParameters.Remove(OAuth1Parameters.Token.EnumValueOf());
 				}
-				string tokenSecretValue;
-				if (resultParameters.TryGetValue(OAuth1Parameters.TokenSecret.EnumValueOf(), out tokenSecretValue))
+				string secretValue;
+				if (resultParameters.TryGetValue(OAuth1Parameters.TokenSecret.EnumValueOf(), out secretValue))
 				{
-					Log.Verbose().WriteLine("Storing token secret {0}", tokenSecretValue);
-					_oAuth1Settings.RequestTokenSecret = tokenSecretValue;
+					_oAuth1Settings.Token.OAuthTokenSecret = secretValue;
+					resultParameters.Remove(OAuth1Parameters.TokenSecret.EnumValueOf());
 				}
+				// Process the rest, if someone registed, some services return more values
+				_oAuth1HttpBehaviour?.OnAccessToken?.Invoke(resultParameters);
 			}
 		}
 
 		/// <summary>
-		/// Authorize the token by showing the authorization uri of the oauth service
+		///     Authorize the token by showing the authorization uri of the oauth service
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken</param>
 		private async Task GetAuthorizeTokenAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
 			if (string.IsNullOrEmpty(_oAuth1Settings.RequestToken))
 			{
-				throw new ArgumentNullException(nameof(_oAuth1Settings.RequestToken),"The request token is not set");
+				throw new ArgumentNullException(nameof(_oAuth1Settings.RequestToken), "The request token is not set");
 			}
 			IOAuthCodeReceiver codeReceiver;
 
@@ -185,54 +273,77 @@ namespace Dapplo.HttpExtensions.OAuth
 		}
 
 		/// <summary>
-		/// Get the access token
+		///     Get the request token using the consumer id and secret.  Also initializes token secret
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken</param>
-		/// <returns>The access token.</returns>		
-		private async Task GetAccessTokenAsync(CancellationToken cancellationToken = default(CancellationToken))
+		private async Task GetRequestTokenAsync(CancellationToken cancellationToken = default(CancellationToken))
 		{
-			if (string.IsNullOrEmpty(_oAuth1Settings.AuthorizeToken))
-			{
-				throw new ArgumentNullException(nameof(_oAuth1Settings.AuthorizeToken),"The authorize token is not set");
-			}
-			if (_oAuth1Settings.CheckVerifier && string.IsNullOrEmpty(_oAuth1Settings.Token.OAuthTokenVerifier))
-			{
-				throw new ArgumentNullException(nameof(_oAuth1Settings.Token.OAuthTokenVerifier),"The verifier is not set");
-			}
-
 			_oAuth1HttpBehaviour.MakeCurrent();
 			// Create a HttpRequestMessage for the Token-Url
-			var httpRequestMessage = HttpRequestMessageFactory.Create(_oAuth1Settings.AccessTokenMethod, _oAuth1Settings.AccessTokenUrl);
+			var httpRequestMessage = HttpRequestMessageFactory.Create(_oAuth1Settings.TokenMethod, _oAuth1Settings.TokenUrl);
 			// sign it
 			Sign(httpRequestMessage);
-
 			// Use it to get the response
-			string response = await httpRequestMessage.SendAsync<string>(cancellationToken).ConfigureAwait(false);
+			var response = await httpRequestMessage.SendAsync<string>(cancellationToken).ConfigureAwait(false);
 
 			if (!string.IsNullOrEmpty(response))
 			{
-				Log.Verbose().WriteLine("Access token response: {0}", response);
+				Log.Verbose().WriteLine("Request token response: {0}", response);
 				var resultParameters = UriParseExtensions.QueryStringToDictionary(response);
 				string tokenValue;
 				if (resultParameters.TryGetValue(OAuth1Parameters.Token.EnumValueOf(), out tokenValue))
 				{
-					_oAuth1Settings.Token.OAuthToken = tokenValue;
-					resultParameters.Remove(OAuth1Parameters.Token.EnumValueOf());
+					Log.Verbose().WriteLine("Storing token {0}", tokenValue);
+					_oAuth1Settings.RequestToken = tokenValue;
 				}
-				string secretValue;
-				if (resultParameters.TryGetValue(OAuth1Parameters.TokenSecret.EnumValueOf(), out secretValue))
+				string tokenSecretValue;
+				if (resultParameters.TryGetValue(OAuth1Parameters.TokenSecret.EnumValueOf(), out tokenSecretValue))
 				{
-					_oAuth1Settings.Token.OAuthTokenSecret = secretValue;
-					resultParameters.Remove(OAuth1Parameters.TokenSecret.EnumValueOf());
+					Log.Verbose().WriteLine("Storing token secret {0}", tokenSecretValue);
+					_oAuth1Settings.RequestTokenSecret = tokenSecretValue;
 				}
-				// Process the rest, if someone registed, some services return more values
-				_oAuth1HttpBehaviour?.OnAccessToken?.Invoke(resultParameters);
 			}
 		}
 
 		/// <summary>
-		/// Create a signature for the supplied HttpRequestMessage
-		/// And additionally a signature is added to the parameters
+		///     Check the HttpRequestMessage if all OAuth setting are there, if not make this available.
+		/// </summary>
+		/// <param name="httpRequestMessage">HttpRequestMessage</param>
+		/// <param name="cancellationToken">CancellationToken</param>
+		/// <returns>HttpResponseMessage</returns>
+		protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken)
+		{
+			// Make sure the first call does the authorization, and all others wait for it.
+			using (await _oAuth1Settings.Lock.LockAsync().ConfigureAwait(false))
+			{
+				if (string.IsNullOrEmpty(_oAuth1Settings.Token.OAuthToken))
+				{
+					await GetRequestTokenAsync(cancellationToken).ConfigureAwait(false);
+					await GetAuthorizeTokenAsync(cancellationToken).ConfigureAwait(false);
+					await GetAccessTokenAsync(cancellationToken).ConfigureAwait(false);
+				}
+				else
+				{
+					Log.Verbose().WriteLine("Continueing, already a token available.");
+				}
+			}
+
+			if (string.IsNullOrEmpty(_oAuth1Settings.Token.OAuthToken))
+			{
+				throw new AuthenticationException("Not possible to authenticate the OAuth request.");
+			}
+
+			// sign the HttpRequestMessage
+			Sign(httpRequestMessage);
+
+			_oAuth1HttpBehaviour?.BeforeSend?.Invoke(httpRequestMessage);
+
+			return await base.SendAsync(httpRequestMessage, cancellationToken).ConfigureAwait(false);
+		}
+
+		/// <summary>
+		///     Create a signature for the supplied HttpRequestMessage
+		///     And additionally a signature is added to the parameters
 		/// </summary>
 		/// <param name="httpRequestMessage">HttpRequestMessage with method & Uri</param>
 		/// <returns>HttpRequestMessage for fluent usage</returns>
@@ -290,7 +401,9 @@ namespace Dapplo.HttpExtensions.OAuth
 			}
 			signatureBase.Append(Uri.EscapeDataString(GenerateNormalizedParametersString(signatureParameters)));
 			Log.Verbose().WriteLine("Signature base: {0}", signatureBase);
-			var secret = string.IsNullOrEmpty(_oAuth1Settings.Token.OAuthTokenSecret) ? string.IsNullOrEmpty(_oAuth1Settings.RequestTokenSecret) ? string.Empty : _oAuth1Settings.RequestTokenSecret : _oAuth1Settings.Token.OAuthTokenSecret;
+			var secret = string.IsNullOrEmpty(_oAuth1Settings.Token.OAuthTokenSecret)
+				? string.IsNullOrEmpty(_oAuth1Settings.RequestTokenSecret) ? string.Empty : _oAuth1Settings.RequestTokenSecret
+				: _oAuth1Settings.Token.OAuthTokenSecret;
 			var key = string.Format(CultureInfo.InvariantCulture, "{0}&{1}", Uri.EscapeDataString(_oAuth1Settings.ClientSecret), Uri.EscapeDataString(secret));
 			Log.Verbose().WriteLine("Signing with key {0}", key);
 			switch (_oAuth1Settings.SignatureType)
@@ -298,24 +411,24 @@ namespace Dapplo.HttpExtensions.OAuth
 				case OAuth1SignatureTypes.RsaSha1:
 					// Code comes from here: http://www.dotnetfunda.com/articles/article1932-rest-service-call-using-oauth-10-authorization-with-rsa-sha1.aspx
 					// Read the .P12 file to read Private/Public key Certificate
-					string certFilePath = _oAuth1Settings.ClientId; // The .P12 certificate file path Example: "C:/mycertificate/MCOpenAPI.p12
-					string password = _oAuth1Settings.ClientSecret; // password to read certificate .p12 file
-													   // Read the Certification from .P12 file.
+					var certFilePath = _oAuth1Settings.ClientId; // The .P12 certificate file path Example: "C:/mycertificate/MCOpenAPI.p12
+					var password = _oAuth1Settings.ClientSecret; // password to read certificate .p12 file
+					// Read the Certification from .P12 file.
 					var cert = new X509Certificate2(certFilePath, password);
 					// Retrieve the Private key from Certificate.
-					var rsaCrypt = (RSACryptoServiceProvider)cert.PrivateKey;
+					var rsaCrypt = (RSACryptoServiceProvider) cert.PrivateKey;
 					// Create a RSA-SHA1 Hash object
 					using (var shaHashObject = new SHA1Managed())
 					{
 						// Create Byte Array of Signature base string
-						byte[] data = Encoding.ASCII.GetBytes(signatureBase.ToString());
+						var data = Encoding.ASCII.GetBytes(signatureBase.ToString());
 						// Create Hashmap of Signature base string
-						byte[] hash = shaHashObject.ComputeHash(data);
+						var hash = shaHashObject.ComputeHash(data);
 						// Create Sign Hash of base string
 						// NOTE - 'SignHash' gives correct data. Don't use SignData method
-						byte[] rsaSignature = rsaCrypt.SignHash(hash, CryptoConfig.MapNameToOID("SHA1"));
+						var rsaSignature = rsaCrypt.SignHash(hash, CryptoConfig.MapNameToOID("SHA1"));
 						// Convert to Base64 string
-						string base64String = Convert.ToBase64String(rsaSignature);
+						var base64String = Convert.ToBase64String(rsaSignature);
 						// Return the Encoded UTF8 string
 						parameters.Add(OAuth1Parameters.Signature.EnumValueOf(), Uri.EscapeDataString(base64String));
 					}
@@ -325,8 +438,8 @@ namespace Dapplo.HttpExtensions.OAuth
 					break;
 				default:
 					// Generate Signature and add it to the parameters
-					var hmacsha1 = new HMACSHA1 { Key = Encoding.UTF8.GetBytes(key) };
-					string signature = ComputeHash(hmacsha1, signatureBase.ToString());
+					var hmacsha1 = new HMACSHA1 {Key = Encoding.UTF8.GetBytes(key)};
+					var signature = ComputeHash(hmacsha1, signatureBase.ToString());
 					parameters.Add(OAuth1Parameters.Signature.EnumValueOf(), signature);
 					break;
 			}
@@ -361,114 +474,6 @@ namespace Dapplo.HttpExtensions.OAuth
 				}
 				httpRequestMessage.Content = multipartFormDataContent;
 			}
-		}
-
-		/// <summary>
-		/// Generate the normalized paramter string
-		/// </summary>
-		/// <param name="queryParameters">the list of query parameters</param>
-		/// <returns>a string with the normalized query parameters</returns>
-		private static string GenerateNormalizedParametersString<T>(IDictionary<string, T> queryParameters)
-		{
-			if (queryParameters == null || queryParameters.Count == 0)
-			{
-				return string.Empty;
-			}
-
-			queryParameters = new SortedDictionary<string, T>(queryParameters);
-
-			var sb = new StringBuilder();
-			foreach (var key in queryParameters.Keys)
-			{
-				if (queryParameters[key] is string)
-				{
-					sb.AppendFormat(CultureInfo.InvariantCulture, "{0}={1}&", key, Uri.EscapeDataString($"{queryParameters[key]}"));
-				}
-			}
-			sb.Remove(sb.Length - 1, 1);
-
-			return sb.ToString();
-		}
-
-		/// <summary>
-		/// Generate a nonce
-		/// </summary>
-		/// <returns></returns>
-		public static string GenerateNonce()
-		{
-			// Just a simple implementation of a random number between 123400 and 9999999
-			return RandomForNonce.Next(123400, 9999999).ToString();
-		}
-
-		/// <summary>
-		/// Generate the timestamp for the signature		
-		/// </summary>
-		/// <returns></returns>
-		public static string GenerateTimeStamp()
-		{
-			// Default implementation of UNIX time of the current UTC time
-			var timespan = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0);
-			return Convert.ToInt64(timespan.TotalSeconds).ToString();
-		}
-
-		/// <summary>
-		/// Helper function to compute a hash value
-		/// </summary>
-		/// <param name="hashAlgorithm">The hashing algorithm used. If that algorithm needs some initialization, like HMAC and its derivatives, they should be initialized prior to passing it to this function</param>
-		/// <param name="data">The data to hash</param>
-		/// <returns>a Base64 string of the hash value</returns>
-		public static string ComputeHash(HashAlgorithm hashAlgorithm, string data)
-		{
-			if (hashAlgorithm == null)
-			{
-				throw new ArgumentNullException(nameof(hashAlgorithm));
-			}
-
-			if (string.IsNullOrEmpty(data))
-			{
-				throw new ArgumentNullException(nameof(data));
-			}
-
-			byte[] dataBuffer = Encoding.UTF8.GetBytes(data);
-			byte[] hashBytes = hashAlgorithm.ComputeHash(dataBuffer);
-
-			return Convert.ToBase64String(hashBytes);
-		}
-
-		/// <summary>
-		/// Check the HttpRequestMessage if all OAuth setting are there, if not make this available.
-		/// </summary>
-		/// <param name="httpRequestMessage">HttpRequestMessage</param>
-		/// <param name="cancellationToken">CancellationToken</param>
-		/// <returns>HttpResponseMessage</returns>
-		protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken)
-		{
-			// Make sure the first call does the authorization, and all others wait for it.
-			using (await _oAuth1Settings.Lock.LockAsync().ConfigureAwait(false))
-			{
-				if (string.IsNullOrEmpty(_oAuth1Settings.Token.OAuthToken))
-				{
-					await GetRequestTokenAsync(cancellationToken).ConfigureAwait(false);
-					await GetAuthorizeTokenAsync(cancellationToken).ConfigureAwait(false);
-					await GetAccessTokenAsync(cancellationToken).ConfigureAwait(false);
-				}
-				else
-				{
-					Log.Verbose().WriteLine("Continueing, already a token available.");
-				}
-			}
-
-			if (string.IsNullOrEmpty(_oAuth1Settings.Token.OAuthToken))
-			{
-				throw new AuthenticationException("Not possible to authenticate the OAuth request.");
-			}
-
-			// sign the HttpRequestMessage
-			Sign(httpRequestMessage);
-
-			_oAuth1HttpBehaviour?.BeforeSend?.Invoke(httpRequestMessage);
-
-			return await base.SendAsync(httpRequestMessage, cancellationToken).ConfigureAwait(false);
 		}
 	}
 }

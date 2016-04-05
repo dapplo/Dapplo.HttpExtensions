@@ -1,59 +1,50 @@
-﻿/*
-	Dapplo - building blocks for desktop applications
-	Copyright (C) 2015-2016 Dapplo
+﻿//  Dapplo - building blocks for desktop applications
+//  Copyright (C) 2015-2016 Dapplo
+// 
+//  For more information see: http://dapplo.net/
+//  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
+// 
+//  This file is part of Dapplo.HttpExtensions
+// 
+//  Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU Lesser General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+// 
+//  Dapplo.HttpExtensions is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU Lesser General Public License for more details.
+// 
+//  You should have a copy of the GNU Lesser General Public License
+//  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-	For more information see: http://dapplo.net/
-	Dapplo repositories are hosted on GitHub: https://github.com/dapplo
+#region using
 
-	This file is part of Dapplo.HttpExtensions.
-
-	Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
-
-	Dapplo.HttpExtensions is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
- */
-
-using Dapplo.LogFacade;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using Dapplo.LogFacade;
+using Dapplo.Utils.Extensions;
+
+#endregion
 
 namespace Dapplo.HttpExtensions.OAuth
 {
 	/// <summary>
-	/// This DelegatingHandler handles the OAuth2 specific stuff and delegates the "final" SendAsync to the InnerHandler
+	///     This DelegatingHandler handles the OAuth2 specific stuff and delegates the "final" SendAsync to the InnerHandler
 	/// </summary>
 	public class OAuth2HttpMessageHandler : DelegatingHandler
 	{
 		private static readonly LogSource Log = new LogSource();
-		private readonly OAuth2Settings _oAuth2Settings;
 		private readonly IHttpBehaviour _httpBehaviour;
+		private readonly OAuth2Settings _oAuth2Settings;
 
 		/// <summary>
-		/// Register your special OAuth handler for the AuthorizeMode here
-		/// Default the AuthorizeModes.LocalServer is registered.
-		/// Your implementation is a function which returns a Task with a IDictionary string,string.
-		/// It receives the OAuth2Settings and a CancellationToken.
-		/// The return value should be that which the OAuth server gives as return values, no processing.
-		/// </summary>
-		public static IDictionary<AuthorizeModes, IOAuthCodeReceiver> CodeReceivers
-		{
-			get;
-		} = new Dictionary<AuthorizeModes, IOAuthCodeReceiver>();
-
-		/// <summary>
-		/// Add the local server handler.
+		///     Add the local server handler.
 		/// </summary>
 		static OAuth2HttpMessageHandler()
 		{
@@ -61,20 +52,20 @@ namespace Dapplo.HttpExtensions.OAuth
 			CodeReceivers.Add(
 				AuthorizeModes.LocalhostServer,
 				new LocalhostCodeReceiver()
-			);
+				);
 			CodeReceivers.Add(
 				AuthorizeModes.OutOfBound,
 				new OutOfBoundCodeReceiver()
-			);
+				);
 			CodeReceivers.Add(
 				AuthorizeModes.EmbeddedBrowser,
 				new EmbeddedBrowserCodeReceiver()
-			);
+				);
 #endif
 		}
 
 		/// <summary>
-		/// Create a HttpMessageHandler which handles the OAuth 2 communication for you
+		///     Create a HttpMessageHandler which handles the OAuth 2 communication for you
 		/// </summary>
 		/// <param name="oAuth2Settings">OAuth2Settings</param>
 		/// <param name="httpBehaviour">IHttpBehaviour</param>
@@ -103,7 +94,16 @@ namespace Dapplo.HttpExtensions.OAuth
 		}
 
 		/// <summary>
-		/// Authenticate by using the mode specified in the settings
+		///     Register your special OAuth handler for the AuthorizeMode here
+		///     Default the AuthorizeModes.LocalServer is registered.
+		///     Your implementation is a function which returns a Task with a IDictionary string,string.
+		///     It receives the OAuth2Settings and a CancellationToken.
+		///     The return value should be that which the OAuth server gives as return values, no processing.
+		/// </summary>
+		public static IDictionary<AuthorizeModes, IOAuthCodeReceiver> CodeReceivers { get; } = new Dictionary<AuthorizeModes, IOAuthCodeReceiver>();
+
+		/// <summary>
+		///     Authenticate by using the mode specified in the settings
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>false if it was canceled, true if it worked, exception if not</returns>
@@ -148,9 +148,47 @@ namespace Dapplo.HttpExtensions.OAuth
 		}
 
 		/// <summary>
-		/// Step 3:
-		/// Go out and retrieve a new access token via refresh-token
-		/// Will upate the access token, refresh token, expire date
+		///     Check and authenticate or refresh tokens
+		/// </summary>
+		/// <param name="cancellationToken">CancellationToken</param>
+		private async Task CheckAndAuthenticateOrRefreshAsync(CancellationToken cancellationToken = default(CancellationToken))
+		{
+			_httpBehaviour.MakeCurrent();
+
+			Log.Debug().WriteLine("Checking authentication.");
+			// Get Refresh / Access token
+			if (string.IsNullOrEmpty(_oAuth2Settings.Token.OAuth2AccessToken))
+			{
+				Log.Debug().WriteLine("No token, performing an Authentication");
+				if (!await AuthenticateAsync(cancellationToken).ConfigureAwait(false))
+				{
+					throw new Exception("Authentication cancelled");
+				}
+			}
+			if (_oAuth2Settings.IsAccessTokenExpired)
+			{
+				Log.Debug().WriteLine("Access-token expired, refreshing token");
+				await GenerateAccessTokenAsync(cancellationToken).ConfigureAwait(false);
+				// Get Refresh / Access token
+				if (string.IsNullOrEmpty(_oAuth2Settings.Token.OAuth2RefreshToken))
+				{
+					if (!await AuthenticateAsync(cancellationToken).ConfigureAwait(false))
+					{
+						throw new Exception("Authentication cancelled");
+					}
+					await GenerateAccessTokenAsync(cancellationToken).ConfigureAwait(false);
+				}
+			}
+			if (_oAuth2Settings.IsAccessTokenExpired)
+			{
+				throw new Exception("Authentication failed");
+			}
+		}
+
+		/// <summary>
+		///     Step 3:
+		///     Go out and retrieve a new access token via refresh-token
+		///     Will upate the access token, refresh token, expire date
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken</param>
 		private async Task GenerateAccessTokenAsync(CancellationToken cancellationToken = default(CancellationToken))
@@ -216,7 +254,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		}
 
 		/// <summary>
-		/// Step 2: Generate an OAuth 2 AccessToken / RefreshToken
+		///     Step 2: Generate an OAuth 2 AccessToken / RefreshToken
 		/// </summary>
 		/// <param name="cancellationToken">CancellationToken</param>
 		private async Task GenerateRefreshTokenAsync(CancellationToken cancellationToken = default(CancellationToken))
@@ -271,45 +309,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		}
 
 		/// <summary>
-		/// Check and authenticate or refresh tokens 
-		/// </summary>
-		/// <param name="cancellationToken">CancellationToken</param>
-		private async Task CheckAndAuthenticateOrRefreshAsync(CancellationToken cancellationToken = default(CancellationToken))
-		{
-			_httpBehaviour.MakeCurrent();
-
-			Log.Debug().WriteLine("Checking authentication.");
-			// Get Refresh / Access token
-			if (string.IsNullOrEmpty(_oAuth2Settings.Token.OAuth2AccessToken))
-			{
-				Log.Debug().WriteLine("No token, performing an Authentication");
-				if (!await AuthenticateAsync(cancellationToken).ConfigureAwait(false))
-				{
-					throw new Exception("Authentication cancelled");
-				}
-			}
-			if (_oAuth2Settings.IsAccessTokenExpired)
-			{
-				Log.Debug().WriteLine("Access-token expired, refreshing token");
-				await GenerateAccessTokenAsync(cancellationToken).ConfigureAwait(false);
-				// Get Refresh / Access token
-				if (string.IsNullOrEmpty(_oAuth2Settings.Token.OAuth2RefreshToken))
-				{
-					if (!await AuthenticateAsync(cancellationToken).ConfigureAwait(false))
-					{
-						throw new Exception("Authentication cancelled");
-					}
-					await GenerateAccessTokenAsync(cancellationToken).ConfigureAwait(false);
-				}
-			}
-			if (_oAuth2Settings.IsAccessTokenExpired)
-			{
-				throw new Exception("Authentication failed");
-			}
-		}
-
-		/// <summary>
-		/// Check the HttpRequestMessage if all OAuth setting are there, if not make this available.
+		///     Check the HttpRequestMessage if all OAuth setting are there, if not make this available.
 		/// </summary>
 		/// <param name="httpRequestMessage">HttpRequestMessage</param>
 		/// <param name="cancellationToken">CancellationToken</param>

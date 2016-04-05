@@ -1,25 +1,25 @@
-﻿/*
-	Dapplo - building blocks for desktop applications
-	Copyright (C) 2015-2016 Dapplo
+﻿//  Dapplo - building blocks for desktop applications
+//  Copyright (C) 2015-2016 Dapplo
+// 
+//  For more information see: http://dapplo.net/
+//  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
+// 
+//  This file is part of Dapplo.HttpExtensions
+// 
+//  Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU Lesser General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+// 
+//  Dapplo.HttpExtensions is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU Lesser General Public License for more details.
+// 
+//  You should have a copy of the GNU Lesser General Public License
+//  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-	For more information see: http://dapplo.net/
-	Dapplo repositories are hosted on GitHub: https://github.com/dapplo
-
-	This file is part of Dapplo.HttpExtensions.
-
-	Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
-
-	Dapplo.HttpExtensions is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
- */
+#region using
 
 using System;
 using System.Collections.Generic;
@@ -32,11 +32,14 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.LogFacade;
+using Dapplo.Utils.Extensions;
+
+#endregion
 
 namespace Dapplo.HttpExtensions.ContentConverter
 {
 	/// <summary>
-	/// This can convert HttpContent from/to a WPF BitmapImage
+	///     This can convert HttpContent from/to a WPF BitmapImage
 	/// </summary>
 	public class BitmapSourceHttpContentConverter : IHttpContentConverter
 	{
@@ -53,50 +56,21 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			SupportedContentTypes.Add(MediaTypes.Tiff.EnumValueOf());
 		}
 
-		public int Order => 0;
-
-		public ImageFormat Format
-		{
-			get;
-			set;
-		} = ImageFormat.Png;
+		public ImageFormat Format { get; set; } = ImageFormat.Png;
 
 		public int Quality { get; set; } = 80;
 
-		private BitmapEncoder CreateEncoder()
-		{
-			if (Format.Guid == ImageFormat.Bmp.Guid)
-			{
-				return new BmpBitmapEncoder();
-			}
-			if (Format.Guid == ImageFormat.Gif.Guid)
-			{
-				return new GifBitmapEncoder();
-			}
-			if (Format.Guid == ImageFormat.Jpeg.Guid)
-			{
-				return new JpegBitmapEncoder();
-			}
-			if (Format.Guid == ImageFormat.Tiff.Guid)
-			{
-				return new TiffBitmapEncoder();
-			}
-			if (Format.Guid == ImageFormat.Png.Guid)
-			{
-				return new PngBitmapEncoder();
-			}
-			throw new NotSupportedException($"Unsupported image format {Format}");
-		}
+		public int Order => 0;
 
 		/// <summary>
-		/// This checks if the HttpContent can be converted to a Bitmap and is assignable to the specified Type 
+		///     This checks if the HttpContent can be converted to a Bitmap and is assignable to the specified Type
 		/// </summary>
 		/// <param name="typeToConvertTo">This should be something we can assign Bitmap to</param>
 		/// <param name="httpContent">HttpContent to process</param>
 		/// <returns>true if it can convert</returns>
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent)
 		{
-			if (typeToConvertTo == typeof(object) || !typeToConvertTo.IsAssignableFrom(typeof (BitmapImage)))
+			if (typeToConvertTo == typeof (object) || !typeToConvertTo.IsAssignableFrom(typeof (BitmapImage)))
 			{
 				return false;
 			}
@@ -110,7 +84,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			{
 				throw new NotSupportedException("CanConvertFromHttpContent resulted in false, this is not supposed to be called.");
 			}
-			using (var memoryStream = (MemoryStream)await StreamHttpContentConverter.Instance.ConvertFromHttpContentAsync(typeof(MemoryStream), httpContent, token).ConfigureAwait(false))
+			using (var memoryStream = (MemoryStream) await StreamHttpContentConverter.Instance.ConvertFromHttpContentAsync(typeof (MemoryStream), httpContent, token).ConfigureAwait(false))
 			{
 				Log.Debug().WriteLine("Creating a BitmapImage from the MemoryStream.");
 				var bitmap = new BitmapImage();
@@ -127,7 +101,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 
 		public bool CanConvertToHttpContent(Type typeToConvert, object content)
 		{
-			return typeof(BitmapSource).IsAssignableFrom(typeToConvert)  && content != null;
+			return typeof (BitmapSource).IsAssignableFrom(typeToConvert) && content != null;
 		}
 
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
@@ -169,7 +143,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			{
 				throw new ArgumentNullException(nameof(httpRequestMessage));
 			}
-			if (resultType == typeof(object) || !resultType.IsAssignableFrom(typeof(BitmapSource)))
+			if (resultType == typeof (object) || !resultType.IsAssignableFrom(typeof (BitmapSource)))
 			{
 				return;
 			}
@@ -180,6 +154,31 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Gif.EnumValueOf()));
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Icon.EnumValueOf()));
 			Log.Debug().WriteLine("Modified the header(s) of the HttpRequestMessage: Accept: {0}", httpRequestMessage.Headers.Accept);
+		}
+
+		private BitmapEncoder CreateEncoder()
+		{
+			if (Format.Guid == ImageFormat.Bmp.Guid)
+			{
+				return new BmpBitmapEncoder();
+			}
+			if (Format.Guid == ImageFormat.Gif.Guid)
+			{
+				return new GifBitmapEncoder();
+			}
+			if (Format.Guid == ImageFormat.Jpeg.Guid)
+			{
+				return new JpegBitmapEncoder();
+			}
+			if (Format.Guid == ImageFormat.Tiff.Guid)
+			{
+				return new TiffBitmapEncoder();
+			}
+			if (Format.Guid == ImageFormat.Png.Guid)
+			{
+				return new PngBitmapEncoder();
+			}
+			throw new NotSupportedException($"Unsupported image format {Format}");
 		}
 	}
 }

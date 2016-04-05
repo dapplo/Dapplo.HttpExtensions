@@ -1,41 +1,44 @@
-﻿/*
-	Dapplo - building blocks for desktop applications
-	Copyright (C) 2015-2016 Dapplo
+﻿//  Dapplo - building blocks for desktop applications
+//  Copyright (C) 2015-2016 Dapplo
+// 
+//  For more information see: http://dapplo.net/
+//  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
+// 
+//  This file is part of Dapplo.HttpExtensions
+// 
+//  Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU Lesser General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+// 
+//  Dapplo.HttpExtensions is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU Lesser General Public License for more details.
+// 
+//  You should have a copy of the GNU Lesser General Public License
+//  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-	For more information see: http://dapplo.net/
-	Dapplo repositories are hosted on GitHub: https://github.com/dapplo
-
-	This file is part of Dapplo.HttpExtensions.
-
-	Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
-
-	Dapplo.HttpExtensions is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
- */
+#region using
 
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Dapplo.LogFacade;
 using Dapplo.HttpExtensions.Support;
-using System.Collections.Generic;
-using System.Reflection;
+using Dapplo.LogFacade;
+using Dapplo.Utils.Extensions;
+
+#endregion
 
 namespace Dapplo.HttpExtensions.ContentConverter
 {
 	/// <summary>
-	/// This can convert HttpContent from/to Json
-	/// TODO: add JsonObject from SimpleJson for more clear generic code..
+	///     This can convert HttpContent from/to Json
+	///     TODO: add JsonObject from SimpleJson for more clear generic code..
 	/// </summary>
 	public class JsonHttpContentConverter : IHttpContentConverter
 	{
@@ -49,19 +52,20 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		}
 
 		/// <summary>
-		/// Sort order
-		/// </summary>
-		public int Order => int.MaxValue;
-
-		/// <summary>
-		/// If the json content is any longer than LogThreshold AppendedWhenCut is appended to the cut string
+		///     If the json content is any longer than LogThreshold AppendedWhenCut is appended to the cut string
 		/// </summary>
 		public string AppendedWhenCut { get; set; } = "...";
 
 		/// <summary>
-		/// This is the amount of characters that are written to the log, if the json content is any longer that it will be cut (and AppendedWhenCut is appended)
+		///     This is the amount of characters that are written to the log, if the json content is any longer that it will be cut
+		///     (and AppendedWhenCut is appended)
 		/// </summary>
 		public int LogThreshold { get; set; }
+
+		/// <summary>
+		///     Sort order
+		/// </summary>
+		public int Order => int.MaxValue;
 
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent)
 		{
@@ -94,12 +98,12 @@ namespace Dapplo.HttpExtensions.ContentConverter
 				}
 			}
 			// Check if we can just pass it back, as the target is string
-			if (resultType == typeof(string))
+			if (resultType == typeof (string))
 			{
 				return jsonString;
 			}
 			var httpBehaviour = HttpBehaviour.Current;
-			return httpBehaviour.JsonSerializer.DeserializeJson(resultType == typeof(object) ? null : resultType, jsonString);
+			return httpBehaviour.JsonSerializer.DeserializeJson(resultType == typeof (object) ? null : resultType, jsonString);
 		}
 
 		public bool CanConvertToHttpContent(Type typeToConvert, object content)
@@ -116,8 +120,8 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		}
 
 		/// <summary>
-		/// Add Accept-Headers to the HttpRequestMessage, depending on the passt resultType.
-		/// This tries to hint the Http server what we can accept, which depends on the type of the return value
+		///     Add Accept-Headers to the HttpRequestMessage, depending on the passt resultType.
+		///     This tries to hint the Http server what we can accept, which depends on the type of the return value
 		/// </summary>
 		/// <param name="resultType">Result type, this where to a conversion from HttpContent is made</param>
 		/// <param name="httpRequestMessage">HttpRequestMessage</param>

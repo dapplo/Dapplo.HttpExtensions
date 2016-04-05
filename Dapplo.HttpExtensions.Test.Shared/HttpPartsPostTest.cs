@@ -25,7 +25,6 @@ using System;
 using System.Drawing;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Test.TestEntities;
-using Xunit;
 
 namespace Dapplo.HttpExtensions.Test
 {

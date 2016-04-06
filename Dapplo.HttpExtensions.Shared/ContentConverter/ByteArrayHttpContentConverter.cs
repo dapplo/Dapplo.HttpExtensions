@@ -1,65 +1,67 @@
-﻿/*
-	Dapplo - building blocks for desktop applications
-	Copyright (C) 2015-2016 Dapplo
+﻿//  Dapplo - building blocks for desktop applications
+//  Copyright (C) 2015-2016 Dapplo
+// 
+//  For more information see: http://dapplo.net/
+//  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
+// 
+//  This file is part of Dapplo.HttpExtensions
+// 
+//  Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU Lesser General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+// 
+//  Dapplo.HttpExtensions is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU Lesser General Public License for more details.
+// 
+//  You should have a copy of the GNU Lesser General Public License
+//  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-	For more information see: http://dapplo.net/
-	Dapplo repositories are hosted on GitHub: https://github.com/dapplo
+#region using
 
-	This file is part of Dapplo.HttpExtensions.
-
-	Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
-
-	Dapplo.HttpExtensions is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
- */
-
-using Dapplo.LogFacade;
 using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Dapplo.LogFacade;
+
+#endregion
 
 namespace Dapplo.HttpExtensions.ContentConverter
 {
 	/// <summary>
-	/// This can convert HttpContent from/to a byte[]
+	///     This can convert HttpContent from/to a byte[]
 	/// </summary>
 	public class ByteArrayHttpContentConverter : IHttpContentConverter
 	{
 		private static readonly LogSource Log = new LogSource();
 
 		/// <summary>
-		/// Used to create the list of available IHttpContentConverter
-		/// Can also be used to access the singleton to change the settings.
+		///     Used to create the list of available IHttpContentConverter
+		///     Can also be used to access the singleton to change the settings.
 		/// </summary>
 		public static readonly ByteArrayHttpContentConverter Instance = new ByteArrayHttpContentConverter();
 
 		/// <summary>
-		/// Order or priority of the IHttpContentConverter
+		///     Order or priority of the IHttpContentConverter
 		/// </summary>
 		public int Order => 0;
 
 		/// <summary>
-		/// Check if we can convert from the HttpContent to a byte array
+		///     Check if we can convert from the HttpContent to a byte array
 		/// </summary>
 		/// <param name="typeToConvertTo">To what type will the result be assigned</param>
 		/// <param name="httpContent">HttpContent</param>
 		/// <returns>true if we can convert the HttpContent to a ByteArray</returns>
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent)
 		{
-			return typeToConvertTo == typeof(byte[]);
+			return typeToConvertTo == typeof (byte[]);
 		}
 
 		/// <summary>
-		/// Convert a HttpContent to the specified type
+		///     Convert a HttpContent to the specified type
 		/// </summary>
 		/// <param name="resultType">Type to convert to</param>
 		/// <param name="httpContent">HttpContent</param>
@@ -77,18 +79,18 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		}
 
 		/// <summary>
-		/// Checks if the content of type typeToConvert can be converted into a HttpContent
+		///     Checks if the content of type typeToConvert can be converted into a HttpContent
 		/// </summary>
 		/// <param name="typeToConvert">Type to convert to</param>
 		/// <param name="content">some object</param>
 		/// <returns>true if a conversion can be made</returns>
 		public bool CanConvertToHttpContent(Type typeToConvert, object content)
 		{
-			return typeToConvert == typeof(byte[]);
+			return typeToConvert == typeof (byte[]);
 		}
 
 		/// <summary>
-		/// Actually convert the passed object into a HttpContent
+		///     Actually convert the passed object into a HttpContent
 		/// </summary>
 		/// <param name="typeToConvert">Type to convert from</param>
 		/// <param name="content">Some object</param>
@@ -100,8 +102,8 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		}
 
 		/// <summary>
-		/// Add Accept-Headers to the HttpRequestMessage, depending on the passt resultType.
-		/// This tries to hint the Http server what we can accept, which depends on the type of the return value
+		///     Add Accept-Headers to the HttpRequestMessage, depending on the passt resultType.
+		///     This tries to hint the Http server what we can accept, which depends on the type of the return value
 		/// </summary>
 		/// <param name="resultType">Result type, this where to a conversion from HttpContent is made</param>
 		/// <param name="httpRequestMessage">HttpRequestMessage</param>

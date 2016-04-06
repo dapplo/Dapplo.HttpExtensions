@@ -1,95 +1,76 @@
-﻿/*
-	Dapplo - building blocks for desktop applications
-	Copyright (C) 2015-2016 Dapplo
+﻿//  Dapplo - building blocks for desktop applications
+//  Copyright (C) 2015-2016 Dapplo
+// 
+//  For more information see: http://dapplo.net/
+//  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
+// 
+//  This file is part of Dapplo.HttpExtensions
+// 
+//  Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU Lesser General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+// 
+//  Dapplo.HttpExtensions is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU Lesser General Public License for more details.
+// 
+//  You should have a copy of the GNU Lesser General Public License
+//  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-	For more information see: http://dapplo.net/
-	Dapplo repositories are hosted on GitHub: https://github.com/dapplo
+#region using
 
-	This file is part of Dapplo.HttpExtensions.
-
-	Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
-
-	Dapplo.HttpExtensions is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
- */
-
-using Dapplo.LogFacade;
 using System;
 using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Dapplo.LogFacade;
+
+#endregion
 
 namespace Dapplo.HttpExtensions.Support
 {
 	/// <summary>
-	/// The ProgressStreamContent makes it possible to track the progress of a http-post for a stream
+	///     The ProgressStreamContent makes it possible to track the progress of a http-post for a stream
 	/// </summary>
 	public class ProgressStreamContent : HttpContent
 	{
-		private static readonly LogSource Log = new LogSource();
-
 		/// <summary>
-		/// Enum which specifies the current upload state
+		///     Enum which specifies the current upload state
 		/// </summary>
 		public enum UploadStates
 		{
 			/// <summary>
-			/// Upload didn't start yet
+			///     Upload didn't start yet
 			/// </summary>
 			PendingUpload,
+
 			/// <summary>
-			/// Upload is currently running
+			///     Upload is currently running
 			/// </summary>
 			Uploading,
+
 			/// <summary>
-			/// Awaiting the response
+			///     Awaiting the response
 			/// </summary>
 			PendingResponse
 		}
 
-		private readonly Stream _content;
+		private static readonly LogSource Log = new LogSource();
 		private readonly int _bufferSize;
+
+		private readonly Stream _content;
 		private bool _contentConsumed;
 
 		/// <summary>
-		/// Specify the IProgress, which will be informed of progress
-		/// </summary>
-		public IProgress<float> ProgressHandler { get; set; }
-
-		/// <summary>
-		/// the current upload state
-		/// </summary>
-		public UploadStates State
-		{
-			get;
-			private set;
-		} = UploadStates.PendingUpload;
-
-		/// <summary>
-		/// See the amount of bytes that were uploaded
-		/// </summary>
-		public long UploadedBytes
-		{
-			get;
-			private set;
-		}
-
-		/// <summary>
-		/// Create a StreamContent which supports progress reporting
+		///     Create a StreamContent which supports progress reporting
 		/// </summary>
 		/// <param name="content">The stream for uploading</param>
 		/// <param name="progressHandler">IProgress with float</param>
 		/// <param name="bufferSize">Size of the upload buffer, 4Kb is default</param>
-		public ProgressStreamContent(Stream content, IProgress<float> progressHandler = null, int bufferSize = 4 * 1024)
+		public ProgressStreamContent(Stream content, IProgress<float> progressHandler = null, int bufferSize = 4*1024)
 		{
 			if (content == null)
 			{
@@ -105,7 +86,35 @@ namespace Dapplo.HttpExtensions.Support
 		}
 
 		/// <summary>
-		/// This actually writes (serializes) the content-stream to the remote
+		///     Specify the IProgress, which will be informed of progress
+		/// </summary>
+		public IProgress<float> ProgressHandler { get; set; }
+
+		/// <summary>
+		///     the current upload state
+		/// </summary>
+		public UploadStates State { get; private set; } = UploadStates.PendingUpload;
+
+		/// <summary>
+		///     See the amount of bytes that were uploaded
+		/// </summary>
+		public long UploadedBytes { get; private set; }
+
+		/// <summary>
+		///     Dispose
+		/// </summary>
+		/// <param name="disposing"></param>
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				_content.Dispose();
+			}
+			base.Dispose(disposing);
+		}
+
+		/// <summary>
+		///     This actually writes (serializes) the content-stream to the remote
 		/// </summary>
 		/// <param name="stream">Stream to write to</param>
 		/// <param name="context"></param>
@@ -145,7 +154,7 @@ namespace Dapplo.HttpExtensions.Support
 
 
 				// Calculate the progress
-				float progress = UploadedBytes * 100 / (float)size;
+				var progress = UploadedBytes*100/(float) size;
 				// Log the progress
 				Log.Debug().WriteLine("Uploaded {0} bytes for a total of {1} bytes this results in a {2}% progress.", UploadedBytes, size, progress);
 				// Report the progress
@@ -160,7 +169,7 @@ namespace Dapplo.HttpExtensions.Support
 		}
 
 		/// <summary>
-		/// Return the length of the stream
+		///     Return the length of the stream
 		/// </summary>
 		/// <param name="length"></param>
 		/// <returns>true if it worked, in this case always</returns>
@@ -168,19 +177,6 @@ namespace Dapplo.HttpExtensions.Support
 		{
 			length = _content.Length;
 			return true;
-		}
-
-		/// <summary>
-		/// Dispose
-		/// </summary>
-		/// <param name="disposing"></param>
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing)
-			{
-				_content.Dispose();
-			}
-			base.Dispose(disposing);
 		}
 	}
 }

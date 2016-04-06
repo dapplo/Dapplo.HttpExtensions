@@ -1,49 +1,52 @@
-﻿/*
-	Dapplo - building blocks for desktop applications
-	Copyright (C) 2015-2016 Dapplo
+﻿//  Dapplo - building blocks for desktop applications
+//  Copyright (C) 2015-2016 Dapplo
+// 
+//  For more information see: http://dapplo.net/
+//  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
+// 
+//  This file is part of Dapplo.HttpExtensions
+// 
+//  Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU Lesser General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+// 
+//  Dapplo.HttpExtensions is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU Lesser General Public License for more details.
+// 
+//  You should have a copy of the GNU Lesser General Public License
+//  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-	For more information see: http://dapplo.net/
-	Dapplo repositories are hosted on GitHub: https://github.com/dapplo
-
-	This file is part of Dapplo.HttpExtensions.
-
-	Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
-
-	Dapplo.HttpExtensions is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
- */
+#region using
 
 using System;
 using System.Net;
-#if !_PCL_
-using System.Net.Cache;
-#endif
 using System.Net.Security;
 using System.Reflection;
 using System.Security.Principal;
 using System.Text;
 
+#if !_PCL_
+using System.Net.Cache;
+#endif
+
+#endregion
+
 namespace Dapplo.HttpExtensions.Support
 {
 	/// <summary>
-	/// This class contains the default settings for the proxy / httpclient
-	/// These can be modified, are on a global "application" scale.
-	/// Most have their normal defaults, which would also normally be used, some have special settings
-	/// The default values and the property descriptions are in the IHttpSettings (which can be used by Dapplo.Config)
+	///     This class contains the default settings for the proxy / httpclient
+	///     These can be modified, are on a global "application" scale.
+	///     Most have their normal defaults, which would also normally be used, some have special settings
+	///     The default values and the property descriptions are in the IHttpSettings (which can be used by Dapplo.Config)
 	/// </summary>
 	public class HttpSettings : IHttpSettings
 	{
 		private const int Kb = 1024;
-		private const int Mb = Kb * 1024;
-		private const long Gb = Mb * 1024;
+		private const int Mb = Kb*1024;
+		private const long Gb = Mb*1024;
 
 		private string _userAgent;
 
@@ -55,7 +58,7 @@ namespace Dapplo.HttpExtensions.Support
 
 		public Uri ProxyUri { get; set; }
 
-		public ICredentials ProxyCredentials{ get; set; }
+		public ICredentials ProxyCredentials { get; set; }
 
 		public bool ProxyBypassOnLocal { get; set; } = true;
 
@@ -77,10 +80,10 @@ namespace Dapplo.HttpExtensions.Support
 
 		public int MaxAutomaticRedirections { get; set; } = 50;
 
-		public long MaxRequestContentBufferSize { get; set; } = 2 * Gb - 1;
+		public long MaxRequestContentBufferSize { get; set; } = 2*Gb - 1;
 
-		public long MaxResponseContentBufferSize { get; set; } = 2 * Gb - 1;
-		
+		public long MaxResponseContentBufferSize { get; set; } = 2*Gb - 1;
+
 		public int ReadWriteTimeout { get; set; } = 300000;
 
 		public bool AllowPipelining { get; set; } = true;
@@ -99,8 +102,7 @@ namespace Dapplo.HttpExtensions.Support
 			{
 				if (_userAgent == null)
 				{
-					
-					var clientAssembly = typeof(HttpSettings).GetTypeInfo().Assembly;
+					var clientAssembly = typeof (HttpSettings).GetTypeInfo().Assembly;
 					var userAgentBuilder = new StringBuilder();
 
 					var clientAssemblyName = clientAssembly.GetName();
@@ -109,10 +111,7 @@ namespace Dapplo.HttpExtensions.Support
 				}
 				return _userAgent;
 			}
-			set
-			{
-				_userAgent = value;
-			}
+			set { _userAgent = value; }
 		}
 
 #if !_PCL_

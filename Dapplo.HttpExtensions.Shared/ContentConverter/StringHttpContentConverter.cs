@@ -82,6 +82,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
 		{
+			// TODO:
 			return new StringContent(content as string);
 		}
 

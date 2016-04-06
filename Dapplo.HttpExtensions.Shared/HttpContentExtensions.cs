@@ -21,6 +21,8 @@
 
 #region using
 
+#region using
+
 using System;
 using System.Linq;
 using System.Net.Http;
@@ -35,7 +37,10 @@ using Dapplo.Utils.Extensions;
 
 #if _PCL_
 using System.Reflection;
+
 #endif
+
+#endregion
 
 namespace Dapplo.HttpExtensions
 {

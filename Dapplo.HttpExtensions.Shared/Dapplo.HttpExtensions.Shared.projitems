@@ -45,7 +45,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)SimpleJson.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Support\AsyncLock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Support\ContentItem.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Support\HttpAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Support\HttpResponseAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Support\HttpRequestAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Support\HttpPartAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Support\HttpParts.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Support\HttpSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Support\MediaTypes.cs" />

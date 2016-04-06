@@ -1,25 +1,25 @@
-﻿/*
-	Dapplo - building blocks for desktop applications
-	Copyright (C) 2015-2016 Dapplo
+﻿//  Dapplo - building blocks for desktop applications
+//  Copyright (C) 2015-2016 Dapplo
+// 
+//  For more information see: http://dapplo.net/
+//  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
+// 
+//  This file is part of Dapplo.HttpExtensions
+// 
+//  Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU Lesser General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+// 
+//  Dapplo.HttpExtensions is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU Lesser General Public License for more details.
+// 
+//  You should have a copy of the GNU Lesser General Public License
+//  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-	For more information see: http://dapplo.net/
-	Dapplo repositories are hosted on GitHub: https://github.com/dapplo
-
-	This file is part of Dapplo.HttpExtensions.
-
-	Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
-
-	Dapplo.HttpExtensions is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
- */
+#region using
 
 using System;
 using System.Collections.Generic;
@@ -28,15 +28,17 @@ using System.Net.Http;
 using System.Reflection;
 using Dapplo.HttpExtensions.Support;
 
+#endregion
+
 namespace Dapplo.HttpExtensions.Factory
 {
 	/// <summary>
-	/// Factory methods to create HttpContent
+	///     Factory methods to create HttpContent
 	/// </summary>
 	public static class HttpContentFactory
 	{
 		/// <summary>
-		/// Create a HttpContent object from the supplied content
+		///     Create a HttpContent object from the supplied content
 		/// </summary>
 		/// <param name="inputType">type for the content</param>
 		/// <param name="content">content</param>
@@ -48,21 +50,22 @@ namespace Dapplo.HttpExtensions.Factory
 				return null;
 			}
 
-			if (typeof(HttpContent).IsAssignableFrom(inputType))
+			if (typeof (HttpContent).IsAssignableFrom(inputType))
 			{
 				return content as HttpContent;
 			}
 
 			var httpBehaviour = HttpBehaviour.Current;
 
+			var httpContentAttribute = inputType.GetTypeInfo().GetCustomAttribute<HttpRequestAttribute>();
 			// Process the input type
-			if (inputType.GetTypeInfo().GetCustomAttribute<HttpAttribute>()?.Part == HttpParts.Request)
+			if (httpContentAttribute != null)
 			{
 				var contentItems = new List<ContentItem>();
 				// We have a type which specifies the request content
 				foreach (var propertyInfo in inputType.GetProperties())
 				{
-					var httpAttribute = propertyInfo.GetCustomAttribute<HttpAttribute>();
+					var httpAttribute = propertyInfo.GetCustomAttribute<HttpPartAttribute>();
 					if (httpAttribute == null)
 					{
 						continue;
@@ -104,12 +107,13 @@ namespace Dapplo.HttpExtensions.Factory
 						contentItems.Add(contentItem);
 					}
 				}
-				if (contentItems.Count == 1)
+				// Having a HttpContentAttribute with MultiPart= true will skip this, even if one content is used
+				if (contentItems.Count == 1 && !httpContentAttribute.MultiPart)
 				{
 					var contentItem = contentItems[0];
 					return Create(httpBehaviour, contentItem);
 				}
-				if (contentItems.Count > 1)
+				if (contentItems.Count > 0)
 				{
 					var multipartContent = new MultipartFormDataContent();
 
@@ -133,7 +137,7 @@ namespace Dapplo.HttpExtensions.Factory
 		}
 
 		/// <summary>
-		/// Helper method to create content
+		///     Helper method to create content
 		/// </summary>
 		/// <param name="httpBehaviour">IHttpBehaviour</param>
 		/// <param name="contentItem"></param>
@@ -144,7 +148,7 @@ namespace Dapplo.HttpExtensions.Factory
 		}
 
 		/// <summary>
-		/// Helper method to create content
+		///     Helper method to create content
 		/// </summary>
 		/// <param name="httpBehaviour">IHttpBehaviour</param>
 		/// <param name="inputType">Type</param>
@@ -184,14 +188,14 @@ namespace Dapplo.HttpExtensions.Factory
 		}
 
 		/// <summary>
-		/// Create a HttpContent object from the supplied content
+		///     Create a HttpContent object from the supplied content
 		/// </summary>
 		/// <typeparam name="TInput">type for the content</typeparam>
 		/// <param name="content">content</param>
 		/// <returns>HttpContent</returns>
 		public static HttpContent Create<TInput>(TInput content) where TInput : class
 		{
-			return Create(typeof(TInput), content);
+			return Create(typeof (TInput), content);
 		}
 	}
 }

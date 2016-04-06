@@ -25,18 +25,35 @@ using System;
 
 #endregion
 
-namespace Dapplo.HttpExtensions.OAuth
+namespace Dapplo.HttpExtensions.Support
 {
 	/// <summary>
-	///     A default implementation for the IOAuth2Token, nothing fancy
-	///     For more information, see the IOAuth2Token interface
+	///     This attribute marks a property as "http content"
 	/// </summary>
-	internal class OAuth2TokenInformation : IOAuth2Token
+	[AttributeUsage(AttributeTargets.Property)]
+	public class HttpPartAttribute : Attribute
 	{
-		public string OAuth2AccessToken { get; set; }
+		public HttpPartAttribute(object part)
+		{
+			if (part == null)
+			{
+				throw new ArgumentNullException(nameof(part));
+			}
+			if (typeof (HttpParts) != part.GetType())
+			{
+				throw new ArgumentException(nameof(part));
+			}
+			Part = (HttpParts) part;
+		}
 
-		public DateTimeOffset OAuth2AccessTokenExpires { get; set; }
+		/// <summary>
+		///     Order of the content when using multi-part content
+		/// </summary>
+		public int Order { get; set; }
 
-		public string OAuth2RefreshToken { get; set; }
+		/// <summary>
+		///     Use this to specify what the property is representing
+		/// </summary>
+		public HttpParts Part { get; set; }
 	}
 }

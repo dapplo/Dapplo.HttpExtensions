@@ -1,37 +1,39 @@
-﻿/*
-	Dapplo - building blocks for desktop applications
-	Copyright (C) 2015-2016 Dapplo
+﻿//  Dapplo - building blocks for desktop applications
+//  Copyright (C) 2015-2016 Dapplo
+// 
+//  For more information see: http://dapplo.net/
+//  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
+// 
+//  This file is part of Dapplo.HttpExtensions
+// 
+//  Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU Lesser General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+// 
+//  Dapplo.HttpExtensions is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU Lesser General Public License for more details.
+// 
+//  You should have a copy of the GNU Lesser General Public License
+//  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-	For more information see: http://dapplo.net/
-	Dapplo repositories are hosted on GitHub: https://github.com/dapplo
+#region using
 
-	This file is part of Dapplo.HttpExtensions.
-
-	Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
-
-	Dapplo.HttpExtensions is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
- */
-
-using Xunit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Xunit.Abstractions;
 using Dapplo.LogFacade;
+using Xunit;
+using Xunit.Abstractions;
+
+#endregion
 
 namespace Dapplo.HttpExtensions.Test
 {
 	/// <summary>
-	/// These are the tests for the UriModifyExtensions
+	///     These are the tests for the UriModifyExtensions
 	/// </summary>
 	public class UriModifyExtensionsTests
 	{
@@ -87,8 +89,8 @@ namespace Dapplo.HttpExtensions.Test
 			var uri = new Uri(TestUriDuplicateValues);
 			var testValues = new List<KeyValuePair<string, int>>
 			{
-				new KeyValuePair<string, int>(Key,Value),
-				new KeyValuePair<string, int>(Key,Value),
+				new KeyValuePair<string, int>(Key, Value),
+				new KeyValuePair<string, int>(Key, Value)
 			};
 			var lookup = testValues.ToLookup(x => x.Key, x => x.Value);
 			// Make sure we have one Key, which has multiple values
@@ -128,7 +130,7 @@ namespace Dapplo.HttpExtensions.Test
 			var uri = new Uri(TestUriDuplicateValues);
 			uri = uri.SetCredentials(username, password);
 
-			Assert.Equal($"http://{username}:{password}@{TestUriDuplicateValues.Replace("http://","")}", uri.AbsoluteUri);
+			Assert.Equal($"http://{username}:{password}@{TestUriDuplicateValues.Replace("http://", "")}", uri.AbsoluteUri);
 		}
 	}
 }

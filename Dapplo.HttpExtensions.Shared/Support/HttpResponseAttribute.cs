@@ -25,18 +25,13 @@ using System;
 
 #endregion
 
-namespace Dapplo.HttpExtensions.OAuth
+namespace Dapplo.HttpExtensions.Support
 {
 	/// <summary>
-	///     A default implementation for the IOAuth2Token, nothing fancy
-	///     For more information, see the IOAuth2Token interface
+	///     This attribute marks a class as "http content" for a response
 	/// </summary>
-	internal class OAuth2TokenInformation : IOAuth2Token
+	[AttributeUsage(AttributeTargets.Class)]
+	public class HttpResponseAttribute : Attribute
 	{
-		public string OAuth2AccessToken { get; set; }
-
-		public DateTimeOffset OAuth2AccessTokenExpires { get; set; }
-
-		public string OAuth2RefreshToken { get; set; }
 	}
 }

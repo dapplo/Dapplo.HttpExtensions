@@ -1,26 +1,44 @@
-﻿using Dapplo.LogFacade;
+﻿//  Dapplo - building blocks for desktop applications
+//  Copyright (C) 2015-2016 Dapplo
+// 
+//  For more information see: http://dapplo.net/
+//  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
+// 
+//  This file is part of Dapplo.HttpExtensions
+// 
+//  Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU Lesser General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+// 
+//  Dapplo.HttpExtensions is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU Lesser General Public License for more details.
+// 
+//  You should have a copy of the GNU Lesser General Public License
+//  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
+
+#region using
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using Dapplo.LogFacade;
+
+#endregion
 
 namespace Dapplo.HttpExtensions.Desktop
 {
 	/// <summary>
-	/// The OAuthLoginForm is used to allow the user to authorize Greenshot with an "Oauth" application
+	///     The OAuthLoginForm is used to allow the user to authorize Greenshot with an "Oauth" application
 	/// </summary>
 	public sealed partial class OAuthLoginForm : Form
 	{
 		private static readonly LogSource Log = new LogSource();
 		private readonly string _callbackUrl;
-		[DllImport("user32.dll")]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		private static extern bool SetForegroundWindow(IntPtr hWnd);
-
-		public IDictionary<string, string> CallbackParameters { get; set; }
-
-		public bool IsOk => DialogResult == DialogResult.OK;
 
 		public OAuthLoginForm(string browserTitle, Size size, Uri authorizationLink, string callbackUrl)
 		{
@@ -39,16 +57,9 @@ namespace Dapplo.HttpExtensions.Desktop
 			Load += OAuthLoginForm_Load;
 		}
 
-		/// <summary>
-		/// Make sure the form is visible
-		/// </summary>
-		/// <param name="sender">sender object</param>
-		/// <param name="e">EventArgs</param>
-		private void OAuthLoginForm_Load(object sender, EventArgs e)
-		{
-			Visible = true;
-			SetForegroundWindow(Handle);
-		}
+		public IDictionary<string, string> CallbackParameters { get; set; }
+
+		public bool IsOk => DialogResult == DialogResult.OK;
 
 		private void Browser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
 		{
@@ -56,16 +67,16 @@ namespace Dapplo.HttpExtensions.Desktop
 			CheckUrl(e.Url);
 		}
 
+		private void Browser_Navigated(object sender, WebBrowserNavigatedEventArgs e)
+		{
+			Log.Verbose().WriteLine("Navigated to url: {0}", e.Url);
+			CheckUrl(e.Url);
+		}
+
 		private void Browser_Navigating(object sender, WebBrowserNavigatingEventArgs e)
 		{
 			Log.Verbose().WriteLine("Navigating to url: {0}", e.Url);
 			_addressTextBox.Text = e.Url.ToString();
-			CheckUrl(e.Url);
-		}
-
-		private void Browser_Navigated(object sender, WebBrowserNavigatedEventArgs e)
-		{
-			Log.Verbose().WriteLine("Navigated to url: {0}", e.Url);
 			CheckUrl(e.Url);
 		}
 
@@ -85,5 +96,20 @@ namespace Dapplo.HttpExtensions.Desktop
 				DialogResult = DialogResult.OK;
 			}
 		}
+
+		/// <summary>
+		///     Make sure the form is visible
+		/// </summary>
+		/// <param name="sender">sender object</param>
+		/// <param name="e">EventArgs</param>
+		private void OAuthLoginForm_Load(object sender, EventArgs e)
+		{
+			Visible = true;
+			SetForegroundWindow(Handle);
+		}
+
+		[DllImport("user32.dll")]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		private static extern bool SetForegroundWindow(IntPtr hWnd);
 	}
 }

@@ -21,6 +21,8 @@
 
 #region using
 
+#region using
+
 using System;
 using System.IO;
 using System.Net.Http;
@@ -33,7 +35,10 @@ using Dapplo.LogFacade;
 
 #if _PCL_
 using System.Reflection;
+
 #endif
+
+#endregion
 
 namespace Dapplo.HttpExtensions.ContentConverter
 {

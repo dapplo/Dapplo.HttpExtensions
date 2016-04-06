@@ -1,38 +1,91 @@
-﻿/*
-	Dapplo - building blocks for desktop applications
-	Copyright (C) 2015-2016 Dapplo
+﻿//  Dapplo - building blocks for desktop applications
+//  Copyright (C) 2015-2016 Dapplo
+// 
+//  For more information see: http://dapplo.net/
+//  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
+// 
+//  This file is part of Dapplo.HttpExtensions
+// 
+//  Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU Lesser General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+// 
+//  Dapplo.HttpExtensions is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU Lesser General Public License for more details.
+// 
+//  You should have a copy of the GNU Lesser General Public License
+//  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-	For more information see: http://dapplo.net/
-	Dapplo repositories are hosted on GitHub: https://github.com/dapplo
-
-	This file is part of Dapplo.HttpExtensions.
-
-	Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
-
-	Dapplo.HttpExtensions is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
- */
+#region using
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+#endregion
+
 namespace Dapplo.HttpExtensions
 {
 	/// <summary>
-	/// Uri extensions which modify an Uri (return a new one)
+	///     Uri extensions which modify an Uri (return a new one)
 	/// </summary>
 	public static class UriModifyExtensions
 	{
+		/// <summary>
+		///     Append path segment(s) to the specified Uri
+		/// </summary>
+		/// <param name="uri">Uri to extend</param>
+		/// <param name="segments">array of objects which will be added after converting them to strings</param>
+		/// <returns>new Uri with segments added to the path</returns>
+		public static Uri AppendSegments(this Uri uri, params object[] segments)
+		{
+			if (uri == null)
+			{
+				throw new ArgumentNullException(nameof(uri));
+			}
+			var uriBuilder = new UriBuilder(uri);
+
+			if (segments != null)
+			{
+				var stringBuilder = new StringBuilder();
+				// Only add the path if it contains more that just a /
+				if (!"/".Equals(uriBuilder.Path))
+				{
+					stringBuilder.Append(uriBuilder.Path);
+				}
+				foreach (var segment in segments)
+				{
+					// Do nothing with null segments
+					if (segment == null)
+					{
+						continue;
+					}
+
+					// Add a / if the current path doesn't end with it and the segment doesn't have one
+					var hasPathTrailingSlash = stringBuilder.ToString().EndsWith("/");
+					var hasSegmentTrailingSlash = segment.ToString().StartsWith("/");
+					if (hasPathTrailingSlash && hasSegmentTrailingSlash)
+					{
+						// Remove trailing slash
+						stringBuilder.Length -= 1;
+					}
+					else if (!hasPathTrailingSlash && !hasSegmentTrailingSlash)
+					{
+						stringBuilder.Append("/");
+					}
+
+					// Add the segment
+					stringBuilder.Append(segment);
+				}
+				uriBuilder.Path = stringBuilder.ToString();
+			}
+			return uriBuilder.Uri;
+		}
+
 		/// <summary>
 		///     Adds query string value to an existing url, both absolute and relative URI's are supported.
 		/// </summary>
@@ -53,7 +106,7 @@ namespace Dapplo.HttpExtensions
 			{
 				throw new ArgumentNullException(nameof(value));
 			}
-			var keyValuePairs = uri.QueryToKeyValuePairs().Concat(new[] { new KeyValuePair<string, string>(name, value.ToString()) });
+			var keyValuePairs = uri.QueryToKeyValuePairs().Concat(new[] {new KeyValuePair<string, string>(name, value.ToString())});
 
 			var uriBuilder = new UriBuilder(uri)
 			{
@@ -115,7 +168,7 @@ namespace Dapplo.HttpExtensions
 		}
 
 		/// <summary>
-		///Sets the userinfo of the Uri
+		///     Sets the userinfo of the Uri
 		/// </summary>
 		/// <param name="uri">Uri to extend</param>
 		/// <param name="username">username of value</param>
@@ -128,57 +181,6 @@ namespace Dapplo.HttpExtensions
 				UserName = username,
 				Password = password
 			};
-			return uriBuilder.Uri;
-		}
-
-		/// <summary>
-		/// Append path segment(s) to the specified Uri
-		/// </summary>
-		/// <param name="uri">Uri to extend</param>
-		/// <param name="segments">array of objects which will be added after converting them to strings</param>
-		/// <returns>new Uri with segments added to the path</returns>
-		public static Uri AppendSegments(this Uri uri, params object[] segments)
-		{
-			if (uri == null)
-			{
-				throw new ArgumentNullException(nameof(uri));
-			}
-			var uriBuilder = new UriBuilder(uri);
-
-			if (segments != null)
-			{
-				var stringBuilder = new StringBuilder();
-				// Only add the path if it contains more that just a /
-				if (!"/".Equals(uriBuilder.Path))
-				{
-					stringBuilder.Append(uriBuilder.Path);
-                }
-				foreach (var segment in segments)
-				{
-					// Do nothing with null segments
-					if (segment == null)
-					{
-						continue;
-					}
-
-					// Add a / if the current path doesn't end with it and the segment doesn't have one
-					bool hasPathTrailingSlash = stringBuilder.ToString().EndsWith("/");
-					bool hasSegmentTrailingSlash = segment.ToString().StartsWith("/");
-					if (hasPathTrailingSlash && hasSegmentTrailingSlash)
-					{
-						// Remove trailing slash
-						stringBuilder.Length -= 1;
-					}
-					else if (!hasPathTrailingSlash && !hasSegmentTrailingSlash)
-					{
-						stringBuilder.Append("/");
-					}
-
-					// Add the segment
-					stringBuilder.Append(segment);
-				}
-				uriBuilder.Path = stringBuilder.ToString();
-			}
 			return uriBuilder.Uri;
 		}
 	}

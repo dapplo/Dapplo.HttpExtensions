@@ -70,7 +70,7 @@ namespace Dapplo.HttpExtensions.Factory
 					{
 						continue;
 					}
-
+					// skip all not request based HttpParts
 					if (!httpAttribute.Part.ToString().StartsWith("Request"))
 					{
 						continue;
@@ -123,6 +123,10 @@ namespace Dapplo.HttpExtensions.Factory
 						if (contentItem.ContentName != null && contentItem.ContentFileName != null)
 						{
 							multipartContent.Add(httpContent, contentItem.ContentName, contentItem.ContentFileName);
+						}
+						else if (contentItem.ContentName != null)
+						{
+							multipartContent.Add(httpContent, contentItem.ContentName);
 						}
 						else
 						{

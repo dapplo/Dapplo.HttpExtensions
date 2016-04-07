@@ -90,14 +90,12 @@ namespace Dapplo.HttpExtensions
 
 			// For everything that comes here, a fitting converter should be written, or the ValidateResponseContentType can be set to false
 			var contentType = httpContent.GetContentType();
-			var message = $"Unsupported result type {resultType} / {contentType} combination.";
-			Log.Error().WriteLine(message);
+			Log.Error().WriteLine($"Unsupported result type {resultType} & {contentType} combination.");
 			if (MediaTypes.Txt.EnumValueOf() == contentType && Log.IsErrorEnabled())
 			{
-				message = await httpContent.ReadAsStringAsync();
-				Log.Error().WriteLine("Unprocessable result: {0}", message);
+				Log.Error().WriteLine("Unprocessable result: {0}", await httpContent.ReadAsStringAsync());
 			}
-			throw new NotSupportedException(message);
+			return null;
 		}
 
 		/// <summary>

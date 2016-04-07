@@ -30,6 +30,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.LogFacade;
+using Dapplo.Utils.Extensions;
 
 #endregion
 
@@ -63,7 +64,7 @@ namespace Dapplo.HttpExtensions
 			// See if we have a container
 			if (resultType.GetTypeInfo().GetCustomAttribute<HttpResponseAttribute>() != null)
 			{
-				Log.Info().WriteLine("Filling type {0}", resultType.Name);
+				Log.Info().WriteLine("Filling type {0}", resultType.FriendlyName());
 				// special type
 				var instance = Activator.CreateInstance<TResult>();
 				var properties = resultType.GetProperties().Where(x => x.GetCustomAttribute<HttpPartAttribute>() != null).ToList();
@@ -93,13 +94,22 @@ namespace Dapplo.HttpExtensions
 
 					// Convert the HttpContent to the value type 
 					var convertedContent = await httpContent.GetAsAsync(targetPropertyInfo.PropertyType, token).ConfigureAwait(false);
-
-					// Now set the value
-					targetPropertyInfo.SetValue(instance, convertedContent);
-
-					// Cleanup, but only if the value is not passed onto the container 
-					if (!typeof (HttpContent).IsAssignableFrom(targetPropertyInfo.PropertyType))
+					// If we get null, we throw an error if the
+					if (convertedContent == null)
 					{
+						httpResponseMessage.EnsureSuccessStatusCode();
+						// If still here, we have a mapping issue
+						var message = $"Unsupported result type {targetPropertyInfo.PropertyType.FriendlyName()} & {httpContent.GetContentType()} combination.";
+						Log.Error().WriteLine(message);
+						throw new NotSupportedException(message);
+					}
+					if (targetPropertyInfo.PropertyType.IsAssignableFrom(convertedContent.GetType())) {
+						// Now set the value
+						targetPropertyInfo.SetValue(instance, convertedContent);
+					}
+					else
+					{
+						// Cleanup, but only if the value is not passed onto the container 
 						httpContent?.Dispose();
 					}
 				}

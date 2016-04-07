@@ -60,7 +60,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		///     This is the amount of characters that are written to the log, if the json content is any longer that it will be cut
 		///     (and AppendedWhenCut is appended)
 		/// </summary>
-		public int LogThreshold { get; set; }
+		public int LogThreshold { get; set; } = 256;
 
 		/// <summary>
 		///     Sort order

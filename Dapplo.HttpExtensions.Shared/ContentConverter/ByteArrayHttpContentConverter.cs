@@ -60,13 +60,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			return typeToConvertTo == typeof (byte[]);
 		}
 
-		/// <summary>
-		///     Convert a HttpContent to the specified type
-		/// </summary>
-		/// <param name="resultType">Type to convert to</param>
-		/// <param name="httpContent">HttpContent</param>
-		/// <param name="token">CancellationToken, used as the HttpContent might be read async</param>
-		/// <returns>Task with result</returns>
+		/// <inheritdoc />
 		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken token = default(CancellationToken))
 		{
 			if (!CanConvertFromHttpContent(resultType, httpContent))
@@ -78,35 +72,20 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			return await httpContent.ReadAsByteArrayAsync().ConfigureAwait(false);
 		}
 
-		/// <summary>
-		///     Checks if the content of type typeToConvert can be converted into a HttpContent
-		/// </summary>
-		/// <param name="typeToConvert">Type to convert to</param>
-		/// <param name="content">some object</param>
-		/// <returns>true if a conversion can be made</returns>
+		/// <inheritdoc />
 		public bool CanConvertToHttpContent(Type typeToConvert, object content)
 		{
 			return typeToConvert == typeof (byte[]);
 		}
 
-		/// <summary>
-		///     Actually convert the passed object into a HttpContent
-		/// </summary>
-		/// <param name="typeToConvert">Type to convert from</param>
-		/// <param name="content">Some object</param>
-		/// <returns>HttpContent</returns>
+		/// <inheritdoc />
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
 		{
 			var byteArray = content as byte[];
 			return new ByteArrayContent(byteArray);
 		}
 
-		/// <summary>
-		///     Add Accept-Headers to the HttpRequestMessage, depending on the passt resultType.
-		///     This tries to hint the Http server what we can accept, which depends on the type of the return value
-		/// </summary>
-		/// <param name="resultType">Result type, this where to a conversion from HttpContent is made</param>
-		/// <param name="httpRequestMessage">HttpRequestMessage</param>
+		/// <inheritdoc />
 		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage)
 		{
 			if (resultType == null)

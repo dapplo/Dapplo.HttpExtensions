@@ -69,9 +69,15 @@ namespace Dapplo.HttpExtensions
 		[DefaultValue(DecompressionMethods.Deflate | DecompressionMethods.GZip), Display(Description = "Decompression methods used")]
 		DecompressionMethods DefaultDecompressionMethods { get; set; }
 
+		/// <summary>
+		/// The default User-Agent value to use, a lot of services don't like it when this is empty or the behaviour depends on the value
+		/// </summary>
 		[Display(Description = "The default User-Agent value to use, a lot of services don't like it when this is empty or the behaviour depends on the value")]
 		string DefaultUserAgent { get; set; }
 
+		/// <summary>
+		/// When true the configured proxy will used the default user credentials
+		/// </summary>
 		[DefaultValue(false), Display(Description = "When true the configured proxy will used the default user credentials"), DataMember(EmitDefaultValue = true)]
 		bool Expect100Continue { get; set; }
 
@@ -143,12 +149,21 @@ namespace Dapplo.HttpExtensions
 		[DefaultValue(true), Display(Description = "Should requests store & resend cookies?"), DataMember(EmitDefaultValue = true)]
 		bool UseCookies { get; set; }
 
+		/// <summary>
+		/// When true every http request will supply the default user credentials when the server asks for them
+		/// </summary>
 		[DefaultValue(true), Display(Description = "When true every http request will supply the default user credentials when the server asks for them"), DataMember(EmitDefaultValue = true)]
 		bool UseDefaultCredentials { get; set; }
 
+		/// <summary>
+		/// When true the configured proxy will used the default user credentials
+		/// </summary>
 		[DefaultValue(true), Display(Description = "When true the configured proxy will used the default user credentials"), DataMember(EmitDefaultValue = true)]
 		bool UseDefaultCredentialsForProy { get; set; }
 
+		/// <summary>
+		/// When true the default system proxy is used
+		/// </summary>
 		[DefaultValue(true), Display(Description = "When true the default system proxy is used"), DataMember(EmitDefaultValue = true)]
 		bool UseDefaultProxy { get; set; }
 	}

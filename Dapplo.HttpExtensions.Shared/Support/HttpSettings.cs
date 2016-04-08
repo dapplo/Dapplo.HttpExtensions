@@ -50,52 +50,76 @@ namespace Dapplo.HttpExtensions.Support
 
 		private string _userAgent;
 
+		/// <inheritdoc />
 		public bool UseProxy { get; set; } = true;
 
+		/// <inheritdoc />
 		public bool UseDefaultProxy { get; set; } = true;
 
+		/// <inheritdoc />
 		public bool UseDefaultCredentialsForProy { get; set; } = true;
 
+		/// <inheritdoc />
 		public Uri ProxyUri { get; set; }
 
+		/// <inheritdoc />
 		public ICredentials ProxyCredentials { get; set; }
 
+		/// <inheritdoc />
 		public bool ProxyBypassOnLocal { get; set; } = true;
 
+		/// <inheritdoc />
 		public string[] ProxyBypassList { get; set; }
 
+		/// <inheritdoc />
 		public bool UseCookies { get; set; } = true;
 
+		/// <inheritdoc />
 		public bool UseDefaultCredentials { get; set; } = true;
 
+		/// <inheritdoc />
 		public ICredentials Credentials { get; set; }
 
+		/// <inheritdoc />
 		public TimeSpan RequestTimeout { get; set; } = TimeSpan.FromSeconds(60);
 
+		/// <inheritdoc />
 		public bool AllowAutoRedirect { get; set; } = true;
 
+		/// <inheritdoc />
 		public DecompressionMethods DefaultDecompressionMethods { get; set; } = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 
+		/// <inheritdoc />
 		public bool PreAuthenticate { get; set; } = true;
 
+		/// <inheritdoc />
 		public int MaxAutomaticRedirections { get; set; } = 50;
 
+		/// <inheritdoc />
 		public long MaxRequestContentBufferSize { get; set; } = 2*Gb - 1;
 
+		/// <inheritdoc />
 		public long MaxResponseContentBufferSize { get; set; } = 2*Gb - 1;
 
+		/// <inheritdoc />
 		public int ReadWriteTimeout { get; set; } = 300000;
 
+		/// <inheritdoc />
 		public bool AllowPipelining { get; set; } = true;
 
+		/// <inheritdoc />
 		public AuthenticationLevel AuthenticationLevel { get; set; } = AuthenticationLevel.MutualAuthRequested;
 
+		/// <inheritdoc />
 		public TimeSpan ContinueTimeout { get; set; } = TimeSpan.FromMilliseconds(350);
 
+		/// <inheritdoc />
 		public TokenImpersonationLevel ImpersonationLevel { get; set; } = TokenImpersonationLevel.Delegation;
 
+		/// <inheritdoc />
 		public int MaxResponseHeadersLength { get; set; } = 256;
 
+		/// <inheritdoc />
 		public string DefaultUserAgent
 		{
 			get
@@ -115,9 +139,11 @@ namespace Dapplo.HttpExtensions.Support
 		}
 
 #if !_PCL_
+		/// <inheritdoc />
 		public RequestCacheLevel RequestCacheLevel { get; set; } = RequestCacheLevel.Default;
 #endif
 
+		/// <inheritdoc />
 		public bool Expect100Continue { get; set; } = false;
 	}
 }

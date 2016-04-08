@@ -53,10 +53,15 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	public class FormUriEncodedContentConverter : IHttpContentConverter
 	{
 		private static readonly LogSource Log = new LogSource();
+		/// <summary>
+		/// Singleton instance for reuse
+		/// </summary>
 		public static readonly FormUriEncodedContentConverter Instance = new FormUriEncodedContentConverter();
 
+		/// <inheritdoc />
 		public int Order => 0;
 
+		/// <inheritdoc />
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent)
 		{
 			// Check if the return-type can be assigned
@@ -67,6 +72,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			return httpContent.GetContentType() == MediaTypes.WwwFormUrlEncoded.EnumValueOf();
 		}
 
+		/// <inheritdoc />
 		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken token = default(CancellationToken))
 		{
 			if (resultType == null)
@@ -89,11 +95,13 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			return UriParseExtensions.QueryStringToKeyValuePairs(formUriEncodedString);
 		}
 
+		/// <inheritdoc />
 		public bool CanConvertToHttpContent(Type typeToConvert, object content)
 		{
 			return typeof (IEnumerable<KeyValuePair<string, string>>).IsAssignableFrom(typeToConvert);
 		}
 
+		/// <inheritdoc />
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
 		{
 			var nameValueCollection = content as IEnumerable<KeyValuePair<string, string>>;

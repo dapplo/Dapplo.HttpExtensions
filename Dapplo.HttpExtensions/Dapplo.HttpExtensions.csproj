@@ -24,6 +24,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <DocumentationFile>bin\Debug\Dapplo.HttpExtensions.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,14 +34,15 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <DocumentationFile>bin\Release\Dapplo.HttpExtensions.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Dapplo.LogFacade, Version=0.2.22.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dapplo.LogFacade.0.2.22\lib\net45\Dapplo.LogFacade.dll</HintPath>
+    <Reference Include="Dapplo.LogFacade, Version=0.2.23.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapplo.LogFacade.0.2.23\lib\net45\Dapplo.LogFacade.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Dapplo.Utils, Version=0.1.10.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dapplo.Utils.0.1.10\lib\net45\Dapplo.Utils.dll</HintPath>
+    <Reference Include="Dapplo.Utils, Version=0.1.11.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapplo.Utils.0.1.11\lib\net45\Dapplo.Utils.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PresentationCore" />

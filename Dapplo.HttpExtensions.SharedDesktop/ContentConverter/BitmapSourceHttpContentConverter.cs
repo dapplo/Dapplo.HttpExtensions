@@ -45,6 +45,9 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	{
 		private static readonly IList<string> SupportedContentTypes = new List<string>();
 		private static readonly LogSource Log = new LogSource();
+		/// <summary>
+		/// "singleton" Instance for reusing
+		/// </summary>
 		public static readonly BitmapSourceHttpContentConverter Instance = new BitmapSourceHttpContentConverter();
 
 		static BitmapSourceHttpContentConverter()
@@ -56,10 +59,17 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			SupportedContentTypes.Add(MediaTypes.Tiff.EnumValueOf());
 		}
 
+		/// <summary>
+		/// Format which is used to write the image to a stream
+		/// </summary>
 		public ImageFormat Format { get; set; } = ImageFormat.Png;
 
+		/// <summary>
+		/// Quality of the image, currently only used for Jpeg
+		/// </summary>
 		public int Quality { get; set; } = 80;
 
+		/// <inheritdoc />
 		public int Order => 0;
 
 		/// <summary>
@@ -78,6 +88,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			return !httpBehaviour.ValidateResponseContentType || SupportedContentTypes.Contains(httpContent.GetContentType());
 		}
 
+		/// <inheritdoc />
 		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken token = default(CancellationToken))
 		{
 			if (!CanConvertFromHttpContent(resultType, httpContent))
@@ -99,11 +110,13 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			}
 		}
 
+		/// <inheritdoc />
 		public bool CanConvertToHttpContent(Type typeToConvert, object content)
 		{
 			return typeof (BitmapSource).IsAssignableFrom(typeToConvert) && content != null;
 		}
 
+		/// <inheritdoc />
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
 		{
 			if (CanConvertToHttpContent(typeToConvert, content))
@@ -133,6 +146,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			return null;
 		}
 
+		/// <inheritdoc />
 		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage)
 		{
 			if (resultType == null)
@@ -156,6 +170,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			Log.Debug().WriteLine("Modified the header(s) of the HttpRequestMessage: Accept: {0}", httpRequestMessage.Headers.Accept);
 		}
 
+		/// <inheritdoc />
 		private BitmapEncoder CreateEncoder()
 		{
 			if (Format.Guid == ImageFormat.Bmp.Guid)

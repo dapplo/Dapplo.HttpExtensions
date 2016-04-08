@@ -52,7 +52,7 @@ namespace Dapplo.HttpExtensions.Desktop
 		private void InitializeComponent()
 		{
 			this._addressTextBox = new System.Windows.Forms.TextBox();
-			this._browser = new ExtendedWebBrowserForms();
+			this._browser = new ExtendedWebBrowserForm();
 			this.SuspendLayout();
 			// 
 			// _addressTextBox
@@ -93,6 +93,6 @@ namespace Dapplo.HttpExtensions.Desktop
 		#endregion
 
 		private System.Windows.Forms.TextBox _addressTextBox;
-		private ExtendedWebBrowserForms _browser;
+		private ExtendedWebBrowserForm _browser;
 	}
 }

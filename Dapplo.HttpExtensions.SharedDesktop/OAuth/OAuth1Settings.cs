@@ -33,6 +33,9 @@ namespace Dapplo.HttpExtensions.OAuth
 	/// </summary>
 	public class OAuth1Settings : BaseOAuthSettings
 	{
+		/// <summary>
+		/// The HttpMethod which is used for getting the access token
+		/// </summary>
 		public HttpMethod AccessTokenMethod { get; set; } = HttpMethod.Get;
 
 		/// <summary>
@@ -74,6 +77,9 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// </summary>
 		public IOAuth1Token Token { get; set; } = new OAuth1TokenInformation();
 
+		/// <summary>
+		/// The HttpMethod which is used for getting the token
+		/// </summary>
 		public HttpMethod TokenMethod { get; set; } = HttpMethod.Post;
 	}
 }

@@ -48,15 +48,21 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	public class StreamHttpContentConverter : IHttpContentConverter
 	{
 		private static readonly LogSource Log = new LogSource();
+		/// <summary>
+		/// Singleton instance for reuse
+		/// </summary>
 		public static readonly StreamHttpContentConverter Instance = new StreamHttpContentConverter();
 
+		/// <inheritdoc />
 		public int Order => 0;
 
+		/// <inheritdoc />
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent)
 		{
 			return typeToConvertTo != typeof (object) && typeToConvertTo.IsAssignableFrom(typeof (MemoryStream));
 		}
 
+		/// <inheritdoc />
 		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken token = default(CancellationToken))
 		{
 			if (!CanConvertFromHttpContent(resultType, httpContent))
@@ -76,11 +82,13 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			}
 		}
 
+		/// <inheritdoc />
 		public bool CanConvertToHttpContent(Type typeToConvert, object content)
 		{
 			return typeof (Stream).IsAssignableFrom(typeToConvert);
 		}
 
+		/// <inheritdoc />
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
 		{
 			var httpBehaviour = HttpBehaviour.Current;

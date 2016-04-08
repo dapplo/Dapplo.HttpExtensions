@@ -16,7 +16,7 @@
 // <author>Nathan Totten (ntotten.com), Jim Zimmerman (jimzimmerman.com) and Prabir Shrestha (prabir.me)</author>
 // <website>https://github.com/facebook-csharp-sdk/simple-json</website>
 //-----------------------------------------------------------------------
-
+#pragma warning disable 1591
 // VERSION: 0.38.0
 
 // NOTE: uncomment the following line to make SimpleJson class internal.

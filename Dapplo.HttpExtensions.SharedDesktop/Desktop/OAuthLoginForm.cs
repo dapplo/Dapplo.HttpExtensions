@@ -40,6 +40,13 @@ namespace Dapplo.HttpExtensions.Desktop
 		private static readonly LogSource Log = new LogSource();
 		private readonly string _callbackUrl;
 
+		/// <summary>
+		/// Constructor for an OAuth login form
+		/// </summary>
+		/// <param name="browserTitle">title of the form</param>
+		/// <param name="size">size of the form</param>
+		/// <param name="authorizationLink">Uri for the link</param>
+		/// <param name="callbackUrl">Uri for the callback</param>
 		public OAuthLoginForm(string browserTitle, Size size, Uri authorizationLink, string callbackUrl)
 		{
 			_callbackUrl = callbackUrl;
@@ -57,8 +64,14 @@ namespace Dapplo.HttpExtensions.Desktop
 			Load += OAuthLoginForm_Load;
 		}
 
+		/// <summary>
+		/// the parameters which were supplied in the uri-callback from the server are stored here
+		/// </summary>
 		public IDictionary<string, string> CallbackParameters { get; set; }
 
+		/// <summary>
+		/// Check if the dialog result was an ok
+		/// </summary>
 		public bool IsOk => DialogResult == DialogResult.OK;
 
 		private void Browser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)

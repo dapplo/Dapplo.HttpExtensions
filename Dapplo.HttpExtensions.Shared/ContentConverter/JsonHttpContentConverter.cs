@@ -43,6 +43,9 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	public class JsonHttpContentConverter : IHttpContentConverter
 	{
 		private static readonly LogSource Log = new LogSource();
+		/// <summary>
+		/// Singleton instance for reuse
+		/// </summary>
 		public static readonly JsonHttpContentConverter Instance = new JsonHttpContentConverter();
 		private static readonly IList<string> SupportedContentTypes = new List<string>();
 
@@ -62,11 +65,10 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		/// </summary>
 		public int LogThreshold { get; set; } = 256;
 
-		/// <summary>
-		///     Sort order
-		/// </summary>
+		/// <inheritdoc />
 		public int Order => int.MaxValue;
 
+		/// <inheritdoc />
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent)
 		{
 			if (!typeToConvertTo.GetTypeInfo().IsClass && !typeToConvertTo.GetTypeInfo().IsInterface)
@@ -77,6 +79,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			return !httpBehaviour.ValidateResponseContentType || SupportedContentTypes.Contains(httpContent.GetContentType());
 		}
 
+		/// <inheritdoc />
 		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken token = default(CancellationToken))
 		{
 			if (!CanConvertFromHttpContent(resultType, httpContent))
@@ -106,11 +109,13 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			return httpBehaviour.JsonSerializer.DeserializeJson(resultType == typeof (object) ? null : resultType, jsonString);
 		}
 
+		/// <inheritdoc />
 		public bool CanConvertToHttpContent(Type typeToConvert, object content)
 		{
 			return typeToConvert != typeof (string);
 		}
 
+		/// <inheritdoc />
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
 		{
 			var httpBehaviour = HttpBehaviour.Current;

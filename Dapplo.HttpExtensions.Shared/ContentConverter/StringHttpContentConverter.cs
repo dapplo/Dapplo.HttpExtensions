@@ -40,6 +40,9 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	/// </summary>
 	public class StringHttpContentConverter : IHttpContentConverter
 	{
+		/// <summary>
+		/// Singleton instance for reuse
+		/// </summary>
 		public static readonly StringHttpContentConverter Instance = new StringHttpContentConverter();
 		private static readonly LogSource Log = new LogSource();
 		private static readonly IList<string> SupportedContentTypes = new List<string>();
@@ -53,8 +56,10 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			SupportedContentTypes.Add(MediaTypes.XmlReadable.EnumValueOf());
 		}
 
+		/// <inheritdoc />
 		public int Order => int.MaxValue;
 
+		/// <inheritdoc />
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent)
 		{
 			if (typeToConvertTo != typeof (string))
@@ -66,6 +71,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			return !httpBehaviour.ValidateResponseContentType || SupportedContentTypes.Contains(httpContent.GetContentType());
 		}
 
+		/// <inheritdoc />
 		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken token = default(CancellationToken))
 		{
 			if (!CanConvertFromHttpContent(resultType, httpContent))
@@ -75,14 +81,15 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			return await httpContent.ReadAsStringAsync().ConfigureAwait(false);
 		}
 
+		/// <inheritdoc />
 		public bool CanConvertToHttpContent(Type typeToConvert, object content)
 		{
 			return typeof (string) == typeToConvert;
 		}
 
+		/// <inheritdoc />
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
 		{
-			// TODO:
 			return new StringContent(content as string);
 		}
 

@@ -43,15 +43,22 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	public class SyndicationFeedHttpContentConverter : IHttpContentConverter
 	{
 		private static readonly LogSource Log = new LogSource();
+
+		/// <summary>
+		/// Singleton instance for reusing
+		/// </summary>
 		public static readonly SyndicationFeedHttpContentConverter Instance = new SyndicationFeedHttpContentConverter();
 
+		/// <inheritdoc />
 		public int Order => 0;
 
+		/// <inheritdoc />
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent)
 		{
 			return typeToConvertTo == typeof (SyndicationFeed);
 		}
 
+		/// <inheritdoc />
 		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken token = default(CancellationToken))
 		{
 			if (!CanConvertFromHttpContent(resultType, httpContent))
@@ -69,11 +76,13 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			}
 		}
 
+		/// <inheritdoc />
 		public bool CanConvertToHttpContent(Type typeToConvert, object content)
 		{
 			return typeToConvert == typeof (SyndicationFeed);
 		}
 
+		/// <inheritdoc />
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
 		{
 			var feed = content as SyndicationFeed;

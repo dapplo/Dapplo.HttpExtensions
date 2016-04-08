@@ -43,6 +43,13 @@ namespace Dapplo.HttpExtensions.OAuth
 	{
 		private static readonly LogSource Log = new LogSource();
 
+		/// <summary>
+		/// Receive the code from an OAuth server
+		/// </summary>
+		/// <param name="authorizeMode">AuthorizeModes</param>
+		/// <param name="codeReceiverSettings">ICodeReceiverSettings</param>
+		/// <param name="cancellationToken">CancellationToken</param>
+		/// <returns>IDictionary with information</returns>
 		public async Task<IDictionary<string, string>> ReceiveCodeAsync(AuthorizeModes authorizeMode, ICodeReceiverSettings codeReceiverSettings,
 			CancellationToken cancellationToken = default(CancellationToken))
 		{

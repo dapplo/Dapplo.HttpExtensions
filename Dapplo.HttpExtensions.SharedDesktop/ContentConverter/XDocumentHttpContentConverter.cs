@@ -43,15 +43,21 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	public class XDocumentHttpContentConverter : IHttpContentConverter
 	{
 		private static readonly LogSource Log = new LogSource();
+		/// <summary>
+		/// Instance for reusing
+		/// </summary>
 		public static readonly XDocumentHttpContentConverter Instance = new XDocumentHttpContentConverter();
 
+		/// <inheritdoc />
 		public int Order => 0;
 
+		/// <inheritdoc />
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent)
 		{
 			return typeToConvertTo == typeof (XDocument);
 		}
 
+		/// <inheritdoc />
 		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken token = default(CancellationToken))
 		{
 			if (!CanConvertFromHttpContent(resultType, httpContent))
@@ -66,11 +72,13 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			}
 		}
 
+		/// <inheritdoc />
 		public bool CanConvertToHttpContent(Type typeToConvert, object content)
 		{
 			return typeToConvert == typeof (XDocument);
 		}
 
+		/// <inheritdoc />
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
 		{
 			var xDocument = content as XDocument;
@@ -88,12 +96,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			}
 		}
 
-		/// <summary>
-		///     Add Accept-Headers to the HttpRequestMessage, depending on the passt resultType.
-		///     This tries to hint the Http server what we can accept, which depends on the type of the return value
-		/// </summary>
-		/// <param name="resultType">Result type, this where to a conversion from HttpContent is made</param>
-		/// <param name="httpRequestMessage">HttpRequestMessage</param>
+		/// <inheritdoc />
 		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage)
 		{
 			if (resultType == null)

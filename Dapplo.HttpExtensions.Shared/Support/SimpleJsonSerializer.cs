@@ -32,17 +32,35 @@ namespace Dapplo.HttpExtensions.Support
 	/// </summary>
 	public class SimpleJsonSerializer : IJsonSerializer
 	{
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="targetType">Type to deserialize from a json string</param>
+		/// <param name="jsonString">json</param>
+		/// <returns>Deserialized json as targetType</returns>
 		public object DeserializeJson(Type targetType, string jsonString)
 		{
 			return SimpleJson.DeserializeObject(jsonString, targetType);
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <typeparam name="TResult">Type to deserialize from a json string</typeparam>
+		/// <param name="jsonString">json</param>
+		/// <returns>Deserialized json as TResult</returns>
 		public TResult DeserializeJson<TResult>(string jsonString) where TResult : class
 		{
 			return SimpleJson.DeserializeObject<TResult>(jsonString);
 		}
 
-		public string SerializeJson<T>(T jsonObject)
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <typeparam name="TContent">Type to serialize to json string</typeparam>
+		/// <param name="jsonObject">The actual object</param>
+		/// <returns>string with json</returns>
+		public string SerializeJson<TContent>(TContent jsonObject)
 		{
 			return SimpleJson.SerializeObject(jsonObject);
 		}

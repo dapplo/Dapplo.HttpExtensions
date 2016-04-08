@@ -46,6 +46,9 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	{
 		private static readonly LogSource Log = new LogSource();
 		private static readonly IList<string> SupportedContentTypes = new List<string>();
+		/// <summary>
+		/// Instance for reusing
+		/// </summary>
 		public static readonly BitmapHttpContentConverter Instance = new BitmapHttpContentConverter();
 
 		private int _quality;
@@ -58,7 +61,9 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			SupportedContentTypes.Add(MediaTypes.Png.EnumValueOf());
 			SupportedContentTypes.Add(MediaTypes.Tiff.EnumValueOf());
 		}
-
+		/// <summary>
+		/// Constructor
+		/// </summary>
 		public BitmapHttpContentConverter()
 		{
 			// Default quality
@@ -70,6 +75,9 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		/// </summary>
 		public IList<EncoderParameter> EncoderParameters { get; } = new List<EncoderParameter>();
 
+		/// <summary>
+		/// Specify the format used to write the image to
+		/// </summary>
 		public ImageFormat Format { get; set; } = ImageFormat.Png;
 
 		/// <summary>
@@ -91,6 +99,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			}
 		}
 
+		/// <inheritdoc />
 		public int Order => 0;
 
 		/// <summary>
@@ -109,6 +118,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			return !httpBehaviour.ValidateResponseContentType || SupportedContentTypes.Contains(httpContent.GetContentType());
 		}
 
+		/// <inheritdoc />
 		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken token = default(CancellationToken))
 		{
 			if (!CanConvertFromHttpContent(resultType, httpContent))
@@ -122,11 +132,13 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			return new Bitmap(memoryStream);
 		}
 
+		/// <inheritdoc />
 		public bool CanConvertToHttpContent(Type typeToConvert, object content)
 		{
 			return typeof (Bitmap).IsAssignableFrom(typeToConvert) && content != null;
 		}
 
+		/// <inheritdoc />
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
 		{
 			if (!CanConvertToHttpContent(typeToConvert, content)) return null;
@@ -164,6 +176,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			return httpContent;
 		}
 
+		/// <inheritdoc />
 		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage)
 		{
 			if (resultType == null)

@@ -61,24 +61,34 @@ namespace Dapplo.HttpExtensions
 			}
 		}
 
+		/// <inheritdoc />
 		public IHttpSettings HttpSettings { get; set; } = HttpExtensionsGlobals.HttpSettings;
 
+		/// <inheritdoc />
 		public IJsonSerializer JsonSerializer { get; set; } = HttpExtensionsGlobals.JsonSerializer;
 
+		/// <inheritdoc />
 		public IList<IHttpContentConverter> HttpContentConverters { get; set; } = HttpExtensionsGlobals.HttpContentConverters;
 
+		/// <inheritdoc />
 		public Func<HttpRequestMessage, HttpRequestMessage> OnHttpRequestMessageCreated { get; set; }
 
+		/// <inheritdoc />
 		public Action<HttpClient> OnHttpClientCreated { get; set; }
 
+		/// <inheritdoc />
 		public Func<HttpMessageHandler, HttpMessageHandler> OnHttpMessageHandlerCreated { get; set; }
 
+		/// <inheritdoc />
 		public Func<HttpContent, HttpContent> OnHttpContentCreated { get; set; }
 
+		/// <inheritdoc />
 		public IProgress<float> UploadProgress { get; set; }
 
+		/// <inheritdoc />
 		public bool UseProgressStreamContent { get; set; } = HttpExtensionsGlobals.UseProgressStreamContent;
 
+		/// <inheritdoc />
 		public bool ThrowOnError { get; set; } = HttpExtensionsGlobals.ThrowOnError;
 
 		/// <summary>
@@ -88,17 +98,22 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		public HttpCompletionOption HttpCompletionOption { get; set; } = HttpCompletionOption.ResponseHeadersRead;
 
+		/// <inheritdoc />
 		public bool ValidateResponseContentType { get; set; } = HttpExtensionsGlobals.ValidateResponseContentType;
 
+		/// <inheritdoc />
 		public Encoding DefaultEncoding { get; set; } = HttpExtensionsGlobals.DefaultEncoding;
 
+		/// <inheritdoc />
 		public int ReadBufferSize { get; set; } = HttpExtensionsGlobals.ReadBufferSize;
 
+		/// <inheritdoc />
 		public IChangeableHttpBehaviour Clone()
 		{
 			return (HttpBehaviour) MemberwiseClone();
 		}
 
+		/// <inheritdoc />
 		public void MakeCurrent()
 		{
 			AsyncLocalBehavior.Value = this;

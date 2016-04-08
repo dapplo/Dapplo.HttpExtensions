@@ -29,6 +29,9 @@ using System.Net.Http;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
+	/// <summary>
+	/// Implementation of the IHttpBehaviour which bases upon the HttpBehaviour and extends it with special OAuth 1 functionality
+	/// </summary>
 	public class OAuth1HttpBehaviour : HttpBehaviour
 	{
 		/// <summary>
@@ -41,6 +44,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// </summary>
 		public Action<IDictionary<string, string>> OnAccessToken { get; set; }
 
+		/// <inheritdoc />
 		public new OAuth1HttpBehaviour Clone()
 		{
 			return (OAuth1HttpBehaviour) MemberwiseClone();

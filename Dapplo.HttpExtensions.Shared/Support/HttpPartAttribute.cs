@@ -28,22 +28,18 @@ using System;
 namespace Dapplo.HttpExtensions.Support
 {
 	/// <summary>
-	///     This attribute marks a property as "http content"
+	///     This attribute marks a property in a HttpRequestAttributed or HttpResponseAttribute class as being a part for processing
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Property)]
 	public class HttpPartAttribute : Attribute
 	{
-		public HttpPartAttribute(object part)
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="part">HttpParts</param>
+		public HttpPartAttribute(HttpParts part)
 		{
-			if (part == null)
-			{
-				throw new ArgumentNullException(nameof(part));
-			}
-			if (typeof (HttpParts) != part.GetType())
-			{
-				throw new ArgumentException(nameof(part));
-			}
-			Part = (HttpParts) part;
+			Part = part;
 		}
 
 		/// <summary>

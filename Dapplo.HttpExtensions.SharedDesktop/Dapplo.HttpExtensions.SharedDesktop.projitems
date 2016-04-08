@@ -13,7 +13,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ContentConverter\BitmapSourceHttpContentConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContentConverter\SyndicationFeedHttpContentConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContentConverter\XDocumentHttpContentConverter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Desktop\ExtendedWebBrowserForms.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)Desktop\ExtendedWebBrowserForm.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Desktop\OAuthLoginForm.cs">

@@ -119,6 +119,9 @@ namespace Dapplo.HttpExtensions
 		[DefaultValue(RequestCacheLevel.Default), Display(Description = "The cache level for the request")]
 		RequestCacheLevel RequestCacheLevel { get; set; }
 
+		/// <summary>
+		/// If true, every request is made via the configured or default proxy
+		/// </summary>
 		[DefaultValue(true), Display(Description = "If true, every request is made via the configured or default proxy"), DataMember(EmitDefaultValue = true)]
 		bool UseProxy { get; set; }
 	}

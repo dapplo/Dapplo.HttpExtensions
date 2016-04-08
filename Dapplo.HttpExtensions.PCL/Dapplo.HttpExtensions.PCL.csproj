@@ -25,6 +25,7 @@
     <DefineConstants>TRACE;DEBUG;_PCL_;SIMPLE_JSON_DATACONTRACT;SIMPLE_JSON_DYNAMIC;SIMPLE_JSON_READONLY_COLLECTIONS;NETFX_CORE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Dapplo.HttpExtensions.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,6 +34,7 @@
     <DefineConstants>TRACE;_PCL_;SIMPLE_JSON_DATACONTRACT;SIMPLE_JSON_DYNAMIC;SIMPLE_JSON_READONLY_COLLECTIONS;NETFX_CORE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Dapplo.HttpExtensions.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Factory\HttpMessageHandlerFactory.cs" />

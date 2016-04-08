@@ -43,7 +43,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)OAuth\OAuth2TokenInformation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OAuth\OAuth2TokenResponse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SimpleJson.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Support\AsyncLock.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Support\ContentItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Support\HttpResponseAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Support\HttpRequestAttribute.cs" />

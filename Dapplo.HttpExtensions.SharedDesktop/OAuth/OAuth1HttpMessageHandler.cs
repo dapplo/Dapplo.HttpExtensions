@@ -345,7 +345,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		///     Create a signature for the supplied HttpRequestMessage
 		///     And additionally a signature is added to the parameters
 		/// </summary>
-		/// <param name="httpRequestMessage">HttpRequestMessage with method & Uri</param>
+		/// <param name="httpRequestMessage">HttpRequestMessage with method and Uri</param>
 		/// <returns>HttpRequestMessage for fluent usage</returns>
 		private void Sign(HttpRequestMessage httpRequestMessage)
 		{

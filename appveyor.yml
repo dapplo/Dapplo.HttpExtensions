@@ -17,7 +17,7 @@ install:
 before_build:
   - nuget restore
 before_package:
-  - GitLink .\ -include /^Dapplo.*/
+  - GitLink .\ -ignore /^bom.*$/
   - nuget pack -Verbosity detailed "%APPVEYOR_PROJECT_NAME%.nuspec" -MSBuildVersion 14.0 -Properties id=%APPVEYOR_PROJECT_NAME%;version=%APPVEYOR_BUILD_VERSION%;author=Dapplo
 after_test: 
     - packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -filter:"+[Dapplo.Http*]* -[*Tests]* -[Dapplo.Utils*]* -[Dapplo.LogFacade*]*" -target:"packages\xunit.runner.console.2.1.0\tools\xunit.console.x86.exe" -targetargs:"Dapplo.HttpExtensions.Test\bin\release\Dapplo.HttpExtensions.Test.dll -noshadow" -output:coverage.xml

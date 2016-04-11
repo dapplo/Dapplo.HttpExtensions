@@ -105,6 +105,11 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			{
 				return jsonString;
 			}
+			// empty json should return the default of the resultType
+			if (string.IsNullOrEmpty(jsonString))
+			{
+				return resultType.Default();
+			}
 			var httpBehaviour = HttpBehaviour.Current;
 			return httpBehaviour.JsonSerializer.DeserializeJson(resultType == typeof (object) ? null : resultType, jsonString);
 		}

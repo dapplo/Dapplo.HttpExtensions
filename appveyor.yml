@@ -19,11 +19,16 @@ before_build:
 before_package:
   - GitLink .\
   - nuget pack -Verbosity detailed "%APPVEYOR_PROJECT_NAME%.nuspec" -MSBuildVersion 14.0 -Properties id=%APPVEYOR_PROJECT_NAME%;version=%APPVEYOR_BUILD_VERSION%;author=Dapplo
+after_test: 
+    -cmd: packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -filter:"+[Dapplo.Http*]* -[*Tests]* -[Dapplo.Utils*]* -[Dapplo.LogFacade*]*" -target:"packages\xunit.runner.console.2.1.0\tools\xunit.console.x86.exe" -targetargs:"Dapplo.HttpExtensions.Test\bin\release\Dapplo.HttpExtensions.Test.dll -noshadow" -output:coverage.xml
+    -cmd: packages\coveralls.io.1.3.4\tools\coveralls.net.exe --opencover coverage.xml
 environment:
   github_username:
     secure: dGUm8ikFV7zt04Snv/YfNA==
   github_token:
     secure: eBQPtXg53XgcvdcVY3wQAw6kkwNh+QhcsTDwzyQLLh6IOPyiePEaEhJR0D2YBjAj
+  COVERALLS_REPO_TOKEN:
+    secure: sVulFO20DgFcIIQPU926SJqzLWqv4EozRmXYa3MuSDz3fyFXie9wkptVMM5oz3nC
 build:
   project: Dapplo.HttpExtensions.sln
   publish_nuget: true

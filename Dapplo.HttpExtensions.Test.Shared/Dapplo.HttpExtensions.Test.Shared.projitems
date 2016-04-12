@@ -6,11 +6,12 @@
     <SharedGUID>ab77bc8b-1fa5-4036-8f21-ac6c8ba15f69</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>Dapplo.HttpExtensions.Test.Shared</Import_RootNamespace>
+    <Import_RootNamespace>Dapplo.HttpExtensions.Tests.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)GithubTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpPartsPostTest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logger\XUnitLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OAuth\OAuth2Tests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OAuth\OAuthTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Support\UriHttpListenerExtensionsTests.cs" />
@@ -21,6 +22,5 @@
     <Compile Include="$(MSBuildThisFileDirectory)UriActionExtensionsTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UriModifyExtensionsTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UriParseExtensionsTests.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)XUnitLogger.cs" />
   </ItemGroup>
 </Project>

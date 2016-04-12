@@ -25,10 +25,11 @@ using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Listener;
 using Xunit;
 using Xunit.Abstractions;
+using Dapplo.HttpExtensions.Tests.Logger;
 
 #endregion
 
-namespace Dapplo.HttpExtensions.Test.Support
+namespace Dapplo.HttpExtensions.Tests.Support
 {
 	public class UriHttpListenerExtensionsTests
 	{

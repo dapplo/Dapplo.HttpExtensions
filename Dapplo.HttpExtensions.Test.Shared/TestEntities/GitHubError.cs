@@ -25,7 +25,7 @@ using System.Runtime.Serialization;
 
 #endregion
 
-namespace Dapplo.HttpExtensions.Test.TestEntities
+namespace Dapplo.HttpExtensions.Tests.TestEntities
 {
 	/// <summary>
 	///     Container for errors from GitHub

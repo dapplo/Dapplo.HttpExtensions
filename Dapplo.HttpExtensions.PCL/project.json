@@ -5,8 +5,8 @@
     "dnxcore50.app": {}
   },
   "dependencies": {
-    "Dapplo.LogFacade": "0.2.23",
-    "Dapplo.Utils": "0.1.12",
+    "Dapplo.LogFacade": "0.2.30",
+    "Dapplo.Utils": "0.1.17",
     "Microsoft.NETCore": "5.0.0",
     "Microsoft.NETCore.Portable.Compatibility": "1.0.0",
     "System.ComponentModel": "4.0.0",

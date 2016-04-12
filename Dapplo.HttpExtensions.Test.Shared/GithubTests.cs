@@ -25,14 +25,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapplo.HttpExtensions.Test.TestEntities;
+using Dapplo.HttpExtensions.Tests.TestEntities;
 using Dapplo.LogFacade;
 using Xunit;
 using Xunit.Abstractions;
+using Dapplo.HttpExtensions.Tests.Logger;
 
 #endregion
 
-namespace Dapplo.HttpExtensions.Test
+namespace Dapplo.HttpExtensions.Tests
 {
 	/// <summary>
 	///     Summary description for GithubTests

@@ -24,11 +24,11 @@
 using System;
 using System.Drawing;
 using System.Threading.Tasks;
-using Dapplo.HttpExtensions.Test.TestEntities;
+using Dapplo.HttpExtensions.Tests.TestEntities;
 
 #endregion
 
-namespace Dapplo.HttpExtensions.Test
+namespace Dapplo.HttpExtensions.Tests
 {
 	/// <summary>
 	///     Should write some tests which use http://requestb.in/

@@ -27,7 +27,7 @@ using Dapplo.HttpExtensions.Support;
 
 #endregion
 
-namespace Dapplo.HttpExtensions.Test.TestEntities
+namespace Dapplo.HttpExtensions.Tests.TestEntities
 {
 	/// <summary>
 	///     Example class wich is posted & filled automatically from the response information

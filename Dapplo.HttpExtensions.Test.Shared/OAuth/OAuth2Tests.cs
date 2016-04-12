@@ -28,10 +28,11 @@ using Dapplo.HttpExtensions.OAuth;
 using Dapplo.LogFacade;
 using Xunit;
 using Xunit.Abstractions;
+using Dapplo.HttpExtensions.Tests.Logger;
 
 #endregion
 
-namespace Dapplo.HttpExtensions.Test.OAuth
+namespace Dapplo.HttpExtensions.Tests.OAuth
 {
 	/// <summary>
 	///     This test is more an integration test, SHOULD NOT RUN on a headless server, as it opens a browser where a user

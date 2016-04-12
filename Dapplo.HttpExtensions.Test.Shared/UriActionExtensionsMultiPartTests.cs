@@ -27,10 +27,11 @@ using System.Threading.Tasks;
 using Dapplo.LogFacade;
 using Xunit;
 using Xunit.Abstractions;
+using Dapplo.HttpExtensions.Tests.Logger;
 
 #endregion
 
-namespace Dapplo.HttpExtensions.Test
+namespace Dapplo.HttpExtensions.Tests
 {
 	/// <summary>
 	///     Should write some tests which use http://httpbin.org/

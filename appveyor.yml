@@ -21,7 +21,7 @@ before_package:
   - GitLink .\
   - nuget pack -Verbosity detailed "%APPVEYOR_PROJECT_NAME%.nuspec" -MSBuildVersion 14.0 -Properties id=%APPVEYOR_PROJECT_NAME%;version=%APPVEYOR_BUILD_VERSION%;author=Dapplo
 after_test: 
-    - packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -filter:"+[%APPVEYOR_PROJECT_NAME%]* -[%APPVEYOR_PROJECT_NAME%]*SimpleJson*" -target:"packages\xunit.runner.console.2.1.0\tools\xunit.console.x86.exe" -targetargs:"%APPVEYOR_PROJECT_NAME%.Tests\bin\release\%APPVEYOR_PROJECT_NAME%.Tests.dll -noshadow" -output:coverage.xml
+    - packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -filter:"+[%APPVEYOR_PROJECT_NAME%]* -[%APPVEYOR_PROJECT_NAME%]*SimpleJson" -target:"packages\xunit.runner.console.2.1.0\tools\xunit.console.exe" -targetargs:"%APPVEYOR_PROJECT_NAME%.Tests\bin\release\%APPVEYOR_PROJECT_NAME%.Tests.dll -noshadow" -output:coverage.xml
     - packages\coveralls.io.1.3.4\tools\coveralls.net.exe --opencover coverage.xml
 environment:
   github_username:

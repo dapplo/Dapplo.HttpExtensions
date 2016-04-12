@@ -91,7 +91,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <Import Project="..\Dapplo.HttpExtensions.Test.Shared\Dapplo.HttpExtensions.Test.Shared.projitems" Label="Shared" />
+  <Import Project="..\Dapplo.HttpExtensions.Tests.Shared\Dapplo.HttpExtensions.Tests.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

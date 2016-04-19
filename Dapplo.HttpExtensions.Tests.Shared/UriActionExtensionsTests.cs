@@ -128,5 +128,25 @@ namespace Dapplo.HttpExtensions.Tests
 			Assert.True(result.ContainsKey("user-agent"));
 			Assert.Equal(HttpExtensionsGlobals.HttpSettings.DefaultUserAgent, result["user-agent"]);
 		}
+
+		/// <summary>
+		///     Test delete
+		/// </summary>
+		[Fact]
+		public async Task TestDelete()
+		{
+			var result = await new Uri("https://httpbin.org/delete").DeleteAsync<dynamic>();
+			Assert.NotNull(result);
+		}
+
+		/// <summary>
+		///     Test delete
+		/// </summary>
+		[Fact]
+		public async Task TestPut()
+		{
+			var result = await new Uri("https://httpbin.org/put").PutAsync<dynamic>(null);
+			Assert.NotNull(result);
+		}
 	}
 }

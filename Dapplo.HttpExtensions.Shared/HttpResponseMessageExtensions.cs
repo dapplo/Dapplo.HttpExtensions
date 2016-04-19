@@ -70,11 +70,13 @@ namespace Dapplo.HttpExtensions
 				var properties = resultType.GetProperties().Where(x => x.GetCustomAttribute<HttpPartAttribute>() != null).ToList();
 
 				PropertyInfo targetPropertyInfo;
+
 				// Headers
 				if (properties.TryFindTarget(HttpParts.ResponseHeaders, out targetPropertyInfo))
 				{
 					targetPropertyInfo.SetValue(instance, httpResponseMessage.Headers);
 				}
+
 				// StatusCode
 				if (properties.TryFindTarget(HttpParts.ResponseStatuscode, out targetPropertyInfo))
 				{
@@ -85,6 +87,7 @@ namespace Dapplo.HttpExtensions
 					? HttpParts.ResponseContent
 					: HttpParts.ResponseErrorContent;
 				var contentSet = false;
+
 				// Try to find the target for the error response
 				if (properties.TryFindTarget(responsePart, out targetPropertyInfo))
 				{
@@ -93,7 +96,8 @@ namespace Dapplo.HttpExtensions
 					var httpContent = httpResponseMessage.Content;
 
 					// Convert the HttpContent to the value type 
-					var convertedContent = await httpContent.GetAsAsync(targetPropertyInfo.PropertyType, token).ConfigureAwait(false);
+					var convertedContent = await httpContent.GetAsAsync(targetPropertyInfo.PropertyType, httpResponseMessage.StatusCode, token).ConfigureAwait(false);
+
 					// If we get null, we throw an error if the
 					if (convertedContent == null)
 					{
@@ -103,7 +107,7 @@ namespace Dapplo.HttpExtensions
 						Log.Error().WriteLine(message);
 						throw new NotSupportedException(message);
 					}
-					if (targetPropertyInfo.PropertyType.IsAssignableFrom(convertedContent.GetType())) {
+					if (targetPropertyInfo.PropertyType.IsInstanceOfType(convertedContent)) {
 						// Now set the value
 						targetPropertyInfo.SetValue(instance, convertedContent);
 					}
@@ -122,7 +126,7 @@ namespace Dapplo.HttpExtensions
 			if (httpResponseMessage.IsSuccessStatusCode)
 			{
 				var httpContent = httpResponseMessage.Content;
-				var result = await httpContent.GetAsAsync<TResult>(token).ConfigureAwait(false);
+				var result = await httpContent.GetAsAsync<TResult>(httpResponseMessage.StatusCode, token).ConfigureAwait(false);
 				// Make sure the httpContent is only disposed when it's not the return type
 				if (!typeof (HttpContent).IsAssignableFrom(typeof (TResult)))
 				{

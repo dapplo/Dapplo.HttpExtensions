@@ -22,6 +22,7 @@
 #region using
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -53,7 +54,6 @@ namespace Dapplo.HttpExtensions.Tests
 		/// <summary>
 		///     Test getting the uri as Bitmap
 		/// </summary>
-		/// <returns></returns>
 		[Fact]
 		public async Task TestGetAsAsyncBitmap()
 		{
@@ -66,7 +66,6 @@ namespace Dapplo.HttpExtensions.Tests
 		/// <summary>
 		///     Test getting the Uri as BitmapSource
 		/// </summary>
-		/// <returns></returns>
 		[Fact]
 		public async Task TestGetAsAsyncBitmapSource()
 		{
@@ -79,8 +78,6 @@ namespace Dapplo.HttpExtensions.Tests
 		/// <summary>
 		///     Test getting the Uri as MemoryStream
 		/// </summary>
-		/// <returns></returns>
-		[Fact]
 		public async Task TestGetAsAsyncMemoryStream()
 		{
 			var stream = await _bitmapUri.GetAsAsync<MemoryStream>();
@@ -91,7 +88,6 @@ namespace Dapplo.HttpExtensions.Tests
 		/// <summary>
 		///     Test getting the uri as Feed
 		/// </summary>
-		/// <returns></returns>
 		[Fact]
 		public async Task TestGetAsAsyncSyndicationFeed()
 		{
@@ -101,15 +97,36 @@ namespace Dapplo.HttpExtensions.Tests
 		}
 
 		/// <summary>
-		///     Test getting the uri as Feed
+		///     Test getting the uri as an XML
 		/// </summary>
-		/// <returns></returns>
 		[Fact]
 		public async Task TestGetAsAsyncXDocument()
 		{
 			var xDocument = await new Uri("http://httpbin.org/xml").GetAsAsync<XDocument>();
 			Assert.NotNull(xDocument);
 			Assert.True(xDocument.Nodes().Any());
+		}
+
+		/// <summary>
+		///     Test retrieval when a 204 (no content) is returned
+		/// </summary>
+		[Fact]
+		public async Task TestGetAsAsync204()
+		{
+			var result = await new Uri("https://httpbin.org/status/204").GetAsAsync<string>();
+			Assert.Null(result);
+		}
+
+		/// <summary>
+		///     Test user-agent
+		/// </summary>
+		[Fact]
+		public async Task TestUserAgent()
+		{
+			var result = await new Uri("https://httpbin.org/user-agent").GetAsAsync<IDictionary<string, string>>();
+			Assert.NotNull(result);
+			Assert.True(result.ContainsKey("user-agent"));
+			Assert.Equal(HttpExtensionsGlobals.HttpSettings.DefaultUserAgent, result["user-agent"]);
 		}
 	}
 }

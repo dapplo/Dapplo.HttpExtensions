@@ -22,47 +22,37 @@
 #region using
 
 using System;
-using System.Drawing;
 using System.Threading.Tasks;
-using Dapplo.HttpExtensions.Tests.Logger;
-using Dapplo.HttpExtensions.Tests.TestEntities;
+using Dapplo.HttpExtensions.Factory;
 using Dapplo.LogFacade;
 using Xunit;
 using Xunit.Abstractions;
+using Dapplo.HttpExtensions.Tests.Logger;
 
 #endregion
 
 namespace Dapplo.HttpExtensions.Tests
 {
 	/// <summary>
-	/// Test posting parts
+	///     Testing HttpRequestMessageExtensions
 	/// </summary>
-	public class HttpPartsPostTest
+	public class HttpRequestMessageExtensionsTests
 	{
-		private static readonly Uri RequestBinUri = new Uri("http://httpbin.org");
 
-		public HttpPartsPostTest(ITestOutputHelper testOutputHelper)
+		public HttpRequestMessageExtensionsTests(ITestOutputHelper testOutputHelper)
 		{
 			XUnitLogger.RegisterLogger(testOutputHelper, LogLevel.Verbose);
 		}
 
 		/// <summary>
-		/// Test posting
+		///     Test getting the uri as Bitmap
 		/// </summary>
 		[Fact]
-		public async Task TestPost()
+		public async Task TestSendAsync()
 		{
-			var testUri = RequestBinUri.AppendSegments("post");
-
-			var testObject = new MyMultiPartRequest
-			{
-				BitmapContentName = "MyBitmapContent",
-				BitmapFileName = "MyBitmapFilename",
-				OurBitmap = new Bitmap(10, 10),
-				JsonInformation = new GitHubError {DocumentationUrl = "http://test.de", Message = "Hello"}
-			};
-			testObject.Headers.Add("Name", "Dapplo");
-			var result = await testUri.PostAsync<dynamic>(testObject);
+			var testUri = new Uri("http://httpbin.org/xml");
+			var httpRequestMessage = HttpRequestMessageFactory.CreateGet<string>(testUri);
+			var result = await httpRequestMessage.SendAsync<string>();
 			Assert.NotNull(result);
 		}
 	}

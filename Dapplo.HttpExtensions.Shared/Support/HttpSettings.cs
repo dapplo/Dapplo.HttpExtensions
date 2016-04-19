@@ -131,7 +131,7 @@ namespace Dapplo.HttpExtensions.Support
 
 					var clientAssemblyName = clientAssembly.GetName();
 					userAgentBuilder.Append($"{clientAssemblyName.Name}/{clientAssemblyName.Version} ");
-					_userAgent = userAgentBuilder.ToString();
+					_userAgent = userAgentBuilder.ToString().Trim();
 				}
 				return _userAgent;
 			}

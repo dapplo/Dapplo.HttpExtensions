@@ -134,6 +134,7 @@ namespace Dapplo.HttpExtensions.Factory
 		///     Create a HttpRequestMessage for the GET method
 		/// </summary>
 		/// <param name="requestUri">the target uri for this message</param>
+		/// <typeparam name="TResponse">type which is used for the accept headers</typeparam>
 		/// <returns>HttpRequestMessage</returns>
 		public static HttpRequestMessage CreateGet<TResponse>(Uri requestUri)
 			where TResponse : class

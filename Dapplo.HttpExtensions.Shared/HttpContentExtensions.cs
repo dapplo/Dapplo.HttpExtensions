@@ -25,6 +25,7 @@
 
 using System;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
@@ -58,11 +59,12 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <typeparam name="TResult">The Type to read into</typeparam>
 		/// <param name="httpContent">HttpContent</param>
+		/// <param name="httpStatusCode">HttpStatusCode</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>the deserialized object of type T</returns>
-		public static async Task<TResult> GetAsAsync<TResult>(this HttpContent httpContent, CancellationToken token = default(CancellationToken)) where TResult : class
+		public static async Task<TResult> GetAsAsync<TResult>(this HttpContent httpContent, HttpStatusCode httpStatusCode, CancellationToken token = default(CancellationToken)) where TResult : class
 		{
-			return (TResult) await httpContent.GetAsAsync(typeof (TResult), token).ConfigureAwait(false);
+			return (TResult) await httpContent.GetAsAsync(typeof (TResult), httpStatusCode, token).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -72,14 +74,19 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="httpContent">HttpContent</param>
 		/// <param name="resultType">The Type to read into</param>
+		/// <param name="httpStatusCode">HttpStatusCode</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>the deserialized object of type T</returns>
-		public static async Task<object> GetAsAsync(this HttpContent httpContent, Type resultType, CancellationToken token = default(CancellationToken))
+		public static async Task<object> GetAsAsync(this HttpContent httpContent, Type resultType, HttpStatusCode httpStatusCode, CancellationToken token = default(CancellationToken))
 		{
 			// Quick exit when the requested type is from HttpContent
 			if (typeof (HttpContent).IsAssignableFrom(resultType))
 			{
 				return httpContent;
+			}
+			if (httpStatusCode == HttpStatusCode.NoContent)
+			{
+				return resultType.Default();
 			}
 			var httpBehaviour = HttpBehaviour.Current;
 			var converter = httpBehaviour.HttpContentConverters.OrderBy(x => x.Order).FirstOrDefault(x => x.CanConvertFromHttpContent(resultType, httpContent));

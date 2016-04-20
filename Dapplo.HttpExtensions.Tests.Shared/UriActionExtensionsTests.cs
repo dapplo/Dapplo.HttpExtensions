@@ -152,6 +152,15 @@ namespace Dapplo.HttpExtensions.Tests
 		}
 
 		/// <summary>
+		///     Test POST
+		/// </summary>
+		[Fact]
+		public async Task TestPost()
+		{
+			await new Uri("https://httpbin.org/put").PostAsync(null);
+		}
+
+		/// <summary>
 		///     Test HEAD
 		/// </summary>
 		[Fact]
@@ -159,6 +168,15 @@ namespace Dapplo.HttpExtensions.Tests
 		{
 			var result = await new Uri("https://httpbin.org").HeadAsync();
 			Assert.Contains("text/html", result.ContentType.MediaType);
+		}
+
+		/// <summary>
+		///     Test LastModified
+		/// </summary>
+		[Fact]
+		public async Task TestLastModified()
+		{
+			await new Uri("http://nu.nl").LastModifiedAsync();
 		}
 
 		/// <summary>

@@ -35,6 +35,7 @@ using Xunit;
 using Xunit.Abstractions;
 using Dapplo.HttpExtensions.Tests.Logger;
 using System.Net.Http;
+using Dapplo.HttpExtensions.Support;
 
 #endregion
 
@@ -167,6 +168,40 @@ namespace Dapplo.HttpExtensions.Tests
 		public async Task TestHandleErrorAsync()
 		{
 			await Assert.ThrowsAsync<HttpRequestException>(async () =>  await new Uri("https://httpbin.orgf").HeadAsync());
+		}
+
+		/// <summary>
+		///     Test basic authentication
+		/// </summary>
+		[Fact]
+		public async Task TestBasicAuthAsync()
+		{
+			await new Uri("https://usern:passw@httpbin.org/basic-auth/usern/passw").GetAsAsync<string>();
+		}
+
+		/// <summary>
+		///     Test redirecting
+		/// </summary>
+		[Fact]
+		public async Task TestRedirectAndFollow()
+		{
+			var result = await new Uri("https://httpbin.org/redirect/5").GetAsAsync<string>();
+			Assert.NotNull(result);
+		}
+
+		/// <summary>
+		///     Test NOT redirecting, also testing the MakeCurrent of the behavior
+		/// </summary>
+		[Fact]
+		public async Task TestRedirectAndNotFollow()
+		{
+			var behavior = new HttpBehaviour
+			{
+				HttpSettings = new HttpSettings()
+			};
+			behavior.HttpSettings.AllowAutoRedirect = false;
+			behavior.MakeCurrent();
+			await Assert.ThrowsAsync<HttpRequestException>(async () => await new Uri("https://httpbin.org/redirect/5").GetAsAsync<string>());
 		}
 	}
 }

@@ -1564,7 +1564,7 @@ namespace Dapplo.HttpExtensions
 					var value = getter.Value(input);
 					if (emitPredicate?.ContainsKey(getter.Key) == true)
 					{
-						if (emitPredicate[getter.Key](value))
+						if (!emitPredicate[getter.Key](value))
 						{
 							continue;
 						}
@@ -1627,7 +1627,7 @@ namespace Dapplo.HttpExtensions
 						var def = propertyInfo.PropertyType.Default();
 						result[jsonKey] = (value) =>
 						{
-							return Equals(def, value);
+							return !Equals(def, value);
 						};
 					}
 				}

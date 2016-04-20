@@ -157,7 +157,7 @@ namespace Dapplo.HttpExtensions.Tests
 		[Fact]
 		public async Task TestPost()
 		{
-			await new Uri("https://httpbin.org/put").PostAsync(null);
+			await new Uri("https://httpbin.org/post").PostAsync(null);
 		}
 
 		/// <summary>

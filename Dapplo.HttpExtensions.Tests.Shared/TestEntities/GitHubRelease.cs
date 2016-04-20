@@ -34,10 +34,10 @@ namespace Dapplo.HttpExtensions.Tests.TestEntities
 	[DataContract]
 	public class GitHubRelease
 	{
-		[DataMember(Name = "html_url")]
+		[DataMember(Name = "html_url", EmitDefaultValue = false)]
 		public string HtmlUrl { get; set; }
 
-		[DataMember(Name = "prerelease")]
+		[DataMember(Name = "prerelease", EmitDefaultValue = false)]
 		public bool Prerelease { get; set; }
 
 		[DataMember(Name = "published_at")]

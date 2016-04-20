@@ -46,7 +46,7 @@
 
 // original json parsing code from http://techblog.procurios.nl/k/618/news/view/14605/14863/How-do-I-write-my-own-parser-for-JSON.html
 
-#if NETFX_CORE
+#if NETFX_CORE || DOTNET5_4
 #define SIMPLE_JSON_TYPEINFO
 #endif
 
@@ -67,6 +67,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
 using Dapplo.HttpExtensions.Reflection;
+using Dapplo.Utils.Extensions;
 
 // ReSharper disable LoopCanBeConvertedToQuery
 // ReSharper disable RedundantExplicitArrayCreation
@@ -1269,6 +1270,7 @@ namespace Dapplo.HttpExtensions
         internal IDictionary<Type, ReflectionUtils.ConstructorDelegate> ConstructorCache;
         internal IDictionary<Type, IDictionary<string, ReflectionUtils.GetDelegate>> GetCache;
         internal IDictionary<Type, IDictionary<string, KeyValuePair<Type, ReflectionUtils.SetDelegate>>> SetCache;
+		internal IDictionary<Type, IDictionary<string, Func<object, bool>>> EmitPredicateCache;
 
         internal static readonly Type[] EmptyTypes = new Type[0];
         internal static readonly Type[] ArrayConstructorParameterTypes = new Type[] { typeof(int) };
@@ -1293,6 +1295,11 @@ namespace Dapplo.HttpExtensions
         {
             return clrPropertyName;
         }
+
+		internal virtual IDictionary<string, Func<object, bool>> EmitPredicateFactory(Type type)
+		{
+			return null;
+		}
 
         internal virtual ReflectionUtils.ConstructorDelegate ContructorDelegateFactory(Type key)
         {
@@ -1549,10 +1556,21 @@ namespace Dapplo.HttpExtensions
                 return false;
             IDictionary<string, object> obj = new JsonObject();
             IDictionary<string, ReflectionUtils.GetDelegate> getters = GetCache[type];
+			var emitPredicate = EmitPredicateCache?[type];
             foreach (KeyValuePair<string, ReflectionUtils.GetDelegate> getter in getters)
             {
-                if (getter.Value != null)
-                    obj.Add(MapClrMemberNameToJsonFieldName(getter.Key), getter.Value(input));
+				if (getter.Value != null)
+				{
+					var value = getter.Value(input);
+					if (emitPredicate?.ContainsKey(getter.Key) == true)
+					{
+						if (emitPredicate[getter.Key](value))
+						{
+							continue;
+						}
+					}
+					obj.Add(MapClrMemberNameToJsonFieldName(getter.Key), value);
+				}
             }
             output = obj;
             return true;
@@ -1572,28 +1590,79 @@ namespace Dapplo.HttpExtensions
         {
             GetCache = new ReflectionUtils.ThreadSafeDictionary<Type, IDictionary<string, ReflectionUtils.GetDelegate>>(GetterValueFactory);
             SetCache = new ReflectionUtils.ThreadSafeDictionary<Type, IDictionary<string, KeyValuePair<Type, ReflectionUtils.SetDelegate>>>(SetterValueFactory);
-        }
+			EmitPredicateCache = new ReflectionUtils.ThreadSafeDictionary<Type, IDictionary<string, Func<object, bool>>>(EmitPredicateFactory);
+		}
 
-        internal override IDictionary<string, ReflectionUtils.GetDelegate> GetterValueFactory(Type type)
+		/// <summary>
+		/// Helper method to supply the name of the json key, either from the DataMemberAttribute or from the MemberInfo
+		/// </summary>
+		/// <param name="dataMemberAttribute">DataMemberAttribute</param>
+		/// <param name="memberInfo"></param>
+		/// <returns>string with the name in the Json</returns>
+		private string JsonKey(DataMemberAttribute dataMemberAttribute, MemberInfo memberInfo)
+		{
+			return string.IsNullOrEmpty(dataMemberAttribute.Name) ? memberInfo.Name : dataMemberAttribute.Name;
+		}
+
+		/// <summary>
+		/// Generate a cache with predicates which decides if the value needs to be emitted
+		/// Would have been nicer to integrate it into the getter, but this would mean more changes
+		/// </summary>
+		/// <param name="type"></param>
+		internal override IDictionary<string, Func<object, bool>> EmitPredicateFactory(Type type)
+		{
+			var result = new Dictionary<string, Func<object, bool>>();
+			DataContractAttribute dataContractAttribute = (DataContractAttribute)ReflectionUtils.GetAttribute(type, typeof(DataContractAttribute));
+			if (dataContractAttribute == null)
+				return result;
+			string jsonKey;
+			DataMemberAttribute dataMemberAttribute;
+			foreach (PropertyInfo propertyInfo in ReflectionUtils.GetProperties(type))
+			{
+				if (CanAdd(propertyInfo, out dataMemberAttribute))
+				{
+					jsonKey = JsonKey(dataMemberAttribute, propertyInfo);
+					if (dataMemberAttribute?.EmitDefaultValue == false)
+					{
+						var def = propertyInfo.PropertyType.Default();
+						result[jsonKey] = (value) =>
+						{
+							return Equals(def, value);
+						};
+					}
+				}
+			}
+			return result;
+		}
+
+		internal override IDictionary<string, ReflectionUtils.GetDelegate> GetterValueFactory(Type type)
         {
-            bool hasDataContract = ReflectionUtils.GetAttribute(type, typeof(DataContractAttribute)) != null;
-            if (!hasDataContract)
+			DataContractAttribute dataContractAttribute = (DataContractAttribute)ReflectionUtils.GetAttribute(type, typeof(DataContractAttribute));
+            if (dataContractAttribute == null)
                 return base.GetterValueFactory(type);
-            string jsonKey;
-            IDictionary<string, ReflectionUtils.GetDelegate> result = new Dictionary<string, ReflectionUtils.GetDelegate>();
+
+			string jsonKey;
+			DataMemberAttribute dataMemberAttribute;
+			IDictionary<string, ReflectionUtils.GetDelegate> result = new Dictionary<string, ReflectionUtils.GetDelegate>();
             foreach (PropertyInfo propertyInfo in ReflectionUtils.GetProperties(type))
             {
                 if (propertyInfo.CanRead)
                 {
                     MethodInfo getMethod = ReflectionUtils.GetGetterMethodInfo(propertyInfo);
-                    if (!getMethod.IsStatic && CanAdd(propertyInfo, out jsonKey))
-                        result[jsonKey] = ReflectionUtils.GetGetMethod(propertyInfo);
+					if (!getMethod.IsStatic && CanAdd(propertyInfo, out dataMemberAttribute))
+					{
+						jsonKey = string.IsNullOrEmpty(dataMemberAttribute.Name) ? propertyInfo.Name : dataMemberAttribute.Name;
+						result[jsonKey] = ReflectionUtils.GetGetMethod(propertyInfo);
+					}
                 }
             }
             foreach (FieldInfo fieldInfo in ReflectionUtils.GetFields(type))
             {
-                if (!fieldInfo.IsStatic && CanAdd(fieldInfo, out jsonKey))
-                    result[jsonKey] = ReflectionUtils.GetGetMethod(fieldInfo);
+				if (!fieldInfo.IsStatic && CanAdd(fieldInfo, out dataMemberAttribute))
+				{
+					jsonKey = string.IsNullOrEmpty(dataMemberAttribute.Name) ? fieldInfo.Name : dataMemberAttribute.Name;
+					result[jsonKey] = ReflectionUtils.GetGetMethod(fieldInfo);
+				}
             }
             return result;
         }
@@ -1604,34 +1673,42 @@ namespace Dapplo.HttpExtensions
             if (!hasDataContract)
                 return base.SetterValueFactory(type);
             string jsonKey;
+			DataMemberAttribute dataMemberAttribute;
             IDictionary<string, KeyValuePair<Type, ReflectionUtils.SetDelegate>> result = new Dictionary<string, KeyValuePair<Type, ReflectionUtils.SetDelegate>>();
             foreach (PropertyInfo propertyInfo in ReflectionUtils.GetProperties(type))
             {
                 if (propertyInfo.CanWrite)
                 {
                     MethodInfo setMethod = ReflectionUtils.GetSetterMethodInfo(propertyInfo);
-                    if (!setMethod.IsStatic && CanAdd(propertyInfo, out jsonKey))
-                        result[jsonKey] = new KeyValuePair<Type, ReflectionUtils.SetDelegate>(propertyInfo.PropertyType, ReflectionUtils.GetSetMethod(propertyInfo));
-                }
+                    if (!setMethod.IsStatic && CanAdd(propertyInfo, out dataMemberAttribute))
+					{
+						jsonKey = string.IsNullOrEmpty(dataMemberAttribute.Name) ? propertyInfo.Name : dataMemberAttribute.Name;
+						result[jsonKey] = new KeyValuePair<Type, ReflectionUtils.SetDelegate>(propertyInfo.PropertyType, ReflectionUtils.GetSetMethod(propertyInfo));
+					}
+
+				}
             }
             foreach (FieldInfo fieldInfo in ReflectionUtils.GetFields(type))
             {
-                if (!fieldInfo.IsInitOnly && !fieldInfo.IsStatic && CanAdd(fieldInfo, out jsonKey))
-                    result[jsonKey] = new KeyValuePair<Type, ReflectionUtils.SetDelegate>(fieldInfo.FieldType, ReflectionUtils.GetSetMethod(fieldInfo));
+                if (!fieldInfo.IsInitOnly && !fieldInfo.IsStatic && CanAdd(fieldInfo, out dataMemberAttribute))
+				{
+					jsonKey = string.IsNullOrEmpty(dataMemberAttribute.Name) ? fieldInfo.Name : dataMemberAttribute.Name;
+					result[jsonKey] = new KeyValuePair<Type, ReflectionUtils.SetDelegate>(fieldInfo.FieldType, ReflectionUtils.GetSetMethod(fieldInfo));
+				}
             }
             // todo implement sorting for DATACONTRACT.
             return result;
         }
 
-        private static bool CanAdd(MemberInfo info, out string jsonKey)
+        private static bool CanAdd(MemberInfo info, out DataMemberAttribute dataMemberAttribute)
         {
-            jsonKey = null;
-            if (ReflectionUtils.GetAttribute(info, typeof(IgnoreDataMemberAttribute)) != null)
+			dataMemberAttribute = null;
+
+			if (ReflectionUtils.GetAttribute(info, typeof(IgnoreDataMemberAttribute)) != null)
                 return false;
-            DataMemberAttribute dataMemberAttribute = (DataMemberAttribute)ReflectionUtils.GetAttribute(info, typeof(DataMemberAttribute));
+            dataMemberAttribute = (DataMemberAttribute)ReflectionUtils.GetAttribute(info, typeof(DataMemberAttribute));
             if (dataMemberAttribute == null)
                 return false;
-            jsonKey = string.IsNullOrEmpty(dataMemberAttribute.Name) ? info.Name : dataMemberAttribute.Name;
             return true;
         }
     }

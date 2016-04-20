@@ -34,6 +34,7 @@ using Dapplo.LogFacade;
 using Xunit;
 using Xunit.Abstractions;
 using Dapplo.HttpExtensions.Tests.Logger;
+using System.Net.Http;
 
 #endregion
 
@@ -130,7 +131,7 @@ namespace Dapplo.HttpExtensions.Tests
 		}
 
 		/// <summary>
-		///     Test delete
+		///     Test DELETE
 		/// </summary>
 		[Fact]
 		public async Task TestDelete()
@@ -140,13 +141,32 @@ namespace Dapplo.HttpExtensions.Tests
 		}
 
 		/// <summary>
-		///     Test delete
+		///     Test PUT
 		/// </summary>
 		[Fact]
 		public async Task TestPut()
 		{
 			var result = await new Uri("https://httpbin.org/put").PutAsync<dynamic>(null);
 			Assert.NotNull(result);
+		}
+
+		/// <summary>
+		///     Test HEAD
+		/// </summary>
+		[Fact]
+		public async Task TestHead()
+		{
+			var result = await new Uri("https://httpbin.org").HeadAsync();
+			Assert.Contains("text/html", result.ContentType.MediaType);
+		}
+
+		/// <summary>
+		///     Test HandleErrorAsync
+		/// </summary>
+		[Fact]
+		public async Task TestHandleErrorAsync()
+		{
+			await Assert.ThrowsAsync<HttpRequestException>(async () =>  await new Uri("https://httpbin.orgf").HeadAsync());
 		}
 	}
 }

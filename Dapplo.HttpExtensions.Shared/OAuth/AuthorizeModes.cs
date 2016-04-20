@@ -35,6 +35,11 @@ namespace Dapplo.HttpExtensions.OAuth
 		Unknown,
 
 		/// <summary>
+		///     Used with tests
+		/// </summary>
+		TestPassThrough,
+
+		/// <summary>
 		///     Used with a redirect URL to http://localhost:port, this is supported out of the box
 		/// </summary>
 		LocalhostServer,

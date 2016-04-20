@@ -40,6 +40,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)OAuth\OAuth1TokenInformation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OAuth\OAuth1UriActions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OAuth\OutOfBoundCodeReceiver.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OAuth\PassThroughCodeReceiver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Support\DelegatingStringEncryptionTypeConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Support\DelegatingTypeConverter.cs" />
   </ItemGroup>

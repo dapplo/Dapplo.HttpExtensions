@@ -59,6 +59,10 @@ namespace Dapplo.HttpExtensions.OAuth
 				AuthorizeModes.LocalhostServer,
 				new LocalhostCodeReceiver()
 				);
+			CodeReceivers.Add(
+				AuthorizeModes.TestPassThrough,
+				new PassThroughCodeReceiver()
+				);
 #if !_PCL_
 			CodeReceivers.Add(
 				AuthorizeModes.OutOfBound,

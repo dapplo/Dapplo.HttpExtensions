@@ -42,68 +42,30 @@ using Dapplo.HttpExtensions.Tests.Logger;
 namespace Dapplo.HttpExtensions.Tests.OAuth
 {
 	/// <summary>
-	///     This test is more an integration test, SHOULD NOT RUN on a headless server, as it opens a browser where a user
-	///     should do something
+	/// This tests some of the basic oauth 1 logic, together with a server at: http://term.ie/oauth/example/
 	/// </summary>
 	public class OAuthTests
 	{
 		private static readonly LogSource Log = new LogSource();
 
-		private static readonly Uri PhotobucketApiUri = new Uri("http://api.photobucket.com");
+		private static readonly Uri OAuthTestServerUri = new Uri("http://term.ie/oauth/example/");
 		private readonly IHttpBehaviour _oAuthHttpBehaviour;
-		private string _subdomain;
-		private string _username;
 
 		public OAuthTests(ITestOutputHelper testOutputHelper)
 		{
 			XUnitLogger.RegisterLogger(testOutputHelper, LogLevel.Verbose);
 			var oAuthSettings = new OAuth1Settings
 			{
-				ClientId = "<photobucket consumer key>",
-				ClientSecret = "<photobucket consumer secret>",
-				CloudServiceName = "Photo bucket",
-				EmbeddedBrowserWidth = 1010,
-				EmbeddedBrowserHeight = 400,
-				AuthorizeMode = AuthorizeModes.EmbeddedBrowser,
-				TokenUrl = PhotobucketApiUri.AppendSegments("login", "request"),
+				ClientId = "key",
+				ClientSecret = "secret",
+				AuthorizeMode = AuthorizeModes.TestPassThrough,
+				TokenUrl = OAuthTestServerUri.AppendSegments("request_token.php"),
 				TokenMethod = HttpMethod.Post,
-				AccessTokenUrl = new Uri("http://api.photobucket.com/login/access"),
+				AccessTokenUrl = OAuthTestServerUri.AppendSegments("access_token.php"),
 				AccessTokenMethod = HttpMethod.Post,
-				AuthorizationUri = PhotobucketApiUri.AppendSegments("apilogin", "login")
-					.ExtendQuery(new Dictionary<string, string>
-					{
-						{OAuth1Parameters.Token.EnumValueOf(), "{RequestToken}"},
-						{OAuth1Parameters.Callback.EnumValueOf(), "{RedirectUrl}"}
-					}),
-				RedirectUrl = "http://getgreenshot.org",
 				CheckVerifier = false
 			};
-			var oAuthHttpBehaviour = OAuth1HttpBehaviourFactory.Create(oAuthSettings);
-			// Store the leftover values
-			oAuthHttpBehaviour.OnAccessToken = values =>
-			{
-				if (values.ContainsKey("subdomain"))
-				{
-					_subdomain = values["subdomain"];
-				}
-				if (values.ContainsKey("username"))
-				{
-					_username = values["username"];
-				}
-			};
-			// Process the leftover values
-			oAuthHttpBehaviour.BeforeSend = httpRequestMessage =>
-			{
-				if (_subdomain != null)
-				{
-					var uriBuilder = new UriBuilder(httpRequestMessage.RequestUri)
-					{
-						Host = _subdomain
-					};
-					httpRequestMessage.RequestUri = uriBuilder.Uri;
-				}
-			};
-			_oAuthHttpBehaviour = oAuthHttpBehaviour;
+			_oAuthHttpBehaviour = OAuth1HttpBehaviourFactory.Create(oAuthSettings);
 		}
 
 		[Fact]
@@ -121,60 +83,17 @@ namespace Dapplo.HttpExtensions.Tests.OAuth
 		///     This will test Oauth with a EmbeddedBrowser "code" receiver against an oauth server provided by Photo bucket
 		/// </summary>
 		/// <returns>Task</returns>
-		//[WinFormsFact]
+		[Fact]
 		public async Task TestOAuthHttpMessageHandler_Get()
 		{
-			var userInformationUri = PhotobucketApiUri.AppendSegments("user").ExtendQuery("format", "json");
+			var userInformationUri = OAuthTestServerUri.AppendSegments("echo_api.php").ExtendQuery("name", "dapplo");
 
 			// Make sure you use your special IHttpBehaviour for the OAuth requests!
 			_oAuthHttpBehaviour.MakeCurrent();
-			var response = await userInformationUri.OAuth1GetAsAsync<dynamic>();
+			var response = await userInformationUri.OAuth1GetAsAsync<string>();
 
 
-			Assert.True(response.status == "OK");
-		}
-
-		//[WinFormsFact]
-		public async Task TestOAuthHttpMessageHandler_PostImage()
-		{
-			_oAuthHttpBehaviour.MakeCurrent();
-
-			// This request is important, as the username is not available without having an access token.
-			await PhotobucketApiUri.AppendSegments("users").OAuth1GetAsAsync<XDocument>();
-
-			var uploadUri = PhotobucketApiUri.AppendSegments("album", _username, "upload");
-
-			var filename = "d.png";
-			var signedParameters = new Dictionary<string, object>
-			{
-				{"type", "image"},
-				{"title", "Dapplo logo"},
-				{"filename", filename}
-			};
-			// Add image
-			using (var fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read))
-			{
-				using (var streamContent = new StreamContent(fileStream))
-				{
-					streamContent.Headers.ContentType = new MediaTypeHeaderValue("image/png");
-					streamContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
-					{
-						Name = "\"uploadfile\"",
-						FileName = "\"" + filename + "\""
-					};
-
-					try
-					{
-						var responseString = await uploadUri.OAuth1PostAsync<string>(streamContent, signedParameters);
-						Log.Info().WriteLine(responseString);
-					}
-					catch (Exception ex)
-					{
-						Log.Error().WriteLine(ex, "Error uploading to Photobucket.");
-						throw;
-					}
-				}
-			}
+			Assert.Contains("dapplo", response);
 		}
 	}
 }

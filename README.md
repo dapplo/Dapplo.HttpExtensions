@@ -8,7 +8,7 @@ Work in progress
 - NuGet package: [![NuGet package](https://badge.fury.io/nu/Dapplo.HttpExtensions.svg)](https://badge.fury.io/nu/Dapplo.HttpExtensions)
 
 Sometimes you just want to access a service in the internet or on a local server.
-This project helps you to deal with a lot of difficult stuff like having a default proxy or even making a specify proxy possible.
+This project helps you to deal with a lot of difficult stuff, like having a default proxy or even making a specify proxy possible.
 Also it can handle Json communication, which a lot of REST based APIs use.
 
 Support for OAuth 2 is also build in, this is currently work in process but with some servers it should already be usable.
@@ -27,6 +27,14 @@ There is a test with calling a JSON Service (GitHub): [UriActionExtensionsTests.
 
 There is also an OAuth test: [OAuth/OAuthTests.TestOAuthHttpMessageHandler](https://github.com/dapplo/Dapplo.HttpExtensions/blob/master/Dapplo.HttpExtensions.Test/OAuth/OAuthTests.cs).
 This is not running during the build, as it needs "human" interaction with a browser.
+
+Some of the features:
+- Fluent API
+- Json support build in
+- OAuth 1 & 2
+- Progress support, for uploading and downloading
+- Typed access to Http content (e.g. GetAsAsync<Bitmap> )
+- Typed upload
 
 Notes:
 

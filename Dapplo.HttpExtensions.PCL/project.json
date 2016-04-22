@@ -6,7 +6,7 @@
   },
   "dependencies": {
     "Dapplo.LogFacade": "0.2.34",
-    "Dapplo.Utils": "0.1.19",
+    "Dapplo.Utils": "0.1.20",
     "Microsoft.NETCore": "5.0.0",
     "Microsoft.NETCore.Portable.Compatibility": "1.0.0",
     "System.ComponentModel": "4.0.0",

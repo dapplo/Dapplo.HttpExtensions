@@ -67,7 +67,6 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
 using Dapplo.HttpExtensions.Reflection;
-using Dapplo.Utils.Extensions;
 
 // ReSharper disable LoopCanBeConvertedToQuery
 // ReSharper disable RedundantExplicitArrayCreation
@@ -1603,6 +1602,20 @@ namespace Dapplo.HttpExtensions
 		{
 			return string.IsNullOrEmpty(dataMemberAttribute.Name) ? memberInfo.Name : dataMemberAttribute.Name;
 		}
+	
+		/// <summary>
+		/// Create a default value for a type, this usually is "null" for reference type, but for other, e.g. bool it's false or for int it's 0
+		/// </summary>
+		/// <param name="type">Type to create a default for</param>
+		/// <returns>Default for type</returns>
+		private static object Default(Type type)
+		{
+			if (type.GetTypeInfo().IsValueType)
+			{
+				return Activator.CreateInstance(type);
+			}
+			return null;
+		}
 
 		/// <summary>
 		/// Generate a cache with predicates which decides if the value needs to be emitted
@@ -1624,7 +1637,7 @@ namespace Dapplo.HttpExtensions
 					jsonKey = JsonKey(dataMemberAttribute, propertyInfo);
 					if (dataMemberAttribute?.EmitDefaultValue == false)
 					{
-						var def = propertyInfo.PropertyType.Default();
+						var def = Default(propertyInfo.PropertyType);
 						result[jsonKey] = (value) =>
 						{
 							return !Equals(def, value);

@@ -136,7 +136,7 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		///     Global value for UseProgressStream, see IHttpBehaviour
 		/// </summary>
-		public static bool UseProgressStreamContent { get; set; } = true;
+		public static bool UseProgressStream { get; set; } = false;
 
 		/// <summary>
 		///     Global validate response content-type

@@ -83,10 +83,13 @@ namespace Dapplo.HttpExtensions
 		public Func<HttpContent, HttpContent> OnHttpContentCreated { get; set; }
 
 		/// <inheritdoc />
-		public IProgress<float> UploadProgress { get; set; }
+		public Action<float> UploadProgress { get; set; }
 
 		/// <inheritdoc />
-		public bool UseProgressStreamContent { get; set; } = HttpExtensionsGlobals.UseProgressStreamContent;
+		public Action<float> DownloadProgress { get; set; }
+
+		/// <inheritdoc />
+		public bool UseProgressStream { get; set; } = HttpExtensionsGlobals.UseProgressStream;
 
 		/// <inheritdoc />
 		public bool ThrowOnError { get; set; } = HttpExtensionsGlobals.ThrowOnError;

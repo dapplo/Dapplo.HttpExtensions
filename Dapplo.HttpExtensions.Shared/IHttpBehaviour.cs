@@ -104,16 +104,24 @@ namespace Dapplo.HttpExtensions
 		bool ThrowOnError { get; }
 
 		/// <summary>
-		///     IProgress for uploading, only used when using non-string content like Bitmaps or MemoryStreams.
-		///     Also the UseProgressStreamContent needs to be true for detailed upload progress
+		///     Action which is called to notify of upload progress.
+		///     Only used when using non-string content like Bitmaps or MemoryStreams.
+		///     Also the UseProgressStream needs to be true for this upload progress
 		/// </summary>
-		IProgress<float> UploadProgress { get; }
+		Action<float> UploadProgress { get; }
+
+		/// <summary>
+		///     Action which is called to notify of download progress.
+		///     Only used when using non-string content like Bitmaps or MemoryStreams.
+		///     Also the UseProgressStream needs to be true for this download progress
+		/// </summary>
+		Action<float> DownloadProgress { get; }
 
 		/// <summary>
 		///     Whenever a post is made to upload memorystream or bitmaps, this value is used to decide:
-		///     true: ProgressStreamContent is used, instead of StreamContent
+		///     true: ProgressStream is used, instead of Stream
 		/// </summary>
-		bool UseProgressStreamContent { get; }
+		bool UseProgressStream { get; }
 
 		/// <summary>
 		///     Check if the response has the expected content-type, when servers are used that are not following specifications
@@ -210,16 +218,24 @@ namespace Dapplo.HttpExtensions
 		new bool ThrowOnError { get; set; }
 
 		/// <summary>
-		///     IProgress for uploading, only used when using non-string content like Bitmaps or MemoryStreams.
-		///     Also the UseProgressStreamContent needs to be true for detailed upload progress
+		///     Action which is called to notify of upload progress.
+		///     Only used when using non-string content like Bitmaps or MemoryStreams.
+		///     Also the UseProgressStream needs to be true for this upload progress
 		/// </summary>
-		new IProgress<float> UploadProgress { get; set; }
+		new Action<float> UploadProgress { get; }
+
+		/// <summary>
+		///     Action which is called to notify of download progress.
+		///     Only used when using non-string content like Bitmaps or MemoryStreams.
+		///     Also the UseProgressStream needs to be true for this download progress
+		/// </summary>
+		new Action<float> DownloadProgress { get; }
 
 		/// <summary>
 		///     Whenever a post is made to upload memorystream or bitmaps, this value is used to decide:
 		///     true: ProgressStreamContent is used, instead of StreamContent
 		/// </summary>
-		new bool UseProgressStreamContent { get; set; }
+		new bool UseProgressStream { get; set; }
 
 		/// <summary>
 		///     Check if the response has the expected content-type, when servers are used that are not following specifications

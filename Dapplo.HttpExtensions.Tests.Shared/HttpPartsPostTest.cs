@@ -39,6 +39,7 @@ namespace Dapplo.HttpExtensions.Tests
 	/// </summary>
 	public class HttpPartsPostTest
 	{
+		private static readonly LogSource Log = new LogSource();
 		private static readonly Uri RequestBinUri = new Uri("http://httpbin.org");
 
 		public HttpPartsPostTest(ITestOutputHelper testOutputHelper)
@@ -53,7 +54,12 @@ namespace Dapplo.HttpExtensions.Tests
 		public async Task TestPost()
 		{
 			var testUri = RequestBinUri.AppendSegments("post");
-
+			var uploadBehavior = new HttpBehaviour();
+			uploadBehavior.UseProgressStream = true;
+			uploadBehavior.UploadProgress = (progress) => {
+				Log.Info().WriteLine("Progress {0}", (int)(progress * 100));
+			};
+			uploadBehavior.MakeCurrent();
 			var testObject = new MyMultiPartRequest
 			{
 				BitmapContentName = "MyBitmapContent",

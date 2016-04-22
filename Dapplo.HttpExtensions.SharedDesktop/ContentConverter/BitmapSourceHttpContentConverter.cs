@@ -124,21 +124,25 @@ namespace Dapplo.HttpExtensions.ContentConverter
 				var bitmapSource = content as BitmapSource;
 				if (bitmapSource != null)
 				{
-					var memoryStream = new MemoryStream();
+					Stream stream = new MemoryStream();
 					var encoder = CreateEncoder();
 					encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
-					encoder.Save(memoryStream);
-					memoryStream.Seek(0, SeekOrigin.Begin);
-					HttpContent httpContent;
+					encoder.Save(stream);
+					stream.Seek(0, SeekOrigin.Begin);
+
+					// Add progress support, if this is enabled
 					var httpBehaviour = HttpBehaviour.Current;
-					if (httpBehaviour.UseProgressStreamContent)
+					if (httpBehaviour.UseProgressStream)
 					{
-						httpContent = new ProgressStreamContent(memoryStream, httpBehaviour.UploadProgress);
+						var progressStream = new ProgressStream(stream);
+						progressStream.BytesRead += (sender, eventArgs) =>
+						{
+							httpBehaviour.UploadProgress?.Invoke((float)eventArgs.StreamPosition / eventArgs.StreamLength);
+						};
+						stream = progressStream;
 					}
-					else
-					{
-						httpContent = new StreamContent(memoryStream);
-					}
+
+					var httpContent = new StreamContent(stream);
 					httpContent.Headers.Add("Content-Type", "image/" + Format.ToString().ToLowerInvariant());
 					return httpContent;
 				}

@@ -30,6 +30,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.LogFacade;
+using System.Linq;
 
 #endregion
 
@@ -71,15 +72,16 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			}
 			Log.Debug().WriteLine("Retrieving the content as MemoryStream, Content-Type: {0}", httpContent.Headers.ContentType);
 			var httpBehaviour = HttpBehaviour.Current;
-			using (var contentStream = await httpContent.ReadAsStreamAsync().ConfigureAwait(false))
+
+			var memoryStream = new MemoryStream();
+			using (var contentStream = await httpContent.GetContentStream())
 			{
-				var memoryStream = new MemoryStream();
 				await contentStream.CopyToAsync(memoryStream, httpBehaviour.ReadBufferSize, token).ConfigureAwait(false);
-				// Make sure the memory stream position is at the beginning,
-				// so the processing code can read right away.
-				memoryStream.Position = 0;
-				return memoryStream;
 			}
+			// Make sure the memory stream position is at the beginning,
+			// so the processing code can read right away.
+			memoryStream.Position = 0;
+			return memoryStream;
 		}
 
 		/// <inheritdoc />
@@ -94,16 +96,18 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			var httpBehaviour = HttpBehaviour.Current;
 
 			var stream = content as Stream;
-			HttpContent httpContent;
-			if (httpBehaviour.UseProgressStreamContent)
+
+			// Add progress support, if this is enabled
+			if (httpBehaviour.UseProgressStream)
 			{
-				httpContent = new ProgressStreamContent(stream, httpBehaviour.UploadProgress);
+				var progressStream = new ProgressStream(stream);
+				progressStream.BytesRead += (sender, eventArgs) =>
+				{
+					httpBehaviour.UploadProgress?.Invoke((float)eventArgs.StreamPosition / eventArgs.StreamLength);
+				};
+				stream = progressStream;
 			}
-			else
-			{
-				httpContent = new StreamContent(stream);
-			}
-			return httpContent;
+			return new StreamContent(stream);
 		}
 
 		/// <summary>

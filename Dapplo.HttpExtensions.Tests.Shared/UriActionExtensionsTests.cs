@@ -46,6 +46,7 @@ namespace Dapplo.HttpExtensions.Tests
 	/// </summary>
 	public class UriActionExtensionsTests
 	{
+		private static readonly LogSource Log = new LogSource();
 		private readonly Uri _bitmapUri = new Uri("http://httpbin.org/image/png");
 
 		public UriActionExtensionsTests(ITestOutputHelper testOutputHelper)
@@ -59,6 +60,13 @@ namespace Dapplo.HttpExtensions.Tests
 		[Fact]
 		public async Task TestGetAsAsyncBitmap()
 		{
+			var downloadBehaviour = new HttpBehaviour();
+			downloadBehaviour.UseProgressStream = true;
+			downloadBehaviour.DownloadProgress = (progress) => {
+				Log.Info().WriteLine("Progress {0}", (int)(progress * 100));
+			};
+			downloadBehaviour.MakeCurrent();
+
 			var bitmap = await _bitmapUri.GetAsAsync<Bitmap>();
 			Assert.NotNull(bitmap);
 			Assert.True(bitmap.Width > 0);
@@ -219,7 +227,7 @@ namespace Dapplo.HttpExtensions.Tests
 			};
 			behavior.HttpSettings.AllowAutoRedirect = false;
 			behavior.MakeCurrent();
-			await Assert.ThrowsAsync<HttpRequestException>(async () => await new Uri("https://httpbin.org/redirect/5").GetAsAsync<string>());
+			await Assert.ThrowsAsync<HttpRequestException>(async () => await new Uri("https://httpbin.org/redirect/2").GetAsAsync<string>());
 		}
 	}
 }

@@ -22,10 +22,10 @@
 #region using
 
 using System;
-using System.Threading;
 using Dapplo.LogFacade;
 using Xunit.Abstractions;
 using Dapplo.LogFacade.Loggers;
+using System.Threading;
 
 #endregion
 

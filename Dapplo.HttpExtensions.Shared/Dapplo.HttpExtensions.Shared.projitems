@@ -50,7 +50,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Support\HttpParts.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Support\HttpSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Support\MediaTypes.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Support\ProgressStreamContent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Support\ProgressStream.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Support\SimpleJsonSerializer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UriActionExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UriModifyExtensions.cs" />

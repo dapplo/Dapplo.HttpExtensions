@@ -29,17 +29,20 @@ using System.IO;
 namespace Dapplo.HttpExtensions.Support
 {
 	/// <summary>
-	/// Wraps another stream and provides reporting for when bytes are read or written to the stream.
+	///     Wraps another stream and provides reporting for when bytes are read or written to the stream.
 	/// </summary>
 	public class ProgressStream : Stream
 	{
 		#region Private Data Members
-		private Stream innerStream;
+
+		private readonly Stream innerStream;
+
 		#endregion
 
 		#region Constructor
+
 		/// <summary>
-		/// Creates a new ProgressStream supplying the stream for it to report on.
+		///     Creates a new ProgressStream supplying the stream for it to report on.
 		/// </summary>
 		/// <param name="streamToReportOn">The underlying stream that will be reported on when bytes are read or written.</param>
 		public ProgressStream(Stream streamToReportOn)
@@ -53,27 +56,28 @@ namespace Dapplo.HttpExtensions.Support
 				throw new ArgumentNullException(nameof(streamToReportOn));
 			}
 		}
+
 		#endregion
 
 		#region Events
 
 		/// <summary>
-		/// Raised when bytes are read from the stream.
+		///     Raised when bytes are read from the stream.
 		/// </summary>
 		public event ProgressStreamReportDelegate BytesRead;
 
 		/// <summary>
-		/// Raised when bytes are written to the stream.
+		///     Raised when bytes are written to the stream.
 		/// </summary>
 		public event ProgressStreamReportDelegate BytesWritten;
 
 		/// <summary>
-		/// Raised when bytes are either read or written to the stream.
+		///     Raised when bytes are either read or written to the stream.
 		/// </summary>
 		public event ProgressStreamReportDelegate BytesMoved;
 
 		/// <summary>
-		/// Called when bytes are read.
+		///     Called when bytes are read.
 		/// </summary>
 		/// <param name="bytesMoved">int with the number of bytes</param>
 		protected virtual void OnBytesRead(int bytesMoved)
@@ -94,7 +98,7 @@ namespace Dapplo.HttpExtensions.Support
 		}
 
 		/// <summary>
-		/// Called when bytes are written
+		///     Called when bytes are written
 		/// </summary>
 		/// <param name="bytesMoved">int with the number of bytes</param>
 		protected virtual void OnBytesWritten(int bytesMoved)
@@ -115,7 +119,7 @@ namespace Dapplo.HttpExtensions.Support
 		}
 
 		/// <summary>
-		/// Called when bytes are moved
+		///     Called when bytes are moved
 		/// </summary>
 		/// <param name="bytesMoved">int with the number of bytes which are moved</param>
 		/// <param name="isRead">true if the bytes were read, false if written</param>
@@ -135,6 +139,7 @@ namespace Dapplo.HttpExtensions.Support
 				BytesMoved(this, args);
 			}
 		}
+
 		#endregion
 
 		#region Stream Members
@@ -172,14 +177,8 @@ namespace Dapplo.HttpExtensions.Support
 		/// <inheritdoc />
 		public override long Position
 		{
-			get
-			{
-				return innerStream.Position;
-			}
-			set
-			{
-				innerStream.Position = value;
-			}
+			get { return innerStream.Position; }
+			set { innerStream.Position = value; }
 		}
 
 		/// <inheritdoc />
@@ -215,7 +214,7 @@ namespace Dapplo.HttpExtensions.Support
 		}
 
 #if !_PCL_
-		/// <inheritdoc />
+	/// <inheritdoc />
 		public override void Close()
 		{
 			innerStream.Close();
@@ -223,41 +222,23 @@ namespace Dapplo.HttpExtensions.Support
 		}
 #endif
 
-	#endregion
+		#endregion
 	}
 
 	/// <summary>
-	/// Contains the pertinent data for a ProgressStream Report event.
+	///     Contains the pertinent data for a ProgressStream Report event.
 	/// </summary>
 	public class ProgressStreamReportEventArgs : EventArgs
 	{
 		/// <summary>
-		/// The number of bytes that were read/written to/from the stream.
+		///     Default constructor for ProgressStreamReportEventArgs.
 		/// </summary>
-		public int BytesMoved { get; private set; }
+		public ProgressStreamReportEventArgs()
+		{
+		}
 
 		/// <summary>
-		/// The total length of the stream in bytes, 0 if the stream isn't seekable
-		/// </summary>
-		public long StreamLength { get; private set; }
-
-		/// <summary>
-		/// The current position in the stream, 0 if the stream isn't seekable
-		/// </summary>
-		public long StreamPosition { get; private set; }
-
-		/// <summary>
-		/// True if the bytes were read from the stream, false if they were written.
-		/// </summary>
-		public bool WasRead { get; private set; }
-
-		/// <summary>
-		/// Default constructor for ProgressStreamReportEventArgs.
-		/// </summary>
-		public ProgressStreamReportEventArgs() : base() { }
-
-		/// <summary>
-		/// Creates a new ProgressStreamReportEventArgs initializing its members.
+		///     Creates a new ProgressStreamReportEventArgs initializing its members.
 		/// </summary>
 		/// <param name="bytesMoved">The number of bytes that were read/written to/from the stream.</param>
 		/// <param name="streamLength">The total length of the stream in bytes.</param>
@@ -270,10 +251,30 @@ namespace Dapplo.HttpExtensions.Support
 			StreamPosition = streamPosition;
 			WasRead = WasRead;
 		}
+
+		/// <summary>
+		///     The number of bytes that were read/written to/from the stream.
+		/// </summary>
+		public int BytesMoved { get; private set; }
+
+		/// <summary>
+		///     The total length of the stream in bytes, 0 if the stream isn't seekable
+		/// </summary>
+		public long StreamLength { get; private set; }
+
+		/// <summary>
+		///     The current position in the stream, 0 if the stream isn't seekable
+		/// </summary>
+		public long StreamPosition { get; private set; }
+
+		/// <summary>
+		///     True if the bytes were read from the stream, false if they were written.
+		/// </summary>
+		public bool WasRead { get; }
 	}
 
 	/// <summary>
-	/// The delegate for handling a ProgressStream Report event.
+	///     The delegate for handling a ProgressStream Report event.
 	/// </summary>
 	/// <param name="sender">The object that raised the event, should be a ProgressStream.</param>
 	/// <param name="args">The arguments raised with the event.</param>

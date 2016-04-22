@@ -41,9 +41,10 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	public class StringHttpContentConverter : IHttpContentConverter
 	{
 		/// <summary>
-		/// Singleton instance for reuse
+		///     Singleton instance for reuse
 		/// </summary>
 		public static readonly StringHttpContentConverter Instance = new StringHttpContentConverter();
+
 		private static readonly LogSource Log = new LogSource();
 		private static readonly IList<string> SupportedContentTypes = new List<string>();
 

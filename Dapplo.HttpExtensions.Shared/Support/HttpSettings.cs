@@ -139,7 +139,7 @@ namespace Dapplo.HttpExtensions.Support
 		}
 
 #if !_PCL_
-		/// <inheritdoc />
+	/// <inheritdoc />
 		public RequestCacheLevel RequestCacheLevel { get; set; } = RequestCacheLevel.Default;
 #endif
 

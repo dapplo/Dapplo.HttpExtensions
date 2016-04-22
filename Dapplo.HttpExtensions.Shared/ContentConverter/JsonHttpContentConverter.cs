@@ -43,10 +43,12 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	public class JsonHttpContentConverter : IHttpContentConverter
 	{
 		private static readonly LogSource Log = new LogSource();
+
 		/// <summary>
-		/// Singleton instance for reuse
+		///     Singleton instance for reuse
 		/// </summary>
 		public static readonly JsonHttpContentConverter Instance = new JsonHttpContentConverter();
+
 		private static readonly IList<string> SupportedContentTypes = new List<string>();
 
 		static JsonHttpContentConverter()

@@ -53,8 +53,9 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	public class FormUriEncodedContentConverter : IHttpContentConverter
 	{
 		private static readonly LogSource Log = new LogSource();
+
 		/// <summary>
-		/// Singleton instance for reuse
+		///     Singleton instance for reuse
 		/// </summary>
 		public static readonly FormUriEncodedContentConverter Instance = new FormUriEncodedContentConverter();
 

@@ -19,12 +19,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)Factory\HttpMessageHandlerFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Factory\HttpRequestMessageFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpBehaviour.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HttpBehaviourExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpClientExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpContentExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpExtensionsGlobals.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpRequestMessageExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpResponse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpResponseMessageExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IChangeableHttpBehaviour.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IHttpBehaviour.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IHttpContentConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IHttpSettings.cs" />

@@ -23,7 +23,6 @@
 
 using System;
 using System.Collections.Generic;
-using Dapplo.HttpExtensions.Support;
 using Dapplo.Utils;
 
 #endregion

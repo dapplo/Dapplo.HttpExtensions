@@ -34,7 +34,7 @@ namespace Dapplo.HttpExtensions.Support
 	public class HttpRequestAttribute : Attribute
 	{
 		/// <summary>
-		/// "Force" multi-part, even if there is only one content
+		///     "Force" multi-part, even if there is only one content
 		/// </summary>
 		public bool MultiPart { get; set; }
 	}

@@ -107,7 +107,8 @@ namespace Dapplo.HttpExtensions
 						Log.Error().WriteLine(message);
 						throw new NotSupportedException(message);
 					}
-					if (targetPropertyInfo.PropertyType.IsInstanceOfType(convertedContent)) {
+					if (targetPropertyInfo.PropertyType.IsInstanceOfType(convertedContent))
+					{
 						// Now set the value
 						targetPropertyInfo.SetValue(instance, convertedContent);
 					}

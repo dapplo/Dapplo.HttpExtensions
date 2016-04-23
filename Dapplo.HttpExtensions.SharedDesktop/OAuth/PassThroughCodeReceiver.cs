@@ -21,13 +21,9 @@
 
 #region using
 
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Dapplo.LogFacade;
 using Dapplo.Utils.Extensions;
 
 #endregion
@@ -39,8 +35,6 @@ namespace Dapplo.HttpExtensions.OAuth
 	/// </summary>
 	internal class PassThroughCodeReceiver : IOAuthCodeReceiver
 	{
-		private static readonly LogSource Log = new LogSource();
-
 		/// <summary>
 		///     The OAuth code receiver implementation
 		/// </summary>
@@ -54,7 +48,10 @@ namespace Dapplo.HttpExtensions.OAuth
 			var result = new Dictionary<string, string>();
 			var oauth1Settings = codeReceiverSettings as OAuth1Settings;
 
-			result.Add(OAuth1Parameters.Token.EnumValueOf(), oauth1Settings.RequestToken);
+			if (oauth1Settings != null)
+			{
+				result.Add(OAuth1Parameters.Token.EnumValueOf(), oauth1Settings.RequestToken);
+			}
 			return Task.FromResult<IDictionary<string, string>>(result);
 		}
 	}

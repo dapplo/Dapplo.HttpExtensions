@@ -36,6 +36,12 @@ namespace Dapplo.HttpExtensions
 	public interface IHttpBehaviour
 	{
 		/// <summary>
+		///     Specify if the progress actions (UploadProgress or DownloadProcess) are called
+		///     via UiContext.RunOn. This makes sure it's on the UI thread.
+		/// </summary>
+		bool CallProgressOnUiContext { get; }
+
+		/// <summary>
 		///     The default encoding which is used wherever an encoding is specified.
 		///     The default is set to Encoding.UTF8
 		/// </summary>

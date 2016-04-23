@@ -30,6 +30,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.LogFacade;
+using Dapplo.Utils;
 
 #endregion
 
@@ -101,7 +102,21 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			if (httpBehaviour.UseProgressStream)
 			{
 				var progressStream = new ProgressStream(stream);
-				progressStream.BytesRead += (sender, eventArgs) => { httpBehaviour.UploadProgress?.Invoke((float) eventArgs.StreamPosition/eventArgs.StreamLength); };
+				progressStream.BytesRead += (sender, eventArgs) =>
+				{
+					if (httpBehaviour.CallProgressOnUiContext)
+					{
+						UiContext.RunOn(() =>
+						{
+							httpBehaviour.UploadProgress?.Invoke((float)eventArgs.StreamPosition / eventArgs.StreamLength);
+						}).Wait();
+					}
+					else
+					{
+						httpBehaviour.UploadProgress?.Invoke((float)eventArgs.StreamPosition / eventArgs.StreamLength);
+					}
+				};
+
 				stream = progressStream;
 			}
 			return new StreamContent(stream);

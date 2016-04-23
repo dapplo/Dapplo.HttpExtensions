@@ -22,9 +22,12 @@
 #region using
 
 using System;
+
+#if !_PCL_
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using Dapplo.HttpExtensions.Support;
+#endif
+using System.ComponentModel.DataAnnotations;
 
 #endregion
 

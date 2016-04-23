@@ -35,7 +35,7 @@ namespace Dapplo.HttpExtensions.Support
 	{
 		#region Private Data Members
 
-		private readonly Stream innerStream;
+		private readonly Stream _innerStream;
 
 		#endregion
 
@@ -49,7 +49,7 @@ namespace Dapplo.HttpExtensions.Support
 		{
 			if (streamToReportOn != null)
 			{
-				innerStream = streamToReportOn;
+				_innerStream = streamToReportOn;
 			}
 			else
 			{
@@ -84,15 +84,14 @@ namespace Dapplo.HttpExtensions.Support
 		{
 			if (bytesMoved != 0 && BytesRead != null)
 			{
-				ProgressStreamReportEventArgs args;
-				if (innerStream.CanSeek)
+				long length = 0;
+				long position = 0;
+				if (_innerStream.CanSeek)
 				{
-					args = new ProgressStreamReportEventArgs(bytesMoved, innerStream.Length, innerStream.Position, true);
+					length = _innerStream.Length;
+					position = _innerStream.Position;
 				}
-				else
-				{
-					args = new ProgressStreamReportEventArgs(bytesMoved, 0, 0, true);
-				}
+				var args = new ProgressStreamReportEventArgs(bytesMoved, length, position, true);
 				BytesRead(this, args);
 			}
 		}
@@ -105,15 +104,14 @@ namespace Dapplo.HttpExtensions.Support
 		{
 			if (bytesMoved != 0 && BytesWritten != null)
 			{
-				ProgressStreamReportEventArgs args;
-				if (innerStream.CanSeek)
+				long length = 0;
+				long position = 0;
+				if (_innerStream.CanSeek)
 				{
-					args = new ProgressStreamReportEventArgs(bytesMoved, innerStream.Length, innerStream.Position, false);
+					length = _innerStream.Length;
+					position = _innerStream.Position;
 				}
-				else
-				{
-					args = new ProgressStreamReportEventArgs(bytesMoved, 0, 0, false);
-				}
+				var args = new ProgressStreamReportEventArgs(bytesMoved, length, position, false);
 				BytesWritten(this, args);
 			}
 		}
@@ -127,15 +125,14 @@ namespace Dapplo.HttpExtensions.Support
 		{
 			if (bytesMoved != 0 && BytesMoved != null)
 			{
-				ProgressStreamReportEventArgs args;
-				if (innerStream.CanSeek)
+				long length = 0;
+				long position = 0;
+				if (_innerStream.CanSeek)
 				{
-					args = new ProgressStreamReportEventArgs(bytesMoved, innerStream.Length, innerStream.Position, isRead);
+					length = _innerStream.Length;
+					position = _innerStream.Position;
 				}
-				else
-				{
-					args = new ProgressStreamReportEventArgs(bytesMoved, 0, 0, isRead);
-				}
+				var args = new ProgressStreamReportEventArgs(bytesMoved, length, position, isRead);
 				BytesMoved(this, args);
 			}
 		}
@@ -145,46 +142,34 @@ namespace Dapplo.HttpExtensions.Support
 		#region Stream Members
 
 		/// <inheritdoc />
-		public override bool CanRead
-		{
-			get { return innerStream.CanRead; }
-		}
+		public override bool CanRead => _innerStream.CanRead;
 
 		/// <inheritdoc />
-		public override bool CanSeek
-		{
-			get { return innerStream.CanSeek; }
-		}
+		public override bool CanSeek => _innerStream.CanSeek;
 
 		/// <inheritdoc />
-		public override bool CanWrite
-		{
-			get { return innerStream.CanWrite; }
-		}
+		public override bool CanWrite => _innerStream.CanWrite;
 
 		/// <inheritdoc />
 		public override void Flush()
 		{
-			innerStream.Flush();
+			_innerStream.Flush();
 		}
 
 		/// <inheritdoc />
-		public override long Length
-		{
-			get { return innerStream.Length; }
-		}
+		public override long Length => _innerStream.Length;
 
 		/// <inheritdoc />
 		public override long Position
 		{
-			get { return innerStream.Position; }
-			set { innerStream.Position = value; }
+			get { return _innerStream.Position; }
+			set { _innerStream.Position = value; }
 		}
 
 		/// <inheritdoc />
 		public override int Read(byte[] buffer, int offset, int count)
 		{
-			var bytesRead = innerStream.Read(buffer, offset, count);
+			var bytesRead = _innerStream.Read(buffer, offset, count);
 
 			OnBytesRead(bytesRead);
 			OnBytesMoved(bytesRead, true);
@@ -195,19 +180,19 @@ namespace Dapplo.HttpExtensions.Support
 		/// <inheritdoc />
 		public override long Seek(long offset, SeekOrigin origin)
 		{
-			return innerStream.Seek(offset, origin);
+			return _innerStream.Seek(offset, origin);
 		}
 
 		/// <inheritdoc />
 		public override void SetLength(long value)
 		{
-			innerStream.SetLength(value);
+			_innerStream.SetLength(value);
 		}
 
 		/// <inheritdoc />
 		public override void Write(byte[] buffer, int offset, int count)
 		{
-			innerStream.Write(buffer, offset, count);
+			_innerStream.Write(buffer, offset, count);
 
 			OnBytesWritten(count);
 			OnBytesMoved(count, false);
@@ -217,7 +202,7 @@ namespace Dapplo.HttpExtensions.Support
 	/// <inheritdoc />
 		public override void Close()
 		{
-			innerStream.Close();
+			_innerStream.Close();
 			base.Close();
 		}
 #endif
@@ -249,7 +234,7 @@ namespace Dapplo.HttpExtensions.Support
 			BytesMoved = bytesMoved;
 			StreamLength = streamLength;
 			StreamPosition = streamPosition;
-			WasRead = WasRead;
+			WasRead = wasRead;
 		}
 
 		/// <summary>

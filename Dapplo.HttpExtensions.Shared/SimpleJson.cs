@@ -150,12 +150,9 @@ namespace Dapplo.HttpExtensions
         /// Gets the <see cref="System.Object"/> at the specified index.
         /// </summary>
         /// <value></value>
-        public object this[int index]
-        {
-            get { return GetAtIndex(_members, index); }
-        }
+        public object this[int index] => GetAtIndex(_members, index);
 
-        internal static object GetAtIndex(IDictionary<string, object> obj, int index)
+	    internal static object GetAtIndex(IDictionary<string, object> obj, int index)
         {
             if (obj == null)
                 throw new ArgumentNullException(nameof(obj));
@@ -193,12 +190,9 @@ namespace Dapplo.HttpExtensions
         /// Gets the keys.
         /// </summary>
         /// <value>The keys.</value>
-        public ICollection<string> Keys
-        {
-            get { return _members.Keys; }
-        }
+        public ICollection<string> Keys => _members.Keys;
 
-        /// <summary>
+	    /// <summary>
         /// Removes the specified key.
         /// </summary>
         /// <param name="key">The key.</param>
@@ -223,12 +217,9 @@ namespace Dapplo.HttpExtensions
         /// Gets the values.
         /// </summary>
         /// <value>The values.</value>
-        public ICollection<object> Values
-        {
-            get { return _members.Values; }
-        }
+        public ICollection<object> Values => _members.Values;
 
-        /// <summary>
+	    /// <summary>
         /// Gets or sets the <see cref="System.Object"/> with the specified key.
         /// </summary>
         /// <value></value>
@@ -288,23 +279,17 @@ namespace Dapplo.HttpExtensions
         /// Gets the count.
         /// </summary>
         /// <value>The count.</value>
-        public int Count
-        {
-            get { return _members.Count; }
-        }
+        public int Count => _members.Count;
 
-        /// <summary>
+	    /// <summary>
         /// Gets a value indicating whether this instance is read only.
         /// </summary>
         /// <value>
         /// 	<c>true</c> if this instance is read only; otherwise, <c>false</c>.
         /// </value>
-        public bool IsReadOnly
-        {
-            get { return false; }
-        }
+        public bool IsReadOnly => false;
 
-        /// <summary>
+	    /// <summary>
         /// Removes the specified item.
         /// </summary>
         /// <param name="item">The item.</param>
@@ -494,6 +479,7 @@ namespace Dapplo.HttpExtensions
     /// All numbers are parsed to doubles.
     /// </summary>
     [GeneratedCode("simple-json", "1.0.0")]
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
 #if SIMPLE_JSON_INTERNAL
     internal
 #else
@@ -517,7 +503,6 @@ namespace Dapplo.HttpExtensions
 
         private static readonly char[] EscapeTable;
         private static readonly char[] EscapeCharacters = new char[] { '"', '\\', '\b', '\f', '\n', '\r', '\t' };
-        private static readonly string EscapeCharactersString = new string(EscapeCharacters);
 
         static SimpleJson()
         {
@@ -605,7 +590,7 @@ namespace Dapplo.HttpExtensions
         {
             StringBuilder builder = new StringBuilder(BUILDER_CAPACITY);
             bool success = SerializeValue(jsonSerializerStrategy, json, builder);
-            return (success ? builder.ToString() : null);
+            return success ? builder.ToString() : null;
         }
 
         public static string SerializeObject(object json)
@@ -630,13 +615,12 @@ namespace Dapplo.HttpExtensions
                 return jsonString;
 
             StringBuilder sb = new StringBuilder();
-            char c;
 
-            for (int i = 0; i < jsonString.Length; )
+			for (int i = 0; i < jsonString.Length; )
             {
-                c = jsonString[i++];
+	            var c = jsonString[i++];
 
-                if (c == '\\')
+	            if (c == '\\')
                 {
                     int remainingLength = jsonString.Length - i;
                     if (remainingLength >= 2)
@@ -679,7 +663,7 @@ namespace Dapplo.HttpExtensions
                     sb.Append(c);
                 }
             }
-            return sb.ToString();
+			return sb.ToString();
         }
 
         static IDictionary<string, object> ParseObject(char[] json, ref int index, ref bool success)
@@ -772,7 +756,7 @@ namespace Dapplo.HttpExtensions
                 case TOKEN_STRING:
                     return ParseString(json, ref index, ref success);
                 case TOKEN_NUMBER:
-                    return ParseNumber(json, ref index, ref success);
+                    return ParseNumber(json, ref index, out success);
                 case TOKEN_CURLY_OPEN:
                     return ParseObject(json, ref index, ref success);
                 case TOKEN_SQUARED_OPEN:
@@ -800,14 +784,14 @@ namespace Dapplo.HttpExtensions
 	        EatWhitespace(json, ref index);
 
             // "
-            var c = json[index++];
+            index++;
             bool complete = false;
             while (true)
             {
                 if (index == json.Length)
                     break;
 
-                c = json[index++];
+                var c = json[index++];
                 if (c == '"')
                 {
                     complete = true;
@@ -898,11 +882,11 @@ namespace Dapplo.HttpExtensions
             return new string(new char[] { (char)((utf32 >> 10) + 0xD800), (char)(utf32 % 0x0400 + 0xDC00) });
         }
 
-        static object ParseNumber(char[] json, ref int index, ref bool success)
+        static object ParseNumber(char[] json, ref int index, out bool success)
         {
             EatWhitespace(json, ref index);
             int lastIndex = GetLastIndexOfNumber(json, index);
-            int charLength = (lastIndex - index) + 1;
+            int charLength = lastIndex - index + 1;
             object returnNumber;
             string str = new string(json, index, charLength);
             if (str.IndexOf(".", StringComparison.OrdinalIgnoreCase) != -1 || str.IndexOf("e", StringComparison.OrdinalIgnoreCase) != -1)
@@ -1217,25 +1201,13 @@ namespace Dapplo.HttpExtensions
 
         private static PocoJsonSerializerStrategy _pocoJsonSerializerStrategy;
         [EditorBrowsable(EditorBrowsableState.Advanced)]
-        public static PocoJsonSerializerStrategy PocoJsonSerializerStrategy
-        {
-            get
-            {
-                return _pocoJsonSerializerStrategy ?? (_pocoJsonSerializerStrategy = new PocoJsonSerializerStrategy());
-            }
-        }
+        public static PocoJsonSerializerStrategy PocoJsonSerializerStrategy => _pocoJsonSerializerStrategy ?? (_pocoJsonSerializerStrategy = new PocoJsonSerializerStrategy());
 
 #if SIMPLE_JSON_DATACONTRACT
 
         private static DataContractJsonSerializerStrategy _dataContractJsonSerializerStrategy;
-        [System.ComponentModel.EditorBrowsable(EditorBrowsableState.Advanced)]
-        public static DataContractJsonSerializerStrategy DataContractJsonSerializerStrategy
-        {
-            get
-            {
-                return _dataContractJsonSerializerStrategy ?? (_dataContractJsonSerializerStrategy = new DataContractJsonSerializerStrategy());
-            }
-        }
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        public static DataContractJsonSerializerStrategy DataContractJsonSerializerStrategy => _dataContractJsonSerializerStrategy ?? (_dataContractJsonSerializerStrategy = new DataContractJsonSerializerStrategy());
 
 #endif
     }
@@ -1698,7 +1670,7 @@ namespace Dapplo.HttpExtensions
 					result[jsonKey] = new KeyValuePair<Type, ReflectionUtils.SetDelegate>(fieldInfo.FieldType, ReflectionUtils.GetSetMethod(fieldInfo));
 				}
             }
-            // todo implement sorting for DATACONTRACT.
+            // TODO implement sorting for DATACONTRACT.
             return result;
         }
 
@@ -1735,7 +1707,7 @@ namespace Dapplo.HttpExtensions
             public delegate void SetDelegate(object source, object value);
             public delegate object ConstructorDelegate(params object[] args);
 
-            public delegate TValue ThreadSafeDictionaryValueFactory<TKey, TValue>(TKey key);
+            public delegate TValue ThreadSafeDictionaryValueFactory<in TKey, out TValue>(TKey key);
 
 #if SIMPLE_JSON_TYPEINFO
             public static TypeInfo GetTypeInfo(Type type)
@@ -1764,11 +1736,10 @@ namespace Dapplo.HttpExtensions
 
             public static Type GetGenericListElementType(Type type)
             {
-                IEnumerable<Type> interfaces;
 #if SIMPLE_JSON_TYPEINFO
-                interfaces = type.GetTypeInfo().ImplementedInterfaces;
+                IEnumerable<Type> interfaces = type.GetTypeInfo().ImplementedInterfaces;
 #else
-                interfaces = type.GetInterfaces();
+				IEnumerable<Type> interfaces = type.GetInterfaces();
 #endif
                 foreach (Type implementedInterface in interfaces)
                 {
@@ -1816,14 +1787,14 @@ namespace Dapplo.HttpExtensions
 
                 Type genericDefinition = type.GetGenericTypeDefinition();
 
-                return (genericDefinition == typeof(IList<>)
+                return genericDefinition == typeof(IList<>)
                     || genericDefinition == typeof(ICollection<>)
                     || genericDefinition == typeof(IEnumerable<>)
 #if SIMPLE_JSON_READONLY_COLLECTIONS
                     || genericDefinition == typeof(IReadOnlyCollection<>)
                     || genericDefinition == typeof(IReadOnlyList<>)
 #endif
-                    );
+                    ;
             }
 
             public static bool IsAssignableFrom(Type type1, Type type2)
@@ -1874,14 +1845,13 @@ namespace Dapplo.HttpExtensions
             public static ConstructorInfo GetConstructorInfo(Type type, params Type[] argsType)
             {
                 IEnumerable<ConstructorInfo> constructorInfos = GetConstructors(type);
-                int i;
 	            foreach (ConstructorInfo constructorInfo in constructorInfos)
                 {
                     ParameterInfo[] parameters = constructorInfo.GetParameters();
                     if (argsType.Length != parameters.Length)
                         continue;
 
-                    i = 0;
+                    var i = 0;
                     var matches = true;
                     foreach (ParameterInfo parameterInfo in constructorInfo.GetParameters())
                     {
@@ -1955,7 +1925,7 @@ namespace Dapplo.HttpExtensions
 
             public static ConstructorDelegate GetConstructorByReflection(ConstructorInfo constructorInfo)
             {
-                return delegate(object[] args) { return constructorInfo.Invoke(args); };
+                return constructorInfo.Invoke;
             }
 
             public static ConstructorDelegate GetConstructorByReflection(Type type, params Type[] argsType)
@@ -1982,7 +1952,7 @@ namespace Dapplo.HttpExtensions
                 NewExpression newExp = Expression.New(constructorInfo, argsExp);
                 Expression<Func<object[], object>> lambda = Expression.Lambda<Func<object[], object>>(newExp, param);
                 Func<object[], object> compiledLambda = lambda.Compile();
-                return delegate(object[] args) { return compiledLambda(args); };
+                return args => compiledLambda(args);
             }
 
             public static ConstructorDelegate GetConstructorByExpression(Type type, params Type[] argsType)
@@ -2028,7 +1998,7 @@ namespace Dapplo.HttpExtensions
             {
                 MethodInfo getMethodInfo = GetGetterMethodInfo(propertyInfo);
                 ParameterExpression instance = Expression.Parameter(typeof(object), "instance");
-                UnaryExpression instanceCast = (!IsValueType(propertyInfo.DeclaringType)) ? Expression.TypeAs(instance, propertyInfo.DeclaringType) : Expression.Convert(instance, propertyInfo.DeclaringType);
+                UnaryExpression instanceCast = !IsValueType(propertyInfo.DeclaringType) ? Expression.TypeAs(instance, propertyInfo.DeclaringType) : Expression.Convert(instance, propertyInfo.DeclaringType);
                 Func<object, object> compiled = Expression.Lambda<Func<object, object>>(Expression.TypeAs(Expression.Call(instanceCast, getMethodInfo), typeof(object)), instance).Compile();
                 return source => compiled(source);
             }
@@ -2079,9 +2049,9 @@ namespace Dapplo.HttpExtensions
                 MethodInfo setMethodInfo = GetSetterMethodInfo(propertyInfo);
                 ParameterExpression instance = Expression.Parameter(typeof(object), "instance");
                 ParameterExpression value = Expression.Parameter(typeof(object), "value");
-                UnaryExpression instanceCast = (!IsValueType(propertyInfo.DeclaringType)) ? Expression.TypeAs(instance, propertyInfo.DeclaringType) : Expression.Convert(instance, propertyInfo.DeclaringType);
-                UnaryExpression valueCast = (!IsValueType(propertyInfo.PropertyType)) ? Expression.TypeAs(value, propertyInfo.PropertyType) : Expression.Convert(value, propertyInfo.PropertyType);
-                Action<object, object> compiled = Expression.Lambda<Action<object, object>>(Expression.Call(instanceCast, setMethodInfo, valueCast), new ParameterExpression[] { instance, value }).Compile();
+                UnaryExpression instanceCast = !IsValueType(propertyInfo.DeclaringType) ? Expression.TypeAs(instance, propertyInfo.DeclaringType) : Expression.Convert(instance, propertyInfo.DeclaringType);
+                UnaryExpression valueCast = !IsValueType(propertyInfo.PropertyType) ? Expression.TypeAs(value, propertyInfo.PropertyType) : Expression.Convert(value, propertyInfo.PropertyType);
+                Action<object, object> compiled = Expression.Lambda<Action<object, object>>(Expression.Call(instanceCast, setMethodInfo, valueCast), instance, value).Compile();
                 return delegate(object source, object val) { compiled(source, val); };
             }
 
@@ -2107,9 +2077,9 @@ namespace Dapplo.HttpExtensions
 
             private static class Assigner<T>
             {
-                public static T Assign(ref T left, T right)
+                public static T Assign(out T left, T right)
                 {
-                    return (left = right);
+                    return left = right;
                 }
             }
 
@@ -2167,12 +2137,9 @@ namespace Dapplo.HttpExtensions
                     return _dictionary.ContainsKey(key);
                 }
 
-                public ICollection<TKey> Keys
-                {
-                    get { return _dictionary.Keys; }
-                }
+                public ICollection<TKey> Keys => _dictionary.Keys;
 
-                public bool Remove(TKey key)
+	            public bool Remove(TKey key)
                 {
                     throw new NotImplementedException();
                 }
@@ -2183,12 +2150,9 @@ namespace Dapplo.HttpExtensions
                     return true;
                 }
 
-                public ICollection<TValue> Values
-                {
-                    get { return _dictionary.Values; }
-                }
+                public ICollection<TValue> Values => _dictionary.Values;
 
-                public TValue this[TKey key]
+	            public TValue this[TKey key]
                 {
                     get { return Get(key); }
                     set { throw new NotImplementedException(); }
@@ -2214,12 +2178,9 @@ namespace Dapplo.HttpExtensions
                     throw new NotImplementedException();
                 }
 
-                public int Count
-                {
-                    get { return _dictionary.Count; }
-                }
+                public int Count => _dictionary.Count;
 
-                public bool IsReadOnly
+	            public bool IsReadOnly
                 {
                     get { throw new NotImplementedException(); }
                 }

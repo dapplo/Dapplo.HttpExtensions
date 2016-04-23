@@ -57,7 +57,7 @@ namespace Dapplo.HttpExtensions.Tests
 			var uploadBehaviour = HttpBehaviour.Current.Clone();
 
 			uploadBehaviour.UseProgressStream = true;
-			uploadBehaviour.UploadProgress += (progress) => {
+			uploadBehaviour.UploadProgress += progress => {
 				Log.Info().WriteLine("Progress {0}", (int)(progress * 100));
 			};
 			uploadBehaviour.MakeCurrent();

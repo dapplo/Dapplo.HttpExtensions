@@ -63,7 +63,7 @@ namespace Dapplo.HttpExtensions.Tests
 			var downloadBehaviour = HttpBehaviour.Current.Clone();
 
 			downloadBehaviour.UseProgressStream = true;
-			downloadBehaviour.DownloadProgress += (progress) => {
+			downloadBehaviour.DownloadProgress += progress => {
 				Log.Info().WriteLine("Progress {0}", (int)(progress * 100));
 			};
 			downloadBehaviour.MakeCurrent();

@@ -34,6 +34,7 @@ using Dapplo.HttpExtensions.Support;
 using Dapplo.LogFacade;
 using Dapplo.Utils.Extensions;
 using System.IO;
+using Dapplo.Utils;
 
 #endregion
 
@@ -127,7 +128,17 @@ namespace Dapplo.HttpExtensions
 					progressStream.BytesRead += (sender, eventArgs) =>
 					{
 						position += eventArgs.BytesMoved;
-						httpBehaviour.DownloadProgress?.Invoke((float) position/contentLength);
+						if (httpBehaviour.CallProgressOnUiContext)
+						{
+							UiContext.RunOn(() =>
+							{
+								httpBehaviour.DownloadProgress?.Invoke((float)position / contentLength);
+							}).Wait();
+						}
+						else
+						{
+							httpBehaviour.DownloadProgress?.Invoke((float)position / contentLength);
+						}
 					};
 					contentStream = progressStream;
 				}

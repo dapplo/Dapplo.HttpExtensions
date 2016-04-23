@@ -386,6 +386,7 @@ namespace Dapplo.HttpExtensions.OAuth
 			{
 				parameters.Add(OAuth1Parameters.Verifier.EnumValueOf(), _oAuth1Settings.Token.OAuthTokenVerifier);
 			}
+			// ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
 			if (!string.IsNullOrEmpty(_oAuth1Settings.Token.OAuthToken))
 			{
 				parameters.Add(OAuth1Parameters.Token.EnumValueOf(), _oAuth1Settings.Token.OAuthToken);

@@ -45,7 +45,11 @@ namespace Dapplo.HttpExtensions
 	///     (Yes, it's can be empty, the settings are in the IHttpSettings interface) and than assign the generated instance to
 	///     <see cref="HttpExtensionsGlobals" />
 	/// </summary>
+#if _PCL_
+	public interface IHttpSettings
+#else
 	public partial interface IHttpSettings
+#endif
 	{
 		/// <summary>
 		///     For more details, click

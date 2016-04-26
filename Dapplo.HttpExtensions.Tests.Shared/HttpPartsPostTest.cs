@@ -54,12 +54,13 @@ namespace Dapplo.HttpExtensions.Tests
 		public async Task TestPost()
 		{
 			var testUri = RequestBinUri.AppendSegments("post");
-			var uploadBehavior = new HttpBehaviour();
-			uploadBehavior.UseProgressStream = true;
-			uploadBehavior.UploadProgress = (progress) => {
+			var uploadBehaviour = HttpBehaviour.Current.Clone();
+
+			uploadBehaviour.UseProgressStream = true;
+			uploadBehaviour.UploadProgress += progress => {
 				Log.Info().WriteLine("Progress {0}", (int)(progress * 100));
 			};
-			uploadBehavior.MakeCurrent();
+			uploadBehaviour.MakeCurrent();
 			var testObject = new MyMultiPartRequest
 			{
 				BitmapContentName = "MyBitmapContent",

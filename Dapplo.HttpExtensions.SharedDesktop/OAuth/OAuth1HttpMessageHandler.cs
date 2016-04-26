@@ -98,7 +98,7 @@ namespace Dapplo.HttpExtensions.OAuth
 
 			_oAuth1Settings = oAuth1Settings;
 
-			var newHttpBehaviour = oAuth1HttpBehaviour.Clone();
+			var newHttpBehaviour = (OAuth1HttpBehaviour)oAuth1HttpBehaviour.Clone();
 			// Remove the OnHttpMessageHandlerCreated
 			newHttpBehaviour.OnHttpMessageHandlerCreated = null;
 			// Use it for internal communication
@@ -231,7 +231,7 @@ namespace Dapplo.HttpExtensions.OAuth
 					resultParameters.Remove(OAuth1Parameters.TokenSecret.EnumValueOf());
 				}
 				// Process the rest, if someone registed, some services return more values
-				_oAuth1HttpBehaviour?.OnAccessToken?.Invoke(resultParameters);
+				_oAuth1HttpBehaviour?.OnAccessTokenValues?.Invoke(resultParameters);
 			}
 		}
 
@@ -386,6 +386,7 @@ namespace Dapplo.HttpExtensions.OAuth
 			{
 				parameters.Add(OAuth1Parameters.Verifier.EnumValueOf(), _oAuth1Settings.Token.OAuthTokenVerifier);
 			}
+			// ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
 			if (!string.IsNullOrEmpty(_oAuth1Settings.Token.OAuthToken))
 			{
 				parameters.Add(OAuth1Parameters.Token.EnumValueOf(), _oAuth1Settings.Token.OAuthToken);

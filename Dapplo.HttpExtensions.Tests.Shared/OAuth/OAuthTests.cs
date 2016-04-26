@@ -22,17 +22,12 @@
 #region using
 
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using Dapplo.HttpExtensions.OAuth;
 using Dapplo.LogFacade;
-using Dapplo.Utils.Extensions;
 using Xunit;
 using Xunit.Abstractions;
 using Dapplo.HttpExtensions.Tests.Logger;
@@ -46,8 +41,6 @@ namespace Dapplo.HttpExtensions.Tests.OAuth
 	/// </summary>
 	public class OAuthTests
 	{
-		private static readonly LogSource Log = new LogSource();
-
 		private static readonly Uri OAuthTestServerUri = new Uri("http://term.ie/oauth/example/");
 		private readonly IHttpBehaviour _oAuthHttpBehaviour;
 
@@ -91,7 +84,6 @@ namespace Dapplo.HttpExtensions.Tests.OAuth
 			// Make sure you use your special IHttpBehaviour for the OAuth requests!
 			_oAuthHttpBehaviour.MakeCurrent();
 			var response = await userInformationUri.OAuth1GetAsAsync<string>();
-
 
 			Assert.Contains("dapplo", response);
 		}

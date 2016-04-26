@@ -80,9 +80,9 @@ namespace Dapplo.HttpExtensions.OAuth
 			// Open the url in the default browser
 			Process.Start(authorizationUrl.AbsoluteUri);
 
-			// TODO: Get the response here
+			// TODO: Get the response here, this should be done via the windows title
 
-			await Task.Delay(10*1000).ConfigureAwait(false);
+			await Task.Delay(10*1000, cancellationToken).ConfigureAwait(false);
 			// Return result of the listening
 			return null;
 		}

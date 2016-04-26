@@ -34,6 +34,7 @@ using Dapplo.HttpExtensions.Support;
 using Dapplo.LogFacade;
 using Dapplo.Utils.Extensions;
 using System.IO;
+using Dapplo.Utils;
 
 #endregion
 
@@ -107,6 +108,45 @@ namespace Dapplo.HttpExtensions
 		}
 
 		/// <summary>
+		///     Get the Content-stream of the HttpContent, wrap it in ProgressStream if this is specified
+		/// </summary>
+		/// <param name="httpContent"></param>
+		/// <returns>Stream from ReadAsStreamAsync eventually wrapped by ProgressStream</returns>
+		public static async Task<Stream> GetContentStream(this HttpContent httpContent)
+		{
+			var contentStream = await httpContent.ReadAsStreamAsync().ConfigureAwait(false);
+			var hasContentLength = httpContent.Headers.Any(h => h.Key.Equals("Content-Length"));
+			if (hasContentLength)
+			{
+				var contentLength = int.Parse(httpContent.Headers.First(h => h.Key.Equals("Content-Length")).Value.First());
+				var httpBehaviour = HttpBehaviour.Current;
+				// Add progress support, if this is enabled
+				if (httpBehaviour.UseProgressStream && contentLength > 0)
+				{
+					var progressStream = new ProgressStream(contentStream);
+					long position = 0;
+					progressStream.BytesRead += (sender, eventArgs) =>
+					{
+						position += eventArgs.BytesMoved;
+						if (httpBehaviour.CallProgressOnUiContext)
+						{
+							UiContext.RunOn(() =>
+							{
+								httpBehaviour.DownloadProgress?.Invoke((float)position / contentLength);
+							}).Wait();
+						}
+						else
+						{
+							httpBehaviour.DownloadProgress?.Invoke((float)position / contentLength);
+						}
+					};
+					contentStream = progressStream;
+				}
+			}
+			return contentStream;
+		}
+
+		/// <summary>
 		///     Simply return the content type of the HttpContent
 		/// </summary>
 		/// <param name="httpContent">HttpContent</param>
@@ -124,35 +164,6 @@ namespace Dapplo.HttpExtensions
 		public static void SetContentType(this HttpContent httpContent, string contentType)
 		{
 			httpContent.Headers.ContentType = MediaTypeHeaderValue.Parse(contentType);
-		}
-
-		/// <summary>
-		/// Get the Content-stream of the HttpContent, wrap it in ProgressStream if this is specified
-		/// </summary>
-		/// <param name="httpContent"></param>
-		/// <returns>Stream from ReadAsStreamAsync eventually wrapped by ProgressStream</returns>
-		public static async Task<Stream> GetContentStream(this HttpContent httpContent)
-		{
-			var contentStream = await httpContent.ReadAsStreamAsync().ConfigureAwait(false);
-			var hasContentLength = httpContent.Headers.Any(h => h.Key.Equals("Content-Length"));
-			if (hasContentLength)
-			{
-				int contentLength = int.Parse(httpContent.Headers.First(h => h.Key.Equals("Content-Length")).Value.First());
-				var httpBehaviour = HttpBehaviour.Current;
-				// Add progress support, if this is enabled
-				if (httpBehaviour.UseProgressStream && contentLength > 0)
-				{
-					var progressStream = new ProgressStream(contentStream);
-					long position = 0;
-					progressStream.BytesRead += (sender, eventArgs) =>
-					{
-						position += eventArgs.BytesMoved;
-						httpBehaviour.DownloadProgress?.Invoke((float)position / contentLength);
-					};
-					contentStream = progressStream;
-				}
-			}
-			return contentStream;
 		}
 	}
 }

@@ -25,7 +25,9 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
+#if !DOTNET45
 using System.Threading;
+#endif
 
 #endregion
 
@@ -87,6 +89,9 @@ namespace Dapplo.HttpExtensions
 
 		/// <inheritdoc />
 		public Action<float> DownloadProgress { get; set; }
+
+		/// <inheritdoc />
+		public bool CallProgressOnUiContext { get; set; } = HttpExtensionsGlobals.CallProgressOnUiContext;
 
 		/// <inheritdoc />
 		public bool UseProgressStream { get; set; } = HttpExtensionsGlobals.UseProgressStream;

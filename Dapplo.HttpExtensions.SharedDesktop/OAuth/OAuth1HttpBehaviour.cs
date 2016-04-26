@@ -24,16 +24,29 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text;
 
 #endregion
 
 namespace Dapplo.HttpExtensions.OAuth
 {
 	/// <summary>
-	/// Implementation of the IHttpBehaviour which bases upon the HttpBehaviour and extends it with special OAuth 1 functionality
+	///     Implementation of the IHttpBehaviour which bases upon the HttpBehaviour and extends it with special OAuth 1
+	///     functionality
 	/// </summary>
-	public class OAuth1HttpBehaviour : HttpBehaviour
+	public class OAuth1HttpBehaviour : IChangeableHttpBehaviour
 	{
+		private readonly IChangeableHttpBehaviour _wrapped;
+
+		/// <summary>
+		///     Create a OAuthHttpBehaviour
+		/// </summary>
+		/// <param name="httpBehaviour">IHttpBehaviour to wrap</param>
+		public OAuth1HttpBehaviour(IHttpBehaviour httpBehaviour = null)
+		{
+			_wrapped = (httpBehaviour ?? HttpBehaviour.Current).Clone();
+		}
+
 		/// <summary>
 		///     Set this function if you want to modify the request message that is send to the service
 		/// </summary>
@@ -42,12 +55,130 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <summary>
 		///     Set this function if you want to process any additional access token values
 		/// </summary>
-		public Action<IDictionary<string, string>> OnAccessToken { get; set; }
+		public Action<IDictionary<string, string>> OnAccessTokenValues { get; set; }
 
 		/// <inheritdoc />
-		public new OAuth1HttpBehaviour Clone()
+		public Encoding DefaultEncoding
+		{
+			get { return _wrapped.DefaultEncoding; }
+			set { _wrapped.DefaultEncoding = value; }
+		}
+
+		/// <inheritdoc />
+		public Action<float> DownloadProgress
+		{
+			get { return _wrapped.DownloadProgress; }
+			set { _wrapped.DownloadProgress = value; }
+		}
+
+		/// <inheritdoc />
+		public HttpCompletionOption HttpCompletionOption
+		{
+			get { return _wrapped.HttpCompletionOption; }
+			set { _wrapped.HttpCompletionOption = value; }
+		}
+
+		/// <inheritdoc />
+		public IList<IHttpContentConverter> HttpContentConverters
+		{
+			get { return _wrapped.HttpContentConverters; }
+			set { _wrapped.HttpContentConverters = value; }
+		}
+
+		/// <inheritdoc />
+		public IHttpSettings HttpSettings
+		{
+			get { return _wrapped.HttpSettings; }
+			set { _wrapped.HttpSettings = value; }
+		}
+
+		/// <inheritdoc />
+		public IJsonSerializer JsonSerializer
+		{
+			get { return _wrapped.JsonSerializer; }
+			set { _wrapped.JsonSerializer = value; }
+		}
+
+		/// <inheritdoc />
+		public Action<HttpClient> OnHttpClientCreated
+		{
+			get { return _wrapped.OnHttpClientCreated; }
+			set { _wrapped.OnHttpClientCreated = value; }
+		}
+
+		/// <inheritdoc />
+		public Func<HttpContent, HttpContent> OnHttpContentCreated
+		{
+			get { return _wrapped.OnHttpContentCreated; }
+			set { _wrapped.OnHttpContentCreated = value; }
+		}
+
+		/// <inheritdoc />
+		public Func<HttpMessageHandler, HttpMessageHandler> OnHttpMessageHandlerCreated
+		{
+			get { return _wrapped.OnHttpMessageHandlerCreated; }
+			set { _wrapped.OnHttpMessageHandlerCreated = value; }
+		}
+
+		/// <inheritdoc />
+		public Func<HttpRequestMessage, HttpRequestMessage> OnHttpRequestMessageCreated
+		{
+			get { return _wrapped.OnHttpRequestMessageCreated; }
+			set { _wrapped.OnHttpRequestMessageCreated = value; }
+		}
+
+		/// <inheritdoc />
+		public int ReadBufferSize
+		{
+			get { return _wrapped.ReadBufferSize; }
+			set { _wrapped.ReadBufferSize = value; }
+		}
+
+		/// <inheritdoc />
+		public bool ThrowOnError
+		{
+			get { return _wrapped.ThrowOnError; }
+			set { _wrapped.ThrowOnError = value; }
+		}
+
+		/// <inheritdoc />
+		public bool CallProgressOnUiContext
+		{
+			get { return _wrapped.CallProgressOnUiContext; }
+			set { _wrapped.CallProgressOnUiContext = value; }
+		}
+
+		/// <inheritdoc />
+		public Action<float> UploadProgress
+		{
+			get { return _wrapped.UploadProgress; }
+			set { _wrapped.UploadProgress = value; }
+		}
+
+		/// <inheritdoc />
+		public bool UseProgressStream
+		{
+			get { return _wrapped.UseProgressStream; }
+			set { _wrapped.UseProgressStream = value; }
+		}
+
+		/// <inheritdoc />
+		public bool ValidateResponseContentType
+		{
+			get { return _wrapped.ValidateResponseContentType; }
+			set { _wrapped.ValidateResponseContentType = value; }
+		}
+
+		/// <inheritdoc />
+		public IChangeableHttpBehaviour Clone()
 		{
 			return (OAuth1HttpBehaviour) MemberwiseClone();
+		}
+
+		/// <inheritdoc />
+		public void MakeCurrent()
+		{
+			_wrapped.MakeCurrent();
 		}
 	}
 }

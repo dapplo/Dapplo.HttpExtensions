@@ -28,13 +28,14 @@ using System;
 namespace Dapplo.HttpExtensions.Support
 {
 	/// <summary>
-	///     This attribute marks a property in a HttpRequestAttributed or HttpResponseAttribute class as being a part for processing
+	///     This attribute marks a property in a HttpRequestAttributed or HttpResponseAttribute class as being a part for
+	///     processing
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Property)]
 	public class HttpPartAttribute : Attribute
 	{
 		/// <summary>
-		/// Constructor
+		///     Constructor
 		/// </summary>
 		/// <param name="part">HttpParts</param>
 		public HttpPartAttribute(HttpParts part)

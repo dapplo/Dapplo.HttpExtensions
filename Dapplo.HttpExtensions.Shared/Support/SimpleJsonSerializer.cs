@@ -33,7 +33,6 @@ namespace Dapplo.HttpExtensions.Support
 	public class SimpleJsonSerializer : IJsonSerializer
 	{
 		/// <summary>
-		/// 
 		/// </summary>
 		/// <param name="targetType">Type to deserialize from a json string</param>
 		/// <param name="jsonString">json</param>
@@ -44,7 +43,6 @@ namespace Dapplo.HttpExtensions.Support
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		/// <typeparam name="TResult">Type to deserialize from a json string</typeparam>
 		/// <param name="jsonString">json</param>
@@ -55,7 +53,6 @@ namespace Dapplo.HttpExtensions.Support
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		/// <typeparam name="TContent">Type to serialize to json string</typeparam>
 		/// <param name="jsonObject">The actual object</param>

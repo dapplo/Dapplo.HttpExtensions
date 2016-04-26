@@ -34,10 +34,10 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <returns>IHttpBehaviour</returns>
 		public static IHttpBehaviour Create(OAuth2Settings oAuth2Settings, IHttpBehaviour fromHttpBehaviour = null)
 		{
-			// Get a clone of a IHttpBehaviour or create new
-			var oauthHttpBehaviour = fromHttpBehaviour == null ? new HttpBehaviour() : fromHttpBehaviour.Clone();
+			// Get a clone of a IHttpBehaviour (passed or current)
+			var oauthHttpBehaviour = (fromHttpBehaviour ?? HttpBehaviour.Current).Clone();
 			// Add a wrapper (delegate handler) which wraps all new HttpMessageHandlers
-			oauthHttpBehaviour.OnHttpMessageHandlerCreated = httpMessageHandler => new OAuth2HttpMessageHandler(oAuth2Settings, oauthHttpBehaviour, httpMessageHandler);
+			oauthHttpBehaviour.ChainOnHttpMessageHandlerCreated(httpMessageHandler => new OAuth2HttpMessageHandler(oAuth2Settings, oauthHttpBehaviour, httpMessageHandler));
 			return oauthHttpBehaviour;
 		}
 	}

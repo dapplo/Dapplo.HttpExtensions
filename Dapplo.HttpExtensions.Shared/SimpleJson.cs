@@ -150,12 +150,9 @@ namespace Dapplo.HttpExtensions
         /// Gets the <see cref="System.Object"/> at the specified index.
         /// </summary>
         /// <value></value>
-        public object this[int index]
-        {
-            get { return GetAtIndex(_members, index); }
-        }
+        public object this[int index] => GetAtIndex(_members, index);
 
-        internal static object GetAtIndex(IDictionary<string, object> obj, int index)
+	    internal static object GetAtIndex(IDictionary<string, object> obj, int index)
         {
             if (obj == null)
                 throw new ArgumentNullException(nameof(obj));
@@ -193,12 +190,9 @@ namespace Dapplo.HttpExtensions
         /// Gets the keys.
         /// </summary>
         /// <value>The keys.</value>
-        public ICollection<string> Keys
-        {
-            get { return _members.Keys; }
-        }
+        public ICollection<string> Keys => _members.Keys;
 
-        /// <summary>
+	    /// <summary>
         /// Removes the specified key.
         /// </summary>
         /// <param name="key">The key.</param>
@@ -223,12 +217,9 @@ namespace Dapplo.HttpExtensions
         /// Gets the values.
         /// </summary>
         /// <value>The values.</value>
-        public ICollection<object> Values
-        {
-            get { return _members.Values; }
-        }
+        public ICollection<object> Values => _members.Values;
 
-        /// <summary>
+	    /// <summary>
         /// Gets or sets the <see cref="System.Object"/> with the specified key.
         /// </summary>
         /// <value></value>
@@ -274,7 +265,7 @@ namespace Dapplo.HttpExtensions
         /// <param name="arrayIndex">Index of the array.</param>
         public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
         {
-            if (array == null) throw new ArgumentNullException("array");
+            if (array == null) throw new ArgumentNullException(nameof(array));
             int num = Count;
             foreach (KeyValuePair<string, object> kvp in this)
             {
@@ -288,23 +279,17 @@ namespace Dapplo.HttpExtensions
         /// Gets the count.
         /// </summary>
         /// <value>The count.</value>
-        public int Count
-        {
-            get { return _members.Count; }
-        }
+        public int Count => _members.Count;
 
-        /// <summary>
+	    /// <summary>
         /// Gets a value indicating whether this instance is read only.
         /// </summary>
         /// <value>
         /// 	<c>true</c> if this instance is read only; otherwise, <c>false</c>.
         /// </value>
-        public bool IsReadOnly
-        {
-            get { return false; }
-        }
+        public bool IsReadOnly => false;
 
-        /// <summary>
+	    /// <summary>
         /// Removes the specified item.
         /// </summary>
         /// <param name="item">The item.</param>
@@ -358,7 +343,7 @@ namespace Dapplo.HttpExtensions
         {
             // <pex>
             if (binder == null)
-                throw new ArgumentNullException("binder");
+                throw new ArgumentNullException(nameof(binder));
             // </pex>
             Type targetType = binder.Type;
 
@@ -385,7 +370,7 @@ namespace Dapplo.HttpExtensions
         {
             // <pex>
             if (binder == null)
-                throw new ArgumentNullException("binder");
+                throw new ArgumentNullException(nameof(binder));
             // </pex>
             return _members.Remove(binder.Name);
         }
@@ -401,7 +386,7 @@ namespace Dapplo.HttpExtensions
         /// </returns>
         public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
         {
-            if (indexes == null) throw new ArgumentNullException("indexes");
+            if (indexes == null) throw new ArgumentNullException(nameof(indexes));
             if (indexes.Length == 1)
             {
                 result = ((IDictionary<string, object>)this)[(string)indexes[0]];
@@ -442,7 +427,7 @@ namespace Dapplo.HttpExtensions
         /// </returns>
         public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object value)
         {
-            if (indexes == null) throw new ArgumentNullException("indexes");
+            if (indexes == null) throw new ArgumentNullException(nameof(indexes));
             if (indexes.Length == 1)
             {
                 ((IDictionary<string, object>)this)[(string)indexes[0]] = value;
@@ -463,7 +448,7 @@ namespace Dapplo.HttpExtensions
         {
             // <pex>
             if (binder == null)
-                throw new ArgumentNullException("binder");
+                throw new ArgumentNullException(nameof(binder));
             // </pex>
             _members[binder.Name] = value;
             return true;
@@ -494,6 +479,7 @@ namespace Dapplo.HttpExtensions
     /// All numbers are parsed to doubles.
     /// </summary>
     [GeneratedCode("simple-json", "1.0.0")]
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
 #if SIMPLE_JSON_INTERNAL
     internal
 #else
@@ -517,7 +503,6 @@ namespace Dapplo.HttpExtensions
 
         private static readonly char[] EscapeTable;
         private static readonly char[] EscapeCharacters = new char[] { '"', '\\', '\b', '\f', '\n', '\r', '\t' };
-        private static readonly string EscapeCharactersString = new string(EscapeCharacters);
 
         static SimpleJson()
         {
@@ -605,7 +590,7 @@ namespace Dapplo.HttpExtensions
         {
             StringBuilder builder = new StringBuilder(BUILDER_CAPACITY);
             bool success = SerializeValue(jsonSerializerStrategy, json, builder);
-            return (success ? builder.ToString() : null);
+            return success ? builder.ToString() : null;
         }
 
         public static string SerializeObject(object json)
@@ -630,13 +615,12 @@ namespace Dapplo.HttpExtensions
                 return jsonString;
 
             StringBuilder sb = new StringBuilder();
-            char c;
 
-            for (int i = 0; i < jsonString.Length; )
+			for (int i = 0; i < jsonString.Length; )
             {
-                c = jsonString[i++];
+	            var c = jsonString[i++];
 
-                if (c == '\\')
+	            if (c == '\\')
                 {
                     int remainingLength = jsonString.Length - i;
                     if (remainingLength >= 2)
@@ -679,60 +663,57 @@ namespace Dapplo.HttpExtensions
                     sb.Append(c);
                 }
             }
-            return sb.ToString();
+			return sb.ToString();
         }
 
         static IDictionary<string, object> ParseObject(char[] json, ref int index, ref bool success)
         {
             IDictionary<string, object> table = new JsonObject();
-            int token;
 
-            // {
+	        // {
             NextToken(json, ref index);
 
-            bool done = false;
-            while (!done)
+            while (true)
             {
-                token = LookAhead(json, index);
+                var token = LookAhead(json, index);
                 if (token == TOKEN_NONE)
                 {
                     success = false;
                     return null;
                 }
-                else if (token == TOKEN_COMMA)
-                    NextToken(json, ref index);
-                else if (token == TOKEN_CURLY_CLOSE)
-                {
-                    NextToken(json, ref index);
-                    return table;
-                }
-                else
-                {
-                    // name
-                    string name = ParseString(json, ref index, ref success);
-                    if (!success)
-                    {
-                        success = false;
-                        return null;
-                    }
-                    // :
-                    token = NextToken(json, ref index);
-                    if (token != TOKEN_COLON)
-                    {
-                        success = false;
-                        return null;
-                    }
-                    // value
-                    object value = ParseValue(json, ref index, ref success);
-                    if (!success)
-                    {
-                        success = false;
-                        return null;
-                    }
-                    table[name] = value;
-                }
+	            if (token == TOKEN_COMMA)
+		            NextToken(json, ref index);
+	            else if (token == TOKEN_CURLY_CLOSE)
+	            {
+		            NextToken(json, ref index);
+		            return table;
+	            }
+	            else
+	            {
+		            // name
+		            string name = ParseString(json, ref index, ref success);
+		            if (!success)
+		            {
+			            success = false;
+			            return null;
+		            }
+		            // :
+		            token = NextToken(json, ref index);
+		            if (token != TOKEN_COLON)
+		            {
+			            success = false;
+			            return null;
+		            }
+		            // value
+		            object value = ParseValue(json, ref index, ref success);
+		            if (!success)
+		            {
+			            success = false;
+			            return null;
+		            }
+		            table[name] = value;
+	            }
             }
-            return table;
         }
 
         static JsonArray ParseArray(char[] json, ref int index, ref bool success)
@@ -742,8 +723,7 @@ namespace Dapplo.HttpExtensions
             // [
             NextToken(json, ref index);
 
-            bool done = false;
-            while (!done)
+            while (true)
             {
                 int token = LookAhead(json, index);
                 if (token == TOKEN_NONE)
@@ -751,20 +731,20 @@ namespace Dapplo.HttpExtensions
                     success = false;
                     return null;
                 }
-                else if (token == TOKEN_COMMA)
-                    NextToken(json, ref index);
-                else if (token == TOKEN_SQUARED_CLOSE)
-                {
-                    NextToken(json, ref index);
-                    break;
-                }
-                else
-                {
-                    object value = ParseValue(json, ref index, ref success);
-                    if (!success)
-                        return null;
-                    array.Add(value);
-                }
+	            if (token == TOKEN_COMMA)
+		            NextToken(json, ref index);
+	            else if (token == TOKEN_SQUARED_CLOSE)
+	            {
+		            NextToken(json, ref index);
+		            break;
+	            }
+	            else
+	            {
+		            object value = ParseValue(json, ref index, ref success);
+		            if (!success)
+			            return null;
+		            array.Add(value);
+	            }
             }
             return array;
         }
@@ -776,7 +756,7 @@ namespace Dapplo.HttpExtensions
                 case TOKEN_STRING:
                     return ParseString(json, ref index, ref success);
                 case TOKEN_NUMBER:
-                    return ParseNumber(json, ref index, ref success);
+                    return ParseNumber(json, ref index, out success);
                 case TOKEN_CURLY_OPEN:
                     return ParseObject(json, ref index, ref success);
                 case TOKEN_SQUARED_OPEN:
@@ -800,87 +780,86 @@ namespace Dapplo.HttpExtensions
         static string ParseString(char[] json, ref int index, ref bool success)
         {
             StringBuilder s = new StringBuilder(BUILDER_CAPACITY);
-            char c;
 
-            EatWhitespace(json, ref index);
+	        EatWhitespace(json, ref index);
 
             // "
-            c = json[index++];
+            index++;
             bool complete = false;
-            while (!complete)
+            while (true)
             {
                 if (index == json.Length)
                     break;
 
-                c = json[index++];
+                var c = json[index++];
                 if (c == '"')
                 {
                     complete = true;
                     break;
                 }
-                else if (c == '\\')
-                {
-                    if (index == json.Length)
-                        break;
-                    c = json[index++];
-                    if (c == '"')
-                        s.Append('"');
-                    else if (c == '\\')
-                        s.Append('\\');
-                    else if (c == '/')
-                        s.Append('/');
-                    else if (c == 'b')
-                        s.Append('\b');
-                    else if (c == 'f')
-                        s.Append('\f');
-                    else if (c == 'n')
-                        s.Append('\n');
-                    else if (c == 'r')
-                        s.Append('\r');
-                    else if (c == 't')
-                        s.Append('\t');
-                    else if (c == 'u')
-                    {
-                        int remainingLength = json.Length - index;
-                        if (remainingLength >= 4)
-                        {
-                            // parse the 32 bit hex into an integer codepoint
-                            uint codePoint;
-                            if (!(success = UInt32.TryParse(new string(json, index, 4), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out codePoint)))
-                                return "";
+	            if (c == '\\')
+	            {
+		            if (index == json.Length)
+			            break;
+		            c = json[index++];
+		            if (c == '"')
+			            s.Append('"');
+		            else if (c == '\\')
+			            s.Append('\\');
+		            else if (c == '/')
+			            s.Append('/');
+		            else if (c == 'b')
+			            s.Append('\b');
+		            else if (c == 'f')
+			            s.Append('\f');
+		            else if (c == 'n')
+			            s.Append('\n');
+		            else if (c == 'r')
+			            s.Append('\r');
+		            else if (c == 't')
+			            s.Append('\t');
+		            else if (c == 'u')
+		            {
+			            int remainingLength = json.Length - index;
+			            if (remainingLength >= 4)
+			            {
+				            // parse the 32 bit hex into an integer codepoint
+				            uint codePoint;
+				            if (!(success = UInt32.TryParse(new string(json, index, 4), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out codePoint)))
+					            return "";
 
-                            // convert the integer codepoint to a unicode char and add to string
-                            if (0xD800 <= codePoint && codePoint <= 0xDBFF)  // if high surrogate
-                            {
-                                index += 4; // skip 4 chars
-                                remainingLength = json.Length - index;
-                                if (remainingLength >= 6)
-                                {
-                                    uint lowCodePoint;
-                                    if (new string(json, index, 2) == "\\u" && UInt32.TryParse(new string(json, index + 2, 4), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out lowCodePoint))
-                                    {
-                                        if (0xDC00 <= lowCodePoint && lowCodePoint <= 0xDFFF)    // if low surrogate
-                                        {
-                                            s.Append((char)codePoint);
-                                            s.Append((char)lowCodePoint);
-                                            index += 6; // skip 6 chars
-                                            continue;
-                                        }
-                                    }
-                                }
-                                success = false;    // invalid surrogate pair
-                                return "";
-                            }
-                            s.Append(ConvertFromUtf32((int)codePoint));
-                            // skip 4 chars
-                            index += 4;
-                        }
-                        else
-                            break;
-                    }
-                }
-                else
-                    s.Append(c);
+				            // convert the integer codepoint to a unicode char and add to string
+				            if (0xD800 <= codePoint && codePoint <= 0xDBFF)  // if high surrogate
+				            {
+					            index += 4; // skip 4 chars
+					            remainingLength = json.Length - index;
+					            if (remainingLength >= 6)
+					            {
+						            uint lowCodePoint;
+						            if (new string(json, index, 2) == "\\u" && UInt32.TryParse(new string(json, index + 2, 4), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out lowCodePoint))
+						            {
+							            if (0xDC00 <= lowCodePoint && lowCodePoint <= 0xDFFF)    // if low surrogate
+							            {
+								            s.Append((char)codePoint);
+								            s.Append((char)lowCodePoint);
+								            index += 6; // skip 6 chars
+								            continue;
+							            }
+						            }
+					            }
+					            success = false;    // invalid surrogate pair
+					            return "";
+				            }
+				            s.Append(ConvertFromUtf32((int)codePoint));
+				            // skip 4 chars
+				            index += 4;
+			            }
+			            else
+				            break;
+		            }
+	            }
+	            else
+		            s.Append(c);
             }
             if (!complete)
             {
@@ -894,20 +873,20 @@ namespace Dapplo.HttpExtensions
         {
             // http://www.java2s.com/Open-Source/CSharp/2.6.4-mono-.net-core/System/System/Char.cs.htm
             if (utf32 < 0 || utf32 > 0x10FFFF)
-                throw new ArgumentOutOfRangeException("utf32", "The argument must be from 0 to 0x10FFFF.");
+                throw new ArgumentOutOfRangeException(nameof(utf32), "The argument must be from 0 to 0x10FFFF.");
             if (0xD800 <= utf32 && utf32 <= 0xDFFF)
-                throw new ArgumentOutOfRangeException("utf32", "The argument must not be in surrogate pair range.");
+                throw new ArgumentOutOfRangeException(nameof(utf32), "The argument must not be in surrogate pair range.");
             if (utf32 < 0x10000)
                 return new string((char)utf32, 1);
             utf32 -= 0x10000;
             return new string(new char[] { (char)((utf32 >> 10) + 0xD800), (char)(utf32 % 0x0400 + 0xDC00) });
         }
 
-        static object ParseNumber(char[] json, ref int index, ref bool success)
+        static object ParseNumber(char[] json, ref int index, out bool success)
         {
             EatWhitespace(json, ref index);
             int lastIndex = GetLastIndexOfNumber(json, index);
-            int charLength = (lastIndex - index) + 1;
+            int charLength = lastIndex - index + 1;
             object returnNumber;
             string str = new string(json, index, charLength);
             if (str.IndexOf(".", StringComparison.OrdinalIgnoreCase) != -1 || str.IndexOf("e", StringComparison.OrdinalIgnoreCase) != -1)
@@ -1222,25 +1201,13 @@ namespace Dapplo.HttpExtensions
 
         private static PocoJsonSerializerStrategy _pocoJsonSerializerStrategy;
         [EditorBrowsable(EditorBrowsableState.Advanced)]
-        public static PocoJsonSerializerStrategy PocoJsonSerializerStrategy
-        {
-            get
-            {
-                return _pocoJsonSerializerStrategy ?? (_pocoJsonSerializerStrategy = new PocoJsonSerializerStrategy());
-            }
-        }
+        public static PocoJsonSerializerStrategy PocoJsonSerializerStrategy => _pocoJsonSerializerStrategy ?? (_pocoJsonSerializerStrategy = new PocoJsonSerializerStrategy());
 
 #if SIMPLE_JSON_DATACONTRACT
 
         private static DataContractJsonSerializerStrategy _dataContractJsonSerializerStrategy;
-        [System.ComponentModel.EditorBrowsable(EditorBrowsableState.Advanced)]
-        public static DataContractJsonSerializerStrategy DataContractJsonSerializerStrategy
-        {
-            get
-            {
-                return _dataContractJsonSerializerStrategy ?? (_dataContractJsonSerializerStrategy = new DataContractJsonSerializerStrategy());
-            }
-        }
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        public static DataContractJsonSerializerStrategy DataContractJsonSerializerStrategy => _dataContractJsonSerializerStrategy ?? (_dataContractJsonSerializerStrategy = new DataContractJsonSerializerStrategy());
 
 #endif
     }
@@ -1403,8 +1370,6 @@ namespace Dapplo.HttpExtensions
                 {
                     if (type == typeof(Guid))
                         obj = default(Guid);
-                    else if (ReflectionUtils.IsNullableType(type) && Nullable.GetUnderlyingType(type) == typeof(Guid))
-                        obj = null;
                     else
                         obj = str;
                 }
@@ -1548,7 +1513,7 @@ namespace Dapplo.HttpExtensions
         [SuppressMessage("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate", Justification="Need to support .NET 2")]
         protected virtual bool TrySerializeUnknownTypes(object input, out object output)
         {
-            if (input == null) throw new ArgumentNullException("input");
+            if (input == null) throw new ArgumentNullException(nameof(input));
             output = null;
             Type type = input.GetType();
             if (type.FullName == null)
@@ -1628,20 +1593,16 @@ namespace Dapplo.HttpExtensions
 			DataContractAttribute dataContractAttribute = (DataContractAttribute)ReflectionUtils.GetAttribute(type, typeof(DataContractAttribute));
 			if (dataContractAttribute == null)
 				return result;
-			string jsonKey;
-			DataMemberAttribute dataMemberAttribute;
 			foreach (PropertyInfo propertyInfo in ReflectionUtils.GetProperties(type))
 			{
+				DataMemberAttribute dataMemberAttribute;
 				if (CanAdd(propertyInfo, out dataMemberAttribute))
 				{
-					jsonKey = JsonKey(dataMemberAttribute, propertyInfo);
+					var jsonKey = JsonKey(dataMemberAttribute, propertyInfo);
 					if (dataMemberAttribute?.EmitDefaultValue == false)
 					{
 						var def = Default(propertyInfo.PropertyType);
-						result[jsonKey] = (value) =>
-						{
-							return !Equals(def, value);
-						};
+						result[jsonKey] = value => !Equals(def, value);
 					}
 				}
 			}
@@ -1709,7 +1670,7 @@ namespace Dapplo.HttpExtensions
 					result[jsonKey] = new KeyValuePair<Type, ReflectionUtils.SetDelegate>(fieldInfo.FieldType, ReflectionUtils.GetSetMethod(fieldInfo));
 				}
             }
-            // todo implement sorting for DATACONTRACT.
+            // TODO implement sorting for DATACONTRACT.
             return result;
         }
 
@@ -1740,13 +1701,13 @@ namespace Dapplo.HttpExtensions
 #endif
  class ReflectionUtils
         {
-            private static readonly object[] EmptyObjects = new object[] { };
+            private static readonly object[] EmptyObjects = { };
 
             public delegate object GetDelegate(object source);
             public delegate void SetDelegate(object source, object value);
             public delegate object ConstructorDelegate(params object[] args);
 
-            public delegate TValue ThreadSafeDictionaryValueFactory<TKey, TValue>(TKey key);
+            public delegate TValue ThreadSafeDictionaryValueFactory<in TKey, out TValue>(TKey key);
 
 #if SIMPLE_JSON_TYPEINFO
             public static TypeInfo GetTypeInfo(Type type)
@@ -1775,11 +1736,10 @@ namespace Dapplo.HttpExtensions
 
             public static Type GetGenericListElementType(Type type)
             {
-                IEnumerable<Type> interfaces;
 #if SIMPLE_JSON_TYPEINFO
-                interfaces = type.GetTypeInfo().ImplementedInterfaces;
+                IEnumerable<Type> interfaces = type.GetTypeInfo().ImplementedInterfaces;
 #else
-                interfaces = type.GetInterfaces();
+				IEnumerable<Type> interfaces = type.GetInterfaces();
 #endif
                 foreach (Type implementedInterface in interfaces)
                 {
@@ -1827,14 +1787,14 @@ namespace Dapplo.HttpExtensions
 
                 Type genericDefinition = type.GetGenericTypeDefinition();
 
-                return (genericDefinition == typeof(IList<>)
+                return genericDefinition == typeof(IList<>)
                     || genericDefinition == typeof(ICollection<>)
                     || genericDefinition == typeof(IEnumerable<>)
 #if SIMPLE_JSON_READONLY_COLLECTIONS
                     || genericDefinition == typeof(IReadOnlyCollection<>)
                     || genericDefinition == typeof(IReadOnlyList<>)
 #endif
-                    );
+                    ;
             }
 
             public static bool IsAssignableFrom(Type type1, Type type2)
@@ -1848,7 +1808,7 @@ namespace Dapplo.HttpExtensions
                 if (typeof(IDictionary<,>).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
                     return true;
 #else
-                if (typeof(System.Collections.IDictionary).IsAssignableFrom(type))
+                if (typeof(IDictionary).IsAssignableFrom(type))
                     return true;
 #endif
                 if (!GetTypeInfo(type).IsGenericType)
@@ -1885,16 +1845,14 @@ namespace Dapplo.HttpExtensions
             public static ConstructorInfo GetConstructorInfo(Type type, params Type[] argsType)
             {
                 IEnumerable<ConstructorInfo> constructorInfos = GetConstructors(type);
-                int i;
-                bool matches;
-                foreach (ConstructorInfo constructorInfo in constructorInfos)
+	            foreach (ConstructorInfo constructorInfo in constructorInfos)
                 {
                     ParameterInfo[] parameters = constructorInfo.GetParameters();
                     if (argsType.Length != parameters.Length)
                         continue;
 
-                    i = 0;
-                    matches = true;
+                    var i = 0;
+                    var matches = true;
                     foreach (ParameterInfo parameterInfo in constructorInfo.GetParameters())
                     {
                         if (parameterInfo.ParameterType != argsType[i])
@@ -1967,7 +1925,7 @@ namespace Dapplo.HttpExtensions
 
             public static ConstructorDelegate GetConstructorByReflection(ConstructorInfo constructorInfo)
             {
-                return delegate(object[] args) { return constructorInfo.Invoke(args); };
+                return constructorInfo.Invoke;
             }
 
             public static ConstructorDelegate GetConstructorByReflection(Type type, params Type[] argsType)
@@ -1994,7 +1952,7 @@ namespace Dapplo.HttpExtensions
                 NewExpression newExp = Expression.New(constructorInfo, argsExp);
                 Expression<Func<object[], object>> lambda = Expression.Lambda<Func<object[], object>>(newExp, param);
                 Func<object[], object> compiledLambda = lambda.Compile();
-                return delegate(object[] args) { return compiledLambda(args); };
+                return args => compiledLambda(args);
             }
 
             public static ConstructorDelegate GetConstructorByExpression(Type type, params Type[] argsType)
@@ -2026,12 +1984,12 @@ namespace Dapplo.HttpExtensions
             public static GetDelegate GetGetMethodByReflection(PropertyInfo propertyInfo)
             {
                 MethodInfo methodInfo = GetGetterMethodInfo(propertyInfo);
-                return delegate(object source) { return methodInfo.Invoke(source, EmptyObjects); };
+                return source => methodInfo.Invoke(source, EmptyObjects);
             }
 
             public static GetDelegate GetGetMethodByReflection(FieldInfo fieldInfo)
             {
-                return delegate(object source) { return fieldInfo.GetValue(source); };
+                return fieldInfo.GetValue;
             }
 
 #if !SIMPLE_JSON_NO_LINQ_EXPRESSION
@@ -2040,9 +1998,9 @@ namespace Dapplo.HttpExtensions
             {
                 MethodInfo getMethodInfo = GetGetterMethodInfo(propertyInfo);
                 ParameterExpression instance = Expression.Parameter(typeof(object), "instance");
-                UnaryExpression instanceCast = (!IsValueType(propertyInfo.DeclaringType)) ? Expression.TypeAs(instance, propertyInfo.DeclaringType) : Expression.Convert(instance, propertyInfo.DeclaringType);
+                UnaryExpression instanceCast = !IsValueType(propertyInfo.DeclaringType) ? Expression.TypeAs(instance, propertyInfo.DeclaringType) : Expression.Convert(instance, propertyInfo.DeclaringType);
                 Func<object, object> compiled = Expression.Lambda<Func<object, object>>(Expression.TypeAs(Expression.Call(instanceCast, getMethodInfo), typeof(object)), instance).Compile();
-                return delegate(object source) { return compiled(source); };
+                return source => compiled(source);
             }
 
             public static GetDelegate GetGetMethodByExpression(FieldInfo fieldInfo)
@@ -2050,7 +2008,7 @@ namespace Dapplo.HttpExtensions
                 ParameterExpression instance = Expression.Parameter(typeof(object), "instance");
                 MemberExpression member = Expression.Field(Expression.Convert(instance, fieldInfo.DeclaringType), fieldInfo);
                 GetDelegate compiled = Expression.Lambda<GetDelegate>(Expression.Convert(member, typeof(object)), instance).Compile();
-                return delegate(object source) { return compiled(source); };
+                return source => compiled(source);
             }
 
 #endif
@@ -2081,7 +2039,7 @@ namespace Dapplo.HttpExtensions
 
             public static SetDelegate GetSetMethodByReflection(FieldInfo fieldInfo)
             {
-                return delegate(object source, object value) { fieldInfo.SetValue(source, value); };
+                return fieldInfo.SetValue;
             }
 
 #if !SIMPLE_JSON_NO_LINQ_EXPRESSION
@@ -2091,9 +2049,9 @@ namespace Dapplo.HttpExtensions
                 MethodInfo setMethodInfo = GetSetterMethodInfo(propertyInfo);
                 ParameterExpression instance = Expression.Parameter(typeof(object), "instance");
                 ParameterExpression value = Expression.Parameter(typeof(object), "value");
-                UnaryExpression instanceCast = (!IsValueType(propertyInfo.DeclaringType)) ? Expression.TypeAs(instance, propertyInfo.DeclaringType) : Expression.Convert(instance, propertyInfo.DeclaringType);
-                UnaryExpression valueCast = (!IsValueType(propertyInfo.PropertyType)) ? Expression.TypeAs(value, propertyInfo.PropertyType) : Expression.Convert(value, propertyInfo.PropertyType);
-                Action<object, object> compiled = Expression.Lambda<Action<object, object>>(Expression.Call(instanceCast, setMethodInfo, valueCast), new ParameterExpression[] { instance, value }).Compile();
+                UnaryExpression instanceCast = !IsValueType(propertyInfo.DeclaringType) ? Expression.TypeAs(instance, propertyInfo.DeclaringType) : Expression.Convert(instance, propertyInfo.DeclaringType);
+                UnaryExpression valueCast = !IsValueType(propertyInfo.PropertyType) ? Expression.TypeAs(value, propertyInfo.PropertyType) : Expression.Convert(value, propertyInfo.PropertyType);
+                Action<object, object> compiled = Expression.Lambda<Action<object, object>>(Expression.Call(instanceCast, setMethodInfo, valueCast), instance, value).Compile();
                 return delegate(object source, object val) { compiled(source, val); };
             }
 
@@ -2119,9 +2077,9 @@ namespace Dapplo.HttpExtensions
 
             private static class Assigner<T>
             {
-                public static T Assign(ref T left, T right)
+                public static T Assign(out T left, T right)
                 {
-                    return (left = right);
+                    return left = right;
                 }
             }
 
@@ -2155,17 +2113,15 @@ namespace Dapplo.HttpExtensions
                     {
                         if (_dictionary == null)
                         {
-                            _dictionary = new Dictionary<TKey, TValue>();
-                            _dictionary[key] = value;
+	                        _dictionary = new Dictionary<TKey, TValue> {[key] = value};
                         }
                         else
                         {
                             TValue val;
                             if (_dictionary.TryGetValue(key, out val))
                                 return val;
-                            Dictionary<TKey, TValue> dict = new Dictionary<TKey, TValue>(_dictionary);
-                            dict[key] = value;
-                            _dictionary = dict;
+	                        Dictionary<TKey, TValue> dict = new Dictionary<TKey, TValue>(_dictionary) {[key] = value};
+	                        _dictionary = dict;
                         }
                     }
                     return value;
@@ -2181,12 +2137,9 @@ namespace Dapplo.HttpExtensions
                     return _dictionary.ContainsKey(key);
                 }
 
-                public ICollection<TKey> Keys
-                {
-                    get { return _dictionary.Keys; }
-                }
+                public ICollection<TKey> Keys => _dictionary.Keys;
 
-                public bool Remove(TKey key)
+	            public bool Remove(TKey key)
                 {
                     throw new NotImplementedException();
                 }
@@ -2197,12 +2150,9 @@ namespace Dapplo.HttpExtensions
                     return true;
                 }
 
-                public ICollection<TValue> Values
-                {
-                    get { return _dictionary.Values; }
-                }
+                public ICollection<TValue> Values => _dictionary.Values;
 
-                public TValue this[TKey key]
+	            public TValue this[TKey key]
                 {
                     get { return Get(key); }
                     set { throw new NotImplementedException(); }
@@ -2228,12 +2178,9 @@ namespace Dapplo.HttpExtensions
                     throw new NotImplementedException();
                 }
 
-                public int Count
-                {
-                    get { return _dictionary.Count; }
-                }
+                public int Count => _dictionary.Count;
 
-                public bool IsReadOnly
+	            public bool IsReadOnly
                 {
                     get { throw new NotImplementedException(); }
                 }
@@ -2248,7 +2195,7 @@ namespace Dapplo.HttpExtensions
                     return _dictionary.GetEnumerator();
                 }
 
-                System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+                IEnumerator IEnumerable.GetEnumerator()
                 {
                     return _dictionary.GetEnumerator();
                 }

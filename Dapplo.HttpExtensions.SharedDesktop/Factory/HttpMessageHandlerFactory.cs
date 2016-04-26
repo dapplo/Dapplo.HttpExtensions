@@ -21,6 +21,7 @@
 
 #region using
 
+using Dapplo.LogFacade;
 using System.Net.Cache;
 using System.Net.Http;
 
@@ -65,6 +66,18 @@ namespace Dapplo.HttpExtensions.Factory
 			webRequestHandler.MaxResponseHeadersLength = httpSettings.MaxResponseHeadersLength;
 			webRequestHandler.CachePolicy = new RequestCachePolicy(httpSettings.RequestCacheLevel);
 			webRequestHandler.Proxy = httpSettings.UseProxy ? WebProxyFactory.Create() : null;
+
+			if (httpSettings.IgnoreSslCertificateErrors)
+			{
+				webRequestHandler.ServerCertificateValidationCallback = (sender, cert, chain, sslPolicyErrors) =>
+				{
+					if (sslPolicyErrors != System.Net.Security.SslPolicyErrors.None)
+					{
+						Log.Warn().WriteLine("Ssl policy error {0}", sslPolicyErrors);
+					}
+					return true;
+				};
+			}
 		}
 	}
 }

@@ -108,33 +108,6 @@ namespace Dapplo.HttpExtensions
 
 		/// <summary>
 		///     For more details, click
-		///     <a href="https://msdn.microsoft.com/en-us/library/system.net.webproxy.bypassarraylist.aspx">here</a>
-		/// </summary>
-		[Display(Description = "The bypass list for the proxy, only used when UseDefaultProxy is set to false (and UseProxy is true)")]
-		string[] ProxyBypassList { get; set; }
-
-		/// <summary>
-		///     For more details, click
-		///     <a href="https://msdn.microsoft.com/en-us/library/system.net.webproxy.bypassproxyonlocal.aspx">here</a>
-		/// </summary>
-		[DefaultValue(true), Display(Description = "When set to true, all local addresses will bypass the proxy")]
-		bool ProxyBypassOnLocal { get; set; }
-
-		/// <summary>
-		///     For more details, click
-		///     <a href="https://msdn.microsoft.com/en-us/library/system.net.webproxy.credentials.aspx">here</a>
-		/// </summary>
-		[Display(Description = "The credentials for the proxy, only used when UseDefaultCredentialsForProy is set to false")]
-		ICredentials ProxyCredentials { get; set; }
-
-		/// <summary>
-		///     The Uri for the proxy to use, when the UseDefaultProxy is set to false
-		/// </summary>
-		[Display(Description = "When true the configured proxy will used the default user credentials")]
-		Uri ProxyUri { get; set; }
-
-		/// <summary>
-		///     For more details, click
 		///     <a href="https://msdn.microsoft.com/en-us/library/system.net.http.httpclient.timeout.aspx">here</a>
 		/// </summary>
 		[DefaultValue("0:01:40"), Display(Description = "Request timeout"), DataMember(EmitDefaultValue = true)]
@@ -154,17 +127,5 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		[DefaultValue(true), Display(Description = "When true every http request will supply the default user credentials when the server asks for them"), DataMember(EmitDefaultValue = true)]
 		bool UseDefaultCredentials { get; set; }
-
-		/// <summary>
-		/// When true the configured proxy will used the default user credentials
-		/// </summary>
-		[DefaultValue(true), Display(Description = "When true the configured proxy will used the default user credentials"), DataMember(EmitDefaultValue = true)]
-		bool UseDefaultCredentialsForProy { get; set; }
-
-		/// <summary>
-		/// When true the default system proxy is used
-		/// </summary>
-		[DefaultValue(true), Display(Description = "When true the default system proxy is used"), DataMember(EmitDefaultValue = true)]
-		bool UseDefaultProxy { get; set; }
 	}
 }

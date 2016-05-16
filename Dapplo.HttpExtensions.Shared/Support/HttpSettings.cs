@@ -23,13 +23,13 @@
 
 using System;
 using System.Net;
-using System.Net.Security;
 using System.Reflection;
-using System.Security.Principal;
 using System.Text;
 
 #if !_PCL_
 using System.Net.Cache;
+using System.Security.Principal;
+using System.Net.Security;
 #endif
 
 #endregion

@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2015-2016 Dapplo
+//  Copyright (C) 2016 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -24,10 +24,10 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Dapplo.HttpExtensions.Tests.Logger;
 using Dapplo.LogFacade;
 using Xunit;
 using Xunit.Abstractions;
-using Dapplo.HttpExtensions.Tests.Logger;
 
 #endregion
 

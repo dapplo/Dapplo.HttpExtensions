@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2015-2016 Dapplo
+//  Copyright (C) 2016 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -22,10 +22,10 @@
 #region using
 
 using System;
-using Dapplo.LogFacade;
-using Xunit.Abstractions;
-using Dapplo.LogFacade.Loggers;
 using System.Threading;
+using Dapplo.LogFacade;
+using Dapplo.LogFacade.Loggers;
+using Xunit.Abstractions;
 
 #endregion
 
@@ -55,10 +55,7 @@ namespace Dapplo.HttpExtensions.Tests.Logger
 		/// </summary>
 		public override LogLevel Level
 		{
-			get
-			{
-				return LogLevelAsyncLocal.Value;
-			}
+			get { return LogLevelAsyncLocal.Value; }
 			set { LogLevelAsyncLocal.Value = value; }
 		}
 
@@ -71,6 +68,22 @@ namespace Dapplo.HttpExtensions.Tests.Logger
 		public override bool IsLogLevelEnabled(LogLevel level)
 		{
 			return level != LogLevel.None && level >= Level;
+		}
+
+		/// <summary>
+		///     Register the XUnitLogger,  as the global LogFacade logger
+		///     This also places the ITestOutputHelper in the CallContext, so the output is mapped to the xUnit test
+		/// </summary>
+		/// <param name="testOutputHelper">ITestOutputHelper</param>
+		/// <param name="level">LogLevel, when none is given the LogSettings.DefaultLevel is used</param>
+		public static void RegisterLogger(ITestOutputHelper testOutputHelper, LogLevel level = default(LogLevel))
+		{
+			TestOutputHelperAsyncLocal.Value = testOutputHelper;
+			LogLevelAsyncLocal.Value = level == LogLevel.None ? LogSettings.DefaultLevel : level;
+			if (!(LogSettings.Logger is XUnitLogger))
+			{
+				LogSettings.Logger = new XUnitLogger();
+			}
 		}
 
 		public override void Write(LogInfo logInfo, string messageTemplate, params object[] logParameters)
@@ -97,22 +110,6 @@ namespace Dapplo.HttpExtensions.Tests.Logger
 			if (exception != null)
 			{
 				testOutputHelper.WriteLine(exception.ToString());
-			}
-		}
-
-		/// <summary>
-		///     Register the XUnitLogger,  as the global LogFacade logger
-		///     This also places the ITestOutputHelper in the CallContext, so the output is mapped to the xUnit test
-		/// </summary>
-		/// <param name="testOutputHelper">ITestOutputHelper</param>
-		/// <param name="level">LogLevel, when none is given the LogSettings.DefaultLevel is used</param>
-		public static void RegisterLogger(ITestOutputHelper testOutputHelper, LogLevel level = default(LogLevel))
-		{
-			TestOutputHelperAsyncLocal.Value = testOutputHelper;
-			LogLevelAsyncLocal.Value = level == LogLevel.None ? LogSettings.DefaultLevel : level;
-			if (!(LogSettings.Logger is XUnitLogger))
-			{
-				LogSettings.Logger = new XUnitLogger();
 			}
 		}
 	}

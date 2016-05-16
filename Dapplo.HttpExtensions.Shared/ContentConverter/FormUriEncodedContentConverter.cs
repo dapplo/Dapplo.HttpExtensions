@@ -21,8 +21,6 @@
 
 #region using
 
-#region using
-
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -32,8 +30,6 @@ using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.LogFacade;
 using Dapplo.Utils.Extensions;
-
-#endregion
 
 #if _PCL_
 using System.Reflection;

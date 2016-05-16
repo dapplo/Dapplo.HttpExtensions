@@ -21,7 +21,6 @@
 
 #region using
 
-using Dapplo.LogFacade;
 using System.Net;
 using System.Net.Http;
 
@@ -35,8 +34,6 @@ namespace Dapplo.HttpExtensions.Factory
 	/// </summary>
 	public static partial class HttpMessageHandlerFactory
 	{
-		private static readonly LogSource Log = new LogSource();
-
 		/// <summary>
 		///     This creates a HttpMessageHandler
 		///     Should be the preferred method to use to create a HttpMessageHandler

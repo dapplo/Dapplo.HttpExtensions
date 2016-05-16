@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2015-2016 Dapplo
+//  Copyright (C) 2016 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -35,7 +35,7 @@ using Xunit.Abstractions;
 namespace Dapplo.HttpExtensions.Tests
 {
 	/// <summary>
-	/// Test posting parts
+	///     Test posting parts
 	/// </summary>
 	public class HttpPartsPostTest
 	{
@@ -48,7 +48,7 @@ namespace Dapplo.HttpExtensions.Tests
 		}
 
 		/// <summary>
-		/// Test posting
+		///     Test posting
 		/// </summary>
 		[Fact]
 		public async Task TestPost()
@@ -57,9 +57,7 @@ namespace Dapplo.HttpExtensions.Tests
 			var uploadBehaviour = HttpBehaviour.Current.Clone();
 
 			uploadBehaviour.UseProgressStream = true;
-			uploadBehaviour.UploadProgress += progress => {
-				Log.Info().WriteLine("Progress {0}", (int)(progress * 100));
-			};
+			uploadBehaviour.UploadProgress += progress => { Log.Info().WriteLine("Progress {0}", (int) (progress*100)); };
 			uploadBehaviour.MakeCurrent();
 			var testObject = new MyMultiPartRequest
 			{

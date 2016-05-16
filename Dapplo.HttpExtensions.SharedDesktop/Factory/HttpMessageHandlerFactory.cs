@@ -21,9 +21,9 @@
 
 #region using
 
-using Dapplo.LogFacade;
 using System.Net.Cache;
 using System.Net.Http;
+using Dapplo.LogFacade;
 
 #endregion
 
@@ -35,6 +35,8 @@ namespace Dapplo.HttpExtensions.Factory
 	/// </summary>
 	public static partial class HttpMessageHandlerFactory
 	{
+		private static readonly LogSource Log = new LogSource();
+
 		/// <summary>
 		///     This creates an advanced HttpMessageHandler, used in desktop applications
 		///     Should be preferred

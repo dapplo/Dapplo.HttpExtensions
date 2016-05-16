@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2015-2016 Dapplo
+//  Copyright (C) 2016 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -27,17 +27,17 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.OAuth;
+using Dapplo.HttpExtensions.Tests.Logger;
 using Dapplo.LogFacade;
 using Xunit;
 using Xunit.Abstractions;
-using Dapplo.HttpExtensions.Tests.Logger;
 
 #endregion
 
 namespace Dapplo.HttpExtensions.Tests.OAuth
 {
 	/// <summary>
-	/// This tests some of the basic oauth 1 logic, together with a server at: http://term.ie/oauth/example/
+	///     This tests some of the basic oauth 1 logic, together with a server at: http://term.ie/oauth/example/
 	/// </summary>
 	public class OAuthTests
 	{

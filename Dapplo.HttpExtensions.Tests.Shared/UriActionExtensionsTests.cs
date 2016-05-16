@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2015-2016 Dapplo
+//  Copyright (C) 2016 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -26,16 +26,16 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.ServiceModel.Syndication;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Xml.Linq;
+using Dapplo.HttpExtensions.Support;
+using Dapplo.HttpExtensions.Tests.Logger;
 using Dapplo.LogFacade;
 using Xunit;
 using Xunit.Abstractions;
-using Dapplo.HttpExtensions.Tests.Logger;
-using System.Net.Http;
-using Dapplo.HttpExtensions.Support;
 
 #endregion
 
@@ -55,6 +55,35 @@ namespace Dapplo.HttpExtensions.Tests
 		}
 
 		/// <summary>
+		///     Test basic authentication
+		/// </summary>
+		[Fact]
+		public async Task TestBasicAuthAsync()
+		{
+			await new Uri("https://usern:passw@httpbin.org/basic-auth/usern/passw").GetAsAsync<string>();
+		}
+
+		/// <summary>
+		///     Test DELETE
+		/// </summary>
+		[Fact]
+		public async Task TestDelete()
+		{
+			var result = await new Uri("https://httpbin.org/delete").DeleteAsync<dynamic>();
+			Assert.NotNull(result);
+		}
+
+		/// <summary>
+		///     Test retrieval when a 204 (no content) is returned
+		/// </summary>
+		[Fact]
+		public async Task TestGetAsAsync204()
+		{
+			var result = await new Uri("https://httpbin.org/status/204").GetAsAsync<string>();
+			Assert.Null(result);
+		}
+
+		/// <summary>
 		///     Test getting the uri as Bitmap
 		/// </summary>
 		[Fact]
@@ -63,9 +92,7 @@ namespace Dapplo.HttpExtensions.Tests
 			var downloadBehaviour = HttpBehaviour.Current.Clone();
 
 			downloadBehaviour.UseProgressStream = true;
-			downloadBehaviour.DownloadProgress += progress => {
-				Log.Info().WriteLine("Progress {0}", (int)(progress * 100));
-			};
+			downloadBehaviour.DownloadProgress += progress => { Log.Info().WriteLine("Progress {0}", (int) (progress*100)); };
 			downloadBehaviour.MakeCurrent();
 
 			var bitmap = await _bitmapUri.GetAsAsync<Bitmap>();
@@ -119,54 +146,12 @@ namespace Dapplo.HttpExtensions.Tests
 		}
 
 		/// <summary>
-		///     Test retrieval when a 204 (no content) is returned
+		///     Test HandleErrorAsync
 		/// </summary>
 		[Fact]
-		public async Task TestGetAsAsync204()
+		public async Task TestHandleErrorAsync()
 		{
-			var result = await new Uri("https://httpbin.org/status/204").GetAsAsync<string>();
-			Assert.Null(result);
-		}
-
-		/// <summary>
-		///     Test user-agent
-		/// </summary>
-		[Fact]
-		public async Task TestUserAgent()
-		{
-			var result = await new Uri("https://httpbin.org/user-agent").GetAsAsync<IDictionary<string, string>>();
-			Assert.NotNull(result);
-			Assert.True(result.ContainsKey("user-agent"));
-			Assert.Equal(HttpExtensionsGlobals.HttpSettings.DefaultUserAgent, result["user-agent"]);
-		}
-
-		/// <summary>
-		///     Test DELETE
-		/// </summary>
-		[Fact]
-		public async Task TestDelete()
-		{
-			var result = await new Uri("https://httpbin.org/delete").DeleteAsync<dynamic>();
-			Assert.NotNull(result);
-		}
-
-		/// <summary>
-		///     Test PUT
-		/// </summary>
-		[Fact]
-		public async Task TestPut()
-		{
-			var result = await new Uri("https://httpbin.org/put").PutAsync<dynamic>(null);
-			Assert.NotNull(result);
-		}
-
-		/// <summary>
-		///     Test POST
-		/// </summary>
-		[Fact]
-		public async Task TestPost()
-		{
-			await new Uri("https://httpbin.org/post").PostAsync(null);
+			await Assert.ThrowsAsync<HttpRequestException>(async () => await new Uri("https://httpbin.orgf").HeadAsync());
 		}
 
 		/// <summary>
@@ -189,21 +174,22 @@ namespace Dapplo.HttpExtensions.Tests
 		}
 
 		/// <summary>
-		///     Test HandleErrorAsync
+		///     Test POST
 		/// </summary>
 		[Fact]
-		public async Task TestHandleErrorAsync()
+		public async Task TestPost()
 		{
-			await Assert.ThrowsAsync<HttpRequestException>(async () =>  await new Uri("https://httpbin.orgf").HeadAsync());
+			await new Uri("https://httpbin.org/post").PostAsync(null);
 		}
 
 		/// <summary>
-		///     Test basic authentication
+		///     Test PUT
 		/// </summary>
 		[Fact]
-		public async Task TestBasicAuthAsync()
+		public async Task TestPut()
 		{
-			await new Uri("https://usern:passw@httpbin.org/basic-auth/usern/passw").GetAsAsync<string>();
+			var result = await new Uri("https://httpbin.org/put").PutAsync<dynamic>(null);
+			Assert.NotNull(result);
 		}
 
 		/// <summary>
@@ -229,6 +215,18 @@ namespace Dapplo.HttpExtensions.Tests
 			behavior.HttpSettings.AllowAutoRedirect = false;
 			behavior.MakeCurrent();
 			await Assert.ThrowsAsync<HttpRequestException>(async () => await new Uri("https://httpbin.org/redirect/2").GetAsAsync<string>());
+		}
+
+		/// <summary>
+		///     Test user-agent
+		/// </summary>
+		[Fact]
+		public async Task TestUserAgent()
+		{
+			var result = await new Uri("https://httpbin.org/user-agent").GetAsAsync<IDictionary<string, string>>();
+			Assert.NotNull(result);
+			Assert.True(result.ContainsKey("user-agent"));
+			Assert.Equal(HttpExtensionsGlobals.HttpSettings.DefaultUserAgent, result["user-agent"]);
 		}
 	}
 }

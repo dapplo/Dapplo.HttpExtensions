@@ -30,11 +30,11 @@ using System.Resources;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("Dapplo.HttpExtensions.PCL")]
+[assembly: AssemblyTitle("Dapplo.HttpExtensions")]
 [assembly: AssemblyDescription("Extensions which simplify usage of Http services.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Dapplo")]
-[assembly: AssemblyProduct("Dapplo.HttpExtensions.PCL")]
+[assembly: AssemblyProduct("Dapplo.HttpExtensions")]
 [assembly: AssemblyCopyright("Copyright © Dapplo 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

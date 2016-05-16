@@ -31,10 +31,6 @@ using Dapplo.LogFacade;
 
 #endregion
 
-#if !_PCL_
-
-#endif
-
 namespace Dapplo.HttpExtensions
 {
 	/// <summary>

@@ -117,7 +117,7 @@ namespace Dapplo.HttpExtensions
 		///     <a href="https://msdn.microsoft.com/en-us/library/system.net.cache.httprequestcachelevel.aspx">here</a>
 		///     Default is RequestCacheLevel.Default
 		/// </summary>
-		[DefaultValue(RequestCacheLevel.Default), Display(Description = "The cache level for the request, to turn of caching use BypassCache."), DataMember(EmitDefaultValue = true)]
+		[DefaultValue(RequestCacheLevel.Default), Display(Description = "The cache level for the request, to turn off caching use BypassCache."), DataMember(EmitDefaultValue = true)]
 		RequestCacheLevel RequestCacheLevel { get; set; }
 
 		/// <summary>

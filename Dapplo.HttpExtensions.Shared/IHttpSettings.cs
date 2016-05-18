@@ -93,7 +93,6 @@ namespace Dapplo.HttpExtensions
 		[DefaultValue(50), Display(Description = "The maximum amount of redirections that are followed")]
 		int MaxAutomaticRedirections { get; set; }
 
-
 		/// <summary>
 		///     For more details, click
 		///     <a href="https://msdn.microsoft.com/en-us/library/system.net.http.httpclient.maxresponsecontentbuffersize.aspx">here</a>
@@ -107,7 +106,7 @@ namespace Dapplo.HttpExtensions
 		///     And
 		///     <a href="http://weblog.west-wind.com/posts/2010/Feb/18/NET-WebRequestPreAuthenticate-not-quite-what-it-sounds-like">here</a>
 		/// </summary>
-		[DefaultValue(false), Display(Description = "When true the request is directly send with a HTTP Authorization header.")]
+		[DefaultValue(false), Display(Description = "When true the request is directly send with a HTTP Authorization header."), DataMember(EmitDefaultValue = true)]
 		bool PreAuthenticate { get; set; }
 
 		/// <summary>

@@ -48,7 +48,7 @@ namespace Dapplo.HttpExtensions.Factory
 				return null;
 			}
 			var proxyToUse = httpSettings.UseDefaultProxy ? WebRequest.GetSystemWebProxy() : new WebProxy(httpSettings.ProxyUri, httpSettings.ProxyBypassOnLocal, httpSettings.ProxyBypassList);
-			if (httpSettings.UseDefaultCredentialsForProy)
+			if (httpSettings.UseDefaultCredentialsForProxy)
 			{
 				if (proxyToUse is WebProxy)
 				{

@@ -126,7 +126,7 @@ namespace Dapplo.HttpExtensions.Support
 		public bool UseDefaultProxy { get; set; } = true;
 
 		/// <inheritdoc />
-		public bool UseDefaultCredentialsForProy { get; set; } = true;
+		public bool UseDefaultCredentialsForProxy { get; set; } = true;
 
 		/// <inheritdoc />
 		public Uri ProxyUri { get; set; }

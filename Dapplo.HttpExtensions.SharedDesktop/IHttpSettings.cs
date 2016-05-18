@@ -117,7 +117,7 @@ namespace Dapplo.HttpExtensions
 		///     <a href="https://msdn.microsoft.com/en-us/library/system.net.cache.httprequestcachelevel.aspx">here</a>
 		///     Default is RequestCacheLevel.Default
 		/// </summary>
-		[DefaultValue(RequestCacheLevel.Default), Display(Description = "The cache level for the request")]
+		[DefaultValue(RequestCacheLevel.Default), Display(Description = "The cache level for the request, to turn of caching use BypassCache."), DataMember(EmitDefaultValue = true)]
 		RequestCacheLevel RequestCacheLevel { get; set; }
 
 		/// <summary>
@@ -150,7 +150,7 @@ namespace Dapplo.HttpExtensions
 		///     For more details, click
 		///     <a href="https://msdn.microsoft.com/en-us/library/system.net.webproxy.credentials.aspx">here</a>
 		/// </summary>
-		[Display(Description = "The credentials for the proxy, only used when UseDefaultCredentialsForProy is set to false")]
+		[Display(Description = "The credentials for the proxy, only used when UseDefaultCredentialsForProxy is set to false")]
 		ICredentials ProxyCredentials { get; set; }
 
 		/// <summary>
@@ -163,7 +163,7 @@ namespace Dapplo.HttpExtensions
 		/// When true the configured proxy will used the default user credentials
 		/// </summary>
 		[DefaultValue(true), Display(Description = "When true the configured proxy will used the default user credentials"), DataMember(EmitDefaultValue = true)]
-		bool UseDefaultCredentialsForProy { get; set; }
+		bool UseDefaultCredentialsForProxy { get; set; }
 
 		/// <summary>
 		/// When true the default system proxy is used

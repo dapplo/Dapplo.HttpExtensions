@@ -133,7 +133,7 @@ namespace Dapplo.HttpExtensions
 							UiContext.RunOn(() =>
 							{
 								httpBehaviour.DownloadProgress?.Invoke((float)position / contentLength);
-							}).Wait();
+							});
 						}
 						else
 						{

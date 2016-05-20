@@ -61,14 +61,21 @@ namespace Dapplo.HttpExtensions.Factory
 			var httpSettings = httpBehaviour.HttpSettings ?? HttpExtensionsGlobals.HttpSettings;
 
 			webRequestHandler.AllowPipelining = httpSettings.AllowPipelining;
-			webRequestHandler.ReadWriteTimeout = httpSettings.ReadWriteTimeout;
 			webRequestHandler.AuthenticationLevel = httpSettings.AuthenticationLevel;
+			webRequestHandler.CachePolicy = new RequestCachePolicy(httpSettings.RequestCacheLevel);
+			webRequestHandler.ClientCertificateOptions = httpSettings.ClientCertificateOptions;
+			// Add certificates, if any
+			if (httpSettings.ClientCertificates?.Count > 0)
+			{
+				webRequestHandler.ClientCertificates.AddRange(httpSettings.ClientCertificates);
+			}
 			webRequestHandler.ContinueTimeout = httpSettings.ContinueTimeout;
 			webRequestHandler.ImpersonationLevel = httpSettings.ImpersonationLevel;
 			webRequestHandler.MaxResponseHeadersLength = httpSettings.MaxResponseHeadersLength;
-			webRequestHandler.CachePolicy = new RequestCachePolicy(httpSettings.RequestCacheLevel);
 			webRequestHandler.Proxy = httpSettings.UseProxy ? WebProxyFactory.Create() : null;
+			webRequestHandler.ReadWriteTimeout = httpSettings.ReadWriteTimeout;
 
+			// Add logic to ignore the certificate
 			if (httpSettings.IgnoreSslCertificateErrors)
 			{
 				webRequestHandler.ServerCertificateValidationCallback = (sender, cert, chain, sslPolicyErrors) =>

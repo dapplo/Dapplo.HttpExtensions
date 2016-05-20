@@ -26,8 +26,10 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Net.Cache;
+using System.Net.Http;
 using System.Net.Security;
 using System.Runtime.Serialization;
+using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 
 #endregion
@@ -69,6 +71,12 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		[DefaultValue(AuthenticationLevel.MutualAuthRequested), Display(Description = "The level of authentication and impersonation used for every request")]
 		AuthenticationLevel AuthenticationLevel { get; set; }
+
+		/// <summary>
+		/// Add your client certificates here, so they are passed to the handler.
+		/// </summary>
+		[IgnoreDataMember]
+		X509CertificateCollection ClientCertificates { get; set; }
 
 		/// <summary>
 		///     For more details, click

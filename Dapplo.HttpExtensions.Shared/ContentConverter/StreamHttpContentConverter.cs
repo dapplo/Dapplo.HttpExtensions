@@ -109,7 +109,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 						UiContext.RunOn(() =>
 						{
 							httpBehaviour.UploadProgress?.Invoke((float)eventArgs.StreamPosition / eventArgs.StreamLength);
-						}).Wait();
+						});
 					}
 					else
 					{

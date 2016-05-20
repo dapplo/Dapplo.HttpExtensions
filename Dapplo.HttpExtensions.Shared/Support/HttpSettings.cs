@@ -25,11 +25,13 @@ using System;
 using System.Net;
 using System.Reflection;
 using System.Text;
+using System.Net.Http;
 
 #if !_PCL_
 using System.Net.Cache;
 using System.Security.Principal;
 using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 #endif
 
 #endregion
@@ -58,6 +60,9 @@ namespace Dapplo.HttpExtensions.Support
 
 		/// <inheritdoc />
 		public ICredentials Credentials { get; set; }
+
+		/// <inheritdoc />
+		public ClientCertificateOption ClientCertificateOptions { get; set; }
 
 		/// <inheritdoc />
 		public TimeSpan RequestTimeout { get; set; } = TimeSpan.FromSeconds(60);
@@ -97,6 +102,9 @@ namespace Dapplo.HttpExtensions.Support
 		}
 
 #if !_PCL_
+
+		/// <inheritdoc />
+		public X509CertificateCollection ClientCertificates { get; set; } = new X509CertificateCollection();
 
 		/// <inheritdoc />
 		public int ReadWriteTimeout { get; set; } = 300000;
@@ -145,6 +153,7 @@ namespace Dapplo.HttpExtensions.Support
 
 		/// <inheritdoc />
 		public bool IgnoreSslCertificateErrors { get; set; } = false;
+
 #endif
 
 		/// <inheritdoc />

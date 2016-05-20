@@ -25,6 +25,7 @@ using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
+using System.Net.Http;
 using System.Runtime.Serialization;
 
 #endregion
@@ -65,6 +66,13 @@ namespace Dapplo.HttpExtensions
 		[Display(Description = "The credentials for the request, only used when UseDefaultCredentials is set to false")]
 		ICredentials Credentials { get; set; }
 
+
+		/// <summary>
+		/// For more details, click
+		///     <a href="https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.clientcertificateoptions.aspx">here</a>
+		/// </summary>
+		[DefaultValue(ClientCertificateOption.Automatic), Display(Description = "A value that indicates if the certificate is automatically picked from the certificate store or if the caller is allowed to pass in a specific client certificate.")]
+		ClientCertificateOption ClientCertificateOptions { get; set; }
 
 		/// <summary>
 		///     For more details, click

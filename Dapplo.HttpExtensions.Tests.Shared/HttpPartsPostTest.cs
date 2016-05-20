@@ -56,8 +56,13 @@ namespace Dapplo.HttpExtensions.Tests
 			var testUri = RequestBinUri.AppendSegments("post");
 			var uploadBehaviour = HttpBehaviour.Current.Clone();
 
+			bool hasProgress = false;
+
 			uploadBehaviour.UseProgressStream = true;
-			uploadBehaviour.UploadProgress += progress => { Log.Info().WriteLine("Progress {0}", (int) (progress*100)); };
+			uploadBehaviour.UploadProgress += progress => {
+				Log.Info().WriteLine("Progress {0}", (int)(progress * 100));
+				hasProgress = true;
+			};
 			uploadBehaviour.MakeCurrent();
 			var testObject = new MyMultiPartRequest
 			{
@@ -69,6 +74,7 @@ namespace Dapplo.HttpExtensions.Tests
 			testObject.Headers.Add("Name", "Dapplo");
 			var result = await testUri.PostAsync<dynamic>(testObject);
 			Assert.NotNull(result);
+			Assert.True(hasProgress);
 		}
 	}
 }

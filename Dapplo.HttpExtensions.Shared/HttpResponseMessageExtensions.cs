@@ -171,6 +171,14 @@ namespace Dapplo.HttpExtensions
 					// Write log if an error occured.
 					Log.Error().WriteLine("Http response {0} ({1}) for {2}, details from website: {3}", (int) httpResponseMessage.StatusCode, httpResponseMessage.StatusCode, requestUri, errorContent);
 
+					// Add some additional information
+					switch(httpResponseMessage.StatusCode)
+					{
+						case System.Net.HttpStatusCode.Redirect:
+						case System.Net.HttpStatusCode.MovedPermanently:
+							Log.Error().WriteLine("{0} to: {1}", httpResponseMessage.StatusCode, httpResponseMessage.Headers.Location);
+							break;
+					}
 					httpResponseMessage.EnsureSuccessStatusCode();
 				}
 				else

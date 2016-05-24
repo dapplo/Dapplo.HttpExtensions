@@ -93,7 +93,14 @@ namespace Dapplo.HttpExtensions.Tests.Logger
 			{
 				throw new ArgumentNullException(nameof(testOutputHelper), "Couldn't find a ITestOutputHelper in the CallContext");
 			}
-			testOutputHelper.WriteLine($"{logInfo} - {messageTemplate}", logParameters);
+			if (logParameters == null || logParameters.Length == 0)
+			{
+				testOutputHelper.WriteLine($"{logInfo} - {messageTemplate}");
+			}
+			else
+			{
+				testOutputHelper.WriteLine($"{logInfo} - {messageTemplate}", logParameters);
+			}
 		}
 
 		public override void Write(LogInfo logInfo, Exception exception, string messageTemplate = null, params object[] logParameters)
@@ -105,7 +112,14 @@ namespace Dapplo.HttpExtensions.Tests.Logger
 			}
 			if (messageTemplate != null)
 			{
-				testOutputHelper.WriteLine($"{logInfo} - {messageTemplate}", logParameters);
+				if (logParameters == null || logParameters.Length == 0)
+				{
+					testOutputHelper.WriteLine($"{logInfo} - {messageTemplate}");
+				}
+				else
+				{
+					testOutputHelper.WriteLine($"{logInfo} - {messageTemplate}", logParameters);
+				}
 			}
 			if (exception != null)
 			{

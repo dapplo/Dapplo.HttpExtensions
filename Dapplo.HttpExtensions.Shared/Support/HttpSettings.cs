@@ -158,5 +158,15 @@ namespace Dapplo.HttpExtensions.Support
 
 		/// <inheritdoc />
 		public bool Expect100Continue { get; set; } = false;
+
+		/// <summary>
+		/// Return a memberwise clone of the HttpSettings.
+		/// This is needed by the HttpBehaviour to prevent that a modification of a copy is changing the global settings!
+		/// </summary>
+		/// <returns></returns>
+		public IHttpSettings Clone()
+		{
+			return (IHttpSettings)MemberwiseClone();
+		}
 	}
 }

@@ -66,7 +66,6 @@ namespace Dapplo.HttpExtensions
 		[Display(Description = "The credentials for the request, only used when UseDefaultCredentials is set to false")]
 		ICredentials Credentials { get; set; }
 
-
 		/// <summary>
 		/// For more details, click
 		///     <a href="https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.clientcertificateoptions.aspx">here</a>
@@ -138,5 +137,11 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		[DefaultValue(true), Display(Description = "When true every http request will supply the default user credentials when the server asks for them"), DataMember(EmitDefaultValue = true)]
 		bool UseDefaultCredentials { get; set; }
+
+		/// <summary>
+		///     Clone this IHttpSettings
+		/// </summary>
+		/// <returns>IHttpSettings</returns>
+		IHttpSettings Clone();
 	}
 }

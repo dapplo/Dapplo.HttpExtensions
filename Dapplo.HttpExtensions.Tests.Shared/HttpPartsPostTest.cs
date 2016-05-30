@@ -29,6 +29,8 @@ using Dapplo.HttpExtensions.Tests.TestEntities;
 using Dapplo.LogFacade;
 using Xunit;
 using Xunit.Abstractions;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 #endregion
 
@@ -48,10 +50,10 @@ namespace Dapplo.HttpExtensions.Tests
 		}
 
 		/// <summary>
-		///     Test posting
+		///     Test posting, using Bitmap
 		/// </summary>
 		[Fact]
-		public async Task TestPost()
+		public async Task TestPost_Bitmap()
 		{
 			var testUri = RequestBinUri.AppendSegments("post");
 			var uploadBehaviour = HttpBehaviour.Current.Clone();
@@ -64,12 +66,42 @@ namespace Dapplo.HttpExtensions.Tests
 				hasProgress = true;
 			};
 			uploadBehaviour.MakeCurrent();
-			var testObject = new MyMultiPartRequest
+			var testObject = new MyMultiPartRequest<Bitmap>
 			{
 				BitmapContentName = "MyBitmapContent",
 				BitmapFileName = "MyBitmapFilename",
 				OurBitmap = new Bitmap(10, 10),
 				JsonInformation = new GitHubError {DocumentationUrl = "http://test.de", Message = "Hello"}
+			};
+			testObject.Headers.Add("Name", "Dapplo");
+			var result = await testUri.PostAsync<dynamic>(testObject);
+			Assert.NotNull(result);
+			Assert.True(hasProgress);
+		}
+
+		/// <summary>
+		///     Test posting, this time use a BitmapSource
+		/// </summary>
+		[Fact]
+		public async Task TestPost_BitmapSource()
+		{
+			var testUri = RequestBinUri.AppendSegments("post");
+			var uploadBehaviour = HttpBehaviour.Current.Clone();
+
+			bool hasProgress = false;
+
+			uploadBehaviour.UseProgressStream = true;
+			uploadBehaviour.UploadProgress += progress => {
+				Log.Info().WriteLine("Progress {0}", (int)(progress * 100));
+				hasProgress = true;
+			};
+			uploadBehaviour.MakeCurrent();
+			var testObject = new MyMultiPartRequest<BitmapSource>
+			{
+				BitmapContentName = "MyBitmapContent",
+				BitmapFileName = "MyBitmapFilename",
+				OurBitmap = BitmapSource.Create(1, 1, 96, 96, PixelFormats.Bgr24, null, new byte[3] { 0, 0, 0 }, 3),
+				JsonInformation = new GitHubError { DocumentationUrl = "http://test.de", Message = "Hello" }
 			};
 			testObject.Headers.Add("Name", "Dapplo");
 			var result = await testUri.PostAsync<dynamic>(testObject);

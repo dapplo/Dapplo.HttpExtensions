@@ -31,6 +31,7 @@ using System.Windows.Forms;
 using Dapplo.HttpExtensions.Desktop;
 using Dapplo.LogFacade;
 using Dapplo.Utils.Extensions;
+using Dapplo.Utils;
 
 #endregion
 
@@ -50,7 +51,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <param name="codeReceiverSettings">ICodeReceiverSettings</param>
 		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>IDictionary with information</returns>
-		public async Task<IDictionary<string, string>> ReceiveCodeAsync(AuthorizeModes authorizeMode, ICodeReceiverSettings codeReceiverSettings,
+		public Task<IDictionary<string, string>> ReceiveCodeAsync(AuthorizeModes authorizeMode, ICodeReceiverSettings codeReceiverSettings,
 			CancellationToken cancellationToken = default(CancellationToken))
 		{
 			if (codeReceiverSettings.RedirectUrl == null)
@@ -66,7 +67,7 @@ namespace Dapplo.HttpExtensions.OAuth
 			};
 			Log.Verbose().WriteLine("Opening Uri {0}", uriBuilder.Uri.AbsoluteUri);
 
-			return await Task.Factory.StartNew(() =>
+			return UiContext.RunOn(() =>
 			{
 				var oAuthLoginForm = new OAuthLoginForm(codeReceiverSettings.CloudServiceName, new Size(codeReceiverSettings.EmbeddedBrowserWidth, codeReceiverSettings.EmbeddedBrowserHeight), uriBuilder.Uri,
 					codeReceiverSettings.RedirectUrl);
@@ -76,7 +77,7 @@ namespace Dapplo.HttpExtensions.OAuth
 					return oAuthLoginForm.CallbackParameters;
 				}
 				return null;
-			}, cancellationToken, TaskCreationOptions.None, HttpExtensionsGlobals.UiTaskScheduler).ConfigureAwait(false);
+			}, cancellationToken);
 		}
 	}
 }

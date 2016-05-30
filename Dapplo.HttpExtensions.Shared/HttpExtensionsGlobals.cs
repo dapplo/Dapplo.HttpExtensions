@@ -41,22 +41,6 @@ namespace Dapplo.HttpExtensions
 	{
 		private static readonly LogSource Log = new LogSource();
 
-		// Used for UI stuff, e.g. EmbeddedBrowserCodeReceiver
-		private static TaskScheduler _uiTaskScheduler;
-
-		static HttpExtensionsGlobals()
-		{
-			// Try to store the current SynchronizationContext
-			try
-			{
-				_uiTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-			}
-			catch (Exception ex)
-			{
-				Log.Warn().WriteLine(ex, "Can't capture the UI TaskScheduler, this might cause issues when an EmbeddedBrowserCodeReceiver is used.");
-			}
-		}
-
 		/// <summary>
 		///     The glocal value which specifies if Progress actions are called with UiContext.RunOn
 		/// </summary>
@@ -110,29 +94,6 @@ namespace Dapplo.HttpExtensions
 		///     Global value for ThrowOnError, see IHttpBehaviour
 		/// </summary>
 		public static bool ThrowOnError { get; set; } = true;
-
-		/// <summary>
-		///     This value is used when a Task needs to run on the UI Thread, e.g. the EmbeddedBrowserCodeReceiver
-		/// </summary>
-		public static TaskScheduler UiTaskScheduler
-		{
-			get
-			{
-				if (_uiTaskScheduler == null)
-				{
-					try
-					{
-						_uiTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-					}
-					catch (Exception ex)
-					{
-						throw new InvalidOperationException("The framework needed a TaskScheduler for the UI, maybe you are not running ", ex);
-					}
-				}
-				return _uiTaskScheduler;
-			}
-			set { _uiTaskScheduler = value; }
-		}
 
 		/// <summary>
 		///     Global value for UseProgressStream, see IHttpBehaviour

@@ -107,10 +107,23 @@ namespace Dapplo.HttpExtensions.Tests
 		[Fact]
 		public async Task TestGetAsAsyncBitmapSource()
 		{
+
+			var uploadBehaviour = HttpBehaviour.Current.Clone();
+
+			bool hasProgress = false;
+
+			uploadBehaviour.UseProgressStream = true;
+			uploadBehaviour.DownloadProgress += progress => {
+				Log.Info().WriteLine("Progress {0}", (int)(progress * 100));
+				hasProgress = true;
+			};
+			uploadBehaviour.MakeCurrent();
+
 			var bitmap = await _bitmapUri.GetAsAsync<BitmapSource>();
 			Assert.NotNull(bitmap);
 			Assert.True(bitmap.Width > 0);
 			Assert.True(bitmap.Height > 0);
+			Assert.True(hasProgress);
 		}
 
 		/// <summary>

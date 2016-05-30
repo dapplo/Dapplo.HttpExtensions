@@ -21,6 +21,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)TestEntities\MyMultiPartRequest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UriActionExtensionsMultiPartTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpRequestMessageExtensionsTests.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HttpBehaviourExtensionsTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UriActionExtensionsTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UriModifyExtensionsTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UriParseExtensionsTests.cs" />

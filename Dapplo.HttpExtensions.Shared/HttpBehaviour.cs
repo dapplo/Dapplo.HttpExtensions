@@ -118,7 +118,9 @@ namespace Dapplo.HttpExtensions
 		/// <inheritdoc />
 		public IChangeableHttpBehaviour Clone()
 		{
-			return (HttpBehaviour) MemberwiseClone();
+			var result = (HttpBehaviour) MemberwiseClone();
+			result.HttpSettings = HttpSettings.Clone();
+			return result;
 		}
 
 		/// <inheritdoc />

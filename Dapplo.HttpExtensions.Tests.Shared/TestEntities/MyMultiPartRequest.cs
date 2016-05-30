@@ -33,7 +33,7 @@ namespace Dapplo.HttpExtensions.Tests.TestEntities
 	///     Example class wich is posted & filled automatically from the response information
 	/// </summary>
 	[HttpRequest]
-	public class MyMultiPartRequest
+	public class MyMultiPartRequest<TBitmap>
 	{
 		[HttpPart(HttpParts.RequestMultipartName, Order = 1)]
 		public string BitmapContentName { get; set; } = "File";
@@ -54,6 +54,6 @@ namespace Dapplo.HttpExtensions.Tests.TestEntities
 		public object JsonInformation { get; set; }
 
 		[HttpPart(HttpParts.RequestContent, Order = 1)]
-		public Bitmap OurBitmap { get; set; }
+		public TBitmap OurBitmap { get; set; }
 	}
 }

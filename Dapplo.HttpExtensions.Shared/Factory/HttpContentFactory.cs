@@ -27,6 +27,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using Dapplo.HttpExtensions.Support;
+using Dapplo.LogFacade;
 
 #endregion
 
@@ -37,6 +38,8 @@ namespace Dapplo.HttpExtensions.Factory
 	/// </summary>
 	public static class HttpContentFactory
 	{
+		private static readonly LogSource Log = new LogSource();
+
 		/// <summary>
 		///     Create a HttpContent object from the supplied content
 		/// </summary>
@@ -119,6 +122,12 @@ namespace Dapplo.HttpExtensions.Factory
 
 					foreach (var contentItem in contentItems.OrderBy(x => x.Order))
 					{
+						// If the content would be null, and we would continue, a NullPointerReference would be thrown
+						if (contentItem.Content == null)
+						{
+							Log.Debug().WriteLine("Skipping content {0} as the content is null.", contentItem.ContentName);
+							continue;
+						}
 						var httpContent = Create(httpBehaviour, contentItem);
 						if (contentItem.ContentName != null && contentItem.ContentFileName != null)
 						{

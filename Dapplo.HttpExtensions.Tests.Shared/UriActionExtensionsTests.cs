@@ -89,7 +89,7 @@ namespace Dapplo.HttpExtensions.Tests
 		[Fact]
 		public async Task TestGetAsAsyncBitmap()
 		{
-			var downloadBehaviour = HttpBehaviour.Current.Clone();
+			var downloadBehaviour = HttpBehaviour.Current.ShallowClone();
 
 			downloadBehaviour.UseProgressStream = true;
 			downloadBehaviour.DownloadProgress += progress => { Log.Info().WriteLine("Progress {0}", (int) (progress*100)); };
@@ -108,7 +108,7 @@ namespace Dapplo.HttpExtensions.Tests
 		public async Task TestGetAsAsyncBitmapSource()
 		{
 
-			var uploadBehaviour = HttpBehaviour.Current.Clone();
+			var uploadBehaviour = HttpBehaviour.Current.ShallowClone();
 
 			bool hasProgress = false;
 

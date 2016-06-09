@@ -69,7 +69,7 @@ namespace Dapplo.HttpExtensions.Tests
 			bool testChainOnHttpMessageHandlerCreated1 = false;
 			bool testChainOnHttpMessageHandlerCreated2 = false;
 
-			var testBehaviour = HttpBehaviour.Current.Clone();
+			var testBehaviour = HttpBehaviour.Current.ShallowClone();
 
 			testBehaviour.ChainOnHttpContentCreated(x => {
 				testChainOnHttpContentCreated1 = true;

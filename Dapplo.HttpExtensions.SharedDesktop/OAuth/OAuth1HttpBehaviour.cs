@@ -21,6 +21,7 @@
 
 #region using
 
+using Dapplo.Utils;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -44,7 +45,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <param name="httpBehaviour">IHttpBehaviour to wrap</param>
 		public OAuth1HttpBehaviour(IHttpBehaviour httpBehaviour = null)
 		{
-			_wrapped = (httpBehaviour ?? HttpBehaviour.Current).Clone();
+			_wrapped = (httpBehaviour ?? HttpBehaviour.Current).ShallowClone();
 		}
 
 		/// <summary>
@@ -170,9 +171,13 @@ namespace Dapplo.HttpExtensions.OAuth
 		}
 
 		/// <inheritdoc />
-		public IChangeableHttpBehaviour Clone()
+		public IChangeableHttpBehaviour ShallowClone()
 		{
-			return (OAuth1HttpBehaviour) MemberwiseClone();
+			// the wrapper object will be clone when creating the OAuth1HttpBehaviour
+			var result = new OAuth1HttpBehaviour(_wrapped);
+			result.OnAccessTokenValues = OnAccessTokenValues;
+			result.BeforeSend = BeforeSend;
+			return result;
 		}
 
 		/// <inheritdoc />

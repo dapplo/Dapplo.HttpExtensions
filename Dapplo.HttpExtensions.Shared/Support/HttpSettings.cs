@@ -26,6 +26,7 @@ using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Net.Http;
+using Dapplo.Utils;
 
 #if !_PCL_
 using System.Net.Cache;
@@ -44,7 +45,7 @@ namespace Dapplo.HttpExtensions.Support
 	///     Most have their normal defaults, which would also normally be used, some have special settings
 	///     The default values and the property descriptions are in the IHttpSettings (which can be used by Dapplo.Config)
 	/// </summary>
-	public class HttpSettings : IHttpSettings
+	public class HttpSettings : IHttpSettings, IShallowCloneable<IHttpSettings>
 	{
 		private const int Kb = 1024;
 		private const int Mb = Kb*1024;
@@ -164,7 +165,7 @@ namespace Dapplo.HttpExtensions.Support
 		/// This is needed by the HttpBehaviour to prevent that a modification of a copy is changing the global settings!
 		/// </summary>
 		/// <returns></returns>
-		public IHttpSettings Clone()
+		public IHttpSettings ShallowClone()
 		{
 			return (IHttpSettings)MemberwiseClone();
 		}

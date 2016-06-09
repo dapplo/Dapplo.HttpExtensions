@@ -86,7 +86,7 @@ namespace Dapplo.HttpExtensions.OAuth
 			}
 
 			_oAuth2Settings = oAuth2Settings;
-			var newHttpBehaviour = httpBehaviour.Clone();
+			var newHttpBehaviour = httpBehaviour.ShallowClone();
 			// Remove the OnHttpMessageHandlerCreated
 			newHttpBehaviour.OnHttpMessageHandlerCreated = null;
 			// Use it for internal communication
@@ -280,7 +280,7 @@ namespace Dapplo.HttpExtensions.OAuth
 				}
 			}
 
-			var normalHttpBehaviour = _httpBehaviour.Clone();
+			var normalHttpBehaviour = _httpBehaviour.ShallowClone();
 			normalHttpBehaviour.OnHttpMessageHandlerCreated = null;
 			normalHttpBehaviour.MakeCurrent();
 

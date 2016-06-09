@@ -21,6 +21,7 @@
 
 #region using
 
+using Dapplo.Utils;
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -50,7 +51,7 @@ namespace Dapplo.HttpExtensions
 	///     (Yes, it's can be empty, the settings are in the IHttpSettings interface) and than assign the generated instance to
 	///     <see cref="HttpExtensionsGlobals" />
 	/// </summary>
-	public partial interface IHttpSettings
+	public partial interface IHttpSettings : IShallowCloneable<IHttpSettings>
 	{
 		/// <summary>
 		///     For more details, click

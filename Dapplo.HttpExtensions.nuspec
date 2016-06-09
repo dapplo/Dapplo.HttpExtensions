@@ -19,11 +19,11 @@
 		<dependencies>
 			<group targetFramework="net46">
 				<dependency id="Dapplo.LogFacade" version="0.2.45" />
-				<dependency id="Dapplo.Utils" version="0.1.30" />
+				<dependency id="Dapplo.Utils" version="0.1.42" />
 			</group>
 			<group targetFramework="net45">
 				<dependency id="Dapplo.LogFacade" version="0.2.45" />
-				<dependency id="Dapplo.Utils" version="0.1.30" />
+				<dependency id="Dapplo.Utils" version="0.1.42" />
 			</group>
 			<group targetFramework="dnxcore50">
 				<dependency id="System.Net.Http" version="4.0.0" />
@@ -32,7 +32,7 @@
 				<dependency id="System.Dynamic.Runtime" version="4.0.10" />
 				<dependency id="System.Runtime.Serialization.Primitives" version="4.0.10" />
 				<dependency id="Dapplo.LogFacade" version="0.2.45" />
-				<dependency id="Dapplo.Utils" version="0.1.30" />
+				<dependency id="Dapplo.Utils" version="0.1.42" />
 			</group>
 			<group targetFramework="uap10.0">
 				<dependency id="System.Net.Http" version="4.0.0" />
@@ -41,7 +41,7 @@
 				<dependency id="System.Dynamic.Runtime" version="4.0.10" />
 				<dependency id="System.Runtime.Serialization.Primitives" version="4.0.10" />
 				<dependency id="Dapplo.LogFacade" version="0.2.45" />
-				<dependency id="Dapplo.Utils" version="0.1.30" />
+				<dependency id="Dapplo.Utils" version="0.1.42" />
 			</group>
 			<group targetFramework="dotnet">
 				<dependency id="System.Net.Http" version="4.0.0" />
@@ -50,7 +50,7 @@
 				<dependency id="System.Dynamic.Runtime" version="4.0.10" />
 				<dependency id="System.Runtime.Serialization.Primitives" version="4.0.10" />
 				<dependency id="Dapplo.LogFacade" version="0.2.45" />
-				<dependency id="Dapplo.Utils" version="0.1.30" />
+				<dependency id="Dapplo.Utils" version="0.1.42" />
 			</group>
 		</dependencies>
 	</metadata>

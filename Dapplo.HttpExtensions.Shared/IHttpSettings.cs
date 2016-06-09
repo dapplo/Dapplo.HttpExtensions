@@ -21,6 +21,7 @@
 
 #region using
 
+using Dapplo.Utils;
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -47,9 +48,9 @@ namespace Dapplo.HttpExtensions
 	///     <see cref="HttpExtensionsGlobals" />
 	/// </summary>
 #if _PCL_
-	public interface IHttpSettings
+	public interface IHttpSettings : IShallowCloneable<IHttpSettings>
 #else
-	public partial interface IHttpSettings
+	public partial interface IHttpSettings : IShallowCloneable<IHttpSettings>
 #endif
 	{
 		/// <summary>
@@ -137,11 +138,5 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		[DefaultValue(true), Display(Description = "When true every http request will supply the default user credentials when the server asks for them"), DataMember(EmitDefaultValue = true)]
 		bool UseDefaultCredentials { get; set; }
-
-		/// <summary>
-		///     Clone this IHttpSettings
-		/// </summary>
-		/// <returns>IHttpSettings</returns>
-		IHttpSettings Clone();
 	}
 }

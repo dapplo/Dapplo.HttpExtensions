@@ -98,11 +98,11 @@ namespace Dapplo.HttpExtensions.OAuth
 
 			_oAuth1Settings = oAuth1Settings;
 
-			var newHttpBehaviour = (OAuth1HttpBehaviour)oAuth1HttpBehaviour.Clone();
+			var newHttpBehaviour = oAuth1HttpBehaviour.ShallowClone();
 			// Remove the OnHttpMessageHandlerCreated
 			newHttpBehaviour.OnHttpMessageHandlerCreated = null;
 			// Use it for internal communication
-			_oAuth1HttpBehaviour = newHttpBehaviour;
+			_oAuth1HttpBehaviour = (OAuth1HttpBehaviour)newHttpBehaviour;
 		}
 
 		/// <summary>

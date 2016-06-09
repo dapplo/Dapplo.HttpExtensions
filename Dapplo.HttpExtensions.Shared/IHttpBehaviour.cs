@@ -21,6 +21,7 @@
 
 #region using
 
+using Dapplo.Utils;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -33,7 +34,7 @@ namespace Dapplo.HttpExtensions
 	/// <summary>
 	///     The IHttpBehaviour is used to control the behaviour of all operations in the HttpExtensions library.
 	/// </summary>
-	public interface IHttpBehaviour
+	public interface IHttpBehaviour : IShallowCloneable<IChangeableHttpBehaviour>
 	{
 		/// <summary>
 		///     Specify if the progress actions (UploadProgress or DownloadProcess) are called
@@ -134,12 +135,6 @@ namespace Dapplo.HttpExtensions
 		///     this should be set to false
 		/// </summary>
 		bool ValidateResponseContentType { get; }
-
-		/// <summary>
-		///     Clone this HttpBehavior and return an interface which can be used to write
-		/// </summary>
-		/// <returns>IChangeableHttpBehaviour</returns>
-		IChangeableHttpBehaviour Clone();
 
 		/// <summary>
 		///     Set this IHttpBehaviour on the CallContext

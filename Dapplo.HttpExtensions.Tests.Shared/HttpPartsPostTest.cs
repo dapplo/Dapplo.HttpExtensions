@@ -56,7 +56,7 @@ namespace Dapplo.HttpExtensions.Tests
 		public async Task TestPost_Bitmap()
 		{
 			var testUri = RequestBinUri.AppendSegments("post");
-			var uploadBehaviour = HttpBehaviour.Current.Clone();
+			var uploadBehaviour = HttpBehaviour.Current.ShallowClone();
 
 			bool hasProgress = false;
 
@@ -86,7 +86,7 @@ namespace Dapplo.HttpExtensions.Tests
 		public async Task TestPost_BitmapSource()
 		{
 			var testUri = RequestBinUri.AppendSegments("post");
-			var uploadBehaviour = HttpBehaviour.Current.Clone();
+			var uploadBehaviour = HttpBehaviour.Current.ShallowClone();
 
 			bool hasProgress = false;
 

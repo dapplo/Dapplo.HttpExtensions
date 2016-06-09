@@ -21,6 +21,7 @@
 
 #region using
 
+using Dapplo.Utils;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -116,10 +117,10 @@ namespace Dapplo.HttpExtensions
 		public int ReadBufferSize { get; set; } = HttpExtensionsGlobals.ReadBufferSize;
 
 		/// <inheritdoc />
-		public IChangeableHttpBehaviour Clone()
+		public IChangeableHttpBehaviour ShallowClone()
 		{
 			var result = (HttpBehaviour) MemberwiseClone();
-			result.HttpSettings = HttpSettings.Clone();
+			result.HttpSettings = HttpSettings.ShallowClone();
 			return result;
 		}
 

@@ -25,7 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.OAuth;
-using Dapplo.HttpExtensions.Tests.Logger;
+using Dapplo.Log.XUnit;
 using Dapplo.LogFacade;
 using Xunit;
 using Xunit.Abstractions;
@@ -45,7 +45,7 @@ namespace Dapplo.HttpExtensions.Tests.OAuth
 
 		public OAuth2Tests(ITestOutputHelper testOutputHelper)
 		{
-			XUnitLogger.RegisterLogger(testOutputHelper, LogLevel.Verbose);
+			XUnitLogger.RegisterLogger(testOutputHelper, LogLevels.Verbose);
 			var oAuth2Settings = new OAuth2Settings
 			{
 				ClientId = "<client id from google developer console>",

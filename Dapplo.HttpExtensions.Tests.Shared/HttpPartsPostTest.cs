@@ -24,7 +24,7 @@
 using System;
 using System.Drawing;
 using System.Threading.Tasks;
-using Dapplo.HttpExtensions.Tests.Logger;
+using Dapplo.Log.XUnit;
 using Dapplo.HttpExtensions.Tests.TestEntities;
 using Dapplo.LogFacade;
 using Xunit;
@@ -46,7 +46,7 @@ namespace Dapplo.HttpExtensions.Tests
 
 		public HttpPartsPostTest(ITestOutputHelper testOutputHelper)
 		{
-			XUnitLogger.RegisterLogger(testOutputHelper, LogLevel.Verbose);
+			XUnitLogger.RegisterLogger(testOutputHelper, LogLevels.Verbose);
 		}
 
 		/// <summary>

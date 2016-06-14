@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Xml.Linq;
 using Dapplo.HttpExtensions.Support;
-using Dapplo.HttpExtensions.Tests.Logger;
+using Dapplo.Log.XUnit;
 using Dapplo.LogFacade;
 using Xunit;
 using Xunit.Abstractions;
@@ -51,7 +51,7 @@ namespace Dapplo.HttpExtensions.Tests
 
 		public UriActionExtensionsTests(ITestOutputHelper testOutputHelper)
 		{
-			XUnitLogger.RegisterLogger(testOutputHelper, LogLevel.Verbose);
+			XUnitLogger.RegisterLogger(testOutputHelper, LogLevels.Verbose);
 		}
 
 		/// <summary>

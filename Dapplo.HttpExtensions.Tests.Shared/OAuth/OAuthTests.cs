@@ -27,7 +27,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.OAuth;
-using Dapplo.HttpExtensions.Tests.Logger;
+using Dapplo.Log.XUnit;
 using Dapplo.LogFacade;
 using Xunit;
 using Xunit.Abstractions;
@@ -46,7 +46,7 @@ namespace Dapplo.HttpExtensions.Tests.OAuth
 
 		public OAuthTests(ITestOutputHelper testOutputHelper)
 		{
-			XUnitLogger.RegisterLogger(testOutputHelper, LogLevel.Verbose);
+			XUnitLogger.RegisterLogger(testOutputHelper, LogLevels.Verbose);
 			var oAuthSettings = new OAuth1Settings
 			{
 				ClientId = "key",

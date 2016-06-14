@@ -24,7 +24,7 @@
 using System;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Factory;
-using Dapplo.HttpExtensions.Tests.Logger;
+using Dapplo.Log.XUnit;
 using Dapplo.LogFacade;
 using Xunit;
 using Xunit.Abstractions;
@@ -40,7 +40,7 @@ namespace Dapplo.HttpExtensions.Tests
 	{
 		public HttpRequestMessageExtensionsTests(ITestOutputHelper testOutputHelper)
 		{
-			XUnitLogger.RegisterLogger(testOutputHelper, LogLevel.Verbose);
+			XUnitLogger.RegisterLogger(testOutputHelper, LogLevels.Verbose);
 		}
 
 		/// <summary>

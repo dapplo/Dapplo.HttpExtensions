@@ -12,7 +12,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)GithubTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpPartsPostTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JsonTests.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Logger\XUnitLogger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OAuth\OAuth2Tests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OAuth\OAuthTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Support\UriHttpListenerExtensionsTests.cs" />

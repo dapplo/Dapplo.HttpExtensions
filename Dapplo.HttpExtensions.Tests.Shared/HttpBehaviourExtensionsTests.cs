@@ -21,19 +21,11 @@
 
 #region using
 
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.ServiceModel.Syndication;
-using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
-using System.Xml.Linq;
-using Dapplo.HttpExtensions.Support;
-using Dapplo.HttpExtensions.Tests.Logger;
+using Dapplo.Log.XUnit;
 using Dapplo.LogFacade;
+using System;
+using System.Drawing;
+using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -51,7 +43,7 @@ namespace Dapplo.HttpExtensions.Tests
 
 		public HttpBehaviourExtensionsTests(ITestOutputHelper testOutputHelper)
 		{
-			XUnitLogger.RegisterLogger(testOutputHelper, LogLevel.Verbose);
+			XUnitLogger.RegisterLogger(testOutputHelper, LogLevels.Verbose);
 		}
 
 		/// <summary>

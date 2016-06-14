@@ -24,7 +24,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Dapplo.HttpExtensions.Tests.Logger;
+using Dapplo.Log.XUnit;
 using Dapplo.LogFacade;
 using Xunit;
 using Xunit.Abstractions;
@@ -42,7 +42,7 @@ namespace Dapplo.HttpExtensions.Tests
 
 		public UriActionExtensionsMultiPartTests(ITestOutputHelper testOutputHelper)
 		{
-			XUnitLogger.RegisterLogger(testOutputHelper, LogLevel.Verbose);
+			XUnitLogger.RegisterLogger(testOutputHelper, LogLevels.Verbose);
 		}
 
 		/// <summary>

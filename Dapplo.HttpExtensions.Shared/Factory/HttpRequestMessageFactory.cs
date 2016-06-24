@@ -27,7 +27,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using Dapplo.HttpExtensions.Support;
-using Dapplo.LogFacade;
+using Dapplo.Log.Facade;
 
 #endregion
 

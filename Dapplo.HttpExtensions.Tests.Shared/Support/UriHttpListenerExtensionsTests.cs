@@ -23,6 +23,7 @@
 
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Listener;
+using Dapplo.Log.Facade;
 using Dapplo.Log.XUnit;
 using Xunit;
 using Xunit.Abstractions;
@@ -35,7 +36,7 @@ namespace Dapplo.HttpExtensions.Tests.Support
 	{
 		public UriHttpListenerExtensionsTests(ITestOutputHelper testOutputHelper)
 		{
-			XUnitLogger.RegisterLogger(testOutputHelper);
+			LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
 		}
 
 		[Fact]

@@ -27,7 +27,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.ContentConverter;
 using Dapplo.HttpExtensions.Support;
-using Dapplo.LogFacade;
+using Dapplo.Log.Facade;
 
 #endregion
 

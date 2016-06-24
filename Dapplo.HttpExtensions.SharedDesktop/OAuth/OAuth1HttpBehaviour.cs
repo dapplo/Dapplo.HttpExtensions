@@ -174,9 +174,11 @@ namespace Dapplo.HttpExtensions.OAuth
 		public IChangeableHttpBehaviour ShallowClone()
 		{
 			// the wrapper object will be clone when creating the OAuth1HttpBehaviour
-			var result = new OAuth1HttpBehaviour(_wrapped);
-			result.OnAccessTokenValues = OnAccessTokenValues;
-			result.BeforeSend = BeforeSend;
+			var result = new OAuth1HttpBehaviour(_wrapped)
+			{
+				OnAccessTokenValues = OnAccessTokenValues,
+				BeforeSend = BeforeSend
+			};
 			return result;
 		}
 

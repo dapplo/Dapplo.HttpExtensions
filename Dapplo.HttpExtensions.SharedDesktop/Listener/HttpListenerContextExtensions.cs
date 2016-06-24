@@ -26,7 +26,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Factory;
-using Dapplo.LogFacade;
+using Dapplo.Log.Facade;
 
 #endregion
 

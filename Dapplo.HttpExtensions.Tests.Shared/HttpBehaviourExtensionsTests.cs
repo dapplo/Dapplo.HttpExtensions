@@ -22,7 +22,7 @@
 #region using
 
 using Dapplo.Log.XUnit;
-using Dapplo.LogFacade;
+using Dapplo.Log.Facade;
 using System;
 using System.Drawing;
 using System.Threading.Tasks;
@@ -43,7 +43,7 @@ namespace Dapplo.HttpExtensions.Tests
 
 		public HttpBehaviourExtensionsTests(ITestOutputHelper testOutputHelper)
 		{
-			XUnitLogger.RegisterLogger(testOutputHelper, LogLevels.Verbose);
+			LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
 		}
 
 		/// <summary>

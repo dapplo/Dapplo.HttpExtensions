@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Factory;
 using Dapplo.HttpExtensions.Listener;
 using Dapplo.HttpExtensions.Support;
-using Dapplo.LogFacade;
+using Dapplo.Log.Facade;
 using Dapplo.Utils.Extensions;
 
 #endregion

@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 
@@ -131,6 +132,11 @@ namespace Dapplo.HttpExtensions
 		///     true: ProgressStreamContent is used, instead of StreamContent
 		/// </summary>
 		new bool UseProgressStream { get; set; }
+
+		/// <summary>
+		/// This cookie container will be assed when creating the HttpMessageHandler and UseCookies is true
+		/// </summary>
+		new CookieContainer CookieContainer { get; set; }
 
 		/// <summary>
 		///     Check if the response has the expected content-type, when servers are used that are not following specifications

@@ -24,6 +24,7 @@
 using Dapplo.Utils;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 
@@ -135,6 +136,11 @@ namespace Dapplo.HttpExtensions
 		///     this should be set to false
 		/// </summary>
 		bool ValidateResponseContentType { get; }
+
+		/// <summary>
+		/// This cookie container will be assed when creating the HttpMessageHandler and HttpSettings.UseCookies is true
+		/// </summary>
+		CookieContainer CookieContainer { get; }
 
 		/// <summary>
 		///     Set this IHttpBehaviour on the CallContext

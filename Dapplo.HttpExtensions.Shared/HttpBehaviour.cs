@@ -24,6 +24,7 @@
 using Dapplo.Utils;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 #if !DOTNET45
@@ -115,6 +116,9 @@ namespace Dapplo.HttpExtensions
 
 		/// <inheritdoc />
 		public int ReadBufferSize { get; set; } = HttpExtensionsGlobals.ReadBufferSize;
+
+		/// <inheritdoc />
+		public CookieContainer CookieContainer { get; set; } = new CookieContainer();
 
 		/// <inheritdoc />
 		public IChangeableHttpBehaviour ShallowClone()

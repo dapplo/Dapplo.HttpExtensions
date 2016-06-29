@@ -74,7 +74,7 @@ namespace Dapplo.HttpExtensions.Factory
 
 			httpClientHandler.AllowAutoRedirect = httpSettings.AllowAutoRedirect;
 			httpClientHandler.AutomaticDecompression = httpSettings.DefaultDecompressionMethods;
-			httpClientHandler.CookieContainer = httpSettings.UseCookies ? new CookieContainer() : null;
+			httpClientHandler.CookieContainer = httpSettings.UseCookies ? httpBehaviour.CookieContainer : null;
 			httpClientHandler.Credentials = httpSettings.UseDefaultCredentials ? CredentialCache.DefaultCredentials : httpSettings.Credentials;
 			httpClientHandler.MaxAutomaticRedirections = httpSettings.MaxAutomaticRedirections;
 

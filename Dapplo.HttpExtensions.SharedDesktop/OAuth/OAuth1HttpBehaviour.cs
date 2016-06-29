@@ -24,6 +24,7 @@
 using Dapplo.Utils;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 
@@ -168,6 +169,13 @@ namespace Dapplo.HttpExtensions.OAuth
 		{
 			get { return _wrapped.ValidateResponseContentType; }
 			set { _wrapped.ValidateResponseContentType = value; }
+		}
+
+		/// <inheritdoc />
+		public CookieContainer CookieContainer
+		{
+			get { return _wrapped.CookieContainer; }
+			set { _wrapped.CookieContainer = value; }
 		}
 
 		/// <inheritdoc />

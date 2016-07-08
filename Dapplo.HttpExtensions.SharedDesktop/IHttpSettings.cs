@@ -27,7 +27,6 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Net.Cache;
-using System.Net.Http;
 using System.Net.Security;
 using System.Runtime.Serialization;
 using System.Security.Cryptography.X509Certificates;

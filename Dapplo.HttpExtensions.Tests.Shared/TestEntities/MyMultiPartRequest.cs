@@ -22,7 +22,6 @@
 #region using
 
 using System.Collections.Generic;
-using System.Drawing;
 using Dapplo.HttpExtensions.Support;
 
 #endregion

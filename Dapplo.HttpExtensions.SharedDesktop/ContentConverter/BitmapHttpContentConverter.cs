@@ -34,6 +34,7 @@ using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.Log.Facade;
 using Dapplo.Utils;
+using Dapplo.Utils.Enumerable;
 using Dapplo.Utils.Extensions;
 
 #endregion

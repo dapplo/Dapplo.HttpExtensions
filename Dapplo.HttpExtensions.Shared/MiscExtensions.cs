@@ -35,30 +35,6 @@ namespace Dapplo.HttpExtensions
 	public static class MiscExtensions
 	{
 		/// <summary>
-		///     As the BCL doesn't include a ForEach on the IEnumerable, this extension was added
-		/// </summary>
-		/// <typeparam name="T">Type of the IEnumerable</typeparam>
-		/// <param name="source">The IEnumerable</param>
-		/// <param name="action">Action to call for each item</param>
-		public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
-		{
-			if (source == null)
-			{
-				throw new ArgumentNullException(nameof(source));
-			}
-
-			if (action == null)
-			{
-				throw new ArgumentNullException(nameof(action));
-			}
-
-			foreach (var item in source)
-			{
-				action(item);
-			}
-		}
-
-		/// <summary>
 		///     Create a query string from a list of keyValuePairs
 		/// </summary>
 		/// <typeparam name="T">type for the value, sometimes it's easier to let this method call ToString on your type.</typeparam>

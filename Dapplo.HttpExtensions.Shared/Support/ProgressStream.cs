@@ -64,17 +64,17 @@ namespace Dapplo.HttpExtensions.Support
 		/// <summary>
 		///     Raised when bytes are read from the stream.
 		/// </summary>
-		public event ProgressStreamReportDelegate BytesRead;
+		public event EventHandler<ProgressStreamReportEventArgs> BytesRead;
 
 		/// <summary>
 		///     Raised when bytes are written to the stream.
 		/// </summary>
-		public event ProgressStreamReportDelegate BytesWritten;
+		public event EventHandler<ProgressStreamReportEventArgs> BytesWritten;
 
 		/// <summary>
 		///     Raised when bytes are either read or written to the stream.
 		/// </summary>
-		public event ProgressStreamReportDelegate BytesMoved;
+		public event EventHandler<ProgressStreamReportEventArgs> BytesMoved;
 
 		/// <summary>
 		///     Called when bytes are read.
@@ -257,11 +257,4 @@ namespace Dapplo.HttpExtensions.Support
 		/// </summary>
 		public bool WasRead { get; }
 	}
-
-	/// <summary>
-	///     The delegate for handling a ProgressStream Report event.
-	/// </summary>
-	/// <param name="sender">The object that raised the event, should be a ProgressStream.</param>
-	/// <param name="args">The arguments raised with the event.</param>
-	public delegate void ProgressStreamReportDelegate(object sender, ProgressStreamReportEventArgs args);
 }

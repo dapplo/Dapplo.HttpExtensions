@@ -120,7 +120,7 @@ namespace Dapplo.HttpExtensions
 				}
 				if (!contentSet && !httpResponseMessage.IsSuccessStatusCode)
 				{
-					await httpResponseMessage.HandleErrorAsync(token).ConfigureAwait(false);
+					await httpResponseMessage.HandleErrorAsync().ConfigureAwait(false);
 				}
 				return instance;
 			}
@@ -136,7 +136,7 @@ namespace Dapplo.HttpExtensions
 
 				return result;
 			}
-			await httpResponseMessage.HandleErrorAsync(token).ConfigureAwait(false);
+			await httpResponseMessage.HandleErrorAsync().ConfigureAwait(false);
 			return default(TResult);
 		}
 
@@ -144,9 +144,8 @@ namespace Dapplo.HttpExtensions
 		///     Simplified error handling, this makes sure the uri and response are logged
 		/// </summary>
 		/// <param name="httpResponseMessage">HttpResponseMessage</param>
-		/// <param name="token">CancellationToken</param>
 		/// <returns>string with the error content if HttpBehaviour.ThrowErrorOnNonSuccess = false</returns>
-		public static async Task<string> HandleErrorAsync(this HttpResponseMessage httpResponseMessage, CancellationToken token = default(CancellationToken))
+		public static async Task<string> HandleErrorAsync(this HttpResponseMessage httpResponseMessage)
 		{
 			if (httpResponseMessage == null)
 			{

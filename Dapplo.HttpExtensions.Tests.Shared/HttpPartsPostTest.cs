@@ -100,7 +100,7 @@ namespace Dapplo.HttpExtensions.Tests
 			{
 				BitmapContentName = "MyBitmapContent",
 				BitmapFileName = "MyBitmapFilename",
-				OurBitmap = BitmapSource.Create(1, 1, 96, 96, PixelFormats.Bgr24, null, new byte[3] { 0, 0, 0 }, 3),
+				OurBitmap = BitmapSource.Create(1, 1, 96, 96, PixelFormats.Bgr24, null, new byte[] { 0, 0, 0 }, 3),
 				JsonInformation = new GitHubError { DocumentationUrl = "http://test.de", Message = "Hello" }
 			};
 			testObject.Headers.Add("Name", "Dapplo");

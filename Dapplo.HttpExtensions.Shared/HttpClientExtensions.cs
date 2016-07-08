@@ -117,7 +117,7 @@ namespace Dapplo.HttpExtensions
 			using (var httpRequestMessage = HttpRequestMessageFactory.CreateHead(uri))
 			using (var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false))
 			{
-				await httpResponseMessage.HandleErrorAsync(token).ConfigureAwait(false);
+				await httpResponseMessage.HandleErrorAsync().ConfigureAwait(false);
 				return httpResponseMessage.Content.Headers;
 			}
 		}

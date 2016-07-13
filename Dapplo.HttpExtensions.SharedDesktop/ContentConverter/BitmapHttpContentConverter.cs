@@ -34,7 +34,6 @@ using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.Log.Facade;
 using Dapplo.Utils;
-using Dapplo.Utils.Enumerable;
 using Dapplo.Utils.Extensions;
 
 #endregion
@@ -154,7 +153,10 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			{
 				var parameters = new EncoderParameters(EncoderParameters.Count);
 				var index = 0;
-				EncoderParameters.ForEach(parameter => parameters.Param[index++] = parameter);
+				foreach (var encoderParameter in EncoderParameters)
+				{
+					parameters.Param[index++] = encoderParameter;
+				}
 				bitmap.Save(stream, encoder, parameters);
 			}
 			else

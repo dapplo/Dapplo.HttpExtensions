@@ -130,7 +130,7 @@ The authentication process received information from CloudServiceName. You can c
 			Process.Start(authorizationUrl.AbsoluteUri);
 
 			// Return result of the listening
-			return await listenTask;
+			return await listenTask.ConfigureAwait(false);
 		}
 	}
 }

@@ -81,7 +81,7 @@ namespace Dapplo.HttpExtensions.Listener
 						// Dispose the registration, so the stop isn't called on a disposed httpListener
 						cancellationTokenRegistration.Dispose();
 
-						// Set the result to the TaskCompletionSource, so the await on the task finishe
+						// Set the result to the TaskCompletionSource, so the await on the task finishes
 						taskCompletionSource.SetResult(result);
 					}
 					catch (Exception ex)

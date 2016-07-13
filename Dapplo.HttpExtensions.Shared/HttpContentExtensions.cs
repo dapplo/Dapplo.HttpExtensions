@@ -102,7 +102,7 @@ namespace Dapplo.HttpExtensions
 			Log.Error().WriteLine($"Unsupported result type {resultType} & {contentType} combination.");
 			if (MediaTypes.Txt.EnumValueOf() == contentType && Log.IsErrorEnabled())
 			{
-				Log.Error().WriteLine("Unprocessable result: {0}", await httpContent.ReadAsStringAsync());
+				Log.Error().WriteLine("Unprocessable result: {0}", await httpContent.ReadAsStringAsync().ConfigureAwait(false));
 			}
 			return null;
 		}

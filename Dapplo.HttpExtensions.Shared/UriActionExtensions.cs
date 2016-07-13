@@ -96,7 +96,7 @@ namespace Dapplo.HttpExtensions
 			}
 			using (var httpClient = HttpClientFactory.Create(uri))
 			{
-				return await httpClient.HeadAsync(uri, token);
+				return await httpClient.HeadAsync(uri, token).ConfigureAwait(false);
 			}
 		}
 

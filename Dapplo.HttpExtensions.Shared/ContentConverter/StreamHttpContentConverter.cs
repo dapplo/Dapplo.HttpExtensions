@@ -75,7 +75,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			var httpBehaviour = HttpBehaviour.Current;
 
 			var memoryStream = new MemoryStream();
-			using (var contentStream = await httpContent.GetContentStream())
+			using (var contentStream = await httpContent.GetContentStream().ConfigureAwait(false))
 			{
 				await contentStream.CopyToAsync(memoryStream, httpBehaviour.ReadBufferSize, token).ConfigureAwait(false);
 			}

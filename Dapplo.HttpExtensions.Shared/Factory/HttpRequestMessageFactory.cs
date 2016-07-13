@@ -28,7 +28,6 @@ using System.Net.Http;
 using System.Reflection;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.Log.Facade;
-using Dapplo.Utils.Enumerable;
 
 #endregion
 
@@ -79,9 +78,12 @@ namespace Dapplo.HttpExtensions.Factory
 				}
 			}
 
-			if (resultType != null)
+			if (resultType != null && httpBehaviour.HttpContentConverters != null)
 			{
-				httpBehaviour.HttpContentConverters?.ForEach(x => x.AddAcceptHeadersForType(resultType, httpRequestMessage));
+				foreach (var httpContentConverter in httpBehaviour.HttpContentConverters)
+				{
+					httpContentConverter.AddAcceptHeadersForType(resultType, httpRequestMessage);
+				}
 			}
 
 			// Make sure the OnCreateHttpRequestMessage function is called

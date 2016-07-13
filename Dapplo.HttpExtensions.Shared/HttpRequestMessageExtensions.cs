@@ -67,7 +67,7 @@ namespace Dapplo.HttpExtensions
 		{
 			using (var httpClient = HttpClientFactory.Create(httpRequestMessage.RequestUri))
 			{
-				return await httpRequestMessage.SendAsync<TResponse>(httpClient, cancellationToken);
+				return await httpRequestMessage.SendAsync<TResponse>(httpClient, cancellationToken).ConfigureAwait(false);
 			}
 		}
 

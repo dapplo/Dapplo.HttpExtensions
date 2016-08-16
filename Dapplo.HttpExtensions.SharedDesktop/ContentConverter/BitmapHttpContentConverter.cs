@@ -120,7 +120,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		}
 
 		/// <inheritdoc />
-		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken token = default(CancellationToken))
+		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			if (!CanConvertFromHttpContent(resultType, httpContent))
 			{
@@ -128,7 +128,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 				Log.Error().WriteLine(exMessage);
 				throw new NotSupportedException(exMessage);
 			}
-			var memoryStream = (MemoryStream) await StreamHttpContentConverter.Instance.ConvertFromHttpContentAsync(typeof (MemoryStream), httpContent, token).ConfigureAwait(false);
+			var memoryStream = (MemoryStream) await StreamHttpContentConverter.Instance.ConvertFromHttpContentAsync(typeof (MemoryStream), httpContent, cancellationToken).ConfigureAwait(false);
 			Log.Debug().WriteLine("Creating a Bitmap from the MemoryStream.");
 			return new Bitmap(memoryStream);
 		}

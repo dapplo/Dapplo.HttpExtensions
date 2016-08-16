@@ -43,13 +43,12 @@ namespace Dapplo.HttpExtensions
 		///     Method to Delete content
 		/// </summary>
 		/// <typeparam name="TResponse">
-		///     the generic type to return the result into, use HttpContent or HttpResponseMessage to get
-		///     those unprocessed
+		///     the generic type to return the result into, use HttpContent or HttpResponseMessage to get those unprocessed
 		/// </typeparam>
 		/// <param name="uri">Uri to send the delete to</param>
-		/// <param name="token">CancellationToken</param>
+		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>TResponse</returns>
-		public static async Task<TResponse> DeleteAsync<TResponse>(this Uri uri, CancellationToken token = default(CancellationToken))
+		public static async Task<TResponse> DeleteAsync<TResponse>(this Uri uri, CancellationToken cancellationToken = default(CancellationToken))
 			where TResponse : class
 		{
 			if (uri == null)
@@ -59,7 +58,26 @@ namespace Dapplo.HttpExtensions
 
 			using (var client = HttpClientFactory.Create(uri))
 			{
-				return await client.DeleteAsync<TResponse>(uri, token).ConfigureAwait(false);
+				return await client.DeleteAsync<TResponse>(uri, cancellationToken).ConfigureAwait(false);
+			}
+		}
+
+		/// <summary>
+		///     Method to Delete content
+		/// </summary>
+		/// <param name="uri">Uri to send the delete to</param>
+		/// <param name="cancellationToken">CancellationToken</param>
+		/// <returns>Task</returns>
+		public static async Task DeleteAsync(this Uri uri, CancellationToken cancellationToken = default(CancellationToken))
+		{
+			if (uri == null)
+			{
+				throw new ArgumentNullException(nameof(uri));
+			}
+
+			using (var client = HttpClientFactory.Create(uri))
+			{
+				await client.DeleteAsync(uri, cancellationToken).ConfigureAwait(false);
 			}
 		}
 
@@ -68,9 +86,9 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <typeparam name="TResponse">Type to deserialize into</typeparam>
 		/// <param name="uri">An Uri to specify the download location</param>
-		/// <param name="token">CancellationToken</param>
+		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>TResponse</returns>
-		public static async Task<TResponse> GetAsAsync<TResponse>(this Uri uri, CancellationToken token = default(CancellationToken)) where TResponse : class
+		public static async Task<TResponse> GetAsAsync<TResponse>(this Uri uri, CancellationToken cancellationToken = default(CancellationToken)) where TResponse : class
 		{
 			if (uri == null)
 			{
@@ -78,7 +96,7 @@ namespace Dapplo.HttpExtensions
 			}
 			using (var client = HttpClientFactory.Create(uri))
 			{
-				return await client.GetAsAsync<TResponse>(uri, token).ConfigureAwait(false);
+				return await client.GetAsAsync<TResponse>(uri, cancellationToken).ConfigureAwait(false);
 			}
 		}
 
@@ -86,9 +104,9 @@ namespace Dapplo.HttpExtensions
 		///     Retrieve only the content headers, by using the HTTP HEAD method
 		/// </summary>
 		/// <param name="uri">Uri to get HEAD for</param>
-		/// <param name="token">CancellationToken</param>
+		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>HttpContentHeaders</returns>
-		public static async Task<HttpContentHeaders> HeadAsync(this Uri uri, CancellationToken token = default(CancellationToken))
+		public static async Task<HttpContentHeaders> HeadAsync(this Uri uri, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			if (uri == null)
 			{
@@ -96,7 +114,7 @@ namespace Dapplo.HttpExtensions
 			}
 			using (var httpClient = HttpClientFactory.Create(uri))
 			{
-				return await httpClient.HeadAsync(uri, token).ConfigureAwait(false);
+				return await httpClient.HeadAsync(uri, cancellationToken).ConfigureAwait(false);
 			}
 		}
 
@@ -104,9 +122,9 @@ namespace Dapplo.HttpExtensions
 		///     Get LastModified for a URI
 		/// </summary>
 		/// <param name="uri">Uri</param>
-		/// <param name="token">CancellationToken</param>
+		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>DateTime</returns>
-		public static async Task<DateTimeOffset> LastModifiedAsync(this Uri uri, CancellationToken token = default(CancellationToken))
+		public static async Task<DateTimeOffset> LastModifiedAsync(this Uri uri, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			if (uri == null)
 			{
@@ -115,7 +133,7 @@ namespace Dapplo.HttpExtensions
 
 			try
 			{
-				var headers = await uri.HeadAsync(token).ConfigureAwait(false);
+				var headers = await uri.HeadAsync(cancellationToken).ConfigureAwait(false);
 				if (headers.LastModified.HasValue)
 				{
 					return headers.LastModified.Value;
@@ -138,9 +156,9 @@ namespace Dapplo.HttpExtensions
 		/// </typeparam>
 		/// <param name="uri">Uri to post to</param>
 		/// <param name="content">Content to post</param>
-		/// <param name="token">CancellationToken</param>
+		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>TResponse</returns>
-		public static async Task<TResponse> PostAsync<TResponse>(this Uri uri, object content, CancellationToken token = default(CancellationToken))
+		public static async Task<TResponse> PostAsync<TResponse>(this Uri uri, object content, CancellationToken cancellationToken = default(CancellationToken))
 			where TResponse : class
 		{
 			if (uri == null)
@@ -150,7 +168,7 @@ namespace Dapplo.HttpExtensions
 
 			using (var client = HttpClientFactory.Create(uri))
 			{
-				return await client.PostAsync<TResponse>(uri, content, token).ConfigureAwait(false);
+				return await client.PostAsync<TResponse>(uri, content, cancellationToken).ConfigureAwait(false);
 			}
 		}
 
@@ -159,8 +177,8 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="uri">Uri to post to</param>
 		/// <param name="content">Content to post</param>
-		/// <param name="token">CancellationToken</param>
-		public static async Task PostAsync(this Uri uri, object content, CancellationToken token = default(CancellationToken))
+		/// <param name="cancellationToken">CancellationToken</param>
+		public static async Task PostAsync(this Uri uri, object content, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			if (uri == null)
 			{
@@ -169,7 +187,7 @@ namespace Dapplo.HttpExtensions
 
 			using (var client = HttpClientFactory.Create(uri))
 			{
-				await client.PostAsync(uri, content, token).ConfigureAwait(false);
+				await client.PostAsync(uri, content, cancellationToken).ConfigureAwait(false);
 			}
 		}
 
@@ -182,9 +200,9 @@ namespace Dapplo.HttpExtensions
 		/// </typeparam>
 		/// <param name="uri">Uri to put to</param>
 		/// <param name="content">Content to put</param>
-		/// <param name="token">CancellationToken</param>
+		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>TResponse</returns>
-		public static async Task<TResponse> PutAsync<TResponse>(this Uri uri, object content, CancellationToken token = default(CancellationToken))
+		public static async Task<TResponse> PutAsync<TResponse>(this Uri uri, object content, CancellationToken cancellationToken = default(CancellationToken))
 			where TResponse : class
 		{
 			if (uri == null)
@@ -194,7 +212,7 @@ namespace Dapplo.HttpExtensions
 
 			using (var client = HttpClientFactory.Create(uri))
 			{
-				return await client.PutAsync<TResponse>(uri, content, token).ConfigureAwait(false);
+				return await client.PutAsync<TResponse>(uri, content, cancellationToken).ConfigureAwait(false);
 			}
 		}
 
@@ -203,9 +221,9 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="uri">Uri to put to</param>
 		/// <param name="content">Content to put</param>
-		/// <param name="token">CancellationToken</param>
+		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>task</returns>
-		public static async Task PutAsync(this Uri uri, object content, CancellationToken token = default(CancellationToken))
+		public static async Task PutAsync(this Uri uri, object content, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			if (uri == null)
 			{
@@ -214,7 +232,7 @@ namespace Dapplo.HttpExtensions
 
 			using (var client = HttpClientFactory.Create(uri))
 			{
-				await client.PutAsync(uri, content, token).ConfigureAwait(false);
+				await client.PutAsync(uri, content, cancellationToken).ConfigureAwait(false);
 			}
 		}
 	}

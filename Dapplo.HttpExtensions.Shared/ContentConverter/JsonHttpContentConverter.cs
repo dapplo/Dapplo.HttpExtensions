@@ -82,7 +82,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		}
 
 		/// <inheritdoc />
-		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken token = default(CancellationToken))
+		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			if (!CanConvertFromHttpContent(resultType, httpContent))
 			{

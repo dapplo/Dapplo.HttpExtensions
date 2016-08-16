@@ -48,25 +48,25 @@ namespace Dapplo.HttpExtensions
 		///     Currently we support Json objects which are annotated with the DataContract/DataMember attributes
 		///     We might support other object, e.g MemoryStream, Bitmap etc soon
 		/// </summary>
-		/// <typeparam name="TResult">The Type to read into</typeparam>
+		/// <typeparam name="TResponse">The Type to read into</typeparam>
 		/// <param name="httpResponseMessage">HttpResponseMessage</param>
-		/// <param name="token">CancellationToken</param>
+		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>the deserialized object of type T or default(T)</returns>
-		public static async Task<TResult> GetAsAsync<TResult>(this HttpResponseMessage httpResponseMessage, CancellationToken token = default(CancellationToken)) where TResult : class
+		public static async Task<TResponse> GetAsAsync<TResponse>(this HttpResponseMessage httpResponseMessage, CancellationToken cancellationToken = default(CancellationToken)) where TResponse : class
 		{
 			Log.Verbose().WriteLine("Response status code: {0}", httpResponseMessage.StatusCode);
-			var resultType = typeof (TResult);
+			var resultType = typeof (TResponse);
 			// Quick exit if the caller just wants the HttpResponseMessage
 			if (resultType == typeof (HttpResponseMessage))
 			{
-				return httpResponseMessage as TResult;
+				return httpResponseMessage as TResponse;
 			}
 			// See if we have a container
 			if (resultType.GetTypeInfo().GetCustomAttribute<HttpResponseAttribute>() != null)
 			{
 				Log.Info().WriteLine("Filling type {0}", resultType.FriendlyName());
 				// special type
-				var instance = Activator.CreateInstance<TResult>();
+				var instance = Activator.CreateInstance<TResponse>();
 				var properties = resultType.GetProperties().Where(x => x.GetCustomAttribute<HttpPartAttribute>() != null).ToList();
 
 				PropertyInfo targetPropertyInfo;
@@ -96,7 +96,7 @@ namespace Dapplo.HttpExtensions
 					var httpContent = httpResponseMessage.Content;
 
 					// Convert the HttpContent to the value type 
-					var convertedContent = await httpContent.GetAsAsync(targetPropertyInfo.PropertyType, httpResponseMessage.StatusCode, token).ConfigureAwait(false);
+					var convertedContent = await httpContent.GetAsAsync(targetPropertyInfo.PropertyType, httpResponseMessage.StatusCode, cancellationToken).ConfigureAwait(false);
 
 					// If we get null, we throw an error if the
 					if (convertedContent == null)
@@ -127,9 +127,9 @@ namespace Dapplo.HttpExtensions
 			if (httpResponseMessage.IsSuccessStatusCode)
 			{
 				var httpContent = httpResponseMessage.Content;
-				var result = await httpContent.GetAsAsync<TResult>(httpResponseMessage.StatusCode, token).ConfigureAwait(false);
+				var result = await httpContent.GetAsAsync<TResponse>(httpResponseMessage.StatusCode, cancellationToken).ConfigureAwait(false);
 				// Make sure the httpContent is only disposed when it's not the return type
-				if (!typeof (HttpContent).IsAssignableFrom(typeof (TResult)))
+				if (!typeof (HttpContent).IsAssignableFrom(typeof (TResponse)))
 				{
 					httpContent?.Dispose();
 				}
@@ -137,7 +137,7 @@ namespace Dapplo.HttpExtensions
 				return result;
 			}
 			await httpResponseMessage.HandleErrorAsync().ConfigureAwait(false);
-			return default(TResult);
+			return default(TResponse);
 		}
 
 		/// <summary>

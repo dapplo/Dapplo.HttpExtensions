@@ -65,7 +65,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		}
 
 		/// <inheritdoc />
-		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken token = default(CancellationToken))
+		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			if (!CanConvertFromHttpContent(resultType, httpContent))
 			{
@@ -77,7 +77,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			var memoryStream = new MemoryStream();
 			using (var contentStream = await httpContent.GetContentStream().ConfigureAwait(false))
 			{
-				await contentStream.CopyToAsync(memoryStream, httpBehaviour.ReadBufferSize, token).ConfigureAwait(false);
+				await contentStream.CopyToAsync(memoryStream, httpBehaviour.ReadBufferSize, cancellationToken).ConfigureAwait(false);
 			}
 			// Make sure the memory stream position is at the beginning,
 			// so the processing code can read right away.

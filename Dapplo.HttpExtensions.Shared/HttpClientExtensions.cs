@@ -63,19 +63,39 @@ namespace Dapplo.HttpExtensions
 		/// </typeparam>
 		/// <param name="httpClient">HttpClient</param>
 		/// <param name="uri">Uri to send the delete request to</param>
-		/// <param name="token">CancellationToken</param>
+		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>TResult</returns>
-		public static async Task<TResponse> DeleteAsync<TResponse>(this HttpClient httpClient, Uri uri, CancellationToken token = default(CancellationToken))
+		public static async Task<TResponse> DeleteAsync<TResponse>(this HttpClient httpClient, Uri uri, CancellationToken cancellationToken = default(CancellationToken))
 			where TResponse : class
 		{
 			if (uri == null)
 			{
-				throw new ArgumentNullException(nameof(uri), "No uri supplied");
+				throw new ArgumentNullException(nameof(uri));
 			}
 
 			using (var httpRequestMessage = HttpRequestMessageFactory.CreateDelete<TResponse>(uri))
 			{
-				return await httpRequestMessage.SendAsync<TResponse>(httpClient, token).ConfigureAwait(false);
+				return await httpRequestMessage.SendAsync<TResponse>(httpClient, cancellationToken).ConfigureAwait(false);
+			}
+		}
+
+		/// <summary>
+		///     Send a Delete request to the server
+		/// </summary>
+		/// <param name="httpClient">HttpClient</param>
+		/// <param name="uri">Uri to send the delete request to</param>
+		/// <param name="cancellationToken">CancellationToken</param>
+		/// <returns>Task</returns>
+		public static async Task DeleteAsync(this HttpClient httpClient, Uri uri, CancellationToken cancellationToken = default(CancellationToken))
+		{
+			if (uri == null)
+			{
+				throw new ArgumentNullException(nameof(uri));
+			}
+
+			using (var httpRequestMessage = HttpRequestMessageFactory.CreateDelete(uri))
+			{
+				await httpRequestMessage.SendAsync(httpClient, cancellationToken).ConfigureAwait(false);
 			}
 		}
 
@@ -87,16 +107,32 @@ namespace Dapplo.HttpExtensions
 		/// <typeparam name="TResponse">The Type to read into</typeparam>
 		/// <param name="client">HttpClient</param>
 		/// <param name="uri">URI</param>
-		/// <param name="token">CancellationToken</param>
+		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>the deserialized object of type T or default(T)</returns>
-		public static async Task<TResponse> GetAsAsync<TResponse>(this HttpClient client, Uri uri, CancellationToken token = default(CancellationToken)) where TResponse : class
+		public static async Task<TResponse> GetAsAsync<TResponse>(this HttpClient client, Uri uri, CancellationToken cancellationToken = default(CancellationToken)) where TResponse : class
 		{
+			if (uri == null)
+			{
+				throw new ArgumentNullException(nameof(uri));
+			}
 			var httpBehaviour = HttpBehaviour.Current;
 
 			using (var httpRequestMessage = HttpRequestMessageFactory.CreateGet<TResponse>(uri))
-			using (var httpResponseMessage = await client.SendAsync(httpRequestMessage, httpBehaviour.HttpCompletionOption, token).ConfigureAwait(false))
 			{
-				return await httpResponseMessage.GetAsAsync<TResponse>(token).ConfigureAwait(false);
+				var httpResponseMessage = await client.SendAsync(httpRequestMessage, httpBehaviour.HttpCompletionOption, cancellationToken).ConfigureAwait(false);
+				try
+				{
+					return await httpResponseMessage.GetAsAsync<TResponse>(cancellationToken).ConfigureAwait(false);
+				}
+				finally
+				{
+					var resultType = typeof(TResponse);
+					// Quick exit if the caller just wants the HttpResponseMessage
+					if (resultType != typeof(HttpResponseMessage))
+					{
+						httpResponseMessage.Dispose();
+					}
+				}
 			}
 		}
 
@@ -105,9 +141,9 @@ namespace Dapplo.HttpExtensions
 		/// </summary>
 		/// <param name="httpClient"></param>
 		/// <param name="uri">Uri to get HEAD for</param>
-		/// <param name="token">CancellationToken</param>
+		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>HttpContentHeaders</returns>
-		public static async Task<HttpContentHeaders> HeadAsync(this HttpClient httpClient, Uri uri, CancellationToken token = default(CancellationToken))
+		public static async Task<HttpContentHeaders> HeadAsync(this HttpClient httpClient, Uri uri, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			if (uri == null)
 			{
@@ -115,7 +151,7 @@ namespace Dapplo.HttpExtensions
 			}
 			Log.Verbose().WriteLine("Requesting headers for: {0}", uri);
 			using (var httpRequestMessage = HttpRequestMessageFactory.CreateHead(uri))
-			using (var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false))
+			using (var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false))
 			{
 				await httpResponseMessage.HandleErrorAsync().ConfigureAwait(false);
 				return httpResponseMessage.Content.Headers;
@@ -132,11 +168,16 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpClient">HttpClient</param>
 		/// <param name="uri">Uri to post request to</param>
 		/// <param name="content">Content to post</param>
-		/// <param name="token">CancellationToken</param>
+		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>TResult</returns>
-		public static async Task<TResponse> PostAsync<TResponse>(this HttpClient httpClient, Uri uri, object content, CancellationToken token = default(CancellationToken))
+		public static async Task<TResponse> PostAsync<TResponse>(this HttpClient httpClient, Uri uri, object content, CancellationToken cancellationToken = default(CancellationToken))
 			where TResponse : class
 		{
+			if (uri == null)
+			{
+				throw new ArgumentNullException(nameof(uri));
+			}
+
 			if (content == null)
 			{
 				Log.Warn().WriteLine("No content supplied, this is ok but unusual.");
@@ -144,7 +185,7 @@ namespace Dapplo.HttpExtensions
 
 			using (var httpRequestMessage = HttpRequestMessageFactory.CreatePost<TResponse>(uri, content))
 			{
-				return await httpRequestMessage.SendAsync<TResponse>(httpClient, token).ConfigureAwait(false);
+				return await httpRequestMessage.SendAsync<TResponse>(httpClient, cancellationToken).ConfigureAwait(false);
 			}
 		}
 
@@ -154,9 +195,13 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpClient">HttpClient</param>
 		/// <param name="uri">Uri to post an empty request to</param>
 		/// <param name="content">Content to post</param>
-		/// <param name="token">CancellationToken</param>
-		public static async Task PostAsync(this HttpClient httpClient, Uri uri, object content, CancellationToken token = default(CancellationToken))
+		/// <param name="cancellationToken">CancellationToken</param>
+		public static async Task PostAsync(this HttpClient httpClient, Uri uri, object content, CancellationToken cancellationToken = default(CancellationToken))
 		{
+			if (uri == null)
+			{
+				throw new ArgumentNullException(nameof(uri));
+			}
 			if (content == null)
 			{
 				Log.Warn().WriteLine("No content supplied, this is ok but unusual.");
@@ -164,7 +209,7 @@ namespace Dapplo.HttpExtensions
 
 			using (var httpRequestMessage = HttpRequestMessageFactory.CreatePost(uri, content))
 			{
-				await httpRequestMessage.SendAsync(httpClient, token).ConfigureAwait(false);
+				await httpRequestMessage.SendAsync(httpClient, cancellationToken).ConfigureAwait(false);
 			}
 		}
 
@@ -178,11 +223,15 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpClient">HttpClient</param>
 		/// <param name="uri">Uri to put the request to</param>
 		/// <param name="content">Content to put</param>
-		/// <param name="token">CancellationToken</param>
+		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>TResult</returns>
-		public static async Task<TResponse> PutAsync<TResponse>(this HttpClient httpClient, Uri uri, object content, CancellationToken token = default(CancellationToken))
+		public static async Task<TResponse> PutAsync<TResponse>(this HttpClient httpClient, Uri uri, object content, CancellationToken cancellationToken = default(CancellationToken))
 			where TResponse : class
 		{
+			if (uri == null)
+			{
+				throw new ArgumentNullException(nameof(uri));
+			}
 			if (content == null)
 			{
 				Log.Warn().WriteLine("No content supplied, this is ok but unusual.");
@@ -190,7 +239,7 @@ namespace Dapplo.HttpExtensions
 
 			using (var httpRequestMessage = HttpRequestMessageFactory.CreatePut<TResponse>(uri, content))
 			{
-				return await httpRequestMessage.SendAsync<TResponse>(httpClient, token).ConfigureAwait(false);
+				return await httpRequestMessage.SendAsync<TResponse>(httpClient, cancellationToken).ConfigureAwait(false);
 			}
 		}
 
@@ -200,10 +249,14 @@ namespace Dapplo.HttpExtensions
 		/// <param name="httpClient">HttpClient</param>
 		/// <param name="uri">Uri to put the request to</param>
 		/// <param name="content">Content to put</param>
-		/// <param name="token">CancellationToken</param>
+		/// <param name="cancellationToken">CancellationToken</param>
 		/// <returns>Task</returns>
-		public static async Task PutAsync(this HttpClient httpClient, Uri uri, object content, CancellationToken token = default(CancellationToken))
+		public static async Task PutAsync(this HttpClient httpClient, Uri uri, object content, CancellationToken cancellationToken = default(CancellationToken))
 		{
+			if (uri == null)
+			{
+				throw new ArgumentNullException(nameof(uri));
+			}
 			if (content == null)
 			{
 				Log.Warn().WriteLine("No content supplied, this is ok but unusual.");
@@ -211,7 +264,7 @@ namespace Dapplo.HttpExtensions
 
 			using (var httpRequestMessage = HttpRequestMessageFactory.CreatePut(uri, content))
 			{
-				await httpRequestMessage.SendAsync(httpClient, token).ConfigureAwait(false);
+				await httpRequestMessage.SendAsync(httpClient, cancellationToken).ConfigureAwait(false);
 			}
 		}
 
@@ -249,6 +302,10 @@ namespace Dapplo.HttpExtensions
 		/// <returns>HttpClient for fluent usage</returns>
 		public static HttpClient SetBasicAuthorization(this HttpClient client, Uri uri)
 		{
+			if (uri == null)
+			{
+				throw new ArgumentNullException(nameof(uri));
+			}
 			if (string.IsNullOrEmpty(uri?.UserInfo))
 			{
 				return client;

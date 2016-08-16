@@ -82,9 +82,19 @@ namespace Dapplo.HttpExtensions
 		{
 			var httpBehaviour = HttpBehaviour.Current;
 			Log.Verbose().WriteLine("Sending {0} HttpRequestMessage with Uri: {1}", httpRequestMessage.Method, httpRequestMessage.RequestUri);
-			using (var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage, httpBehaviour.HttpCompletionOption, cancellationToken).ConfigureAwait(false))
+			var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage, httpBehaviour.HttpCompletionOption, cancellationToken).ConfigureAwait(false);
+			try
 			{
 				return await httpResponseMessage.GetAsAsync<TResponse>(cancellationToken).ConfigureAwait(false);
+			}
+			finally
+			{
+				var resultType = typeof(TResponse);
+				// Quick exit if the caller just wants the HttpResponseMessage
+				if (resultType != typeof(HttpResponseMessage))
+				{
+					httpResponseMessage.Dispose();
+				}
 			}
 		}
 

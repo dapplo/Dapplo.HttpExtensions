@@ -56,8 +56,6 @@ namespace Dapplo.HttpExtensions
 
 		/// <summary>
 		///     Send the supplied HttpRequestMessage, and get a response back
-		///     Currently we support Json objects which are annotated with the DataContract/DataMember attributes
-		///     We might support other object, e.g MemoryStream, Bitmap etc soon
 		/// </summary>
 		/// <typeparam name="TResponse">The Type to read into</typeparam>
 		/// <param name="httpRequestMessage">HttpRequestMessage</param>
@@ -73,8 +71,6 @@ namespace Dapplo.HttpExtensions
 
 		/// <summary>
 		///     Send the supplied HttpRequestMessage, and get a response back
-		///     Currently we support Json objects which are annotated with the DataContract/DataMember attributes
-		///     We might support other object, e.g MemoryStream, Bitmap etc soon
 		/// </summary>
 		/// <typeparam name="TResponse">The Type to read into</typeparam>
 		/// <param name="httpRequestMessage">HttpRequestMessage</param>
@@ -94,8 +90,6 @@ namespace Dapplo.HttpExtensions
 
 		/// <summary>
 		///     Send the supplied HttpRequestMessage, ignoring the response
-		///     Currently we support Json objects which are annotated with the DataContract/DataMember attributes
-		///     We might support other object, e.g MemoryStream, Bitmap etc soon
 		/// </summary>
 		/// <param name="httpRequestMessage">HttpRequestMessage</param>
 		/// <param name="httpClient">HttpClient</param>

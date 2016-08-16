@@ -195,6 +195,27 @@ namespace Dapplo.HttpExtensions
 		}
 
 		/// <summary>
+		///     Put the content, ignore the reponse
+		/// </summary>
+		/// <param name="httpClient">HttpClient</param>
+		/// <param name="uri">Uri to put the request to</param>
+		/// <param name="content">Content to put</param>
+		/// <param name="token">CancellationToken</param>
+		/// <returns>Task</returns>
+		public static async Task PutAsync(this HttpClient httpClient, Uri uri, object content, CancellationToken token = default(CancellationToken))
+		{
+			if (content == null)
+			{
+				Log.Warn().WriteLine("No content supplied, this is ok but unusual.");
+			}
+
+			using (var httpRequestMessage = HttpRequestMessageFactory.CreatePut(uri, content))
+			{
+				await httpRequestMessage.SendAsync(httpClient, token).ConfigureAwait(false);
+			}
+		}
+
+		/// <summary>
 		///     Set Authorization for the current client
 		/// </summary>
 		/// <param name="client">HttpClient</param>

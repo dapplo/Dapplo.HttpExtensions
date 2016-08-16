@@ -191,5 +191,16 @@ namespace Dapplo.HttpExtensions.Factory
 		{
 			return Create(HttpMethod.Put, requestUri, typeof (TResponse), content?.GetType(), content);
 		}
+
+		/// <summary>
+		///     Create a HttpRequestMessage for the PUT method
+		/// </summary>
+		/// <param name="requestUri">the target uri for this message</param>
+		/// <param name="content">HttpContent</param>
+		/// <returns>HttpRequestMessage</returns>
+		public static HttpRequestMessage CreatePut(Uri requestUri, object content = null)
+		{
+			return Create(HttpMethod.Put, requestUri, null, content?.GetType(), content);
+		}
 	}
 }

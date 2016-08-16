@@ -199,10 +199,19 @@ namespace Dapplo.HttpExtensions.Tests
 		///     Test PUT
 		/// </summary>
 		[Fact]
-		public async Task TestPut()
+		public async Task TestPut_Response()
 		{
 			var result = await new Uri("https://httpbin.org/put").PutAsync<dynamic>(null);
 			Assert.NotNull(result);
+		}
+
+		/// <summary>
+		///     Test PUT without response
+		/// </summary>
+		[Fact]
+		public async Task TestPut()
+		{
+			await new Uri("https://httpbin.org/put").PutAsync(null);
 		}
 
 		/// <summary>

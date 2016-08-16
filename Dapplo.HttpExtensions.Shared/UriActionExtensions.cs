@@ -180,8 +180,8 @@ namespace Dapplo.HttpExtensions
 		///     the generic type to return the result into, use HttpContent or HttpResponseMessage to get
 		///     those unprocessed
 		/// </typeparam>
-		/// <param name="uri">Uri to post to</param>
-		/// <param name="content">Content to post</param>
+		/// <param name="uri">Uri to put to</param>
+		/// <param name="content">Content to put</param>
 		/// <param name="token">CancellationToken</param>
 		/// <returns>TResponse</returns>
 		public static async Task<TResponse> PutAsync<TResponse>(this Uri uri, object content, CancellationToken token = default(CancellationToken))
@@ -195,6 +195,26 @@ namespace Dapplo.HttpExtensions
 			using (var client = HttpClientFactory.Create(uri))
 			{
 				return await client.PutAsync<TResponse>(uri, content, token).ConfigureAwait(false);
+			}
+		}
+
+		/// <summary>
+		///     Method to Put content
+		/// </summary>
+		/// <param name="uri">Uri to put to</param>
+		/// <param name="content">Content to put</param>
+		/// <param name="token">CancellationToken</param>
+		/// <returns>task</returns>
+		public static async Task PutAsync(this Uri uri, object content, CancellationToken token = default(CancellationToken))
+		{
+			if (uri == null)
+			{
+				throw new ArgumentNullException(nameof(uri));
+			}
+
+			using (var client = HttpClientFactory.Create(uri))
+			{
+				await client.PutAsync(uri, content, token).ConfigureAwait(false);
 			}
 		}
 	}

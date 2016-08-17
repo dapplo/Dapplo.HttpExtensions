@@ -32,9 +32,9 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Dapplo.HttpExtensions.Extensions;
 using Dapplo.HttpExtensions.Factory;
 using Dapplo.Log.Facade;
-using Dapplo.Utils.Extensions;
 
 #endregion
 
@@ -318,8 +318,10 @@ namespace Dapplo.HttpExtensions.OAuth
 		protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken)
 		{
 			// Make sure the first call does the authorization, and all others wait for it.
-			using (await _oAuth1Settings.Lock.LockAsync().ConfigureAwait(false))
+			await _oAuth1Settings.Lock.WaitAsync().ConfigureAwait(false);
+			try
 			{
+
 				if (string.IsNullOrEmpty(_oAuth1Settings.Token.OAuthToken))
 				{
 					await GetRequestTokenAsync(cancellationToken).ConfigureAwait(false);
@@ -330,6 +332,10 @@ namespace Dapplo.HttpExtensions.OAuth
 				{
 					Log.Verbose().WriteLine("Continueing, already a token available.");
 				}
+			}
+			finally
+			{
+				_oAuth1Settings.Lock.Release();
 			}
 
 			if (string.IsNullOrEmpty(_oAuth1Settings.Token.OAuthToken))

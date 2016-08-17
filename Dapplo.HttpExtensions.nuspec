@@ -18,10 +18,10 @@
 		</frameworkAssemblies>
 		<dependencies>
 			<group targetFramework="net46">
-				<dependency id="Dapplo.Utils" version="0.1.73" />
+				<dependency id="Dapplo.Log.Facade" version="0.5.4" />
 			</group>
 			<group targetFramework="net45">
-				<dependency id="Dapplo.Utils" version="0.1.73" />
+				<dependency id="Dapplo.Log.Facade" version="0.5.4" />
 			</group>
 			<group targetFramework="dnxcore50">
 				<dependency id="System.Net.Http" version="4.0.0" />
@@ -29,7 +29,7 @@
 				<dependency id="System.Security.Principal" version="4.0.0" />
 				<dependency id="System.Dynamic.Runtime" version="4.0.10" />
 				<dependency id="System.Runtime.Serialization.Primitives" version="4.0.10" />
-				<dependency id="Dapplo.Utils" version="0.1.73" />
+				<dependency id="Dapplo.Log.Facade" version="0.5.4" />
 			</group>
 			<group targetFramework="uap10.0">
 				<dependency id="System.Net.Http" version="4.0.0" />
@@ -37,7 +37,7 @@
 				<dependency id="System.Security.Principal" version="4.0.0" />
 				<dependency id="System.Dynamic.Runtime" version="4.0.10" />
 				<dependency id="System.Runtime.Serialization.Primitives" version="4.0.10" />
-				<dependency id="Dapplo.Utils" version="0.1.73" />
+				<dependency id="Dapplo.Log.Facade" version="0.5.4" />
 			</group>
 			<group targetFramework="dotnet">
 				<dependency id="System.Net.Http" version="4.0.0" />
@@ -45,7 +45,7 @@
 				<dependency id="System.Security.Principal" version="4.0.0" />
 				<dependency id="System.Dynamic.Runtime" version="4.0.10" />
 				<dependency id="System.Runtime.Serialization.Primitives" version="4.0.10" />
-				<dependency id="Dapplo.Utils" version="0.1.73" />
+				<dependency id="Dapplo.Log.Facade" version="0.5.4" />
 			</group>
 		</dependencies>
 	</metadata>

@@ -28,9 +28,9 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Dapplo.HttpExtensions.Extensions;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.Log.Facade;
-using Dapplo.Utils.Extensions;
 
 #endregion
 
@@ -110,7 +110,11 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			// empty json should return the default of the resultType
 			if (string.IsNullOrEmpty(jsonString))
 			{
-				return resultType.Default();
+				if (resultType.GetTypeInfo().IsValueType)
+				{
+					return Activator.CreateInstance(resultType);
+				}
+				return null;
 			}
 			var httpBehaviour = HttpBehaviour.Current;
 			return httpBehaviour.JsonSerializer.DeserializeJson(resultType == typeof (object) ? null : resultType, jsonString);

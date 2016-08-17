@@ -29,9 +29,9 @@ using System.ServiceModel.Syndication;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using Dapplo.HttpExtensions.Extensions;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.Log.Facade;
-using Dapplo.Utils.Extensions;
 
 #endregion
 

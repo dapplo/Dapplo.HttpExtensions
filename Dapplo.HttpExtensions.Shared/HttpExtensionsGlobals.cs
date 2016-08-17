@@ -25,7 +25,6 @@ using System.Collections.Generic;
 using System.Text;
 using Dapplo.HttpExtensions.ContentConverter;
 using Dapplo.HttpExtensions.Support;
-using Dapplo.Log.Facade;
 
 #endregion
 
@@ -37,8 +36,6 @@ namespace Dapplo.HttpExtensions
 	/// </summary>
 	public static class HttpExtensionsGlobals
 	{
-		private static readonly LogSource Log = new LogSource();
-
 		/// <summary>
 		///     The glocal value which specifies if Progress actions are called with UiContext.RunOn
 		/// </summary>

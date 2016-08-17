@@ -21,7 +21,6 @@
 
 #region using
 
-using Dapplo.Utils;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -35,14 +34,8 @@ namespace Dapplo.HttpExtensions
 	/// <summary>
 	///     The IHttpBehaviour is used to control the behaviour of all operations in the HttpExtensions library.
 	/// </summary>
-	public interface IHttpBehaviour : IShallowCloneable<IChangeableHttpBehaviour>
+	public interface IHttpBehaviour
 	{
-		/// <summary>
-		///     Specify if the progress actions (UploadProgress or DownloadProcess) are called
-		///     via UiContext.RunOn. This makes sure it's on the UI thread.
-		/// </summary>
-		bool CallProgressOnUiContext { get; }
-
 		/// <summary>
 		///     The default encoding which is used wherever an encoding is specified.
 		///     The default is set to Encoding.UTF8
@@ -119,7 +112,7 @@ namespace Dapplo.HttpExtensions
 		bool ThrowOnError { get; }
 
 		/// <summary>
-		///     Action which is called to notify of upload progress.
+		///     Action which is called to notify of upload progress, be sure to handle the UI thread issues yourself.
 		///     Only used when using non-string content like Bitmaps or MemoryStreams.
 		///     Also the UseProgressStream needs to be true for this upload progress
 		/// </summary>
@@ -146,5 +139,11 @@ namespace Dapplo.HttpExtensions
 		///     Set this IHttpBehaviour on the CallContext
 		/// </summary>
 		void MakeCurrent();
+
+		/// <summary>
+		/// Make a memberwise clone of the object, this is "shallow".
+		/// </summary>
+		/// <returns>"Shallow" Cloned instance of IChangeableHttpBehaviour</returns>
+		IChangeableHttpBehaviour ShallowClone();
 	}
 }

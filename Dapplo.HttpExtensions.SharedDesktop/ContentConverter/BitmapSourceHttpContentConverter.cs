@@ -30,10 +30,9 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using Dapplo.HttpExtensions.Extensions;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.Log.Facade;
-using Dapplo.Utils;
-using Dapplo.Utils.Extensions;
 
 #endregion
 
@@ -138,17 +137,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 						var progressStream = new ProgressStream(stream);
 						progressStream.BytesRead += (sender, eventArgs) =>
 						{
-							if (httpBehaviour.CallProgressOnUiContext)
-							{
-								UiContext.RunOn(() =>
-								{
-									httpBehaviour.UploadProgress?.Invoke((float)eventArgs.StreamPosition / eventArgs.StreamLength);
-								});
-							}
-							else
-							{
-								httpBehaviour.UploadProgress?.Invoke((float)eventArgs.StreamPosition / eventArgs.StreamLength);
-							}
+							httpBehaviour.UploadProgress?.Invoke((float)eventArgs.StreamPosition / eventArgs.StreamLength);
 						};
 						stream = progressStream;
 					}

@@ -143,13 +143,6 @@ namespace Dapplo.HttpExtensions.OAuth
 		}
 
 		/// <inheritdoc />
-		public bool CallProgressOnUiContext
-		{
-			get { return _wrapped.CallProgressOnUiContext; }
-			set { _wrapped.CallProgressOnUiContext = value; }
-		}
-
-		/// <inheritdoc />
 		public Action<float> UploadProgress
 		{
 			get { return _wrapped.UploadProgress; }

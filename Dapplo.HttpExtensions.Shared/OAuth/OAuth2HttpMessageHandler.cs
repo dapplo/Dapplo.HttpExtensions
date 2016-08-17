@@ -27,8 +27,8 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using Dapplo.HttpExtensions.Extensions;
 using Dapplo.Log.Facade;
-using Dapplo.Utils.Extensions;
 
 #endregion
 
@@ -317,9 +317,14 @@ namespace Dapplo.HttpExtensions.OAuth
 		protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken)
 		{
 			// Make sure the first call does the authorization, and all others wait for it.
-			using (await _oAuth2Settings.Lock.LockAsync().ConfigureAwait(false))
+			await _oAuth2Settings.Lock.WaitAsync().ConfigureAwait(false);
+			try
 			{
 				await CheckAndAuthenticateOrRefreshAsync(cancellationToken).ConfigureAwait(false);
+			}
+			finally
+			{
+				_oAuth2Settings.Lock.Release();
 			}
 			httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _oAuth2Settings.Token.OAuth2AccessToken);
 			Log.Verbose().WriteLine("Continueing original request to {0}", httpRequestMessage.RequestUri);

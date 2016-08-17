@@ -306,7 +306,7 @@ namespace Dapplo.HttpExtensions
 			{
 				throw new ArgumentNullException(nameof(uri));
 			}
-			if (string.IsNullOrEmpty(uri?.UserInfo))
+			if (string.IsNullOrEmpty(uri.UserInfo))
 			{
 				return client;
 			}

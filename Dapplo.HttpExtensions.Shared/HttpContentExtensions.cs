@@ -21,8 +21,6 @@
 
 #region using
 
-#region using
-
 using System;
 using System.Linq;
 using System.Net;
@@ -32,16 +30,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.Log.Facade;
-using Dapplo.Utils.Extensions;
 using System.IO;
-using Dapplo.Utils;
-
-#endregion
-
-#if _PCL_
+using Dapplo.HttpExtensions.Extensions;
 using System.Reflection;
-
-#endif
 
 #endregion
 
@@ -86,9 +77,14 @@ namespace Dapplo.HttpExtensions
 			{
 				return httpContent;
 			}
+			// Quick exit with empty value if the status code has a NoContent
 			if (httpStatusCode == HttpStatusCode.NoContent)
 			{
-				return resultType.Default();
+				if (resultType.GetTypeInfo().IsValueType)
+				{
+					return Activator.CreateInstance(resultType);
+				}
+				return null;
 			}
 			var httpBehaviour = HttpBehaviour.Current;
 			var converter = httpBehaviour.HttpContentConverters.OrderBy(x => x.Order).FirstOrDefault(x => x.CanConvertFromHttpContent(resultType, httpContent));
@@ -128,17 +124,7 @@ namespace Dapplo.HttpExtensions
 					progressStream.BytesRead += (sender, eventArgs) =>
 					{
 						position += eventArgs.BytesMoved;
-						if (httpBehaviour.CallProgressOnUiContext)
-						{
-							UiContext.RunOn(() =>
-							{
-								httpBehaviour.DownloadProgress?.Invoke((float)position / contentLength);
-							});
-						}
-						else
-						{
-							httpBehaviour.DownloadProgress?.Invoke((float)position / contentLength);
-						}
+						httpBehaviour.DownloadProgress?.Invoke((float)position / contentLength);
 					};
 					contentStream = progressStream;
 				}

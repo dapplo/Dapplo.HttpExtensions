@@ -28,10 +28,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Threading;
 using Dapplo.HttpExtensions.Desktop;
+using Dapplo.HttpExtensions.Extensions;
 using Dapplo.Log.Facade;
-using Dapplo.Utils.Extensions;
-using Dapplo.Utils;
 
 #endregion
 
@@ -67,17 +67,17 @@ namespace Dapplo.HttpExtensions.OAuth
 			};
 			Log.Verbose().WriteLine("Opening Uri {0}", uriBuilder.Uri.AbsoluteUri);
 
-			return UiContext.RunOn(() =>
+			// Needs to run on th UI thread.
+			return Dispatcher.CurrentDispatcher.Invoke(async () => await Task.Run(() =>
 			{
-				var oAuthLoginForm = new OAuthLoginForm(codeReceiverSettings.CloudServiceName, new Size(codeReceiverSettings.EmbeddedBrowserWidth, codeReceiverSettings.EmbeddedBrowserHeight), uriBuilder.Uri,
-					codeReceiverSettings.RedirectUrl);
+					var oAuthLoginForm = new OAuthLoginForm(codeReceiverSettings.CloudServiceName, new Size(codeReceiverSettings.EmbeddedBrowserWidth, codeReceiverSettings.EmbeddedBrowserHeight), uriBuilder.Uri, codeReceiverSettings.RedirectUrl);
 
-				if (oAuthLoginForm.ShowDialog() == DialogResult.OK)
-				{
-					return oAuthLoginForm.CallbackParameters;
-				}
-				return null;
-			}, cancellationToken);
+					if (oAuthLoginForm.ShowDialog() == DialogResult.OK)
+					{
+						return oAuthLoginForm.CallbackParameters;
+					}
+					return null;
+			}, cancellationToken));
 		}
 	}
 }

@@ -30,7 +30,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.Log.Facade;
-using Dapplo.Utils.Extensions;
 
 #endregion
 
@@ -64,7 +63,7 @@ namespace Dapplo.HttpExtensions
 			// See if we have a container
 			if (resultType.GetTypeInfo().GetCustomAttribute<HttpResponseAttribute>() != null)
 			{
-				Log.Info().WriteLine("Filling type {0}", resultType.FriendlyName());
+				Log.Info().WriteLine("Filling type {0}", resultType.Name);
 				// special type
 				var instance = Activator.CreateInstance<TResponse>();
 				var properties = resultType.GetProperties().Where(x => x.GetCustomAttribute<HttpPartAttribute>() != null).ToList();
@@ -103,7 +102,7 @@ namespace Dapplo.HttpExtensions
 					{
 						httpResponseMessage.EnsureSuccessStatusCode();
 						// If still here, we have a mapping issue
-						var message = $"Unsupported result type {targetPropertyInfo.PropertyType.FriendlyName()} & {httpContent.GetContentType()} combination.";
+						var message = $"Unsupported result type {targetPropertyInfo.PropertyType.Name} & {httpContent.GetContentType()} combination.";
 						Log.Error().WriteLine(message);
 						throw new NotSupportedException(message);
 					}

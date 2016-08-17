@@ -24,7 +24,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Dapplo.Utils.Extensions;
+using Dapplo.HttpExtensions.Extensions;
 
 #endregion
 

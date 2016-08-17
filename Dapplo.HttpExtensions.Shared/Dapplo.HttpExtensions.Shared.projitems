@@ -14,6 +14,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)ContentConverter\JsonHttpContentConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContentConverter\StreamHttpContentConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContentConverter\StringHttpContentConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\EnumExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\StringExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Factory\HttpClientFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Factory\HttpContentFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Factory\HttpMessageHandlerFactory.cs" />

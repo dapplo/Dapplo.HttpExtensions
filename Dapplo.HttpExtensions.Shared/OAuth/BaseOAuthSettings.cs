@@ -23,7 +23,7 @@
 
 using System;
 using System.Collections.Generic;
-using Dapplo.Utils;
+using System.Threading;
 
 #endregion
 
@@ -48,7 +48,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <summary>
 		///     This makes sure than the OAuth request that needs to authenticate blocks all others until it's ready.
 		/// </summary>
-		public AsyncLock Lock { get; set; } = new AsyncLock();
+		public SemaphoreSlim Lock { get; } = new SemaphoreSlim(1, 1);
 
 		/// <summary>
 		///     The URL to get a (request) token

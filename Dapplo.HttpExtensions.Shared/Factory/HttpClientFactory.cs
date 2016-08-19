@@ -57,7 +57,10 @@ namespace Dapplo.HttpExtensions.Factory
 				httpClient.DefaultRequestHeaders.UserAgent.TryParseAdd(httpSettings.DefaultUserAgent);
 			}
 			// If the uri has username/password, use this to set Basic Authorization
-			httpClient.SetBasicAuthorization(uriForConfiguration);
+			if (uriForConfiguration != null)
+			{
+				httpClient.SetBasicAuthorization(uriForConfiguration);
+			}
 
 			// Copy the expect continue value
 			httpClient.DefaultRequestHeaders.ExpectContinue = httpSettings.Expect100Continue;

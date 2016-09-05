@@ -57,6 +57,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			SupportedContentTypes.Add(MediaTypes.Jpeg.EnumValueOf());
 			SupportedContentTypes.Add(MediaTypes.Png.EnumValueOf());
 			SupportedContentTypes.Add(MediaTypes.Tiff.EnumValueOf());
+			SupportedContentTypes.Add(MediaTypes.Icon.EnumValueOf());
 		}
 
 		/// <summary>

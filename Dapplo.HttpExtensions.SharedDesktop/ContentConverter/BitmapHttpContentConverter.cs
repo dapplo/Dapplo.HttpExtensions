@@ -60,6 +60,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			SupportedContentTypes.Add(MediaTypes.Jpeg.EnumValueOf());
 			SupportedContentTypes.Add(MediaTypes.Png.EnumValueOf());
 			SupportedContentTypes.Add(MediaTypes.Tiff.EnumValueOf());
+			SupportedContentTypes.Add(MediaTypes.Icon.EnumValueOf());
 		}
 		/// <summary>
 		/// Constructor
@@ -141,7 +142,10 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		/// <inheritdoc />
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
 		{
-			if (!CanConvertToHttpContent(typeToConvert, content)) return null;
+			if (!CanConvertToHttpContent(typeToConvert, content))
+			{
+				return null;
+			}
 
 			var bitmap = content as Bitmap;
 			if (bitmap == null) return null;

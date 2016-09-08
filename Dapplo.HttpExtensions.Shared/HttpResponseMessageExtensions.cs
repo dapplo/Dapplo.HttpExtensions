@@ -167,10 +167,10 @@ namespace Dapplo.HttpExtensions
 						Log.Debug().WriteLine("Error while reading the error content: {0}", ex.Message);
 					}
 					// Write log if an error occured.
-					Log.Error().WriteLine("Http response {0} ({1}) for {2}, details from website: {3}", (int) httpResponseMessage.StatusCode, httpResponseMessage.StatusCode, requestUri, errorContent);
-
+					Log.Error().WriteLine("Http response {0} ({1}) for {2}, details from website:\n{3}", (int) httpResponseMessage.StatusCode, httpResponseMessage.StatusCode, requestUri, errorContent);
+					
 					// Add some additional information
-					switch(httpResponseMessage.StatusCode)
+					switch (httpResponseMessage.StatusCode)
 					{
 						case System.Net.HttpStatusCode.Redirect:
 						case System.Net.HttpStatusCode.MovedPermanently:

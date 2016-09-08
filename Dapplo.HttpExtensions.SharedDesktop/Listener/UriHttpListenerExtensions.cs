@@ -70,7 +70,10 @@ namespace Dapplo.HttpExtensions.Listener
 						// Make the listener stop if the token is cancelled.
 						// This registratrion is disposed before the httpListener is disposed:
 						// ReSharper disable once AccessToDisposedClosure
-						var cancellationTokenRegistration = cancellationToken.Register(() => httpListener.Stop());
+						var cancellationTokenRegistration = cancellationToken.Register(() =>
+						{
+							httpListener.Stop();
+						});
 
 						// Get the context
 						var httpListenerContext = await httpListener.GetContextAsync().ConfigureAwait(false);
@@ -82,7 +85,7 @@ namespace Dapplo.HttpExtensions.Listener
 						cancellationTokenRegistration.Dispose();
 
 						// Set the result to the TaskCompletionSource, so the await on the task finishes
-						taskCompletionSource.SetResult(result);
+						taskCompletionSource.TrySetResult(result);
 					}
 					catch (Exception ex)
 					{
@@ -91,12 +94,12 @@ namespace Dapplo.HttpExtensions.Listener
 						// Check if cancel was requested, is so set the taskCompletionSource as cancelled
 						if (cancellationToken.IsCancellationRequested)
 						{
-							taskCompletionSource.SetCanceled();
+							taskCompletionSource.TrySetCanceled();
 						}
 						else
 						{
 							// Not cancelled, so we use the exception
-							taskCompletionSource.SetException(ex);
+							taskCompletionSource.TrySetException(ex);
 						}
 						throw;
 					}

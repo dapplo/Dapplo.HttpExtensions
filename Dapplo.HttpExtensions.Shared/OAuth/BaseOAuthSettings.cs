@@ -84,6 +84,7 @@ namespace Dapplo.HttpExtensions.OAuth
 
 		/// <summary>
 		///     The OAuth client/consumer secret
+		///     For OAuth1SignatureTypes.RsaSha1 use RsaSha1Provider instead!
 		/// </summary>
 		public string ClientSecret { get; set; }
 

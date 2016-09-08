@@ -23,6 +23,7 @@
 
 using System;
 using System.Net.Http;
+using System.Security.Cryptography;
 
 #endregion
 
@@ -68,6 +69,11 @@ namespace Dapplo.HttpExtensions.OAuth
 		///     The type of signature that is used, mostly this is HMacSha1
 		/// </summary>
 		public OAuth1SignatureTypes SignatureType { get; set; } = OAuth1SignatureTypes.HMacSha1;
+
+		/// <summary>
+		///     For OAuth1SignatureTypes.RsaSha1 set this
+		/// </summary>
+		public RSACryptoServiceProvider RsaSha1Provider { get; set; }
 
 		/// <summary>
 		///     The actualy token information, placed in an interface for usage with the Dapplo.Config project

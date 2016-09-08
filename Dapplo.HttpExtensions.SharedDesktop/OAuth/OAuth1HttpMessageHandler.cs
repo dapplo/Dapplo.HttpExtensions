@@ -28,7 +28,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Security.Authentication;
 using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -87,7 +86,13 @@ namespace Dapplo.HttpExtensions.OAuth
 			{
 				throw new ArgumentNullException(nameof(oAuth1Settings.ClientId));
 			}
-			if (oAuth1Settings.ClientSecret == null)
+			if (oAuth1Settings.SignatureType == OAuth1SignatureTypes.RsaSha1)
+			{
+				if (oAuth1Settings.RsaSha1Provider == null)
+				{
+					throw new ArgumentNullException(nameof(oAuth1Settings.RsaSha1Provider));
+				}
+			} else if (oAuth1Settings.ClientSecret == null)
 			{
 				throw new ArgumentNullException(nameof(oAuth1Settings.ClientSecret));
 			}
@@ -415,44 +420,30 @@ namespace Dapplo.HttpExtensions.OAuth
 			var secret = string.IsNullOrEmpty(_oAuth1Settings.Token.OAuthTokenSecret)
 				? string.IsNullOrEmpty(_oAuth1Settings.RequestTokenSecret) ? string.Empty : _oAuth1Settings.RequestTokenSecret
 				: _oAuth1Settings.Token.OAuthTokenSecret;
-			var key = string.Format(CultureInfo.InvariantCulture, "{0}&{1}", Uri.EscapeDataString(_oAuth1Settings.ClientSecret), Uri.EscapeDataString(secret));
-			Log.Verbose().WriteLine("Signing with key {0}", key);
 			switch (_oAuth1Settings.SignatureType)
 			{
 				case OAuth1SignatureTypes.RsaSha1:
-					// Code comes from here: http://www.dotnetfunda.com/articles/article1932-rest-service-call-using-oauth-10-authorization-with-rsa-sha1.aspx
-					// Read the .P12 file to read Private/Public key Certificate
-					var certFilePath = _oAuth1Settings.ClientId; // The .P12 certificate file path Example: "C:/mycertificate/MCOpenAPI.p12
-					var password = _oAuth1Settings.ClientSecret; // password to read certificate .p12 file
-					// Read the Certification from .P12 file.
-					var cert = new X509Certificate2(certFilePath, password);
-					// Retrieve the Private key from Certificate.
-					var rsaCrypt = (RSACryptoServiceProvider) cert.PrivateKey;
-					// Create a RSA-SHA1 Hash object
-					using (var shaHashObject = new SHA1Managed())
-					{
-						// Create Byte Array of Signature base string
-						var data = Encoding.ASCII.GetBytes(signatureBase.ToString());
-						// Create Hashmap of Signature base string
-						var hash = shaHashObject.ComputeHash(data);
-						// Create Sign Hash of base string
-						// NOTE - 'SignHash' gives correct data. Don't use SignData method
-						var rsaSignature = rsaCrypt.SignHash(hash, CryptoConfig.MapNameToOID("SHA1"));
-						// Convert to Base64 string
-						var base64String = Convert.ToBase64String(rsaSignature);
-						// Return the Encoded UTF8 string
-						parameters.Add(OAuth1Parameters.Signature.EnumValueOf(), Uri.EscapeDataString(base64String));
-					}
+					byte[] dataBuffer = Encoding.UTF8.GetBytes(signatureBase.ToString());
+					byte[] signatureBytes = _oAuth1Settings.RsaSha1Provider.SignData(dataBuffer, "SHA1");
+					var base64Signature = Convert.ToBase64String(signatureBytes);
+					// Return the Encoded UTF8 string
+					parameters.Add(OAuth1Parameters.Signature.EnumValueOf(), base64Signature);
 					break;
 				case OAuth1SignatureTypes.PlainText:
-					parameters.Add(OAuth1Parameters.Signature.EnumValueOf(), key);
+					var keyPlain = string.Format(CultureInfo.InvariantCulture, "{0}&{1}", Uri.EscapeDataString(_oAuth1Settings.ClientSecret), Uri.EscapeDataString(secret));
+					Log.Verbose().WriteLine("Signing with key {0}", keyPlain);
+					parameters.Add(OAuth1Parameters.Signature.EnumValueOf(), keyPlain);
 					break;
-				default:
+				case OAuth1SignatureTypes.HMacSha1:
 					// Generate Signature and add it to the parameters
-					var hmacsha1 = new HMACSHA1 {Key = Encoding.UTF8.GetBytes(key)};
+					var keySha1 = string.Format(CultureInfo.InvariantCulture, "{0}&{1}", Uri.EscapeDataString(_oAuth1Settings.ClientSecret), Uri.EscapeDataString(secret));
+					Log.Verbose().WriteLine("Signing with key {0}", keySha1);
+					var hmacsha1 = new HMACSHA1 {Key = Encoding.UTF8.GetBytes(keySha1) };
 					var signature = ComputeHash(hmacsha1, signatureBase.ToString());
 					parameters.Add(OAuth1Parameters.Signature.EnumValueOf(), signature);
 					break;
+				default:
+					throw new ArgumentException("Unknown SignatureType", nameof(_oAuth1Settings.SignatureType));
 			}
 
 			var authorizationHeaderValues = string.Join(", ",

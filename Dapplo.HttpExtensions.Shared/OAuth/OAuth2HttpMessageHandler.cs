@@ -316,6 +316,8 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <returns>HttpResponseMessage</returns>
 		protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken)
 		{
+			// TODO: The caller of this DelegatingHandler override is passing a CancellationToken which cancels after a certain time, what to do with this?
+
 			// Make sure the first call does the authorization, and all others wait for it.
 			await _oAuth2Settings.Lock.WaitAsync().ConfigureAwait(false);
 			try

@@ -36,6 +36,6 @@ namespace Dapplo.HttpExtensions
 		/// <summary>
 		/// A set of properties for the HTTP request.
 		/// </summary>
-		public IDictionary<string, object> Properties { get; }= new Dictionary<string, object>();
+		public IDictionary<string, object> Properties { get; set; }= new Dictionary<string, object>();
 	}
 }

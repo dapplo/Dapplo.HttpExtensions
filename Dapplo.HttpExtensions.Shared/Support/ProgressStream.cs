@@ -62,19 +62,19 @@ namespace Dapplo.HttpExtensions.Support
 		#region Events
 
 		/// <summary>
-		///     Raised when bytes are read from the stream.
+		///     Called when bytes are read from the stream.
 		/// </summary>
-		public event EventHandler<ProgressStreamReportEventArgs> BytesRead;
+		public Action<object, ProgressStreamReport> BytesRead { get; set; }
 
 		/// <summary>
-		///     Raised when bytes are written to the stream.
+		///     RaisedCalled when bytes are written to the stream.
 		/// </summary>
-		public event EventHandler<ProgressStreamReportEventArgs> BytesWritten;
+		public Action<object, ProgressStreamReport> BytesWritten { get; set; }
 
 		/// <summary>
-		///     Raised when bytes are either read or written to the stream.
+		///     RaisedCalled when bytes are either read or written to the stream.
 		/// </summary>
-		public event EventHandler<ProgressStreamReportEventArgs> BytesMoved;
+		public Action<object, ProgressStreamReport> BytesMoved { get; set; }
 
 		/// <summary>
 		///     Called when bytes are read.
@@ -91,8 +91,8 @@ namespace Dapplo.HttpExtensions.Support
 					length = _innerStream.Length;
 					position = _innerStream.Position;
 				}
-				var args = new ProgressStreamReportEventArgs(bytesMoved, length, position, true);
-				BytesRead(this, args);
+				var args = new ProgressStreamReport(bytesMoved, length, position, true);
+				BytesRead?.Invoke(this, args);
 			}
 		}
 
@@ -111,8 +111,8 @@ namespace Dapplo.HttpExtensions.Support
 					length = _innerStream.Length;
 					position = _innerStream.Position;
 				}
-				var args = new ProgressStreamReportEventArgs(bytesMoved, length, position, false);
-				BytesWritten(this, args);
+				var args = new ProgressStreamReport(bytesMoved, length, position, false);
+				BytesWritten?.Invoke(this, args);
 			}
 		}
 
@@ -132,8 +132,8 @@ namespace Dapplo.HttpExtensions.Support
 					length = _innerStream.Length;
 					position = _innerStream.Position;
 				}
-				var args = new ProgressStreamReportEventArgs(bytesMoved, length, position, isRead);
-				BytesMoved(this, args);
+				var args = new ProgressStreamReport(bytesMoved, length, position, isRead);
+				BytesMoved?.Invoke(this, args);
 			}
 		}
 
@@ -199,7 +199,7 @@ namespace Dapplo.HttpExtensions.Support
 		}
 
 #if !_PCL_
-	/// <inheritdoc />
+		/// <inheritdoc />
 		public override void Close()
 		{
 			_innerStream.Close();
@@ -208,53 +208,5 @@ namespace Dapplo.HttpExtensions.Support
 #endif
 
 		#endregion
-	}
-
-	/// <summary>
-	///     Contains the pertinent data for a ProgressStream Report event.
-	/// </summary>
-	public class ProgressStreamReportEventArgs : EventArgs
-	{
-		/// <summary>
-		///     Default constructor for ProgressStreamReportEventArgs.
-		/// </summary>
-		public ProgressStreamReportEventArgs()
-		{
-		}
-
-		/// <summary>
-		///     Creates a new ProgressStreamReportEventArgs initializing its members.
-		/// </summary>
-		/// <param name="bytesMoved">The number of bytes that were read/written to/from the stream.</param>
-		/// <param name="streamLength">The total length of the stream in bytes.</param>
-		/// <param name="streamPosition">The current position in the stream.</param>
-		/// <param name="wasRead">True if the bytes were read from the stream, false if they were written.</param>
-		public ProgressStreamReportEventArgs(int bytesMoved, long streamLength, long streamPosition, bool wasRead) : this()
-		{
-			BytesMoved = bytesMoved;
-			StreamLength = streamLength;
-			StreamPosition = streamPosition;
-			WasRead = wasRead;
-		}
-
-		/// <summary>
-		///     The number of bytes that were read/written to/from the stream.
-		/// </summary>
-		public int BytesMoved { get; private set; }
-
-		/// <summary>
-		///     The total length of the stream in bytes, 0 if the stream isn't seekable
-		/// </summary>
-		public long StreamLength { get; private set; }
-
-		/// <summary>
-		///     The current position in the stream, 0 if the stream isn't seekable
-		/// </summary>
-		public long StreamPosition { get; private set; }
-
-		/// <summary>
-		///     True if the bytes were read from the stream, false if they were written.
-		/// </summary>
-		public bool WasRead { get; }
 	}
 }

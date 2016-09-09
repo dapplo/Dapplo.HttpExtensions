@@ -22,7 +22,6 @@
 #region using
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -32,6 +31,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Extensions;
+using Dapplo.HttpExtensions.SharedDesktop.ContentConverter;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.Log.Facade;
 
@@ -45,60 +45,11 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	public class BitmapHttpContentConverter : IHttpContentConverter
 	{
 		private static readonly LogSource Log = new LogSource();
-		private static readonly IList<string> SupportedContentTypes = new List<string>();
+
 		/// <summary>
 		/// Instance for reusing
 		/// </summary>
 		public static readonly BitmapHttpContentConverter Instance = new BitmapHttpContentConverter();
-
-		private int _quality;
-
-		static BitmapHttpContentConverter()
-		{
-			SupportedContentTypes.Add(MediaTypes.Bmp.EnumValueOf());
-			SupportedContentTypes.Add(MediaTypes.Gif.EnumValueOf());
-			SupportedContentTypes.Add(MediaTypes.Jpeg.EnumValueOf());
-			SupportedContentTypes.Add(MediaTypes.Png.EnumValueOf());
-			SupportedContentTypes.Add(MediaTypes.Tiff.EnumValueOf());
-			SupportedContentTypes.Add(MediaTypes.Icon.EnumValueOf());
-		}
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		public BitmapHttpContentConverter()
-		{
-			// Default quality
-			Quality = 80;
-		}
-
-		/// <summary>
-		///     Check the parameters for the encoder, like setting Jpg quality
-		/// </summary>
-		public IList<EncoderParameter> EncoderParameters { get; } = new List<EncoderParameter>();
-
-		/// <summary>
-		/// Specify the format used to write the image to
-		/// </summary>
-		public ImageFormat Format { get; set; } = ImageFormat.Png;
-
-		/// <summary>
-		///     Set the quality EncoderParameter, for the Jpg format 0-100
-		/// </summary>
-		public int Quality
-		{
-			get { return _quality; }
-			set
-			{
-				_quality = value;
-				Log.Verbose().WriteLine("Setting Quality to {0}", value);
-				var qualityParameter = EncoderParameters.FirstOrDefault(x => x.Encoder.Guid == Encoder.Quality.Guid);
-				if (qualityParameter != null)
-				{
-					EncoderParameters.Remove(qualityParameter);
-				}
-				EncoderParameters.Add(new EncoderParameter(Encoder.Quality, value));
-			}
-		}
 
 		/// <inheritdoc />
 		public int Order => 0;
@@ -116,7 +67,8 @@ namespace Dapplo.HttpExtensions.ContentConverter
 				return false;
 			}
 			var httpBehaviour = HttpBehaviour.Current;
-			return !httpBehaviour.ValidateResponseContentType || SupportedContentTypes.Contains(httpContent.GetContentType());
+			var configuration = httpBehaviour.GetConfig<BitmapConfiguration>();
+			return !httpBehaviour.ValidateResponseContentType || configuration.SupportedContentTypes.Contains(httpContent.GetContentType());
 		}
 
 		/// <inheritdoc />
@@ -151,12 +103,16 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			if (bitmap == null) return null;
 
 			Stream stream = new MemoryStream();
-			var encoder = ImageCodecInfo.GetImageEncoders().FirstOrDefault(x => x.FormatID == Format.Guid);
+			var httpBehaviour = HttpBehaviour.Current;
+
+			var configuration = httpBehaviour.GetConfig<BitmapConfiguration>();
+
+			var encoder = ImageCodecInfo.GetImageEncoders().FirstOrDefault(x => x.FormatID == configuration.Format.Guid);
 			if (encoder != null)
 			{
-				var parameters = new EncoderParameters(EncoderParameters.Count);
+				var parameters = new EncoderParameters(configuration.EncoderParameters.Count);
 				var index = 0;
-				foreach (var encoderParameter in EncoderParameters)
+				foreach (var encoderParameter in configuration.EncoderParameters)
 				{
 					parameters.Param[index++] = encoderParameter;
 				}
@@ -164,26 +120,25 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			}
 			else
 			{
-				var exMessage = $"Can't find an encoder for {Format}";
+				var exMessage = $"Can't find an encoder for {configuration.Format}";
 				Log.Error().WriteLine(exMessage);
 				throw new NotSupportedException(exMessage);
 			}
 			stream.Seek(0, SeekOrigin.Begin);
 
 			// Add progress support, if this is enabled
-			var httpBehaviour = HttpBehaviour.Current;
+
 			if (httpBehaviour.UseProgressStream)
 			{
-				var progressStream = new ProgressStream(stream);
-				progressStream.BytesRead += (sender, eventArgs) =>
+				var progressStream = new ProgressStream(stream)
 				{
-					httpBehaviour.UploadProgress?.Invoke((float)eventArgs.StreamPosition / eventArgs.StreamLength);
+					BytesRead = (sender, eventArgs) => { httpBehaviour.UploadProgress?.Invoke((float) eventArgs.StreamPosition/eventArgs.StreamLength); }
 				};
 				stream = progressStream;
 			}
 
 			var httpContent = new StreamContent(stream);
-			httpContent.Headers.Add("Content-Type", "image/" + Format.ToString().ToLowerInvariant());
+			httpContent.Headers.Add("Content-Type", "image/" + configuration.Format.ToString().ToLowerInvariant());
 			return httpContent;
 		}
 
@@ -202,8 +157,9 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			{
 				return;
 			}
+			var configuration = HttpBehaviour.Current.GetConfig<BitmapConfiguration>();
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Png.EnumValueOf()));
-			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Jpeg.EnumValueOf(), Quality/100d));
+			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Jpeg.EnumValueOf(), configuration.Quality / 100d));
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Tiff.EnumValueOf()));
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Bmp.EnumValueOf()));
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Gif.EnumValueOf()));

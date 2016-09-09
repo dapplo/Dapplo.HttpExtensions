@@ -9,6 +9,8 @@
     <Import_RootNamespace>Dapplo.HttpExtensions.SharedDesktop</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)ContentConverter\BitmapSourceConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ContentConverter\BitmapConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContentConverter\BitmapHttpContentConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContentConverter\BitmapSourceHttpContentConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContentConverter\SyndicationFeedHttpContentConverter.cs" />
@@ -38,7 +40,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)OAuth\OAuth1Settings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OAuth\OAuth1SignatureTypes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OAuth\OAuth1TokenInformation.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)OAuth\OAuth1UriActions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OAuth\OutOfBoundCodeReceiver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OAuth\PassThroughCodeReceiver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Support\DelegatingStringEncryptionTypeConverter.cs" />

@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
+using Dapplo.HttpExtensions.Extensions;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.Log.Facade;
 
@@ -55,12 +56,19 @@ namespace Dapplo.HttpExtensions.Factory
 		{
 			Log.Verbose().WriteLine("Creating request for {0}", requestUri);
 			var httpBehaviour = HttpBehaviour.Current;
+			var configuration = httpBehaviour.GetConfig<HttpRequestMessageConfiguration>();
 			contentType = contentType ?? content?.GetType();
 
 			var httpRequestMessage = new HttpRequestMessage(method, requestUri)
 			{
 				Content = HttpContentFactory.Create(contentType, content)
 			};
+
+			// Set supplied Properties from the HttpRequestMessageConfiguration
+			foreach (var key in configuration.Properties.Keys)
+			{
+				httpRequestMessage.Properties.Add(key, configuration.Properties[key]);
+			}
 
 			// if the type has a HttpAttribute with HttpPart.Request
 			if (contentType?.GetTypeInfo().GetCustomAttribute<HttpRequestAttribute>() != null)
@@ -85,6 +93,7 @@ namespace Dapplo.HttpExtensions.Factory
 					httpContentConverter.AddAcceptHeadersForType(resultType, httpRequestMessage);
 				}
 			}
+
 
 			// Make sure the OnCreateHttpRequestMessage function is called
 			if (httpBehaviour.OnHttpRequestMessageCreated != null)

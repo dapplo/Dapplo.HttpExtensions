@@ -35,9 +35,9 @@ namespace Dapplo.HttpExtensions.Tests
 	/// <summary>
 	///     Tests for (de)serializing Json
 	/// </summary>
-	public class JsonTests
+	public class SimpleJsonTests
 	{
-		public JsonTests(ITestOutputHelper testOutputHelper)
+		public SimpleJsonTests(ITestOutputHelper testOutputHelper)
 		{
 			LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
 		}

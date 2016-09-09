@@ -40,18 +40,18 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	///     This can convert HttpContent from/to Json
 	///     TODO: add JsonObject from SimpleJson for more clear generic code..
 	/// </summary>
-	public class JsonHttpContentConverter : IHttpContentConverter
+	public class SimpleJsonHttpContentConverter : IHttpContentConverter
 	{
 		private static readonly LogSource Log = new LogSource();
 
 		/// <summary>
 		///     Singleton instance for reuse
 		/// </summary>
-		public static readonly JsonHttpContentConverter Instance = new JsonHttpContentConverter();
+		public static readonly SimpleJsonHttpContentConverter Instance = new SimpleJsonHttpContentConverter();
 
 		private static readonly IList<string> SupportedContentTypes = new List<string>();
 
-		static JsonHttpContentConverter()
+		static SimpleJsonHttpContentConverter()
 		{
 			SupportedContentTypes.Add(MediaTypes.Json.EnumValueOf());
 		}

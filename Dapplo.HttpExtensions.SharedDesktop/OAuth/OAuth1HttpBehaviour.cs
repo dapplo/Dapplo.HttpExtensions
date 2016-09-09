@@ -59,6 +59,13 @@ namespace Dapplo.HttpExtensions.OAuth
 		public Action<IDictionary<string, string>> OnAccessTokenValues { get; set; }
 
 		/// <inheritdoc />
+		public IDictionary<string, IHttpRequestConfiguration> RequestConfigurations
+		{ 
+			get { return _wrapped.RequestConfigurations; }
+			set { _wrapped.RequestConfigurations = value;}
+		}
+
+		/// <inheritdoc />
 		public Encoding DefaultEncoding
 		{
 			get { return _wrapped.DefaultEncoding; }

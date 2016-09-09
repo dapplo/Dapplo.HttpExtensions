@@ -119,9 +119,9 @@ namespace Dapplo.HttpExtensions
 				// Add progress support, if this is enabled
 				if (httpBehaviour.UseProgressStream && contentLength > 0)
 				{
-					var progressStream = new ProgressStream(contentStream);
 					long position = 0;
-					progressStream.BytesRead += (sender, eventArgs) =>
+					var progressStream = new ProgressStream(contentStream);
+					progressStream.BytesRead = (sender, eventArgs) =>
 					{
 						position += eventArgs.BytesMoved;
 						httpBehaviour.DownloadProgress?.Invoke((float)position / contentLength);

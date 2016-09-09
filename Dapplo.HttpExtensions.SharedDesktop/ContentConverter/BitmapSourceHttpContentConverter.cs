@@ -22,8 +22,6 @@
 #region using
 
 using System;
-using System.Collections.Generic;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -31,6 +29,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Dapplo.HttpExtensions.Extensions;
+using Dapplo.HttpExtensions.SharedDesktop.ContentConverter;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.Log.Facade;
 
@@ -43,32 +42,11 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	/// </summary>
 	public class BitmapSourceHttpContentConverter : IHttpContentConverter
 	{
-		private static readonly IList<string> SupportedContentTypes = new List<string>();
 		private static readonly LogSource Log = new LogSource();
 		/// <summary>
 		/// "singleton" Instance for reusing
 		/// </summary>
 		public static readonly BitmapSourceHttpContentConverter Instance = new BitmapSourceHttpContentConverter();
-
-		static BitmapSourceHttpContentConverter()
-		{
-			SupportedContentTypes.Add(MediaTypes.Bmp.EnumValueOf());
-			SupportedContentTypes.Add(MediaTypes.Gif.EnumValueOf());
-			SupportedContentTypes.Add(MediaTypes.Jpeg.EnumValueOf());
-			SupportedContentTypes.Add(MediaTypes.Png.EnumValueOf());
-			SupportedContentTypes.Add(MediaTypes.Tiff.EnumValueOf());
-			SupportedContentTypes.Add(MediaTypes.Icon.EnumValueOf());
-		}
-
-		/// <summary>
-		/// Format which is used to write the image to a stream
-		/// </summary>
-		public ImageFormat Format { get; set; } = ImageFormat.Png;
-
-		/// <summary>
-		/// Quality of the image, currently only used for Jpeg
-		/// </summary>
-		public int Quality { get; set; } = 80;
 
 		/// <inheritdoc />
 		public int Order => 0;
@@ -86,7 +64,8 @@ namespace Dapplo.HttpExtensions.ContentConverter
 				return false;
 			}
 			var httpBehaviour = HttpBehaviour.Current;
-			return !httpBehaviour.ValidateResponseContentType || SupportedContentTypes.Contains(httpContent.GetContentType());
+			var configuration = httpBehaviour.GetConfig<BitmapSourceConfiguration>();
+			return !httpBehaviour.ValidateResponseContentType || configuration.SupportedContentTypes.Contains(httpContent.GetContentType());
 		}
 
 		/// <inheritdoc />
@@ -125,26 +104,26 @@ namespace Dapplo.HttpExtensions.ContentConverter
 				var bitmapSource = content as BitmapSource;
 				if (bitmapSource != null)
 				{
+					var httpBehaviour = HttpBehaviour.Current;
+					var configuration = httpBehaviour.GetConfig<BitmapSourceConfiguration>();
 					Stream stream = new MemoryStream();
-					var encoder = CreateEncoder();
+					var encoder = configuration.CreateEncoder();
 					encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
 					encoder.Save(stream);
 					stream.Seek(0, SeekOrigin.Begin);
 
 					// Add progress support, if this is enabled
-					var httpBehaviour = HttpBehaviour.Current;
 					if (httpBehaviour.UseProgressStream)
 					{
-						var progressStream = new ProgressStream(stream);
-						progressStream.BytesRead += (sender, eventArgs) =>
+						var progressStream = new ProgressStream(stream)
 						{
-							httpBehaviour.UploadProgress?.Invoke((float)eventArgs.StreamPosition / eventArgs.StreamLength);
+							BytesRead = (sender, eventArgs) => { httpBehaviour.UploadProgress?.Invoke((float) eventArgs.StreamPosition/eventArgs.StreamLength); }
 						};
 						stream = progressStream;
 					}
 
 					var httpContent = new StreamContent(stream);
-					httpContent.Headers.Add("Content-Type", "image/" + Format.ToString().ToLowerInvariant());
+					httpContent.Headers.Add("Content-Type", "image/" + configuration.Format.ToString().ToLowerInvariant());
 					return httpContent;
 				}
 			}
@@ -166,39 +145,16 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			{
 				return;
 			}
+			var httpBehaviour = HttpBehaviour.Current;
+			var configuration = httpBehaviour.GetConfig<BitmapSourceConfiguration>();
+
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Png.EnumValueOf()));
-			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Jpeg.EnumValueOf(), Quality/100d));
+			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Jpeg.EnumValueOf(), configuration.Quality / 100d));
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Tiff.EnumValueOf()));
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Bmp.EnumValueOf()));
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Gif.EnumValueOf()));
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Icon.EnumValueOf()));
 			Log.Debug().WriteLine("Modified the header(s) of the HttpRequestMessage: Accept: {0}", httpRequestMessage.Headers.Accept);
-		}
-
-		/// <inheritdoc />
-		private BitmapEncoder CreateEncoder()
-		{
-			if (Format.Guid == ImageFormat.Bmp.Guid)
-			{
-				return new BmpBitmapEncoder();
-			}
-			if (Format.Guid == ImageFormat.Gif.Guid)
-			{
-				return new GifBitmapEncoder();
-			}
-			if (Format.Guid == ImageFormat.Jpeg.Guid)
-			{
-				return new JpegBitmapEncoder();
-			}
-			if (Format.Guid == ImageFormat.Tiff.Guid)
-			{
-				return new TiffBitmapEncoder();
-			}
-			if (Format.Guid == ImageFormat.Png.Guid)
-			{
-				return new PngBitmapEncoder();
-			}
-			throw new NotSupportedException($"Unsupported image format {Format}");
 		}
 	}
 }

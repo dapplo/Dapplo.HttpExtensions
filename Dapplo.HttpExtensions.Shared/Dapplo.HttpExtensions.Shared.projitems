@@ -11,10 +11,12 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)ContentConverter\ByteArrayHttpContentConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContentConverter\FormUriEncodedContentConverter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ContentConverter\JsonHttpContentConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ContentConverter\SimpleJsonHttpContentConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContentConverter\StreamHttpContentConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ContentConverter\StringConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ContentConverter\StringHttpContentConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\EnumExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\HttpBehaviourExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\StringExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Factory\HttpClientFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Factory\HttpContentFactory.cs" />
@@ -25,12 +27,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)HttpClientExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpContentExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpExtensionsGlobals.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HttpRequestMessageConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpRequestMessageExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpResponse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpResponseMessageExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IChangeableHttpBehaviour.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IHttpBehaviour.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IHttpContentConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IHttpRequestConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IHttpSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IJsonSerializer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MiscExtensions.cs" />
@@ -55,6 +59,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Support\HttpSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Support\MediaTypes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Support\ProgressStream.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Support\ProgressStreamReport.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Support\SimpleJsonSerializer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UriActionExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UriModifyExtensions.cs" />

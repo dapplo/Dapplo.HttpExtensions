@@ -59,7 +59,7 @@ namespace Dapplo.HttpExtensions
 #endif
 			ByteArrayHttpContentConverter.Instance,
 			FormUriEncodedContentConverter.Instance,
-			JsonHttpContentConverter.Instance,
+			SimpleJsonHttpContentConverter.Instance,
 			StreamHttpContentConverter.Instance,
 			StringHttpContentConverter.Instance
 		};

@@ -37,6 +37,12 @@ namespace Dapplo.HttpExtensions
 	public interface IHttpBehaviour
 	{
 		/// <summary>
+		/// Configuration for different parts of the library, or your own implementations, which can be set on a thread/request base.
+		/// For missing configurations the default is taken.
+		/// </summary>
+		IDictionary<string, IHttpRequestConfiguration> RequestConfigurations { get; }
+
+		/// <summary>
 		///     The default encoding which is used wherever an encoding is specified.
 		///     The default is set to Encoding.UTF8
 		/// </summary>

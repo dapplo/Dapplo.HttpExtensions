@@ -22,13 +22,11 @@
 #region using
 
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Extensions;
-using Dapplo.HttpExtensions.Support;
 using Dapplo.Log.Facade;
 
 #endregion
@@ -40,22 +38,12 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	/// </summary>
 	public class StringHttpContentConverter : IHttpContentConverter
 	{
+		private static readonly LogSource Log = new LogSource();
+
 		/// <summary>
 		///     Singleton instance for reuse
 		/// </summary>
 		public static readonly StringHttpContentConverter Instance = new StringHttpContentConverter();
-
-		private static readonly LogSource Log = new LogSource();
-		private static readonly IList<string> SupportedContentTypes = new List<string>();
-
-		static StringHttpContentConverter()
-		{
-			// Store the Content-Types this converter supports
-			SupportedContentTypes.Add(MediaTypes.Txt.EnumValueOf());
-			SupportedContentTypes.Add(MediaTypes.Html.EnumValueOf());
-			SupportedContentTypes.Add(MediaTypes.Xml.EnumValueOf());
-			SupportedContentTypes.Add(MediaTypes.XmlReadable.EnumValueOf());
-		}
 
 		/// <inheritdoc />
 		public int Order => int.MaxValue;
@@ -68,8 +56,9 @@ namespace Dapplo.HttpExtensions.ContentConverter
 				return false;
 			}
 			var httpBehaviour = HttpBehaviour.Current;
+			var configuration = httpBehaviour.GetConfig<StringConfiguration>();
 			// Set ValidateResponseContentType to false to "catch" all
-			return !httpBehaviour.ValidateResponseContentType || SupportedContentTypes.Contains(httpContent.GetContentType());
+			return !httpBehaviour.ValidateResponseContentType || configuration.SupportedContentTypes.Contains(httpContent.GetContentType());
 		}
 
 		/// <inheritdoc />
@@ -114,8 +103,14 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			{
 				return;
 			}
+			var httpBehaviour = HttpBehaviour.Current;
+			var configuration = httpBehaviour.GetConfig<StringConfiguration>();
+			// add all supported content types
+			foreach (var contentType in configuration.SupportedContentTypes)
+			{
+				httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType));
+			}
 			// TODO: Encoding header?
-			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Txt.EnumValueOf()));
 			Log.Debug().WriteLine("Modified the header(s) of the HttpRequestMessage: Accept: {0}", httpRequestMessage.Headers.Accept);
 		}
 	}

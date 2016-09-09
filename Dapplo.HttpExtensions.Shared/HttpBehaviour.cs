@@ -110,6 +110,11 @@ namespace Dapplo.HttpExtensions
 		/// <inheritdoc />
 		public bool ValidateResponseContentType { get; set; } = HttpExtensionsGlobals.ValidateResponseContentType;
 
+		/// <summary>
+		/// Configuration for different parts of the library, or your own implementations, which can be set on a thread/request base
+		/// </summary>
+		public IDictionary<string, IHttpRequestConfiguration> RequestConfigurations { get; set; } = new Dictionary<string, IHttpRequestConfiguration>();
+
 		/// <inheritdoc />
 		public Encoding DefaultEncoding { get; set; } = HttpExtensionsGlobals.DefaultEncoding;
 
@@ -124,6 +129,20 @@ namespace Dapplo.HttpExtensions
 		{
 			var result = (HttpBehaviour) MemberwiseClone();
 			result.HttpSettings = HttpSettings.ShallowClone();
+			// Make sure the RequestConfigurations are copied but changeable
+			if (RequestConfigurations != null)
+			{
+				result.RequestConfigurations = new Dictionary<string, IHttpRequestConfiguration>();
+				foreach (var key in RequestConfigurations.Keys)
+				{
+					result.RequestConfigurations[key] = RequestConfigurations[key];
+				}
+			}
+			// Make sure the RequestConfigurations are copied but changeable
+			if (HttpContentConverters != null)
+			{
+				result.HttpContentConverters = new List<IHttpContentConverter>(HttpContentConverters);
+			}
 			return result;
 		}
 

@@ -83,7 +83,7 @@ namespace Dapplo.HttpExtensions.Tests.OAuth
 
 			// Make sure you use your special IHttpBehaviour for the OAuth requests!
 			_oAuthHttpBehaviour.MakeCurrent();
-			var response = await userInformationUri.OAuth1GetAsAsync<string>();
+			var response = await userInformationUri.GetAsAsync<string>();
 
 			Assert.Contains("dapplo", response);
 		}

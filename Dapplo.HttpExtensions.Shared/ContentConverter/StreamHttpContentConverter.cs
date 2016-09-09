@@ -100,10 +100,9 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			// Add progress support, if this is enabled
 			if (httpBehaviour.UseProgressStream)
 			{
-				var progressStream = new ProgressStream(stream);
-				progressStream.BytesRead += (sender, eventArgs) =>
+				var progressStream = new ProgressStream(stream)
 				{
-					httpBehaviour.UploadProgress?.Invoke((float)eventArgs.StreamPosition / eventArgs.StreamLength);
+					BytesRead = (sender, eventArgs) => { httpBehaviour.UploadProgress?.Invoke((float) eventArgs.StreamPosition/eventArgs.StreamLength); }
 				};
 
 				stream = progressStream;

@@ -69,7 +69,7 @@ namespace Dapplo.HttpExtensions.Tests
 		[Fact]
 		public void TestSimpleJson_DeserializeObject()
 		{
-			var json = "{\"customstringfield_1\": \"testvalue1\",\"customstringfield_2\": \"testvalue2\",\"customintfield_1\": \"10\",\"customintfield_2\": 20,\"another_value\": \"testvalue3\",\"name\": \"Robin\"}";
+			var json = "{\"customstringfield_array\": [],\"customstringfield_1\": \"testvalue1\",\"customstringfield_2\": \"testvalue2\",\"customintfield_1\": \"10\",\"customintfield_2\": 20,\"another_value\": \"testvalue3\",\"name\": \"Robin\"}";
 
 			var jsonObject = SimpleJson.DeserializeObject<WithExtensionData>(json);
 			Assert.True(jsonObject.StringExtensionData.Count == 2);

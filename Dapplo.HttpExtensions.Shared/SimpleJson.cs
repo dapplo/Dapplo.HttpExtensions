@@ -619,7 +619,7 @@ namespace Dapplo.HttpExtensions
 		/// <returns>minified JSON string</returns>
 		public static string Minify(string json)
 		{
-			return System.Text.RegularExpressions.Regex.Replace(json, "(\"(?:[^\"\\\\]|\\\\.)*\")|\\s+", "$1");
+			return Regex.Replace(json, "(\"(?:[^\"\\\\]|\\\\.)*\")|\\s+", "$1");
 		}
 
 		public static string EscapeToJavascriptString(string jsonString)
@@ -1488,13 +1488,31 @@ namespace Dapplo.HttpExtensions
 										foreach (var key in jsonObject.Keys.ToList())
 										{
 											// Only keys which match
-											if (matchRegex.IsMatch(key))
+											if (!matchRegex.IsMatch(key))
 											{
-												var jsonValue = jsonObject[key];
-												extensionData.Add(key, Convert.ChangeType(jsonValue, valueType));
-												// Remove it, at it was matched
-												jsonObject.Remove(key);
+												continue;
 											}
+											var jsonValue = jsonObject[key];
+											if (jsonValue == null && valueType.GetTypeInfo().IsValueType)
+											{
+												// no value, but we need to add it... create instance
+												jsonValue = Activator.CreateInstance(valueType);
+											}
+											else if (jsonValue != null && !valueType.IsInstanceOfType(jsonValue))
+											{
+												if (jsonValue is IConvertible)
+												{
+													jsonValue = Convert.ChangeType(jsonValue, valueType);
+												}
+												else
+												{
+													// Prevent errors, do not convert or add the value
+													continue;
+												}
+											}
+											extensionData.Add(key, jsonValue);
+											// Remove it, at it was matched
+											jsonObject.Remove(key);
 										}
 									}
 									// Nothing more to process

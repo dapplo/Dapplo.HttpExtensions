@@ -67,6 +67,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.RegularExpressions;
 using Dapplo.HttpExtensions.Reflection;
 
 // ReSharper disable LoopCanBeConvertedToQuery
@@ -74,10 +75,16 @@ using Dapplo.HttpExtensions.Reflection;
 // ReSharper disable SuggestUseVarKeywordEvident
 namespace Dapplo.HttpExtensions
 {
+	/// <summary>
+	/// Use this attribute on a IDictionary to be able to receive all data which cannot be matched in the target type
+	/// </summary>
 	[AttributeUsage(AttributeTargets.Property)]
 	public class ExtensionDataAttribute : Attribute
 	{
-		
+		/// <summary>
+		/// Specify a regex to match the property names of the Json content
+		/// </summary>
+		public string Pattern { get; set; }
 	}
 	/// <summary>
 	/// Represents the json array.
@@ -1460,14 +1467,40 @@ namespace Dapplo.HttpExtensions
 							if (jsonObject.Count > 0)
 							{
 								// The attribute should be set on a value which has a IDictionary instance (not null)
-	 							var extensionPropertyInfo = type.GetProperties().FirstOrDefault(p => p.GetCustomAttributes().Any(x => x.GetType() == typeof(ExtensionDataAttribute)));
-								var extensionData = extensionPropertyInfo?.GetValue(obj) as IDictionary;
-								if (extensionData != null)
+								foreach (var extensionPropertyInfo in type.GetProperties())
 								{
-									foreach (var key in jsonObject.Keys)
+									var extensionDataAtrribute = extensionPropertyInfo.GetCustomAttribute<ExtensionDataAttribute>();
+									if (extensionDataAtrribute == null)
 									{
-										var jsonValue = jsonObject[key];
-										extensionData.Add(key, jsonValue);
+										continue;
+									}
+									var matchRegex = new Regex(extensionDataAtrribute.Pattern ?? ".*");
+									var extensionData = extensionPropertyInfo?.GetValue(obj) as IDictionary;
+									if (extensionData != null)
+									{
+										// Get the type, if possible, so we can convert
+										Type valueType = typeof(string);
+										var genericArguments = extensionData.GetType().GetGenericArguments();
+										if (genericArguments.Length == 2)
+										{
+											valueType = genericArguments[1];
+										}
+										foreach (var key in jsonObject.Keys.ToList())
+										{
+											// Only keys which match
+											if (matchRegex.IsMatch(key))
+											{
+												var jsonValue = jsonObject[key];
+												extensionData.Add(key, Convert.ChangeType(jsonValue, valueType));
+												// Remove it, at it was matched
+												jsonObject.Remove(key);
+											}
+										}
+									}
+									// Nothing more to process
+									if (jsonObject.Count == 0)
+									{
+										break;
 									}
 								}
 							}

@@ -12,7 +12,14 @@ namespace Dapplo.HttpExtensions.Tests.Shared.TestEntities
 		[DataMember(Name = "name")]
 		public string Name { get; set; }
 
+		[ExtensionData(Pattern = "customstringfield_.*")]
+		public IDictionary<string, string> StringExtensionData { get; set; } = new Dictionary<string, string>();
+
+		[ExtensionData(Pattern = "customintfield_.*")]
+		public IDictionary<string, int> IntExtensionData { get; set; } = new Dictionary<string, int>();
+
 		[ExtensionData]
-		public IDictionary<string, string> ExtensionData { get; set; } = new Dictionary<string, string>();
+		public IDictionary<string, object> RestExtensionData { get; set; } = new Dictionary<string, object>();
+
 	}
 }

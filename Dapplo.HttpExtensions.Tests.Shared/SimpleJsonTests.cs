@@ -22,6 +22,7 @@
 #region using
 
 using System;
+using Dapplo.HttpExtensions.Tests.Shared.TestEntities;
 using Dapplo.Log.XUnit;
 using Dapplo.HttpExtensions.Tests.TestEntities;
 using Dapplo.Log.Facade;
@@ -63,6 +64,15 @@ namespace Dapplo.HttpExtensions.Tests
 			jsonString = SimpleJson.SerializeObject(gitHubRelease);
 			Assert.DoesNotContain("html_url", jsonString);
 			Assert.Contains("prerelease", jsonString);
+		}
+
+		[Fact]
+		public void TestSimpleJson_DeserializeObject()
+		{
+			var json = "{\"html_url\": \"testvalue\",\"name\": \"Robin\"}";
+
+			var jsonObject = SimpleJson.DeserializeObject<WithExtensionData>(json);
+			Assert.True(jsonObject.ExtensionData.Count > 0);
 		}
 	}
 }

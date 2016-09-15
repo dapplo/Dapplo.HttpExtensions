@@ -18,6 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)TestEntities\GitHubError.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TestEntities\GitHubRelease.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TestEntities\MyMultiPartRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TestEntities\WithExtensionData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UriActionExtensionsMultiPartTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpRequestMessageExtensionsTests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)HttpBehaviourExtensionsTests.cs" />

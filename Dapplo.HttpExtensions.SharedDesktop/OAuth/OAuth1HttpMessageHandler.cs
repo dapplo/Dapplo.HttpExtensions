@@ -364,7 +364,9 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// <returns>HttpRequestMessage for fluent usage</returns>
 		private void Sign(HttpRequestMessage httpRequestMessage)
 		{
-			// TODO: Add _oAuth1Settings.AdditionalAttributes!
+			// TODO: Use IHttpRequestConfiguration here
+
+
 			var parameters = new Dictionary<string, object>(httpRequestMessage.Properties);
 			// Build the signature base
 			var signatureBase = new StringBuilder();

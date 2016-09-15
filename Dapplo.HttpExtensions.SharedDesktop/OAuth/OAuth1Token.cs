@@ -25,12 +25,15 @@ namespace Dapplo.HttpExtensions.OAuth
 	///     A default implementation for the IOAuthToken, nothing fancy
 	///     For more information, see the IOAuthToken interface
 	/// </summary>
-	internal class OAuth1TokenInformation : IOAuth1Token
+	public class OAuth1Token : IOAuth1Token
 	{
+		/// <inheritdoc />
 		public string OAuthTokenSecret { get; set; }
 
+		/// <inheritdoc />
 		public string OAuthToken { get; set; }
 
+		/// <inheritdoc />
 		public string OAuthTokenVerifier { get; set; }
 	}
 }

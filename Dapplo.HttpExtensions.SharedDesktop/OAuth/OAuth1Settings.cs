@@ -81,7 +81,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		///     When using a Dapplo.Config IIniSection for your settings, this property can/should be overwritten with an instance
 		///     of your interface by makeing it extend IOAuthToken
 		/// </summary>
-		public IOAuth1Token Token { get; set; } = new OAuth1TokenInformation();
+		public IOAuth1Token Token { get; set; } = new OAuth1Token();
 
 		/// <summary>
 		/// The HttpMethod which is used for getting the token

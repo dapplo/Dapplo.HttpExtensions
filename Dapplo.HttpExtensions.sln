@@ -1,43 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dapplo.HttpExtensions", "Dapplo.HttpExtensions\Dapplo.HttpExtensions.csproj", "{89151CB1-A5D0-414E-80D9-BB1A08B556DA}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dapplo.HttpExtensions.Tests", "Dapplo.HttpExtensions.Tests\Dapplo.HttpExtensions.Tests.csproj", "{03AB37FF-1220-4ECE-9964-FA6070C778D3}"
-EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Dapplo.HttpExtensions.Shared", "Dapplo.HttpExtensions.Shared\Dapplo.HttpExtensions.Shared.shproj", "{CD6F5F7F-2963-40DF-8D48-0563071DFA13}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dapplo.HttpExtensions.PCL", "Dapplo.HttpExtensions.PCL\Dapplo.HttpExtensions.PCL.csproj", "{B3CD22AA-764E-4EF3-AA9D-FD6879518505}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Dapplo.HttpExtensions.SharedDesktop", "Dapplo.HttpExtensions.SharedDesktop\Dapplo.HttpExtensions.SharedDesktop.shproj", "{5CCC9FC7-C4D0-46C9-896F-7EBCAB2B0C95}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dapplo.HttpExtensions.Net45", "Dapplo.HttpExtensions.Net45\Dapplo.HttpExtensions.Net45.csproj", "{A52F8125-E574-458B-9856-EDF4A339FCFB}"
-EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Dapplo.HttpExtensions.Tests.Shared", "Dapplo.HttpExtensions.Tests.Shared\Dapplo.HttpExtensions.Tests.Shared.shproj", "{AB77BC8B-1FA5-4036-8F21-AC6C8BA15F69}"
-EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Dapplo.HttpExtensions.Shared\Dapplo.HttpExtensions.Shared.projitems*{89151cb1-a5d0-414e-80d9-bb1a08b556da}*SharedItemsImports = 4
-		Dapplo.HttpExtensions.SharedDesktop\Dapplo.HttpExtensions.SharedDesktop.projitems*{89151cb1-a5d0-414e-80d9-bb1a08b556da}*SharedItemsImports = 4
-		Dapplo.HttpExtensions.Shared\Dapplo.HttpExtensions.Shared.projitems*{a52f8125-e574-458b-9856-edf4a339fcfb}*SharedItemsImports = 4
-		Dapplo.HttpExtensions.SharedDesktop\Dapplo.HttpExtensions.SharedDesktop.projitems*{a52f8125-e574-458b-9856-edf4a339fcfb}*SharedItemsImports = 4
-		Dapplo.HttpExtensions.Shared\Dapplo.HttpExtensions.Shared.projitems*{cd6f5f7f-2963-40df-8d48-0563071dfa13}*SharedItemsImports = 13
-		Dapplo.HttpExtensions.SharedDesktop\Dapplo.HttpExtensions.SharedDesktop.projitems*{5ccc9fc7-c4d0-46c9-896f-7ebcab2b0c95}*SharedItemsImports = 13
-		Dapplo.HttpExtensions.Tests.Shared\Dapplo.HttpExtensions.Tests.Shared.projitems*{03ab37ff-1220-4ece-9964-fa6070c778d3}*SharedItemsImports = 4
-		Dapplo.HttpExtensions.Tests.Shared\Dapplo.HttpExtensions.Tests.Shared.projitems*{ab77bc8b-1fa5-4036-8f21-ac6c8ba15f69}*SharedItemsImports = 13
-		Dapplo.HttpExtensions.Shared\Dapplo.HttpExtensions.Shared.projitems*{b3cd22aa-764e-4ef3-aa9d-fd6879518505}*SharedItemsImports = 4
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|AnyCPU = Debug|AnyCPU
 		Release|AnyCPU = Release|AnyCPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{89151CB1-A5D0-414E-80D9-BB1A08B556DA}.Debug|AnyCPU.ActiveCfg = Debug|Any CPU
-		{89151CB1-A5D0-414E-80D9-BB1A08B556DA}.Debug|AnyCPU.Build.0 = Debug|Any CPU
-		{89151CB1-A5D0-414E-80D9-BB1A08B556DA}.Release|AnyCPU.ActiveCfg = Release|Any CPU
-		{89151CB1-A5D0-414E-80D9-BB1A08B556DA}.Release|AnyCPU.Build.0 = Release|Any CPU
 		{03AB37FF-1220-4ECE-9964-FA6070C778D3}.Debug|AnyCPU.ActiveCfg = Debug|Any CPU
 		{03AB37FF-1220-4ECE-9964-FA6070C778D3}.Debug|AnyCPU.Build.0 = Debug|Any CPU
 		{03AB37FF-1220-4ECE-9964-FA6070C778D3}.Release|AnyCPU.ActiveCfg = Release|Any CPU
@@ -46,10 +21,6 @@ Global
 		{B3CD22AA-764E-4EF3-AA9D-FD6879518505}.Debug|AnyCPU.Build.0 = Debug|Any CPU
 		{B3CD22AA-764E-4EF3-AA9D-FD6879518505}.Release|AnyCPU.ActiveCfg = Release|Any CPU
 		{B3CD22AA-764E-4EF3-AA9D-FD6879518505}.Release|AnyCPU.Build.0 = Release|Any CPU
-		{A52F8125-E574-458B-9856-EDF4A339FCFB}.Debug|AnyCPU.ActiveCfg = Debug|Any CPU
-		{A52F8125-E574-458B-9856-EDF4A339FCFB}.Debug|AnyCPU.Build.0 = Debug|Any CPU
-		{A52F8125-E574-458B-9856-EDF4A339FCFB}.Release|AnyCPU.ActiveCfg = Release|Any CPU
-		{A52F8125-E574-458B-9856-EDF4A339FCFB}.Release|AnyCPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

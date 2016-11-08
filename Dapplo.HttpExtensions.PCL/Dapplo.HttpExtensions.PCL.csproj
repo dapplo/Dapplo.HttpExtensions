@@ -37,13 +37,97 @@
     <DocumentationFile>bin\Release\Dapplo.HttpExtensions.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AsyncLocal.cs" />
+    <Compile Include="ContentConverter\BitmapConfiguration.cs" />
+    <Compile Include="ContentConverter\BitmapHttpContentConverter.cs" />
+    <Compile Include="ContentConverter\BitmapSourceConfiguration.cs" />
+    <Compile Include="ContentConverter\BitmapSourceHttpContentConverter.cs" />
+    <Compile Include="ContentConverter\ByteArrayHttpContentConverter.cs" />
+    <Compile Include="ContentConverter\FormUriEncodedContentConverter.cs" />
+    <Compile Include="ContentConverter\SimpleJsonHttpContentConverter.cs" />
+    <Compile Include="ContentConverter\StreamHttpContentConverter.cs" />
+    <Compile Include="ContentConverter\StringConfiguration.cs" />
+    <Compile Include="ContentConverter\StringHttpContentConverter.cs" />
+    <Compile Include="ContentConverter\SyndicationFeedHttpContentConverter.cs" />
+    <Compile Include="ContentConverter\XDocumentHttpContentConverter.cs" />
+    <Compile Include="Desktop\ExtendedWebBrowserForm.cs" />
+    <Compile Include="Desktop\OAuthLoginForm.cs" />
+    <Compile Include="Desktop\OAuthLoginForm.Designer.cs">
+      <DependentUpon>OAuthLoginForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Extensions\EnumExtensions.cs" />
+    <Compile Include="Extensions\HttpBehaviourExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Factory\HttpClientFactory.cs" />
+    <Compile Include="Factory\HttpContentFactory.cs" />
     <Compile Include="Factory\HttpMessageHandlerFactory.cs" />
+    <Compile Include="Factory\HttpRequestMessageFactory.cs" />
+    <Compile Include="Factory\WebProxyFactory.cs" />
+    <Compile Include="HttpBehaviour.cs" />
+    <Compile Include="HttpBehaviourExtensions.cs" />
+    <Compile Include="HttpClientExtensions.cs" />
+    <Compile Include="HttpContentExtensions.cs" />
+    <Compile Include="HttpExtensionsGlobals.cs" />
+    <Compile Include="HttpRequestMessageConfiguration.cs" />
+    <Compile Include="HttpRequestMessageExtensions.cs" />
+    <Compile Include="HttpResponse.cs" />
+    <Compile Include="HttpResponseMessageExtensions.cs" />
+    <Compile Include="IChangeableHttpBehaviour.cs" />
+    <Compile Include="IHttpBehaviour.cs" />
+    <Compile Include="IHttpContentConverter.cs" />
+    <Compile Include="IHttpRequestConfiguration.cs" />
+    <Compile Include="IHttpSettings.cs" />
+    <Compile Include="IJsonSerializer.cs" />
+    <Compile Include="Listener\HttpListenerContextExtensions.cs" />
+    <Compile Include="Listener\ListenerPortExtensions.cs" />
+    <Compile Include="Listener\UriHttpListenerExtensions.cs" />
+    <Compile Include="MiscExtensions.cs" />
+    <Compile Include="OAuth\AuthorizeModes.cs" />
+    <Compile Include="OAuth\BaseOAuthSettings.cs" />
+    <Compile Include="OAuth\EmbeddedBrowserCodeReceiver.cs" />
+    <Compile Include="OAuth\GrantTypes.cs" />
+    <Compile Include="OAuth\ICodeReceiverSettings.cs" />
+    <Compile Include="OAuth\IOAuth1Token.cs" />
+    <Compile Include="OAuth\IOAuth2Token.cs" />
+    <Compile Include="OAuth\IOAuthCodeReceiver.cs" />
+    <Compile Include="OAuth\LocalServerCodeReceiver.cs" />
+    <Compile Include="OAuth\OAuth1HttpBehaviour.cs" />
+    <Compile Include="OAuth\OAuth1HttpBehaviourFactory.cs" />
+    <Compile Include="OAuth\OAuth1HttpMessageHandler.cs" />
+    <Compile Include="OAuth\OAuth1Parameters.cs" />
+    <Compile Include="OAuth\OAuth1RequestConfiguration.cs" />
+    <Compile Include="OAuth\OAuth1Settings.cs" />
+    <Compile Include="OAuth\OAuth1SignatureTypes.cs" />
+    <Compile Include="OAuth\OAuth1Token.cs" />
+    <Compile Include="OAuth\OAuth2Fields.cs" />
+    <Compile Include="OAuth\OAuth2HttpBehaviourFactory.cs" />
+    <Compile Include="OAuth\OAuth2HttpMessageHandler.cs" />
+    <Compile Include="OAuth\OAuth2Settings.cs" />
+    <Compile Include="OAuth\OAuth2TokenInformation.cs" />
+    <Compile Include="OAuth\OAuth2TokenResponse.cs" />
+    <Compile Include="OAuth\OutOfBoundCodeReceiver.cs" />
+    <Compile Include="OAuth\PassThroughCodeReceiver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SimpleJson.cs" />
+    <Compile Include="Support\ContentItem.cs" />
+    <Compile Include="Support\DelegatingStringEncryptionTypeConverter.cs" />
+    <Compile Include="Support\DelegatingTypeConverter.cs" />
+    <Compile Include="Support\HttpPartAttribute.cs" />
+    <Compile Include="Support\HttpParts.cs" />
+    <Compile Include="Support\HttpRequestAttribute.cs" />
+    <Compile Include="Support\HttpResponseAttribute.cs" />
+    <Compile Include="Support\HttpSettings.cs" />
+    <Compile Include="Support\MediaTypes.cs" />
+    <Compile Include="Support\ProgressStream.cs" />
+    <Compile Include="Support\ProgressStreamReport.cs" />
+    <Compile Include="Support\SimpleJsonSerializer.cs" />
+    <Compile Include="UriActionExtensions.cs" />
+    <Compile Include="UriModifyExtensions.cs" />
+    <Compile Include="UriParseExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="project.json" />
   </ItemGroup>
-  <Import Project="..\Dapplo.HttpExtensions.Shared\Dapplo.HttpExtensions.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

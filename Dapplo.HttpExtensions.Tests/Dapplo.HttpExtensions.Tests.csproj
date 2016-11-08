@@ -72,7 +72,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GithubTests.cs" />
+    <Compile Include="HttpBehaviourExtensionsTests.cs" />
+    <Compile Include="HttpPartsPostTest.cs" />
+    <Compile Include="HttpRequestMessageExtensionsTests.cs" />
+    <Compile Include="OAuth\OAuth2Tests.cs" />
+    <Compile Include="OAuth\OAuthTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SimpleJsonTests.cs" />
+    <Compile Include="Support\UriHttpListenerExtensionsTests.cs" />
+    <Compile Include="TestEntities\GitHubError.cs" />
+    <Compile Include="TestEntities\GitHubRelease.cs" />
+    <Compile Include="TestEntities\MyMultiPartRequest.cs" />
+    <Compile Include="TestEntities\WithExtensionData.cs" />
+    <Compile Include="UriActionExtensionsMultiPartTests.cs" />
+    <Compile Include="UriActionExtensionsTests.cs" />
+    <Compile Include="UriModifyExtensionsTests.cs" />
+    <Compile Include="UriParseExtensionsTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -85,13 +101,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Dapplo.HttpExtensions\Dapplo.HttpExtensions.csproj">
-      <Project>{89151cb1-a5d0-414e-80d9-bb1a08b556da}</Project>
-      <Name>Dapplo.HttpExtensions</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="..\Dapplo.HttpExtensions.Tests.Shared\Dapplo.HttpExtensions.Tests.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -1,20 +1,14 @@
-{
+﻿{
 	"version": "1.0.0-*",
 	"title": "Dapplo.HttpExtensions",
 	"authors": [ "Robin Krom" ],
-	"copyright": "Copyright � Dapplo 2016",
-	"description": "A library which makes using HTTP services easy.",
+	"copyright": "Copyright © Dapplo 2016",
+	"description": "A library extensions to simplify HTTP usage.",
 	"supports": {},
 	"dependencies": {
 		"Dapplo.Log": "1.0.21"
 	},
 	"frameworks": {
-		"net45": {
-			"dependencies": {
-			},
-			"frameworkAssemblies": {
-			}
-		},
 		"netstandard1.3": {
 			"dependencies": {
 				"Microsoft.NETCore.Portable.Compatibility": "1.0.1",
@@ -33,28 +27,16 @@
 				"System.Text.RegularExpressions": "4.1.0",
 				"System.ComponentModel.Annotations": "4.1.0"
 			}
-		}
-	},
-	"configurations": {
-		"Release": {
-			"buildOptions": {
-				"optimize": true
-			}
 		},
-		"Debug": {
-			"buildOptions": {
-				"optimize": false
+		"net45": {
+			"dependencies": {
+			},
+			"frameworkAssemblies": {
+				"Microsoft.VisualBasic": "10.0.0.0",
+				"System.ComponentModel.DataAnnotations": "4.0.0.0",
+				"System.Runtime.Caching": "4.0.0.0",
+				"System.Runtime.Serialization": "4.0.0.0"
 			}
 		}
-	},
-	"buildOptions": {
-		"xmlDoc": true
-	},
-	"packOptions": {
-		"owners": [ "Dapplo" ],
-		"summary": "Utils",
-		"licenseUrl": "http://www.gnu.org/licenses/lgpl-3.0.en.html",
-		"projectUrl": "http://www.dapplo.net/blocks/Dapplo.Utils",
-		"iconUrl": "http://www.dapplo.net/favicon.ico"
 	}
 }

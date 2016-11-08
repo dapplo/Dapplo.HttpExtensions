@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dapplo.HttpExtensions.Tests", "Dapplo.HttpExtensions.Tests\Dapplo.HttpExtensions.Tests.csproj", "{03AB37FF-1220-4ECE-9964-FA6070C778D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dapplo.HttpExtensions.PCL", "Dapplo.HttpExtensions.PCL\Dapplo.HttpExtensions.PCL.csproj", "{B3CD22AA-764E-4EF3-AA9D-FD6879518505}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dapplo.HttpExtensions", "Dapplo.HttpExtensions.PCL\Dapplo.HttpExtensions.xproj", "{B3CD22AA-764E-4EF3-AA9D-FD6879518505}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,8 +19,8 @@ Global
 		{03AB37FF-1220-4ECE-9964-FA6070C778D3}.Release|AnyCPU.Build.0 = Release|Any CPU
 		{B3CD22AA-764E-4EF3-AA9D-FD6879518505}.Debug|AnyCPU.ActiveCfg = Debug|Any CPU
 		{B3CD22AA-764E-4EF3-AA9D-FD6879518505}.Debug|AnyCPU.Build.0 = Debug|Any CPU
-		{B3CD22AA-764E-4EF3-AA9D-FD6879518505}.Release|AnyCPU.ActiveCfg = Release|Any CPU
-		{B3CD22AA-764E-4EF3-AA9D-FD6879518505}.Release|AnyCPU.Build.0 = Release|Any CPU
+		{B3CD22AA-764E-4EF3-AA9D-FD6879518505}.Release|AnyCPU.ActiveCfg = Debug|Any CPU
+		{B3CD22AA-764E-4EF3-AA9D-FD6879518505}.Release|AnyCPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

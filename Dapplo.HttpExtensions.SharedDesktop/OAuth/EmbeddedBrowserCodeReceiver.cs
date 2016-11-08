@@ -31,7 +31,7 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using Dapplo.HttpExtensions.Desktop;
 using Dapplo.HttpExtensions.Extensions;
-using Dapplo.Log.Facade;
+using Dapplo.Log;
 
 #endregion
 

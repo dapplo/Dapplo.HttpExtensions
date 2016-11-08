@@ -23,7 +23,7 @@
 
 using System.Net.Cache;
 using System.Net.Http;
-using Dapplo.Log.Facade;
+using Dapplo.Log;
 
 #endregion
 

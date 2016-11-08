@@ -33,7 +33,7 @@ using System.Windows.Media.Imaging;
 using System.Xml.Linq;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.Log.XUnit;
-using Dapplo.Log.Facade;
+using Dapplo.Log;
 using Xunit;
 using Xunit.Abstractions;
 

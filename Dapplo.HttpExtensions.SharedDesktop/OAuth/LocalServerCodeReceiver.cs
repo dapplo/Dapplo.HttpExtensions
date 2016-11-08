@@ -31,7 +31,7 @@ using Dapplo.HttpExtensions.Extensions;
 using Dapplo.HttpExtensions.Factory;
 using Dapplo.HttpExtensions.Listener;
 using Dapplo.HttpExtensions.Support;
-using Dapplo.Log.Facade;
+using Dapplo.Log;
 
 #endregion
 

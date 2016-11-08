@@ -28,7 +28,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.OAuth;
 using Dapplo.Log.XUnit;
-using Dapplo.Log.Facade;
+using Dapplo.Log;
 using Xunit;
 using Xunit.Abstractions;
 

@@ -26,7 +26,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Dapplo.Log.Facade;
+using Dapplo.Log;
 
 #endregion
 

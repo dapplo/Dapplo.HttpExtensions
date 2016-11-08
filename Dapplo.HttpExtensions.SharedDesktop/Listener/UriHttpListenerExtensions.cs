@@ -25,7 +25,7 @@ using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Dapplo.Log.Facade;
+using Dapplo.Log;
 
 #endregion
 

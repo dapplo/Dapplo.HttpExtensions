@@ -29,7 +29,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Support;
-using Dapplo.Log.Facade;
+using Dapplo.Log;
 using System.IO;
 using Dapplo.HttpExtensions.Extensions;
 using System.Reflection;

@@ -24,7 +24,7 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
-using Dapplo.Log.Facade;
+using Dapplo.Log;
 
 #endregion
 

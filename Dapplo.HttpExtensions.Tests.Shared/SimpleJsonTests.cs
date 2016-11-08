@@ -25,7 +25,7 @@ using System;
 using Dapplo.HttpExtensions.Tests.Shared.TestEntities;
 using Dapplo.Log.XUnit;
 using Dapplo.HttpExtensions.Tests.TestEntities;
-using Dapplo.Log.Facade;
+using Dapplo.Log;
 using Xunit;
 using Xunit.Abstractions;
 

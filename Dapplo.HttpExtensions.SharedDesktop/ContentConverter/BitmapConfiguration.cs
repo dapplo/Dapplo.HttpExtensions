@@ -24,7 +24,7 @@ using System.Drawing.Imaging;
 using System.Linq;
 using Dapplo.HttpExtensions.Extensions;
 using Dapplo.HttpExtensions.Support;
-using Dapplo.Log.Facade;
+using Dapplo.Log;
 
 namespace Dapplo.HttpExtensions.SharedDesktop.ContentConverter
 {

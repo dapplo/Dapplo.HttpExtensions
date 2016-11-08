@@ -23,7 +23,7 @@
 
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Listener;
-using Dapplo.Log.Facade;
+using Dapplo.Log;
 using Dapplo.Log.XUnit;
 using Xunit;
 using Xunit.Abstractions;

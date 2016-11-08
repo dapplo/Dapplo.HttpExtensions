@@ -22,7 +22,7 @@
 #region using
 
 using Dapplo.Log.XUnit;
-using Dapplo.Log.Facade;
+using Dapplo.Log;
 using System;
 using System.Drawing;
 using System.Threading.Tasks;

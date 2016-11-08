@@ -1,19 +1,60 @@
-ï»¿{
-  "supports": {
-    "net46.app": {},
-    "uwp.10.0.app": {},
-    "dnxcore50.app": {}
-  },
-  "dependencies": {
-    "Dapplo.Log.Facade": "0.5.4",
-    "Microsoft.NETCore": "5.0.0",
-    "Microsoft.NETCore.Portable.Compatibility": "1.0.0",
-    "System.ComponentModel": "4.0.0",
-    "System.Runtime.Serialization.Primitives": "4.0.10"
-  },
-  "frameworks": {
-    "dotnet": {
-      "imports": "portable-net452+win81"
-    }
-  }
+{
+	"version": "1.0.0-*",
+	"title": "Dapplo.HttpExtensions",
+	"authors": [ "Robin Krom" ],
+	"copyright": "Copyright © Dapplo 2016",
+	"description": "A library which makes using HTTP services easy.",
+	"supports": {},
+	"dependencies": {
+		"Dapplo.Log": "1.0.21"
+	},
+	"frameworks": {
+		"net45": {
+			"dependencies": {
+			},
+			"frameworkAssemblies": {
+			}
+		},
+		"netstandard1.3": {
+			"dependencies": {
+				"Microsoft.NETCore.Portable.Compatibility": "1.0.1",
+				"NETStandard.Library": "1.6.0",
+				"System.Collections.Concurrent": "4.0.12",
+				"System.ComponentModel": "4.0.1",
+				"System.ComponentModel.Primitives": "4.1.0",
+				"System.ComponentModel.TypeConverter": "4.1.0",
+				"System.Dynamic.Runtime": "4.0.11",
+				"System.IO.Compression": "4.1.0",
+				"System.ObjectModel": "4.0.12",
+				"System.Reflection": "4.1.0",
+				"System.Reflection.TypeExtensions": "4.1.0",
+				"System.Runtime.Extensions": "4.1.0",
+				"System.Runtime.Serialization.Primitives": "4.1.1",
+				"System.Text.RegularExpressions": "4.1.0",
+				"System.ComponentModel.Annotations": "4.1.0"
+			}
+		}
+	},
+	"configurations": {
+		"Release": {
+			"buildOptions": {
+				"optimize": true
+			}
+		},
+		"Debug": {
+			"buildOptions": {
+				"optimize": false
+			}
+		}
+	},
+	"buildOptions": {
+		"xmlDoc": true
+	},
+	"packOptions": {
+		"owners": [ "Dapplo" ],
+		"summary": "Utils",
+		"licenseUrl": "http://www.gnu.org/licenses/lgpl-3.0.en.html",
+		"projectUrl": "http://www.dapplo.net/blocks/Dapplo.Utils",
+		"iconUrl": "http://www.dapplo.net/favicon.ico"
+	}
 }

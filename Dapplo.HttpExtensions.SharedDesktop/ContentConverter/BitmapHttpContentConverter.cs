@@ -33,7 +33,7 @@ using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Extensions;
 using Dapplo.HttpExtensions.SharedDesktop.ContentConverter;
 using Dapplo.HttpExtensions.Support;
-using Dapplo.Log.Facade;
+using Dapplo.Log;
 
 #endregion
 

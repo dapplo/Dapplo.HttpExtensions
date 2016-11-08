@@ -26,7 +26,7 @@ using System.Drawing;
 using System.Threading.Tasks;
 using Dapplo.Log.XUnit;
 using Dapplo.HttpExtensions.Tests.TestEntities;
-using Dapplo.Log.Facade;
+using Dapplo.Log;
 using Xunit;
 using Xunit.Abstractions;
 using System.Windows.Media;

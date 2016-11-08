@@ -101,6 +101,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Dapplo.HttpExtensions\Dapplo.HttpExtensions.xproj">
+      <Project>{b3cd22aa-764e-4ef3-aa9d-fd6879518505}</Project>
+      <Name>Dapplo.HttpExtensions</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

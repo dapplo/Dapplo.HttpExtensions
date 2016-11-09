@@ -23,9 +23,9 @@
 
 using System.Net;
 using System.Net.Http;
-using Dapplo.Log;
 #if NET45 || NET46
 using System.Net.Cache;
+using Dapplo.Log;
 #endif
 #endregion
 
@@ -37,8 +37,8 @@ namespace Dapplo.HttpExtensions.Factory
 	/// </summary>
 	public static class HttpMessageHandlerFactory
 	{
-		private static readonly LogSource Log = new LogSource();
 #if NET45 || NET46
+		private static readonly LogSource Log = new LogSource();
 		/// <summary>
 		///     This creates an advanced HttpMessageHandler, used in desktop applications
 		///     Should be preferred

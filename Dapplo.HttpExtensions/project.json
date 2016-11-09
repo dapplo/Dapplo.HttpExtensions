@@ -4,6 +4,19 @@
     "authors": [ "Robin Krom" ],
     "copyright": "Copyright © Dapplo 2016",
     "description": "A library extensions to simplify HTTP usage.",
+    "packOptions": {
+        "owners": [ "Dapplo" ],
+        "summary": "Simplify HTTP code",
+        "licenseUrl": "http://www.gnu.org/licenses/lgpl-3.0.en.html",
+        "projectUrl": "http://www.dapplo.net/blocks/Dapplo.HttpExtensions/",
+        "iconUrl": "http://www.dapplo.net/favicon.ico",
+        "tags": [ "http", "uri", "extensions" ],
+        "requireLicenseAcceptance": false,
+        "repository": {
+           "type": "git",
+           "url": "https://github.com/dapplo/Dapplo.HttpExtensions"
+        }
+    }
     "supports": {},
     "dependencies": {
         "Dapplo.Log": "1.0.22"

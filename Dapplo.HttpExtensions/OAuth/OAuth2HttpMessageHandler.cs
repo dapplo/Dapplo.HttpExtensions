@@ -48,7 +48,7 @@ namespace Dapplo.HttpExtensions.OAuth
 		/// </summary>
 		static OAuth2HttpMessageHandler()
 		{
-#if !_PCL_
+#if NET45 || NET46
 			CodeReceivers.Add(
 				AuthorizeModes.LocalhostServer,
 				new LocalhostCodeReceiver()

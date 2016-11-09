@@ -31,9 +31,8 @@ using Dapplo.HttpExtensions.Extensions;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.Log;
 
-#if _PCL_
+#if NETSTANDARD1_3
 using System.Reflection;
-
 #endif
 
 #endregion

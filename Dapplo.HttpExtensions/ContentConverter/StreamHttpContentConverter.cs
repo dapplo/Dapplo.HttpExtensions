@@ -33,7 +33,7 @@ using Dapplo.Log;
 
 #endregion
 
-#if _PCL_
+#if NETSTANDARD1_3
 using System.Reflection;
 
 #endif

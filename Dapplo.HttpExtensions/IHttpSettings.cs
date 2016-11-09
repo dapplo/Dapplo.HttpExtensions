@@ -28,6 +28,13 @@ using System.Net;
 using System.Net.Http;
 using System.Runtime.Serialization;
 
+#if NET45 || NET46
+using System.Net.Security;
+using System.Net.Cache;
+using System.Security.Cryptography.X509Certificates;
+using System.Security.Principal;
+#endif
+
 #endregion
 
 namespace Dapplo.HttpExtensions
@@ -140,7 +147,7 @@ namespace Dapplo.HttpExtensions
 		/// <returns>"Shallow" Cloned instance of IChangeableHttpBehaviour</returns>
 		IHttpSettings ShallowClone();
 
-#if !_PCL_
+#if NET45 || NET46
 				/// <summary>
 		///     For more details, click
 		///     <a href="https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.allowpipelining.aspx">here</a>

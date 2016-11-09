@@ -38,7 +38,7 @@ namespace Dapplo.HttpExtensions.Tests
 	/// </summary>
 	public class UriActionExtensionsMultiPartTests
 	{
-		private readonly Uri _bitmapUri = new Uri("http://beta.getgreenshot.org/assets/greenshot-logo.png");
+		private readonly Uri _bitmapUri = new Uri("http://getgreenshot.org/assets/greenshot-logo.png");
 
 		public UriActionExtensionsMultiPartTests(ITestOutputHelper testOutputHelper)
 		{

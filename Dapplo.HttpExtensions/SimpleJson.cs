@@ -26,13 +26,13 @@
 //#define SIMPLE_JSON_OBJARRAYINTERNAL
 
 // NOTE: uncomment the following line to enable dynamic support.
-//#define SIMPLE_JSON_DYNAMIC
+#define SIMPLE_JSON_DYNAMIC
 
 // NOTE: uncomment the following line to enable DataContract support.
-//#define SIMPLE_JSON_DATACONTRACT
+#define SIMPLE_JSON_DATACONTRACT
 
 // NOTE: uncomment the following line to enable IReadOnlyCollection<T> and IReadOnlyList<T> support.
-//#define SIMPLE_JSON_READONLY_COLLECTIONS
+#define SIMPLE_JSON_READONLY_COLLECTIONS
 
 // NOTE: uncomment the following line to disable linq expressions/compiled lambda (better performance) instead of method.invoke().
 // define if you are using .net framework <= 3.0 or < WP7.5
@@ -46,7 +46,7 @@
 
 // original json parsing code from http://techblog.procurios.nl/k/618/news/view/14605/14863/How-do-I-write-my-own-parser-for-JSON.html
 
-#if NETFX_CORE || DOTNET5_4
+#if NETSTANDARD1_3
 #define SIMPLE_JSON_TYPEINFO
 #endif
 

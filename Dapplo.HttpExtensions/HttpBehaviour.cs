@@ -26,13 +26,13 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-#if !DOTNET45
+#if !NET45
 using System.Threading;
 #endif
 
 #endregion
 
-#if DOTNET45
+#if NET45
 using Nito.AsyncEx.AsyncLocal;
 #endif
 

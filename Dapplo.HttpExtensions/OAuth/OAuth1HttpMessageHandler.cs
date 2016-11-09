@@ -63,7 +63,7 @@ namespace Dapplo.HttpExtensions.OAuth
 				AuthorizeModes.TestPassThrough,
 				new PassThroughCodeReceiver()
 				);
-#if !_PCL_
+#if NET45 || NET46
 			CodeReceivers.Add(
 				AuthorizeModes.OutOfBound,
 				new OutOfBoundCodeReceiver()

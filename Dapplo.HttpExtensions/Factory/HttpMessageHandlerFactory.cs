@@ -23,7 +23,10 @@
 
 using System.Net;
 using System.Net.Http;
-
+using Dapplo.Log;
+#if NET45 || NET46
+using System.Net.Cache;
+#endif
 #endregion
 
 namespace Dapplo.HttpExtensions.Factory
@@ -32,18 +35,10 @@ namespace Dapplo.HttpExtensions.Factory
 	///     Creating a HttpMessageHandler is not very straightforward, that is why the logic is capsulated in the
 	///     HttpMessageHandlerFactory.
 	/// </summary>
-	public static partial class HttpMessageHandlerFactory
+	public static class HttpMessageHandlerFactory
 	{
-#if _PCL_
-		/// <summary>
-		///     This creates an advanced HttpMessageHandler, used in Apps
-		/// </summary>
-		/// <returns>HttpMessageHandler (HttpClientHandler)</returns>
-		private static HttpMessageHandler CreateHandler()
-		{
-			return CreateHttpClientHandler();
-		}
-#else
+		private static readonly LogSource Log = new LogSource();
+#if NET45 || NET46
 		/// <summary>
 		///     This creates an advanced HttpMessageHandler, used in desktop applications
 		///     Should be preferred
@@ -54,6 +49,15 @@ namespace Dapplo.HttpExtensions.Factory
 			var webRequestHandler = new WebRequestHandler();
 			SetDefaults(webRequestHandler);
 			return webRequestHandler;
+		}
+#else
+		/// <summary>
+		///     This creates an advanced HttpMessageHandler, used in Apps
+		/// </summary>
+		/// <returns>HttpMessageHandler (HttpClientHandler)</returns>
+		private static HttpMessageHandler CreateHandler()
+		{
+			return CreateHttpClientHandler();
 		}
 #endif
 
@@ -101,7 +105,7 @@ namespace Dapplo.HttpExtensions.Factory
 			httpClientHandler.Credentials = httpSettings.UseDefaultCredentials ? CredentialCache.DefaultCredentials : httpSettings.Credentials;
 			httpClientHandler.MaxAutomaticRedirections = httpSettings.MaxAutomaticRedirections;
 
-#if !_PCL_
+#if NET45 || NET46
 			httpClientHandler.MaxRequestContentBufferSize = httpSettings.MaxRequestContentBufferSize;
 
 			if (!httpSettings.UseProxy)
@@ -116,7 +120,7 @@ namespace Dapplo.HttpExtensions.Factory
 			httpClientHandler.PreAuthenticate = httpSettings.PreAuthenticate;
 		}
 
-#if !_PCL_
+#if NET45 || NET46
 		/// <summary>
 		///     Apply settings on the WebRequestHandler, this also calls the SetDefaults for the underlying HttpClientHandler
 		/// </summary>

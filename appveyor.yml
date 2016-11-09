@@ -1,4 +1,4 @@
-version: 0.5.{build}
+version: 0.6.{build}
 skip_tags: true
 configuration: Release
 platform: AnyCPU
@@ -6,23 +6,16 @@ clone_depth: 2
 branches:
   only:
   - master
-assembly_info:
-  patch: true
-  file: '**\AssemblyInfo.*'
-  assembly_version: '{version}'
-  assembly_file_version: '{version}'
-  assembly_informational_version: '{version}'
 install:
-  - choco install gitlink -y
+- choco install gitlink -y
 before_build:
-  - nuget restore
-  - ps: if(-not $env:APPVEYOR_PULL_REQUEST_NUMBER) { $env:is_not_pr = "true"; }
+- ps: .\SetVersion.ps1
+- appveyor-retry dotnet restore -v Minimal
+- ps: if(-not $env:APPVEYOR_PULL_REQUEST_NUMBER) { $env:is_not_pr = "true"; }
 before_package:
-  - ps: Remove-Item packages\OpenCover* -include ("*.pdb", "*.sln", "*.csproj") -recurse
-  - ps: if(-not $env:APPVEYOR_PULL_REQUEST_NUMBER) { GitLink .\ }
-  - nuget pack -Verbosity detailed "%APPVEYOR_PROJECT_NAME%.nuspec" -MSBuildVersion 14.0 -Properties id=%APPVEYOR_PROJECT_NAME%;version=%APPVEYOR_BUILD_VERSION%;author=Dapplo
+- ps: if(-not $env:APPVEYOR_PULL_REQUEST_NUMBER) { GitLink .\ }
 after_test: 
-    - ps: .\CreateCoverage.ps1
+- ps: .\CreateCoverage.ps1
 environment:
   github_username:
     secure: dGUm8ikFV7zt04Snv/YfNA==
@@ -31,13 +24,19 @@ environment:
   COVERALLS_REPO_TOKEN:
     secure: sVulFO20DgFcIIQPU926SJqzLWqv4EozRmXYa3MuSDz3fyFXie9wkptVMM5oz3nC
 build:
-  project: Dapplo.HttpExtensions.sln
   publish_nuget: true
-  publish_nuget_symbols: false
+  publish_nuget_symbols: true
   verbosity: minimal
+#cache:
+#- '%USERPROFILE%\.nuget\packages'
 artifacts:
-- path: '*.nupkg'
+- path: artifacts\**\*.*
   name: NuGet package
+build_script:
+- dotnet build Dapplo.HttpExtensions -c %CONFIGURATION% --no-dependencies
+- dotnet build Dapplo.HttpExtensions.Tests -c %CONFIGURATION% --no-dependencies
+after_build:
+- dotnet pack Dapplo.HttpExtensions -c %CONFIGURATION% --no-build -o artifacts
 notifications:
 - provider: Email
   to:

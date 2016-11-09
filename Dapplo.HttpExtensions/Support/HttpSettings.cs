@@ -27,7 +27,7 @@ using System.Reflection;
 using System.Text;
 using System.Net.Http;
 
-#if !_PCL_
+#if NET45 ||NET46
 using System.Net.Cache;
 using System.Security.Principal;
 using System.Net.Security;
@@ -101,7 +101,7 @@ namespace Dapplo.HttpExtensions.Support
 			set { _userAgent = value; }
 		}
 
-#if !_PCL_
+#if NET45 || NET46
 
 		/// <inheritdoc />
 		public X509CertificateCollection ClientCertificates { get; set; } = new X509CertificateCollection();

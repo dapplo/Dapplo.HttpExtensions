@@ -42,10 +42,10 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		/// <summary>
 		/// Instance of this IHttpContentConverter for reusing
 		/// </summary>
-		public static Lazy<IHttpContentConverter> Instance
+		public static Lazy<ByteArrayHttpContentConverter> Instance
 		{
 			get;
-		} = new Lazy<IHttpContentConverter>(() => new ByteArrayHttpContentConverter());
+		} = new Lazy<ByteArrayHttpContentConverter>(() => new ByteArrayHttpContentConverter());
 
 		/// <summary>
 		///     Order or priority of the IHttpContentConverter

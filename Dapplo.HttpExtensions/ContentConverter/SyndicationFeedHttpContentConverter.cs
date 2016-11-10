@@ -48,10 +48,10 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		/// <summary>
 		/// Instance of this IHttpContentConverter for reusing
 		/// </summary>
-		public static Lazy<IHttpContentConverter> Instance
+		public static Lazy<SyndicationFeedHttpContentConverter> Instance
 		{
 			get;
-		} = new Lazy<IHttpContentConverter>(() => new SyndicationFeedHttpContentConverter());
+		} = new Lazy<SyndicationFeedHttpContentConverter>(() => new SyndicationFeedHttpContentConverter());
 
 		/// <inheritdoc />
 		public int Order => 0;

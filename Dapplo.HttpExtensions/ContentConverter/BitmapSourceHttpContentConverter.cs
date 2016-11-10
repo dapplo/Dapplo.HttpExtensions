@@ -48,10 +48,10 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		/// <summary>
 		/// Instance of this IHttpContentConverter for reusing
 		/// </summary>
-		public static Lazy<IHttpContentConverter> Instance
+		public static Lazy<BitmapSourceHttpContentConverter> Instance
 		{
 			get;
-		} = new Lazy<IHttpContentConverter>(() => new BitmapSourceHttpContentConverter());
+		} = new Lazy<BitmapSourceHttpContentConverter>(() => new BitmapSourceHttpContentConverter());
 
 		/// <inheritdoc />
 		public int Order => 0;

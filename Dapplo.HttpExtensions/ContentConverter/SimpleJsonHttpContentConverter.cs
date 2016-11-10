@@ -47,10 +47,10 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		/// <summary>
 		/// Instance of this IHttpContentConverter for reusing
 		/// </summary>
-		public static Lazy<IHttpContentConverter> Instance
+		public static Lazy<SimpleJsonHttpContentConverter> Instance
 		{
 			get;
-		} = new Lazy<IHttpContentConverter>(() => new SimpleJsonHttpContentConverter());
+		} = new Lazy<SimpleJsonHttpContentConverter>(() => new SimpleJsonHttpContentConverter());
 
 		private static readonly IList<string> SupportedContentTypes = new List<string>();
 

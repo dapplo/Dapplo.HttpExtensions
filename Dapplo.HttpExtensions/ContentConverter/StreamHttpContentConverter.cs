@@ -52,10 +52,10 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		/// <summary>
 		/// Instance of this IHttpContentConverter for reusing
 		/// </summary>
-		public static Lazy<IHttpContentConverter> Instance
+		public static Lazy<StreamHttpContentConverter> Instance
 		{
 			get;
-		} = new Lazy<IHttpContentConverter>(() => new StreamHttpContentConverter());
+		} = new Lazy<StreamHttpContentConverter>(() => new StreamHttpContentConverter());
 
 		/// <inheritdoc />
 		public int Order => 0;

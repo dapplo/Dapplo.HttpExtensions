@@ -52,10 +52,10 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		/// <summary>
 		/// Instance of this IHttpContentConverter for reusing
 		/// </summary>
-		public static Lazy<IHttpContentConverter> Instance
+		public static Lazy<FormUriEncodedContentConverter> Instance
 		{
 			get;
-		} = new Lazy<IHttpContentConverter>(() => new FormUriEncodedContentConverter());
+		} = new Lazy<FormUriEncodedContentConverter>(() => new FormUriEncodedContentConverter());
 
 		/// <inheritdoc />
 		public int Order => 0;

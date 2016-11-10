@@ -46,9 +46,12 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		private static readonly LogSource Log = new LogSource();
 
 		/// <summary>
-		/// Singleton instance for reusing
+		/// Instance of this IHttpContentConverter for reusing
 		/// </summary>
-		public static readonly SyndicationFeedHttpContentConverter Instance = new SyndicationFeedHttpContentConverter();
+		public static Lazy<IHttpContentConverter> Instance
+		{
+			get;
+		} = new Lazy<IHttpContentConverter>(() => new SyndicationFeedHttpContentConverter());
 
 		/// <inheritdoc />
 		public int Order => 0;

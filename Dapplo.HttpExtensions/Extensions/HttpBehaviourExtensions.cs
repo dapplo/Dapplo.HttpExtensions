@@ -45,12 +45,12 @@ namespace Dapplo.HttpExtensions.Extensions
 		}
 
 		/// <summary>
-		/// Add the specified configuration, if it already exists it is overwritten
+		/// Set the specified configuration, if it already exists it is overwritten
 		/// </summary>
 		/// <param name="httpBehaviour">IHttpBehaviour</param>
 		/// <param name="configuration">THttpReqestConfiguration</param>
 		/// <returns>IHttpBehaviour</returns>
-		public static IHttpBehaviour AddConfig(this IHttpBehaviour httpBehaviour, IHttpRequestConfiguration configuration)
+		public static IHttpBehaviour SetConfig(this IHttpBehaviour httpBehaviour, IHttpRequestConfiguration configuration)
 		{
 			// Although this probably doesn't happen... if null is passed HttpBehaviour.Current is used
 			if (httpBehaviour == null)

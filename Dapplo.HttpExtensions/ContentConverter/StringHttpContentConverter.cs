@@ -40,10 +40,14 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	{
 		private static readonly LogSource Log = new LogSource();
 
+
 		/// <summary>
-		///     Singleton instance for reuse
+		/// Instance of this IHttpContentConverter for reusing
 		/// </summary>
-		public static readonly StringHttpContentConverter Instance = new StringHttpContentConverter();
+		public static Lazy<IHttpContentConverter> Instance
+		{
+			get;
+		} = new Lazy<IHttpContentConverter>(() => new StringHttpContentConverter());
 
 		/// <inheritdoc />
 		public int Order => int.MaxValue;

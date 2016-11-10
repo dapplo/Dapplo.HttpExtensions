@@ -44,10 +44,14 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	public class XDocumentHttpContentConverter : IHttpContentConverter
 	{
 		private static readonly LogSource Log = new LogSource();
+
 		/// <summary>
-		/// Instance for reusing
+		/// Instance of this IHttpContentConverter for reusing
 		/// </summary>
-		public static readonly XDocumentHttpContentConverter Instance = new XDocumentHttpContentConverter();
+		public static Lazy<IHttpContentConverter> Instance
+		{
+			get;
+		} = new Lazy<IHttpContentConverter>(() => new XDocumentHttpContentConverter());
 
 		/// <inheritdoc />
 		public int Order => 0;

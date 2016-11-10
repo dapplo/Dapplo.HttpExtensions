@@ -48,9 +48,12 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		private static readonly LogSource Log = new LogSource();
 
 		/// <summary>
-		/// Instance for reusing
+		/// Instance of this IHttpContentConverter for reusing
 		/// </summary>
-		public static readonly BitmapHttpContentConverter Instance = new BitmapHttpContentConverter();
+		public static Lazy<IHttpContentConverter> Instance
+		{
+			get;
+		} = new Lazy<IHttpContentConverter>(() => new BitmapHttpContentConverter());
 
 		/// <inheritdoc />
 		public int Order => 0;
@@ -81,7 +84,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 				Log.Error().WriteLine(exMessage);
 				throw new NotSupportedException(exMessage);
 			}
-			var memoryStream = (MemoryStream) await StreamHttpContentConverter.Instance.ConvertFromHttpContentAsync(typeof (MemoryStream), httpContent, cancellationToken).ConfigureAwait(false);
+			var memoryStream = (MemoryStream) await StreamHttpContentConverter.Instance.Value.ConvertFromHttpContentAsync(typeof (MemoryStream), httpContent, cancellationToken).ConfigureAwait(false);
 			Log.Debug().WriteLine("Creating a Bitmap from the MemoryStream.");
 			return new Bitmap(memoryStream);
 		}

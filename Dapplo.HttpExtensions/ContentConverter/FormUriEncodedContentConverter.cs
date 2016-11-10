@@ -50,9 +50,12 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		private static readonly LogSource Log = new LogSource();
 
 		/// <summary>
-		///     Singleton instance for reuse
+		/// Instance of this IHttpContentConverter for reusing
 		/// </summary>
-		public static readonly FormUriEncodedContentConverter Instance = new FormUriEncodedContentConverter();
+		public static Lazy<IHttpContentConverter> Instance
+		{
+			get;
+		} = new Lazy<IHttpContentConverter>(() => new FormUriEncodedContentConverter());
 
 		/// <inheritdoc />
 		public int Order => 0;

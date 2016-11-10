@@ -38,11 +38,14 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	{
 		private static readonly LogSource Log = new LogSource();
 
+
 		/// <summary>
-		///     Used to create the list of available IHttpContentConverter
-		///     Can also be used to access the singleton to change the settings.
+		/// Instance of this IHttpContentConverter for reusing
 		/// </summary>
-		public static readonly ByteArrayHttpContentConverter Instance = new ByteArrayHttpContentConverter();
+		public static Lazy<IHttpContentConverter> Instance
+		{
+			get;
+		} = new Lazy<IHttpContentConverter>(() => new ByteArrayHttpContentConverter());
 
 		/// <summary>
 		///     Order or priority of the IHttpContentConverter

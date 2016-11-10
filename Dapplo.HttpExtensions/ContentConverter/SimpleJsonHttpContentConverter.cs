@@ -45,9 +45,12 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		private static readonly LogSource Log = new LogSource();
 
 		/// <summary>
-		///     Singleton instance for reuse
+		/// Instance of this IHttpContentConverter for reusing
 		/// </summary>
-		public static readonly SimpleJsonHttpContentConverter Instance = new SimpleJsonHttpContentConverter();
+		public static Lazy<IHttpContentConverter> Instance
+		{
+			get;
+		} = new Lazy<IHttpContentConverter>(() => new SimpleJsonHttpContentConverter());
 
 		private static readonly IList<string> SupportedContentTypes = new List<string>();
 

@@ -19,6 +19,7 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
+using System;
 using System.Collections.Generic;
 
 namespace Dapplo.HttpExtensions
@@ -37,5 +38,10 @@ namespace Dapplo.HttpExtensions
 		/// A set of properties for the HTTP request.
 		/// </summary>
 		public IDictionary<string, object> Properties { get; set; }= new Dictionary<string, object>();
+
+		/// <summary>
+		/// The HTTP Message version, default is 1.1
+		/// </summary>
+		public Version HttpMessageVersion { get; set; } = new Version(1, 1);
 	}
 }

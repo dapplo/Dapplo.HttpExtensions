@@ -61,7 +61,8 @@ namespace Dapplo.HttpExtensions.Factory
 
 			var httpRequestMessage = new HttpRequestMessage(method, requestUri)
 			{
-				Content = HttpContentFactory.Create(contentType, content)
+				Content = HttpContentFactory.Create(contentType, content),
+				Version = configuration.HttpMessageVersion
 			};
 
 			// Set supplied Properties from the HttpRequestMessageConfiguration

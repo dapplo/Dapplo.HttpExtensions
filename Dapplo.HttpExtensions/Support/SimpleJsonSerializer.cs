@@ -22,7 +22,12 @@
 #region using
 
 using System;
-
+using System.IO;
+using System.Linq;
+#if NET45 || NET46
+using System.Drawing;
+using System.Windows.Media.Imaging;
+#endif
 #endregion
 
 namespace Dapplo.HttpExtensions.Support
@@ -32,24 +37,43 @@ namespace Dapplo.HttpExtensions.Support
 	/// </summary>
 	public class SimpleJsonSerializer : IJsonSerializer
 	{
+		private static readonly Type[] NotSerializableTypes =
+		{
+#if NET45 || NET46
+			typeof(Bitmap),
+			typeof(BitmapSource),
+#endif
+			typeof(Stream),
+			typeof(MemoryStream)
+		};
 		/// <summary>
 		/// </summary>
 		/// <param name="targetType">Type to deserialize from a json string</param>
 		/// <param name="jsonString">json</param>
 		/// <returns>Deserialized json as targetType</returns>
-		public object DeserializeJson(Type targetType, string jsonString)
+		public object Deserialize(Type targetType, string jsonString)
 		{
 			return SimpleJson.DeserializeObject(jsonString, targetType);
 		}
 
 		/// <summary>
+		/// Test if the specified type can be serialized to JSON
 		/// </summary>
-		/// <typeparam name="TResult">Type to deserialize from a json string</typeparam>
-		/// <param name="jsonString">json</param>
-		/// <returns>Deserialized json as TResult</returns>
-		public TResult DeserializeJson<TResult>(string jsonString) where TResult : class
+		/// <param name="sourceType">Type to check</param>
+		/// <returns>bool</returns>
+		public bool CanSerializeTo(Type sourceType)
 		{
-			return SimpleJson.DeserializeObject<TResult>(jsonString);
+			return NotSerializableTypes.All(type => type != sourceType);
+		}
+
+		/// <summary>
+		/// Test if the specified type can be deserialized
+		/// </summary>
+		/// <param name="targetType">Type to check</param>
+		/// <returns>bool</returns>
+		public bool CanDeserializeFrom(Type targetType)
+		{
+			return NotSerializableTypes.All(type => type != targetType);
 		}
 
 		/// <summary>
@@ -57,7 +81,7 @@ namespace Dapplo.HttpExtensions.Support
 		/// <typeparam name="TContent">Type to serialize to json string</typeparam>
 		/// <param name="jsonObject">The actual object</param>
 		/// <returns>string with json</returns>
-		public string SerializeJson<TContent>(TContent jsonObject)
+		public string Serialize<TContent>(TContent jsonObject)
 		{
 			return SimpleJson.SerializeObject(jsonObject);
 		}

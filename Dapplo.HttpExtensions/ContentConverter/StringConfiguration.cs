@@ -38,6 +38,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			MediaTypes.Txt.EnumValueOf(),
 			MediaTypes.Html.EnumValueOf(),
 			MediaTypes.Xml.EnumValueOf(),
+			MediaTypes.Json.EnumValueOf(),
 			MediaTypes.XmlReadable.EnumValueOf()
 		};
 

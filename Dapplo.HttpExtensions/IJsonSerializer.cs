@@ -29,17 +29,23 @@ namespace Dapplo.HttpExtensions
 {
 	/// <summary>
 	///     This interface makes it possible to change the Json serializer which is used for de- serializing JSON.
-	///     As a default implementation is used, using SimpleJson.
+	///     The default implementation for this, SimpleJson, is included in this project
 	/// </summary>
 	public interface IJsonSerializer
 	{
 		/// <summary>
-		///     Deserialize a string with Json to the generic type
+		/// Test if the specified type can be serialized to JSON
 		/// </summary>
-		/// <typeparam name="TResult">a class which is used to deserialize to</typeparam>
-		/// <param name="jsonString">string with json content</param>
-		/// <returns>TResult</returns>
-		TResult DeserializeJson<TResult>(string jsonString) where TResult : class;
+		/// <param name="sourceType">Type to check</param>
+		/// <returns>bool</returns>
+		bool CanSerializeTo(Type sourceType);
+
+		/// <summary>
+		/// Test if the specified type can be deserialized
+		/// </summary>
+		/// <param name="targetType">Type to check</param>
+		/// <returns>bool</returns>
+		bool CanDeserializeFrom(Type targetType);
 
 		/// <summary>
 		///     Deserialize a string with Json to the specified type
@@ -47,7 +53,7 @@ namespace Dapplo.HttpExtensions
 		/// <param name="targetType">Type to deserialize to</param>
 		/// <param name="jsonString">string with json content</param>
 		/// <returns>an object of type targetType or null</returns>
-		object DeserializeJson(Type targetType, string jsonString);
+		object Deserialize(Type targetType, string jsonString);
 
 		/// <summary>
 		///     Serialize the generic object into a string with Json content
@@ -55,6 +61,6 @@ namespace Dapplo.HttpExtensions
 		/// <typeparam name="T">Type to serialize</typeparam>
 		/// <param name="jsonObject">Object to serialize</param>
 		/// <returns>string with Json content</returns>
-		string SerializeJson<T>(T jsonObject);
+		string Serialize<T>(T jsonObject);
 	}
 }

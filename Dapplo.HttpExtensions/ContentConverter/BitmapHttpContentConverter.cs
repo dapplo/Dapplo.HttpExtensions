@@ -162,12 +162,10 @@ namespace Dapplo.HttpExtensions.ContentConverter
 				return;
 			}
 			var configuration = HttpBehaviour.Current.GetConfig<BitmapConfiguration>();
-			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Png.EnumValueOf()));
-			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Jpeg.EnumValueOf(), configuration.Quality / 100d));
-			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Tiff.EnumValueOf()));
-			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Bmp.EnumValueOf()));
-			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Gif.EnumValueOf()));
-			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Icon.EnumValueOf()));
+			foreach (var supportedContentType in configuration.SupportedContentTypes)
+			{
+				httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(supportedContentType, configuration.Quality/100d));
+			}
 			Log.Debug().WriteLine("Modified the header(s) of the HttpRequestMessage: Accept: {0}", httpRequestMessage.Headers.Accept);
 		}
 	}

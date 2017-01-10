@@ -26,11 +26,13 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Extensions;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.Log;
+using System.Linq;
 
 #endregion
 
@@ -40,21 +42,21 @@ namespace Dapplo.HttpExtensions.ContentConverter
 	///     This can convert HttpContent from/to Json
 	///     TODO: add JsonObject from SimpleJson for more clear generic code..
 	/// </summary>
-	public class SimpleJsonHttpContentConverter : IHttpContentConverter
+	public class DefaultJsonHttpContentConverter : IHttpContentConverter
 	{
 		private static readonly LogSource Log = new LogSource();
 
 		/// <summary>
 		/// Instance of this IHttpContentConverter for reusing
 		/// </summary>
-		public static Lazy<SimpleJsonHttpContentConverter> Instance
+		public static Lazy<DefaultJsonHttpContentConverter> Instance
 		{
 			get;
-		} = new Lazy<SimpleJsonHttpContentConverter>(() => new SimpleJsonHttpContentConverter());
+		} = new Lazy<DefaultJsonHttpContentConverter>(() => new DefaultJsonHttpContentConverter());
 
 		private static readonly IList<string> SupportedContentTypes = new List<string>();
 
-		static SimpleJsonHttpContentConverter()
+		static DefaultJsonHttpContentConverter()
 		{
 			SupportedContentTypes.Add(MediaTypes.Json.EnumValueOf());
 		}
@@ -76,11 +78,15 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		/// <inheritdoc />
 		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent)
 		{
+			var httpBehaviour = HttpBehaviour.Current;
+			if (httpBehaviour.JsonSerializer == null || !httpBehaviour.JsonSerializer.CanDeserializeFrom(typeToConvertTo))
+			{
+				return false;
+			}
 			if (!typeToConvertTo.GetTypeInfo().IsClass && !typeToConvertTo.GetTypeInfo().IsInterface)
 			{
 				return false;
 			}
-			var httpBehaviour = HttpBehaviour.Current;
 			return !httpBehaviour.ValidateResponseContentType || SupportedContentTypes.Contains(httpContent.GetContentType());
 		}
 
@@ -120,12 +126,18 @@ namespace Dapplo.HttpExtensions.ContentConverter
 				return null;
 			}
 			var httpBehaviour = HttpBehaviour.Current;
-			return httpBehaviour.JsonSerializer.DeserializeJson(resultType == typeof (object) ? null : resultType, jsonString);
+			return httpBehaviour.JsonSerializer.Deserialize(resultType == typeof (object) ? null : resultType, jsonString);
 		}
 
 		/// <inheritdoc />
 		public bool CanConvertToHttpContent(Type typeToConvert, object content)
 		{
+			var httpBehaviour = HttpBehaviour.Current;
+			if (httpBehaviour.JsonSerializer == null || !httpBehaviour.JsonSerializer.CanSerializeTo(typeToConvert))
+			{
+				return false;
+			}
+
 			return typeToConvert != typeof (string);
 		}
 
@@ -133,7 +145,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
 		public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
 		{
 			var httpBehaviour = HttpBehaviour.Current;
-			var jsonString = httpBehaviour.JsonSerializer.SerializeJson(content);
+			var jsonString = httpBehaviour.JsonSerializer.Serialize(content);
 			Log.Debug().WriteLine("Created HttpContent for Json: {0}", jsonString);
 			return new StringContent(jsonString, httpBehaviour.DefaultEncoding, MediaTypes.Json.EnumValueOf());
 		}
@@ -154,7 +166,11 @@ namespace Dapplo.HttpExtensions.ContentConverter
 			{
 				throw new ArgumentNullException(nameof(httpRequestMessage));
 			}
-			// TODO: How to prevent the adding if this type is really not something we can de-serialize, like Bitmap?
+			var httpBehaviour = HttpBehaviour.Current;
+			if (httpBehaviour.JsonSerializer?.CanSerializeTo(resultType) != true)
+			{
+				return;
+			}
 			httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypes.Json.EnumValueOf()));
 			Log.Debug().WriteLine("Modified the header(s) of the HttpRequestMessage: Accept: {0}", httpRequestMessage.Headers.Accept);
 		}

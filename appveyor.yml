@@ -16,6 +16,8 @@ before_package:
 - ps: if(-not $env:APPVEYOR_PULL_REQUEST_NUMBER) { GitLink .\ }
 after_test: 
 - ps: .\CreateCoverage.ps1
+- pip install codecov
+- codecov -f "coverage.xml"
 environment:
   github_username:
     secure: dGUm8ikFV7zt04Snv/YfNA==

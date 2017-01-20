@@ -81,6 +81,22 @@ namespace Dapplo.HttpExtensions
 
 	/// <summary>
 	///     This container can be used to get the details of a response.
+	/// </summary>
+	/// <typeparam name="TResponse">Type for the normal response</typeparam>
+	[HttpResponse]
+	public class HttpResponse<TResponse> : HttpResponse
+		where TResponse : class
+	{
+		/// <summary>
+		///     The response, if there was no error
+		///     Will be filled due to the annotation
+		/// </summary>
+		[HttpPart(HttpParts.ResponseContent)]
+		public TResponse Response { get; set; }
+	}
+
+	/// <summary>
+	///     This container can be used to get the details of a response.
 	///     It also makes it possible to process the error information, and eventually do something different.
 	///     You can specify your own container, by using the HttpAttribute.
 	/// </summary>

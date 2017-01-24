@@ -22,6 +22,7 @@
 #region using
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -44,7 +45,18 @@ namespace Dapplo.HttpExtensions
 	public static class HttpContentExtensions
 	{
 		private static readonly LogSource Log = new LogSource();
-
+		/// <summary>
+		/// Specify the supported content types
+		/// </summary>
+		private static readonly IList<string> ReadableContentTypes = new List<string>
+		{
+			MediaTypes.Txt.EnumValueOf(),
+			MediaTypes.Html.EnumValueOf(),
+			MediaTypes.Json.EnumValueOf(),
+			MediaTypes.WwwFormUrlEncoded.EnumValueOf(),
+			MediaTypes.Xml.EnumValueOf(),
+			MediaTypes.XmlReadable.EnumValueOf()
+		};
 		/// <summary>
 		///     Extension method reading the httpContent to a Typed object, depending on the returned content-type
 		///     Currently we support:
@@ -96,7 +108,9 @@ namespace Dapplo.HttpExtensions
 			// For everything that comes here, a fitting converter should be written, or the ValidateResponseContentType can be set to false
 			var contentType = httpContent.GetContentType();
 			Log.Error().WriteLine($"Unsupported result type {resultType} & {contentType} combination.");
-			if (MediaTypes.Txt.EnumValueOf() == contentType && Log.IsErrorEnabled())
+
+			// Only write when the result is something readable
+			if (ReadableContentTypes.Contains(contentType))
 			{
 				Log.Error().WriteLine("Unprocessable result: {0}", await httpContent.ReadAsStringAsync().ConfigureAwait(false));
 			}
@@ -120,11 +134,13 @@ namespace Dapplo.HttpExtensions
 				if (httpBehaviour.UseProgressStream && contentLength > 0)
 				{
 					long position = 0;
-					var progressStream = new ProgressStream(contentStream);
-					progressStream.BytesRead = (sender, eventArgs) =>
+					var progressStream = new ProgressStream(contentStream)
 					{
-						position += eventArgs.BytesMoved;
-						httpBehaviour.DownloadProgress?.Invoke((float)position / contentLength);
+						BytesRead = (sender, eventArgs) =>
+						{
+							position += eventArgs.BytesMoved;
+							httpBehaviour.DownloadProgress?.Invoke((float) position/contentLength);
+						}
 					};
 					contentStream = progressStream;
 				}

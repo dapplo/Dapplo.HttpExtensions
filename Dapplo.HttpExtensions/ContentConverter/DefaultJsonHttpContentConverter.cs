@@ -32,7 +32,6 @@ using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Extensions;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.Log;
-using System.Linq;
 
 #endregion
 
@@ -126,7 +125,17 @@ namespace Dapplo.HttpExtensions.ContentConverter
 				return null;
 			}
 			var httpBehaviour = HttpBehaviour.Current;
-			return httpBehaviour.JsonSerializer.Deserialize(resultType == typeof (object) ? null : resultType, jsonString);
+			try
+			{
+				return httpBehaviour.JsonSerializer.Deserialize(resultType == typeof(object) ? null : resultType, jsonString);
+			}
+			catch (SerializationException sEx)
+			{
+				// Make sure that the content which can't be deserialized is visible in the log.
+				Log.Error().WriteLine(sEx, "Can't deserialize the JSON from the server.");
+				Log.Error().WriteLine(jsonString);
+				throw;
+			}
 		}
 
 		/// <inheritdoc />

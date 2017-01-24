@@ -19,7 +19,7 @@
     },
     "supports": {},
     "dependencies": {
-        "Dapplo.Log": "1.0.22"
+        "Dapplo.Log": "1.0.23"
     },
     "frameworks": {
         "netstandard1.3": {

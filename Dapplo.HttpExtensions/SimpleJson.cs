@@ -899,20 +899,30 @@ namespace Dapplo.HttpExtensions
 		{
 			EatWhitespace(json, ref index);
 			int lastIndex = GetLastIndexOfNumber(json, index);
-			int charLength = lastIndex - index + 1;
-			object returnNumber;
-			string str = new string(json, index, charLength);
-			if (str.IndexOf(".", StringComparison.OrdinalIgnoreCase) != -1 || str.IndexOf("e", StringComparison.OrdinalIgnoreCase) != -1)
+			int charLength = (lastIndex - index) + 1;
+			object returnNumber = null;
+			string numberAsString = new string(json, index, charLength);
+			if ((numberAsString.IndexOf(".", StringComparison.OrdinalIgnoreCase) != -1)
+			 || (numberAsString.IndexOf("e", StringComparison.OrdinalIgnoreCase) != -1))
 			{
 				double number;
-				success = double.TryParse(new string(json, index, charLength), NumberStyles.Any, CultureInfo.InvariantCulture, out number);
+				success = double.TryParse(numberAsString, NumberStyles.Any, CultureInfo.InvariantCulture, out number);
 				returnNumber = number;
 			}
 			else
 			{
-				long number;
-				success = long.TryParse(new string(json, index, charLength), NumberStyles.Any, CultureInfo.InvariantCulture, out number);
-				returnNumber = number;
+				long longNumber;
+				decimal decimalNumber;
+				double doubleNumber;
+
+				if (long.TryParse(numberAsString, NumberStyles.Any, CultureInfo.InvariantCulture, out longNumber))
+					returnNumber = longNumber;
+				else if (decimal.TryParse(numberAsString, NumberStyles.Any, CultureInfo.InvariantCulture, out decimalNumber))
+					returnNumber = decimalNumber;
+				else if (double.TryParse(numberAsString, NumberStyles.Any, CultureInfo.InvariantCulture, out doubleNumber))
+					returnNumber = doubleNumber;
+
+				success = (returnNumber != null);
 			}
 			index = lastIndex + 1;
 			return returnNumber;
@@ -1670,15 +1680,27 @@ namespace Dapplo.HttpExtensions
 			DataContractAttribute dataContractAttribute = (DataContractAttribute)ReflectionUtils.GetAttribute(type, typeof(DataContractAttribute));
 			if (dataContractAttribute == null)
 				return result;
+			DataMemberAttribute dataMemberAttribute;
 			foreach (PropertyInfo propertyInfo in ReflectionUtils.GetProperties(type))
 			{
-				DataMemberAttribute dataMemberAttribute;
-				if (CanAdd(propertyInfo, out dataMemberAttribute))
+				if (CanWrite(propertyInfo, out dataMemberAttribute))
 				{
-					var jsonKey = JsonKey(dataMemberAttribute, propertyInfo);
 					if (dataMemberAttribute?.EmitDefaultValue == false)
 					{
+						var jsonKey = JsonKey(dataMemberAttribute, propertyInfo);
 						var def = Default(propertyInfo.PropertyType);
+						result[jsonKey] = value => !Equals(def, value);
+					}
+				}
+			}
+			foreach (FieldInfo fieldInfo in ReflectionUtils.GetFields(type))
+			{
+				if (!fieldInfo.IsStatic && CanWrite(fieldInfo, out dataMemberAttribute))
+				{
+					if (dataMemberAttribute?.EmitDefaultValue == false)
+					{
+						var jsonKey = JsonKey(dataMemberAttribute, fieldInfo);
+						var def = Default(fieldInfo.FieldType);
 						result[jsonKey] = value => !Equals(def, value);
 					}
 				}
@@ -1700,7 +1722,7 @@ namespace Dapplo.HttpExtensions
 				if (propertyInfo.CanRead)
 				{
 					MethodInfo getMethod = ReflectionUtils.GetGetterMethodInfo(propertyInfo);
-					if (!getMethod.IsStatic && CanAdd(propertyInfo, out dataMemberAttribute))
+					if (!getMethod.IsStatic && CanWrite(propertyInfo, out dataMemberAttribute))
 					{
 						jsonKey = string.IsNullOrEmpty(dataMemberAttribute.Name) ? propertyInfo.Name : dataMemberAttribute.Name;
 						result[jsonKey] = ReflectionUtils.GetGetMethod(propertyInfo);
@@ -1709,7 +1731,7 @@ namespace Dapplo.HttpExtensions
 			}
 			foreach (FieldInfo fieldInfo in ReflectionUtils.GetFields(type))
 			{
-				if (!fieldInfo.IsStatic && CanAdd(fieldInfo, out dataMemberAttribute))
+				if (!fieldInfo.IsStatic && CanWrite(fieldInfo, out dataMemberAttribute))
 				{
 					jsonKey = string.IsNullOrEmpty(dataMemberAttribute.Name) ? fieldInfo.Name : dataMemberAttribute.Name;
 					result[jsonKey] = ReflectionUtils.GetGetMethod(fieldInfo);
@@ -1731,7 +1753,7 @@ namespace Dapplo.HttpExtensions
 				if (propertyInfo.CanWrite)
 				{
 					MethodInfo setMethod = ReflectionUtils.GetSetterMethodInfo(propertyInfo);
-					if (!setMethod.IsStatic && CanAdd(propertyInfo, out dataMemberAttribute))
+					if (!setMethod.IsStatic && CanRead(propertyInfo, out dataMemberAttribute))
 					{
 						jsonKey = string.IsNullOrEmpty(dataMemberAttribute.Name) ? propertyInfo.Name : dataMemberAttribute.Name;
 						result[jsonKey] = new KeyValuePair<Type, ReflectionUtils.SetDelegate>(propertyInfo.PropertyType, ReflectionUtils.GetSetMethod(propertyInfo));
@@ -1741,7 +1763,7 @@ namespace Dapplo.HttpExtensions
 			}
 			foreach (FieldInfo fieldInfo in ReflectionUtils.GetFields(type))
 			{
-				if (!fieldInfo.IsInitOnly && !fieldInfo.IsStatic && CanAdd(fieldInfo, out dataMemberAttribute))
+				if (!fieldInfo.IsInitOnly && !fieldInfo.IsStatic && CanRead(fieldInfo, out dataMemberAttribute))
 				{
 					jsonKey = string.IsNullOrEmpty(dataMemberAttribute.Name) ? fieldInfo.Name : dataMemberAttribute.Name;
 					result[jsonKey] = new KeyValuePair<Type, ReflectionUtils.SetDelegate>(fieldInfo.FieldType, ReflectionUtils.GetSetMethod(fieldInfo));
@@ -1751,11 +1773,39 @@ namespace Dapplo.HttpExtensions
 			return result;
 		}
 
-		private static bool CanAdd(MemberInfo info, out DataMemberAttribute dataMemberAttribute)
+		/// <summary>
+		/// Check if we should read the member
+		/// </summary>
+		/// <param name="info"></param>
+		/// <param name="dataMemberAttribute"></param>
+		/// <returns></returns>
+		private static bool CanRead(MemberInfo info, out DataMemberAttribute dataMemberAttribute)
 		{
 			dataMemberAttribute = null;
 
 			if (ReflectionUtils.GetAttribute(info, typeof(IgnoreDataMemberAttribute)) != null)
+				return false;
+			dataMemberAttribute = (DataMemberAttribute)ReflectionUtils.GetAttribute(info, typeof(DataMemberAttribute));
+			if (dataMemberAttribute == null)
+				return false;
+			return true;
+		}
+
+		/// <summary>
+		/// Check if we should write the member
+		/// </summary>
+		/// <param name="info"></param>
+		/// <param name="dataMemberAttribute"></param>
+		/// <returns>bool</returns>
+		private static bool CanWrite(MemberInfo info, out DataMemberAttribute dataMemberAttribute)
+		{
+			dataMemberAttribute = null;
+
+			if (ReflectionUtils.GetAttribute(info, typeof(IgnoreDataMemberAttribute)) != null)
+				return false;
+			// check if the member has a ReadOnlyAttribute set to true, this means we wont emit
+			ReadOnlyAttribute readOnlyAttribute = (ReadOnlyAttribute)ReflectionUtils.GetAttribute(info, typeof(ReadOnlyAttribute));
+			if (readOnlyAttribute != null && readOnlyAttribute.IsReadOnly)
 				return false;
 			dataMemberAttribute = (DataMemberAttribute)ReflectionUtils.GetAttribute(info, typeof(DataMemberAttribute));
 			if (dataMemberAttribute == null)

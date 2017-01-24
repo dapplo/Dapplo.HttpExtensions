@@ -12,8 +12,6 @@ before_build:
 - ps: .\SetVersion.ps1
 - appveyor-retry dotnet restore -v Minimal
 - ps: if(-not $env:APPVEYOR_PULL_REQUEST_NUMBER) { $env:is_not_pr = "true"; }
-before_package:
-- ps: if(-not $env:APPVEYOR_PULL_REQUEST_NUMBER) { GitLink .\ }
 after_test: 
 - ps: .\CreateCoverage.ps1
 - pip install codecov
@@ -38,6 +36,7 @@ build_script:
 - dotnet build Dapplo.HttpExtensions -c %CONFIGURATION% --no-dependencies
 - dotnet build Dapplo.HttpExtensions.Tests -c %CONFIGURATION% --no-dependencies
 after_build:
+- ps: if(-not $env:APPVEYOR_PULL_REQUEST_NUMBER) { GitLink .\ }
 - dotnet pack Dapplo.HttpExtensions -c %CONFIGURATION% --no-build -o artifacts
 notifications:
 - provider: Email

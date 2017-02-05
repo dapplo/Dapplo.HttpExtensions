@@ -24,6 +24,8 @@
 using System;
 using System.IO;
 using System.Linq;
+using Dapplo.HttpExtensions.Json;
+
 #if NET45 || NET46
 using System.Drawing;
 using System.Windows.Media.Imaging;

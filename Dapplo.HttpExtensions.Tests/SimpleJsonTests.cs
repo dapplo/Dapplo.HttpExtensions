@@ -22,8 +22,9 @@
 #region using
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
-using Dapplo.HttpExtensions.Tests.Shared.TestEntities;
+using Dapplo.HttpExtensions.Json;
 using Dapplo.Log.XUnit;
 using Dapplo.HttpExtensions.Tests.TestEntities;
 using Dapplo.Log;
@@ -106,7 +107,7 @@ namespace Dapplo.HttpExtensions.Tests
 		}
 
 		[Fact]
-		public void TestSimpleJson_DeserializeObject()
+		public void TestSimpleJson_DeserializeObjectWithExtensionData()
 		{
 			var json = "{\"customstringfield_array\": [],\"customstringfield_1\": \"testvalue1\",\"customstringfield_2\": \"testvalue2\",\"customintfield_1\": \"10\",\"customintfield_2\": 20,\"another_value\": \"testvalue3\",\"name\": \"Robin\"}";
 
@@ -114,6 +115,23 @@ namespace Dapplo.HttpExtensions.Tests
 			Assert.True(jsonObject.StringExtensionData.Count == 2);
 			Assert.True(jsonObject.IntExtensionData.Count == 2);
 		}
+
+		[Fact]
+		public void TestSimpleJson_SerializeObjectWithExtensionData()
+		{
+			var objectWithExtensionData = new WithExtensionData
+			{
+				RestExtensionData = new Dictionary<string, object>
+				{
+					{ "Blub", 100}
+				}
+			};
+
+			var json = SimpleJson.SerializeObject(objectWithExtensionData);
+			Log.Info().WriteLine(json);
+			Assert.Contains("Blub", json);
+		}
+
 
 		[Fact]
 		public void GivenNumberWithoutDecimalTooLargeForLongTypeIsDecimal()

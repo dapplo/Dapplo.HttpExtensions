@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Dapplo.HttpExtensions", "Dapplo.HttpExtensions\Dapplo.HttpExtensions.xproj", "{B3CD22AA-764E-4EF3-AA9D-FD6879518505}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dapplo.HttpExtensions", "Dapplo.HttpExtensions\Dapplo.HttpExtensions.csproj", "{B3CD22AA-764E-4EF3-AA9D-FD6879518505}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Dapplo.HttpExtensions.Tests", "Dapplo.HttpExtensions.Tests\Dapplo.HttpExtensions.Tests.xproj", "{03AB37FF-1220-4ECE-9964-FA6070C778D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dapplo.HttpExtensions.Tests", "Dapplo.HttpExtensions.Tests\Dapplo.HttpExtensions.Tests.csproj", "{03AB37FF-1220-4ECE-9964-FA6070C778D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

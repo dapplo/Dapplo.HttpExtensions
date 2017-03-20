@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2015-2016 Dapplo
+//  Copyright (C) 2016-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -21,19 +21,19 @@
 
 namespace Dapplo.HttpExtensions.OAuth
 {
-	/// <summary>
-	///     A default implementation for the IOAuthToken, nothing fancy
-	///     For more information, see the IOAuthToken interface
-	/// </summary>
-	public class OAuth1Token : IOAuth1Token
-	{
-		/// <inheritdoc />
-		public string OAuthTokenSecret { get; set; }
+    /// <summary>
+    ///     A default implementation for the IOAuthToken, nothing fancy
+    ///     For more information, see the IOAuthToken interface
+    /// </summary>
+    public class OAuth1Token : IOAuth1Token
+    {
+        /// <inheritdoc />
+        public string OAuthTokenSecret { get; set; }
 
-		/// <inheritdoc />
-		public string OAuthToken { get; set; }
+        /// <inheritdoc />
+        public string OAuthToken { get; set; }
 
-		/// <inheritdoc />
-		public string OAuthTokenVerifier { get; set; }
-	}
+        /// <inheritdoc />
+        public string OAuthTokenVerifier { get; set; }
+    }
 }

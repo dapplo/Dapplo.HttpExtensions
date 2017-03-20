@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016 Dapplo
+//  Copyright (C) 2016-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -24,89 +24,91 @@
 using System;
 using System.Drawing;
 using System.Threading.Tasks;
-using Dapplo.Log.XUnit;
-using Dapplo.HttpExtensions.Tests.TestEntities;
-using Dapplo.Log;
-using Xunit;
-using Xunit.Abstractions;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Dapplo.HttpExtensions.Tests.TestEntities;
+using Dapplo.Log;
+using Dapplo.Log.XUnit;
+using Xunit;
+using Xunit.Abstractions;
 
 #endregion
 
 namespace Dapplo.HttpExtensions.Tests
 {
-	/// <summary>
-	///     Test posting parts
-	/// </summary>
-	public class HttpPartsPostTest
-	{
-		private static readonly LogSource Log = new LogSource();
-		private static readonly Uri RequestBinUri = new Uri("http://httpbin.org");
+    /// <summary>
+    ///     Test posting parts
+    /// </summary>
+    public class HttpPartsPostTest
+    {
+        private static readonly LogSource Log = new LogSource();
+        private static readonly Uri RequestBinUri = new Uri("http://httpbin.org");
 
-		public HttpPartsPostTest(ITestOutputHelper testOutputHelper)
-		{
-			LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
-		}
+        public HttpPartsPostTest(ITestOutputHelper testOutputHelper)
+        {
+            LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
+        }
 
-		/// <summary>
-		///     Test posting, using Bitmap
-		/// </summary>
-		[Fact]
-		public async Task TestPost_Bitmap()
-		{
-			var testUri = RequestBinUri.AppendSegments("post");
-			var uploadBehaviour = HttpBehaviour.Current.ShallowClone();
+        /// <summary>
+        ///     Test posting, using Bitmap
+        /// </summary>
+        [Fact]
+        public async Task TestPost_Bitmap()
+        {
+            var testUri = RequestBinUri.AppendSegments("post");
+            var uploadBehaviour = HttpBehaviour.Current.ShallowClone();
 
-			bool hasProgress = false;
+            bool hasProgress = false;
 
-			uploadBehaviour.UseProgressStream = true;
-			uploadBehaviour.UploadProgress += progress => {
-				Log.Info().WriteLine("Progress {0}", (int)(progress * 100));
-				hasProgress = true;
-			};
-			uploadBehaviour.MakeCurrent();
-			var testObject = new MyMultiPartRequest<Bitmap>
-			{
-				BitmapContentName = "MyBitmapContent",
-				BitmapFileName = "MyBitmapFilename",
-				OurBitmap = new Bitmap(10, 10),
-				JsonInformation = new GitHubError {DocumentationUrl = "http://test.de", Message = "Hello"}
-			};
-			testObject.Headers.Add("Name", "Dapplo");
-			var result = await testUri.PostAsync<dynamic>(testObject);
-			Assert.NotNull(result);
-			Assert.True(hasProgress);
-		}
+            uploadBehaviour.UseProgressStream = true;
+            uploadBehaviour.UploadProgress += progress =>
+            {
+                Log.Info().WriteLine("Progress {0}", (int) (progress * 100));
+                hasProgress = true;
+            };
+            uploadBehaviour.MakeCurrent();
+            var testObject = new MyMultiPartRequest<Bitmap>
+            {
+                BitmapContentName = "MyBitmapContent",
+                BitmapFileName = "MyBitmapFilename",
+                OurBitmap = new Bitmap(10, 10),
+                JsonInformation = new GitHubError {DocumentationUrl = "http://test.de", Message = "Hello"}
+            };
+            testObject.Headers.Add("Name", "Dapplo");
+            var result = await testUri.PostAsync<dynamic>(testObject);
+            Assert.NotNull(result);
+            Assert.True(hasProgress);
+        }
 
-		/// <summary>
-		///     Test posting, this time use a BitmapSource
-		/// </summary>
-		[Fact]
-		public async Task TestPost_BitmapSource()
-		{
-			var testUri = RequestBinUri.AppendSegments("post");
-			var uploadBehaviour = HttpBehaviour.Current.ShallowClone();
+        /// <summary>
+        ///     Test posting, this time use a BitmapSource
+        /// </summary>
+        [Fact]
+        public async Task TestPost_BitmapSource()
+        {
+            var testUri = RequestBinUri.AppendSegments("post");
+            var uploadBehaviour = HttpBehaviour.Current.ShallowClone();
 
-			bool hasProgress = false;
+            bool hasProgress = false;
 
-			uploadBehaviour.UseProgressStream = true;
-			uploadBehaviour.UploadProgress += progress => {
-				Log.Info().WriteLine("Progress {0}", (int)(progress * 100));
-				hasProgress = true;
-			};
-			uploadBehaviour.MakeCurrent();
-			var testObject = new MyMultiPartRequest<BitmapSource>
-			{
-				BitmapContentName = "MyBitmapContent",
-				BitmapFileName = "MyBitmapFilename",
-				OurBitmap = BitmapSource.Create(1, 1, 96, 96, PixelFormats.Bgr24, null, new byte[] { 0, 0, 0 }, 3),
-				JsonInformation = new GitHubError { DocumentationUrl = "http://test.de", Message = "Hello" }
-			};
-			testObject.Headers.Add("Name", "Dapplo");
-			var result = await testUri.PostAsync<dynamic>(testObject);
-			Assert.NotNull(result);
-			Assert.True(hasProgress);
-		}
-	}
+            uploadBehaviour.UseProgressStream = true;
+            uploadBehaviour.UploadProgress += progress =>
+            {
+                Log.Info().WriteLine("Progress {0}", (int) (progress * 100));
+                hasProgress = true;
+            };
+            uploadBehaviour.MakeCurrent();
+            var testObject = new MyMultiPartRequest<BitmapSource>
+            {
+                BitmapContentName = "MyBitmapContent",
+                BitmapFileName = "MyBitmapFilename",
+                OurBitmap = BitmapSource.Create(1, 1, 96, 96, PixelFormats.Bgr24, null, new byte[] {0, 0, 0}, 3),
+                JsonInformation = new GitHubError {DocumentationUrl = "http://test.de", Message = "Hello"}
+            };
+            testObject.Headers.Add("Name", "Dapplo");
+            var result = await testUri.PostAsync<dynamic>(testObject);
+            Assert.NotNull(result);
+            Assert.True(hasProgress);
+        }
+    }
 }

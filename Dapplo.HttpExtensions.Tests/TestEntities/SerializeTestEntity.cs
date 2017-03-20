@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016 Dapplo
+//  Copyright (C) 2016-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -21,8 +21,6 @@
 
 #region using
 
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 
@@ -30,22 +28,24 @@ using System.Runtime.Serialization;
 
 namespace Dapplo.HttpExtensions.Tests.TestEntities
 {
-	/// <summary>
-	///     Container for the release information from GitHub
-	/// </summary>
-	[DataContract]
-	public class SerializeTestEntity
-	{
-		[DataMember(Name = "valueNormal")]
-		public string ValueNormal { get; set; }
+    /// <summary>
+    ///     Container for the release information from GitHub
+    /// </summary>
+    [DataContract]
+    public class SerializeTestEntity
+    {
+        [DataMember(Name = "valueEmitDefaultFalse", EmitDefaultValue = false)]
+        public string ValueEmitDefaultFalse { get; set; }
 
-		[DataMember(Name = "valueEmitDefaultFalse", EmitDefaultValue = false)]
-		public string ValueEmitDefaultFalse { get; set; }
+        [DataMember(Name = "valueNormal")]
+        public string ValueNormal { get; set; }
 
-		[DataMember(Name = "valueReadOnly"), ReadOnly(true)]
-		public string ValueReadOnly { get; set; }
+        [DataMember(Name = "valueNotReadOnly")]
+        [ReadOnly(false)]
+        public string ValueNotReadOnly { get; set; }
 
-		[DataMember(Name = "valueNotReadOnly"), ReadOnly(false)]
-		public string ValueNotReadOnly { get; set; }
-	}
+        [DataMember(Name = "valueReadOnly")]
+        [ReadOnly(true)]
+        public string ValueReadOnly { get; set; }
+    }
 }

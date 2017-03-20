@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016 Dapplo
+//  Copyright (C) 2016-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -24,8 +24,8 @@
 using System;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Factory;
-using Dapplo.Log.XUnit;
 using Dapplo.Log;
+using Dapplo.Log.XUnit;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -33,26 +33,26 @@ using Xunit.Abstractions;
 
 namespace Dapplo.HttpExtensions.Tests
 {
-	/// <summary>
-	///     Testing HttpRequestMessageExtensions
-	/// </summary>
-	public class HttpRequestMessageExtensionsTests
-	{
-		public HttpRequestMessageExtensionsTests(ITestOutputHelper testOutputHelper)
-		{
-			LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
-		}
+    /// <summary>
+    ///     Testing HttpRequestMessageExtensions
+    /// </summary>
+    public class HttpRequestMessageExtensionsTests
+    {
+        public HttpRequestMessageExtensionsTests(ITestOutputHelper testOutputHelper)
+        {
+            LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
+        }
 
-		/// <summary>
-		///     Test getting the uri as Bitmap
-		/// </summary>
-		[Fact]
-		public async Task TestSendAsync()
-		{
-			var testUri = new Uri("http://httpbin.org/xml");
-			var httpRequestMessage = HttpRequestMessageFactory.CreateGet<string>(testUri);
-			var result = await httpRequestMessage.SendAsync<string>();
-			Assert.NotNull(result);
-		}
-	}
+        /// <summary>
+        ///     Test getting the uri as Bitmap
+        /// </summary>
+        [Fact]
+        public async Task TestSendAsync()
+        {
+            var testUri = new Uri("http://httpbin.org/xml");
+            var httpRequestMessage = HttpRequestMessageFactory.CreateGet<string>(testUri);
+            var result = await httpRequestMessage.SendAsync<string>();
+            Assert.NotNull(result);
+        }
+    }
 }

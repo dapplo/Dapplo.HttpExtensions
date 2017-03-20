@@ -1,5 +1,5 @@
 //  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016 Dapplo
+//  Copyright (C) 2016-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -32,232 +32,246 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Dapplo.HttpExtensions.Json
 {
-	/// <summary>
-	///     Represents the json object.
-	/// </summary>
-	[GeneratedCode("simple-json", "1.0.0")]
-	[EditorBrowsable(EditorBrowsableState.Never)]
-	[SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
+    /// <summary>
+    ///     Represents the json object.
+    /// </summary>
+    [GeneratedCode("simple-json", "1.0.0")]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
 #if SIMPLE_JSON_OBJARRAYINTERNAL
 	internal
 #else
-	public
+    public
 #endif
-		class JsonObject :
+        class JsonObject :
 #if SIMPLE_JSON_DYNAMIC
 			DynamicObject,
 #endif
-			IDictionary<string, object>
-	{
-		/// <summary>
-		///     The internal member dictionary.
-		/// </summary>
-		private readonly Dictionary<string, object> _members;
+            IDictionary<string, object>
+    {
+        /// <summary>
+        ///     The internal member dictionary.
+        /// </summary>
+        private readonly Dictionary<string, object> _members;
 
-		/// <summary>
-		///     Initializes a new instance of <see cref="JsonObject" />.
-		/// </summary>
-		public JsonObject()
-		{
-			_members = new Dictionary<string, object>();
-		}
+        /// <summary>
+        ///     Initializes a new instance of <see cref="JsonObject" />.
+        /// </summary>
+        public JsonObject()
+        {
+            _members = new Dictionary<string, object>();
+        }
 
-		/// <summary>
-		///     Initializes a new instance of <see cref="JsonObject" />.
-		/// </summary>
-		/// <param name="comparer">
-		///     The <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> implementation to use when
-		///     comparing keys, or null to use the default <see cref="T:System.Collections.Generic.EqualityComparer`1" /> for the
-		///     type of the key.
-		/// </param>
-		public JsonObject(IEqualityComparer<string> comparer)
-		{
-			_members = new Dictionary<string, object>(comparer);
-		}
+        /// <summary>
+        ///     Initializes a new instance of <see cref="JsonObject" />.
+        /// </summary>
+        /// <param name="comparer">
+        ///     The <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> implementation to use when
+        ///     comparing keys, or null to use the default <see cref="T:System.Collections.Generic.EqualityComparer`1" /> for the
+        ///     type of the key.
+        /// </param>
+        public JsonObject(IEqualityComparer<string> comparer)
+        {
+            _members = new Dictionary<string, object>(comparer);
+        }
 
-		/// <summary>
-		///     Gets the <see cref="System.Object" /> at the specified index.
-		/// </summary>
-		/// <value></value>
-		public object this[int index] => GetAtIndex(_members, index);
+        /// <summary>
+        ///     Gets the <see cref="System.Object" /> at the specified index.
+        /// </summary>
+        /// <value></value>
+        public object this[int index] => GetAtIndex(_members, index);
 
-		internal static object GetAtIndex(IDictionary<string, object> obj, int index)
-		{
-			if (obj == null)
-				throw new ArgumentNullException(nameof(obj));
-			if (index >= obj.Count)
-				throw new ArgumentOutOfRangeException(nameof(index));
-			var i = 0;
-			foreach (var o in obj)
-				if (i++ == index) return o.Value;
-			return null;
-		}
+        internal static object GetAtIndex(IDictionary<string, object> obj, int index)
+        {
+            if (obj == null)
+            {
+                throw new ArgumentNullException(nameof(obj));
+            }
+            if (index >= obj.Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+            var i = 0;
+            foreach (var o in obj)
+            {
+                if (i++ == index)
+                {
+                    return o.Value;
+                }
+            }
+            return null;
+        }
 
-		/// <summary>
-		///     Adds the specified key.
-		/// </summary>
-		/// <param name="key">The key.</param>
-		/// <param name="value">The value.</param>
-		public void Add(string key, object value)
-		{
-			_members.Add(key, value);
-		}
+        /// <summary>
+        ///     Adds the specified key.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        public void Add(string key, object value)
+        {
+            _members.Add(key, value);
+        }
 
-		/// <summary>
-		///     Determines whether the specified key contains key.
-		/// </summary>
-		/// <param name="key">The key.</param>
-		/// <returns>
-		///     <c>true</c> if the specified key contains key; otherwise, <c>false</c>.
-		/// </returns>
-		public bool ContainsKey(string key)
-		{
-			return _members.ContainsKey(key);
-		}
+        /// <summary>
+        ///     Determines whether the specified key contains key.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>
+        ///     <c>true</c> if the specified key contains key; otherwise, <c>false</c>.
+        /// </returns>
+        public bool ContainsKey(string key)
+        {
+            return _members.ContainsKey(key);
+        }
 
-		/// <summary>
-		///     Gets the keys.
-		/// </summary>
-		/// <value>The keys.</value>
-		public ICollection<string> Keys => _members.Keys;
+        /// <summary>
+        ///     Gets the keys.
+        /// </summary>
+        /// <value>The keys.</value>
+        public ICollection<string> Keys => _members.Keys;
 
-		/// <summary>
-		///     Removes the specified key.
-		/// </summary>
-		/// <param name="key">The key.</param>
-		/// <returns></returns>
-		public bool Remove(string key)
-		{
-			return _members.Remove(key);
-		}
+        /// <summary>
+        ///     Removes the specified key.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        public bool Remove(string key)
+        {
+            return _members.Remove(key);
+        }
 
-		/// <summary>
-		///     Tries the get value.
-		/// </summary>
-		/// <param name="key">The key.</param>
-		/// <param name="value">The value.</param>
-		/// <returns></returns>
-		public bool TryGetValue(string key, out object value)
-		{
-			return _members.TryGetValue(key, out value);
-		}
+        /// <summary>
+        ///     Tries the get value.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        /// <returns></returns>
+        public bool TryGetValue(string key, out object value)
+        {
+            return _members.TryGetValue(key, out value);
+        }
 
-		/// <summary>
-		///     Gets the values.
-		/// </summary>
-		/// <value>The values.</value>
-		public ICollection<object> Values => _members.Values;
+        /// <summary>
+        ///     Gets the values.
+        /// </summary>
+        /// <value>The values.</value>
+        public ICollection<object> Values => _members.Values;
 
-		/// <summary>
-		///     Gets or sets the <see cref="System.Object" /> with the specified key.
-		/// </summary>
-		/// <value></value>
-		public object this[string key]
-		{
-			get { return _members[key]; }
-			set { _members[key] = value; }
-		}
+        /// <summary>
+        ///     Gets or sets the <see cref="System.Object" /> with the specified key.
+        /// </summary>
+        /// <value></value>
+        public object this[string key]
+        {
+            get { return _members[key]; }
+            set { _members[key] = value; }
+        }
 
-		/// <summary>
-		///     Adds the specified item.
-		/// </summary>
-		/// <param name="item">The item.</param>
-		public void Add(KeyValuePair<string, object> item)
-		{
-			_members.Add(item.Key, item.Value);
-		}
+        /// <summary>
+        ///     Adds the specified item.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        public void Add(KeyValuePair<string, object> item)
+        {
+            _members.Add(item.Key, item.Value);
+        }
 
-		/// <summary>
-		///     Clears this instance.
-		/// </summary>
-		public void Clear()
-		{
-			_members.Clear();
-		}
+        /// <summary>
+        ///     Clears this instance.
+        /// </summary>
+        public void Clear()
+        {
+            _members.Clear();
+        }
 
-		/// <summary>
-		///     Determines whether [contains] [the specified item].
-		/// </summary>
-		/// <param name="item">The item.</param>
-		/// <returns>
-		///     <c>true</c> if [contains] [the specified item]; otherwise, <c>false</c>.
-		/// </returns>
-		public bool Contains(KeyValuePair<string, object> item)
-		{
-			return _members.ContainsKey(item.Key) && _members[item.Key] == item.Value;
-		}
+        /// <summary>
+        ///     Determines whether [contains] [the specified item].
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <returns>
+        ///     <c>true</c> if [contains] [the specified item]; otherwise, <c>false</c>.
+        /// </returns>
+        public bool Contains(KeyValuePair<string, object> item)
+        {
+            return _members.ContainsKey(item.Key) && _members[item.Key] == item.Value;
+        }
 
-		/// <summary>
-		///     Copies to.
-		/// </summary>
-		/// <param name="array">The array.</param>
-		/// <param name="arrayIndex">Index of the array.</param>
-		public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
-		{
-			if (array == null) throw new ArgumentNullException(nameof(array));
-			var num = Count;
-			foreach (var kvp in this)
-			{
-				array[arrayIndex++] = kvp;
-				if (--num <= 0)
-					return;
-			}
-		}
+        /// <summary>
+        ///     Copies to.
+        /// </summary>
+        /// <param name="array">The array.</param>
+        /// <param name="arrayIndex">Index of the array.</param>
+        public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
+        {
+            if (array == null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+            var num = Count;
+            foreach (var kvp in this)
+            {
+                array[arrayIndex++] = kvp;
+                if (--num <= 0)
+                {
+                    return;
+                }
+            }
+        }
 
-		/// <summary>
-		///     Gets the count.
-		/// </summary>
-		/// <value>The count.</value>
-		public int Count => _members.Count;
+        /// <summary>
+        ///     Gets the count.
+        /// </summary>
+        /// <value>The count.</value>
+        public int Count => _members.Count;
 
-		/// <summary>
-		///     Gets a value indicating whether this instance is read only.
-		/// </summary>
-		/// <value>
-		///     <c>true</c> if this instance is read only; otherwise, <c>false</c>.
-		/// </value>
-		public bool IsReadOnly => false;
+        /// <summary>
+        ///     Gets a value indicating whether this instance is read only.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is read only; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsReadOnly => false;
 
-		/// <summary>
-		///     Removes the specified item.
-		/// </summary>
-		/// <param name="item">The item.</param>
-		/// <returns></returns>
-		public bool Remove(KeyValuePair<string, object> item)
-		{
-			return _members.Remove(item.Key);
-		}
+        /// <summary>
+        ///     Removes the specified item.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <returns></returns>
+        public bool Remove(KeyValuePair<string, object> item)
+        {
+            return _members.Remove(item.Key);
+        }
 
-		/// <summary>
-		///     Gets the enumerator.
-		/// </summary>
-		/// <returns></returns>
-		public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
-		{
-			return _members.GetEnumerator();
-		}
+        /// <summary>
+        ///     Gets the enumerator.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
+        {
+            return _members.GetEnumerator();
+        }
 
-		/// <summary>
-		///     Returns an enumerator that iterates through a collection.
-		/// </summary>
-		/// <returns>
-		///     An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
-		/// </returns>
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return _members.GetEnumerator();
-		}
+        /// <summary>
+        ///     Returns an enumerator that iterates through a collection.
+        /// </summary>
+        /// <returns>
+        ///     An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
+        /// </returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return _members.GetEnumerator();
+        }
 
-		/// <summary>
-		///     Returns a json <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
-		/// </summary>
-		/// <returns>
-		///     A json <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
-		/// </returns>
-		public override string ToString()
-		{
-			return SimpleJson.SerializeObject(this);
-		}
+        /// <summary>
+        ///     Returns a json <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
+        /// </summary>
+        /// <returns>
+        ///     A json <see cref="T:System.String" /> that represents the current <see cref="T:System.Object" />.
+        /// </returns>
+        public override string ToString()
+        {
+            return SimpleJson.SerializeObject(this);
+        }
 
 #if SIMPLE_JSON_DYNAMIC
 /// <summary>
@@ -395,5 +409,5 @@ namespace Dapplo.HttpExtensions.Json
 				yield return key;
 		}
 #endif
-	}
+    }
 }

@@ -1,5 +1,5 @@
 //  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016 Dapplo
+//  Copyright (C) 2016-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -30,41 +30,41 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Dapplo.HttpExtensions.Json
 {
-	/// <summary>
-	///     Represents the json array.
-	/// </summary>
-	[GeneratedCode("simple-json", "1.0.0")]
-	[EditorBrowsable(EditorBrowsableState.Never)]
-	[SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
+    /// <summary>
+    ///     Represents the json array.
+    /// </summary>
+    [GeneratedCode("simple-json", "1.0.0")]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
 #if SIMPLE_JSON_OBJARRAYINTERNAL
 	internal
 #else
-	public
+    public
 #endif
-		class JsonArray : List<object>
-	{
-		/// <summary>
-		///     Initializes a new instance of the <see cref="JsonArray" /> class.
-		/// </summary>
-		public JsonArray()
-		{
-		}
+        class JsonArray : List<object>
+    {
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="JsonArray" /> class.
+        /// </summary>
+        public JsonArray()
+        {
+        }
 
-		/// <summary>
-		///     Initializes a new instance of the <see cref="JsonArray" /> class.
-		/// </summary>
-		/// <param name="capacity">The capacity of the json array.</param>
-		public JsonArray(int capacity) : base(capacity)
-		{
-		}
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="JsonArray" /> class.
+        /// </summary>
+        /// <param name="capacity">The capacity of the json array.</param>
+        public JsonArray(int capacity) : base(capacity)
+        {
+        }
 
-		/// <summary>
-		///     The json representation of the array.
-		/// </summary>
-		/// <returns>The json representation of the array.</returns>
-		public override string ToString()
-		{
-			return SimpleJson.SerializeObject(this) ?? string.Empty;
-		}
-	}
+        /// <summary>
+        ///     The json representation of the array.
+        /// </summary>
+        /// <returns>The json representation of the array.</returns>
+        public override string ToString()
+        {
+            return SimpleJson.SerializeObject(this) ?? string.Empty;
+        }
+    }
 }

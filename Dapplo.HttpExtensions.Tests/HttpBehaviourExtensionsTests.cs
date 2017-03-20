@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016 Dapplo
+//  Copyright (C) 2016-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -21,11 +21,11 @@
 
 #region using
 
-using Dapplo.Log.XUnit;
-using Dapplo.Log;
 using System;
 using System.Drawing;
 using System.Threading.Tasks;
+using Dapplo.Log;
+using Dapplo.Log.XUnit;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -33,87 +33,93 @@ using Xunit.Abstractions;
 
 namespace Dapplo.HttpExtensions.Tests
 {
-	/// <summary>
-	///     Some tests which use http://httpbin.org/
-	/// </summary>
-	public class HttpBehaviourExtensionsTests
-	{
-		private static readonly LogSource Log = new LogSource();
-		private readonly Uri _bitmapUri = new Uri("http://httpbin.org/image/png");
+    /// <summary>
+    ///     Some tests which use http://httpbin.org/
+    /// </summary>
+    public class HttpBehaviourExtensionsTests
+    {
+        private static readonly LogSource Log = new LogSource();
+        private readonly Uri _bitmapUri = new Uri("http://httpbin.org/image/png");
 
-		public HttpBehaviourExtensionsTests(ITestOutputHelper testOutputHelper)
-		{
-			LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
-		}
+        public HttpBehaviourExtensionsTests(ITestOutputHelper testOutputHelper)
+        {
+            LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
+        }
 
-		/// <summary>
-		///     Test POST
-		/// </summary>
-		[Fact]
-		public async Task TestHttpBehaviourChaining()
-		{
-			bool testChainOnHttpContentCreated1 = false;
-			bool testChainOnHttpContentCreated2 = false;
+        /// <summary>
+        ///     Test POST
+        /// </summary>
+        [Fact]
+        public async Task TestHttpBehaviourChaining()
+        {
+            bool testChainOnHttpContentCreated1 = false;
+            bool testChainOnHttpContentCreated2 = false;
 
-			bool testChainOnHttpRequestMessageCreated1 = false;
-			bool testChainOnHttpRequestMessageCreated2 = false;
+            bool testChainOnHttpRequestMessageCreated1 = false;
+            bool testChainOnHttpRequestMessageCreated2 = false;
 
-			bool testChainOnHttpMessageHandlerCreated1 = false;
-			bool testChainOnHttpMessageHandlerCreated2 = false;
+            bool testChainOnHttpMessageHandlerCreated1 = false;
+            bool testChainOnHttpMessageHandlerCreated2 = false;
 
-			var testBehaviour = HttpBehaviour.Current.ShallowClone();
+            var testBehaviour = HttpBehaviour.Current.ShallowClone();
 
-			testBehaviour.ChainOnHttpContentCreated(x => {
-				testChainOnHttpContentCreated1 = true;
-				return x;
-			});
+            testBehaviour.ChainOnHttpContentCreated(x =>
+            {
+                testChainOnHttpContentCreated1 = true;
+                return x;
+            });
 
-			// Test if the chaining chains
-			testBehaviour.ChainOnHttpContentCreated(x => {
-				// The previous Func should be called before this
-				Assert.True(testChainOnHttpContentCreated1);
-				testChainOnHttpContentCreated2 = true;
-				return x;
-			});
+            // Test if the chaining chains
+            testBehaviour.ChainOnHttpContentCreated(x =>
+            {
+                // The previous Func should be called before this
+                Assert.True(testChainOnHttpContentCreated1);
+                testChainOnHttpContentCreated2 = true;
+                return x;
+            });
 
-			testBehaviour.ChainOnHttpRequestMessageCreated(x => {
-				testChainOnHttpRequestMessageCreated1 = true;
-				return x;
-			});
+            testBehaviour.ChainOnHttpRequestMessageCreated(x =>
+            {
+                testChainOnHttpRequestMessageCreated1 = true;
+                return x;
+            });
 
-			// Test if the chaining chains
-			testBehaviour.ChainOnHttpRequestMessageCreated(x => {
-				// The previous Func should be called before this
-				Assert.True(testChainOnHttpRequestMessageCreated1);
-				testChainOnHttpRequestMessageCreated2 = true;
-				return x;
-			});
+            // Test if the chaining chains
+            testBehaviour.ChainOnHttpRequestMessageCreated(x =>
+            {
+                // The previous Func should be called before this
+                Assert.True(testChainOnHttpRequestMessageCreated1);
+                testChainOnHttpRequestMessageCreated2 = true;
+                return x;
+            });
 
-			testBehaviour.ChainOnHttpMessageHandlerCreated(x => {
-				testChainOnHttpMessageHandlerCreated1 = true;
-				return x;
-			});
+            testBehaviour.ChainOnHttpMessageHandlerCreated(x =>
+            {
+                testChainOnHttpMessageHandlerCreated1 = true;
+                return x;
+            });
 
-			// Test if the chaining chains
-			testBehaviour.ChainOnHttpMessageHandlerCreated(x => {
-				// The previous Func should be called before this
-				Assert.True(testChainOnHttpMessageHandlerCreated1);
-				testChainOnHttpMessageHandlerCreated2 = true;
-				return x;
-			});
+            // Test if the chaining chains
+            testBehaviour.ChainOnHttpMessageHandlerCreated(x =>
+            {
+                // The previous Func should be called before this
+                Assert.True(testChainOnHttpMessageHandlerCreated1);
+                testChainOnHttpMessageHandlerCreated2 = true;
+                return x;
+            });
 
-			testBehaviour.MakeCurrent();
+            testBehaviour.MakeCurrent();
 
-			using (var bitmap = await _bitmapUri.GetAsAsync<Bitmap>())
-			{
-				await new Uri("https://httpbin.org/post").PostAsync(bitmap);
-			}
-			Assert.True(testChainOnHttpContentCreated1);
-			Assert.True(testChainOnHttpContentCreated2);
-			Assert.True(testChainOnHttpRequestMessageCreated1);
-			Assert.True(testChainOnHttpRequestMessageCreated2);
-			Assert.True(testChainOnHttpMessageHandlerCreated1);
-			Assert.True(testChainOnHttpMessageHandlerCreated2);
-		}
-	}
+            using (var bitmap = await _bitmapUri.GetAsAsync<Bitmap>())
+            {
+                await new Uri("https://httpbin.org/post").PostAsync(bitmap);
+            }
+            Assert.True(testChainOnHttpContentCreated1);
+            Assert.True(testChainOnHttpContentCreated2);
+            Assert.True(testChainOnHttpRequestMessageCreated1);
+            Assert.True(testChainOnHttpRequestMessageCreated2);
+            Assert.True(testChainOnHttpMessageHandlerCreated1);
+            Assert.True(testChainOnHttpMessageHandlerCreated2);
+        }
+    }
 }

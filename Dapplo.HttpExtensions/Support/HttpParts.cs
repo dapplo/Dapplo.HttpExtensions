@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2015-2016 Dapplo
+//  Copyright (C) 2016-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -21,70 +21,70 @@
 
 namespace Dapplo.HttpExtensions.Support
 {
-	/// <summary>
-	///     Marker for the response
-	/// </summary>
-	public enum HttpParts
-	{
-		/// <summary>
-		///     Default value.
-		/// </summary>
-		None,
+    /// <summary>
+    ///     Marker for the response
+    /// </summary>
+    public enum HttpParts
+    {
+        /// <summary>
+        ///     Default value.
+        /// </summary>
+        None,
 
-		/// <summary>
-		///     The property specifies the boundary of a multi-part
-		/// </summary>
-		MultipartBoundary,
+        /// <summary>
+        ///     The property specifies the boundary of a multi-part
+        /// </summary>
+        MultipartBoundary,
 
-		/// <summary>
-		///     The property specifies the name of the content in a multi-part post
-		/// </summary>
-		RequestMultipartName,
+        /// <summary>
+        ///     The property specifies the name of the content in a multi-part post
+        /// </summary>
+        RequestMultipartName,
 
-		/// <summary>
-		///     The property specifies the filename of the content in a multi-part post
-		/// </summary>
-		RequestMultipartFilename,
+        /// <summary>
+        ///     The property specifies the filename of the content in a multi-part post
+        /// </summary>
+        RequestMultipartFilename,
 
-		/// <summary>
-		///     Specifies the content for uploading
-		/// </summary>
-		RequestContent,
+        /// <summary>
+        ///     Specifies the content for uploading
+        /// </summary>
+        RequestContent,
 
-		/// <summary>
-		///     Specifies the content-type for uploading
-		/// </summary>
-		RequestContentType,
+        /// <summary>
+        ///     Specifies the content-type for uploading
+        /// </summary>
+        RequestContentType,
 
-		/// <summary>
-		///     Specifies the request headers to send on the request, this should be of type IDictionary where key is string and
-		///     value is string
-		/// </summary>
-		RequestHeaders,
+        /// <summary>
+        ///     Specifies the request headers to send on the request, this should be of type IDictionary where key is string and
+        ///     value is string
+        /// </summary>
+        RequestHeaders,
 
-		/// <summary>
-		///     The property will get the response content, HttpResponseMessage can also be used
-		/// </summary>
-		ResponseContent,
+        /// <summary>
+        ///     The property will get the response content, HttpResponseMessage can also be used
+        /// </summary>
+        ResponseContent,
 
-		/// <summary>
-		///     The property will get the response content, when an error occured
-		/// </summary>
-		ResponseErrorContent,
+        /// <summary>
+        ///     The property will get the response content, when an error occured
+        /// </summary>
+        ResponseErrorContent,
 
-		/// <summary>
-		///     Specifies the content-type, either for uploading or for the response
-		/// </summary>
-		ResponseContentType,
+        /// <summary>
+        ///     Specifies the content-type, either for uploading or for the response
+        /// </summary>
+        ResponseContentType,
 
-		/// <summary>
-		///     The Http-Status code, should be of type HttpStatusCode
-		/// </summary>
-		ResponseStatuscode,
+        /// <summary>
+        ///     The Http-Status code, should be of type HttpStatusCode
+        /// </summary>
+        ResponseStatuscode,
 
-		/// <summary>
-		///     Marks HttpResponseHeaders,
-		/// </summary>
-		ResponseHeaders
-	}
+        /// <summary>
+        ///     Marks HttpResponseHeaders,
+        /// </summary>
+        ResponseHeaders
+    }
 }

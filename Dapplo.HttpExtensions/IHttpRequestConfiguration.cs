@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2015-2016 Dapplo
+//  Copyright (C) 2016-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -21,17 +21,18 @@
 
 namespace Dapplo.HttpExtensions
 {
-	/// <summary>
-	/// This interface is the base interface for configuration information.
-	/// It makes it possible to supply configuration to different parts of the library during a request, where as a caller you normally don't interact with directly.
-	/// The interface only specifies the name of the configuration, specific implementations should be used.
-	/// Instances of this interface are added to the HttpBehaviour, so they are available throughout a request.
-	/// </summary>
-	public interface IHttpRequestConfiguration
-	{
-		/// <summary>
-		/// Name of the configuration, this should be unique
-		/// </summary>
-		string Name { get; }
-	}
+    /// <summary>
+    ///     This interface is the base interface for configuration information.
+    ///     It makes it possible to supply configuration to different parts of the library during a request, where as a caller
+    ///     you normally don't interact with directly.
+    ///     The interface only specifies the name of the configuration, specific implementations should be used.
+    ///     Instances of this interface are added to the HttpBehaviour, so they are available throughout a request.
+    /// </summary>
+    public interface IHttpRequestConfiguration
+    {
+        /// <summary>
+        ///     Name of the configuration, this should be unique
+        /// </summary>
+        string Name { get; }
+    }
 }

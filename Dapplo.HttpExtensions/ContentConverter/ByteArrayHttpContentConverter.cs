@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2015-2016 Dapplo
+//  Copyright (C) 2016-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -31,74 +31,71 @@ using Dapplo.Log;
 
 namespace Dapplo.HttpExtensions.ContentConverter
 {
-	/// <summary>
-	///     This can convert HttpContent from/to a byte[]
-	/// </summary>
-	public class ByteArrayHttpContentConverter : IHttpContentConverter
-	{
-		private static readonly LogSource Log = new LogSource();
+    /// <summary>
+    ///     This can convert HttpContent from/to a byte[]
+    /// </summary>
+    public class ByteArrayHttpContentConverter : IHttpContentConverter
+    {
+        private static readonly LogSource Log = new LogSource();
 
 
-		/// <summary>
-		/// Instance of this IHttpContentConverter for reusing
-		/// </summary>
-		public static Lazy<ByteArrayHttpContentConverter> Instance
-		{
-			get;
-		} = new Lazy<ByteArrayHttpContentConverter>(() => new ByteArrayHttpContentConverter());
+        /// <summary>
+        ///     Instance of this IHttpContentConverter for reusing
+        /// </summary>
+        public static Lazy<ByteArrayHttpContentConverter> Instance { get; } = new Lazy<ByteArrayHttpContentConverter>(() => new ByteArrayHttpContentConverter());
 
-		/// <summary>
-		///     Order or priority of the IHttpContentConverter
-		/// </summary>
-		public int Order => 0;
+        /// <summary>
+        ///     Order or priority of the IHttpContentConverter
+        /// </summary>
+        public int Order => 0;
 
-		/// <summary>
-		///     Check if we can convert from the HttpContent to a byte array
-		/// </summary>
-		/// <param name="typeToConvertTo">To what type will the result be assigned</param>
-		/// <param name="httpContent">HttpContent</param>
-		/// <returns>true if we can convert the HttpContent to a ByteArray</returns>
-		public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent)
-		{
-			return typeToConvertTo == typeof (byte[]);
-		}
+        /// <summary>
+        ///     Check if we can convert from the HttpContent to a byte array
+        /// </summary>
+        /// <param name="typeToConvertTo">To what type will the result be assigned</param>
+        /// <param name="httpContent">HttpContent</param>
+        /// <returns>true if we can convert the HttpContent to a ByteArray</returns>
+        public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent)
+        {
+            return typeToConvertTo == typeof(byte[]);
+        }
 
-		/// <inheritdoc />
-		public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken cancellationToken = default(CancellationToken))
-		{
-			if (!CanConvertFromHttpContent(resultType, httpContent))
-			{
-				throw new NotSupportedException("CanConvertFromHttpContent resulted in false, this is not supposed to be called.");
-			}
-			Log.Debug().WriteLine("Retrieving the content as byte[], Content-Type: {0}", httpContent.Headers.ContentType);
+        /// <inheritdoc />
+        public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (!CanConvertFromHttpContent(resultType, httpContent))
+            {
+                throw new NotSupportedException("CanConvertFromHttpContent resulted in false, this is not supposed to be called.");
+            }
+            Log.Debug().WriteLine("Retrieving the content as byte[], Content-Type: {0}", httpContent.Headers.ContentType);
 
-			return await httpContent.ReadAsByteArrayAsync().ConfigureAwait(false);
-		}
+            return await httpContent.ReadAsByteArrayAsync().ConfigureAwait(false);
+        }
 
-		/// <inheritdoc />
-		public bool CanConvertToHttpContent(Type typeToConvert, object content)
-		{
-			return typeToConvert == typeof (byte[]);
-		}
+        /// <inheritdoc />
+        public bool CanConvertToHttpContent(Type typeToConvert, object content)
+        {
+            return typeToConvert == typeof(byte[]);
+        }
 
-		/// <inheritdoc />
-		public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
-		{
-			var byteArray = content as byte[];
-			return new ByteArrayContent(byteArray);
-		}
+        /// <inheritdoc />
+        public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
+        {
+            var byteArray = content as byte[];
+            return new ByteArrayContent(byteArray);
+        }
 
-		/// <inheritdoc />
-		public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage)
-		{
-			if (resultType == null)
-			{
-				throw new ArgumentNullException(nameof(resultType));
-			}
-			if (httpRequestMessage == null)
-			{
-				throw new ArgumentNullException(nameof(httpRequestMessage));
-			}
-		}
-	}
+        /// <inheritdoc />
+        public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage)
+        {
+            if (resultType == null)
+            {
+                throw new ArgumentNullException(nameof(resultType));
+            }
+            if (httpRequestMessage == null)
+            {
+                throw new ArgumentNullException(nameof(httpRequestMessage));
+            }
+        }
+    }
 }

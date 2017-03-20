@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2015-2016 Dapplo
+//  Copyright (C) 2016-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -23,9 +23,9 @@
 
 using System;
 using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Text;
-using System.Net.Http;
 
 #if NET45 ||NET46
 using System.Net.Cache;
@@ -38,72 +38,71 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Dapplo.HttpExtensions.Support
 {
-	/// <summary>
-	///     This class contains the default settings for the proxy / httpclient
-	///     These can be modified, are on a global "application" scale.
-	///     Most have their normal defaults, which would also normally be used, some have special settings
-	///     The default values and the property descriptions are in the IHttpSettings (which can be used by Dapplo.Config)
-	/// </summary>
-	public class HttpSettings : IHttpSettings
-	{
-		private const int Kb = 1024;
-		private const int Mb = Kb*1024;
-		private const long Gb = Mb*1024;
+    /// <summary>
+    ///     This class contains the default settings for the proxy / httpclient
+    ///     These can be modified, are on a global "application" scale.
+    ///     Most have their normal defaults, which would also normally be used, some have special settings
+    ///     The default values and the property descriptions are in the IHttpSettings (which can be used by Dapplo.Config)
+    /// </summary>
+    public class HttpSettings : IHttpSettings
+    {
+        private const int Kb = 1024;
+        private const int Mb = Kb * 1024;
+        private const long Gb = Mb * 1024;
 
-		private string _userAgent;
+        private string _userAgent;
 
-		/// <inheritdoc />
-		public bool UseCookies { get; set; } = true;
+        /// <inheritdoc />
+        public bool UseCookies { get; set; } = true;
 
-		/// <inheritdoc />
-		public bool UseDefaultCredentials { get; set; } = true;
+        /// <inheritdoc />
+        public bool UseDefaultCredentials { get; set; } = true;
 
-		/// <inheritdoc />
-		public ICredentials Credentials { get; set; }
+        /// <inheritdoc />
+        public ICredentials Credentials { get; set; }
 
-		/// <inheritdoc />
-		public ClientCertificateOption ClientCertificateOptions { get; set; }
+        /// <inheritdoc />
+        public ClientCertificateOption ClientCertificateOptions { get; set; }
 
-		/// <inheritdoc />
-		public TimeSpan RequestTimeout { get; set; } = TimeSpan.FromSeconds(60);
+        /// <inheritdoc />
+        public TimeSpan RequestTimeout { get; set; } = TimeSpan.FromSeconds(60);
 
-		/// <inheritdoc />
-		public bool AllowAutoRedirect { get; set; } = true;
+        /// <inheritdoc />
+        public bool AllowAutoRedirect { get; set; } = true;
 
-		/// <inheritdoc />
-		public DecompressionMethods DefaultDecompressionMethods { get; set; } = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+        /// <inheritdoc />
+        public DecompressionMethods DefaultDecompressionMethods { get; set; } = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 
-		/// <inheritdoc />
-		public bool PreAuthenticate { get; set; } = true;
+        /// <inheritdoc />
+        public bool PreAuthenticate { get; set; } = true;
 
-		/// <inheritdoc />
-		public int MaxAutomaticRedirections { get; set; } = 50;
+        /// <inheritdoc />
+        public int MaxAutomaticRedirections { get; set; } = 50;
 
-		/// <inheritdoc />
-		public long MaxResponseContentBufferSize { get; set; } = 2*Gb - 1;
+        /// <inheritdoc />
+        public long MaxResponseContentBufferSize { get; set; } = 2 * Gb - 1;
 
-		/// <inheritdoc />
-		public string DefaultUserAgent
-		{
-			get
-			{
-				if (_userAgent == null)
-				{
-					var clientAssembly = typeof (HttpSettings).GetTypeInfo().Assembly;
-					var userAgentBuilder = new StringBuilder();
+        /// <inheritdoc />
+        public string DefaultUserAgent
+        {
+            get
+            {
+                if (_userAgent == null)
+                {
+                    var clientAssembly = typeof(HttpSettings).GetTypeInfo().Assembly;
+                    var userAgentBuilder = new StringBuilder();
 
-					var clientAssemblyName = clientAssembly.GetName();
-					userAgentBuilder.Append($"{clientAssemblyName.Name}/{clientAssemblyName.Version} ");
-					_userAgent = userAgentBuilder.ToString().Trim();
-				}
-				return _userAgent;
-			}
-			set { _userAgent = value; }
-		}
+                    var clientAssemblyName = clientAssembly.GetName();
+                    userAgentBuilder.Append($"{clientAssemblyName.Name}/{clientAssemblyName.Version} ");
+                    _userAgent = userAgentBuilder.ToString().Trim();
+                }
+                return _userAgent;
+            }
+            set { _userAgent = value; }
+        }
 
 #if NET45 || NET46
-
-		/// <inheritdoc />
+/// <inheritdoc />
 		public X509CertificateCollection ClientCertificates { get; set; } = new X509CertificateCollection();
 
 		/// <inheritdoc />
@@ -156,17 +155,17 @@ namespace Dapplo.HttpExtensions.Support
 
 #endif
 
-		/// <inheritdoc />
-		public bool Expect100Continue { get; set; } = false;
+        /// <inheritdoc />
+        public bool Expect100Continue { get; set; } = false;
 
-		/// <summary>
-		/// Return a memberwise clone of the HttpSettings.
-		/// This is needed by the HttpBehaviour to prevent that a modification of a copy is changing the global settings!
-		/// </summary>
-		/// <returns></returns>
-		public IHttpSettings ShallowClone()
-		{
-			return (IHttpSettings)MemberwiseClone();
-		}
-	}
+        /// <summary>
+        ///     Return a memberwise clone of the HttpSettings.
+        ///     This is needed by the HttpBehaviour to prevent that a modification of a copy is changing the global settings!
+        /// </summary>
+        /// <returns></returns>
+        public IHttpSettings ShallowClone()
+        {
+            return (IHttpSettings) MemberwiseClone();
+        }
+    }
 }

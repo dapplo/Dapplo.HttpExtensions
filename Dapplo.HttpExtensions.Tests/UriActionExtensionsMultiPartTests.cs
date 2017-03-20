@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016 Dapplo
+//  Copyright (C) 2016-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -24,8 +24,8 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Dapplo.Log.XUnit;
 using Dapplo.Log;
+using Dapplo.Log.XUnit;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -33,28 +33,28 @@ using Xunit.Abstractions;
 
 namespace Dapplo.HttpExtensions.Tests
 {
-	/// <summary>
-	///     Should write some tests which use http://httpbin.org/
-	/// </summary>
-	public class UriActionExtensionsMultiPartTests
-	{
-		private readonly Uri _bitmapUri = new Uri("http://getgreenshot.org/assets/greenshot-logo.png");
+    /// <summary>
+    ///     Should write some tests which use http://httpbin.org/
+    /// </summary>
+    public class UriActionExtensionsMultiPartTests
+    {
+        private readonly Uri _bitmapUri = new Uri("http://getgreenshot.org/assets/greenshot-logo.png");
 
-		public UriActionExtensionsMultiPartTests(ITestOutputHelper testOutputHelper)
-		{
-			LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
-		}
+        public UriActionExtensionsMultiPartTests(ITestOutputHelper testOutputHelper)
+        {
+            LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
+        }
 
-		/// <summary>
-		///     Test getting the Uri as MemoryStream
-		/// </summary>
-		/// <returns></returns>
-		[Fact]
-		public async Task TestGetAsAsyncMemoryStream()
-		{
-			var stream = await _bitmapUri.GetAsAsync<MemoryStream>();
-			Assert.NotNull(stream);
-			Assert.True(stream.Length > 0);
-		}
-	}
+        /// <summary>
+        ///     Test getting the Uri as MemoryStream
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task TestGetAsAsyncMemoryStream()
+        {
+            var stream = await _bitmapUri.GetAsAsync<MemoryStream>();
+            Assert.NotNull(stream);
+            Assert.True(stream.Length > 0);
+        }
+    }
 }

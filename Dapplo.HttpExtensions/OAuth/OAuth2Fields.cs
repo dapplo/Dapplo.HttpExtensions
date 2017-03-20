@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2015-2016 Dapplo
+//  Copyright (C) 2016-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -27,18 +27,18 @@ using System.Runtime.Serialization;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
-	/// <summary>
-	///     This enum is used internally for the mapping of the field names
-	/// </summary>
-	internal enum OAuth2Fields
-	{
-		[EnumMember(Value = "refresh_token")] RefreshToken,
-		[EnumMember(Value = "code")] Code,
-		[EnumMember(Value = "client_id")] ClientId,
-		[EnumMember(Value = "client_secret")] ClientSecret,
-		[EnumMember(Value = "grant_type")] GrantType,
-		[EnumMember(Value = "redirect_uri")] RedirectUri,
-		[EnumMember(Value = "error")] Error,
-		[EnumMember(Value = "error_description")] ErrorDescription
-	}
+    /// <summary>
+    ///     This enum is used internally for the mapping of the field names
+    /// </summary>
+    internal enum OAuth2Fields
+    {
+        [EnumMember(Value = "refresh_token")] RefreshToken,
+        [EnumMember(Value = "code")] Code,
+        [EnumMember(Value = "client_id")] ClientId,
+        [EnumMember(Value = "client_secret")] ClientSecret,
+        [EnumMember(Value = "grant_type")] GrantType,
+        [EnumMember(Value = "redirect_uri")] RedirectUri,
+        [EnumMember(Value = "error")] Error,
+        [EnumMember(Value = "error_description")] ErrorDescription
+    }
 }

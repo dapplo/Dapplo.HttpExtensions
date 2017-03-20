@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016 Dapplo
+//  Copyright (C) 2016-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -19,39 +19,42 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
+#region using
+
 using System.Drawing.Imaging;
+using Dapplo.HttpExtensions.Extensions;
 using Dapplo.HttpExtensions.SharedDesktop.ContentConverter;
 using Dapplo.Log;
 using Dapplo.Log.XUnit;
 using Xunit;
 using Xunit.Abstractions;
-using Dapplo.HttpExtensions.Extensions;
+
+#endregion
 
 namespace Dapplo.HttpExtensions.Tests
 {
-	public class HttpRequestConfigurationTests
-	{
-		private static readonly LogSource Log = new LogSource();
+    public class HttpRequestConfigurationTests
+    {
+        private static readonly LogSource Log = new LogSource();
 
-		public HttpRequestConfigurationTests(ITestOutputHelper testOutputHelper)
-		{
-			LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
-		}
+        public HttpRequestConfigurationTests(ITestOutputHelper testOutputHelper)
+        {
+            LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
+        }
 
-		/// <summary>
-		///     Test posting, using Bitmap
-		/// </summary>
-		[Fact]
-		public void Test_GetSet()
-		{
-			var httpBehaviour = HttpBehaviour.Current;
-			var testConfig = new BitmapConfiguration {Format = ImageFormat.Gif};
-			Assert.Equal(ImageFormat.Gif, testConfig.Format);
-			httpBehaviour.SetConfig(testConfig);
-			Assert.Equal(ImageFormat.Gif, testConfig.Format);
-			var retrievedConfig = httpBehaviour.GetConfig<BitmapConfiguration>();
-			Assert.Equal(ImageFormat.Gif, retrievedConfig.Format);
-		}
-
-	}
+        /// <summary>
+        ///     Test posting, using Bitmap
+        /// </summary>
+        [Fact]
+        public void Test_GetSet()
+        {
+            var httpBehaviour = HttpBehaviour.Current;
+            var testConfig = new BitmapConfiguration {Format = ImageFormat.Gif};
+            Assert.Equal(ImageFormat.Gif, testConfig.Format);
+            httpBehaviour.SetConfig(testConfig);
+            Assert.Equal(ImageFormat.Gif, testConfig.Format);
+            var retrievedConfig = httpBehaviour.GetConfig<BitmapConfiguration>();
+            Assert.Equal(ImageFormat.Gif, retrievedConfig.Format);
+        }
+    }
 }

@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2015-2016 Dapplo
+//  Copyright (C) 2016-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -21,15 +21,15 @@
 
 namespace Dapplo.HttpExtensions.Support
 {
-	/// <summary>
-	///     This class contains all the information on the content that will be used to build a request
-	/// </summary>
-	internal class ContentItem
-	{
-		public object Content { get; set; }
-		public string ContentFileName { get; set; }
-		public string ContentName { get; set; }
-		public string ContentType { get; set; }
-		public int Order { get; set; }
-	}
+    /// <summary>
+    ///     This class contains all the information on the content that will be used to build a request
+    /// </summary>
+    internal class ContentItem
+    {
+        public object Content { get; set; }
+        public string ContentFileName { get; set; }
+        public string ContentName { get; set; }
+        public string ContentType { get; set; }
+        public int Order { get; set; }
+    }
 }

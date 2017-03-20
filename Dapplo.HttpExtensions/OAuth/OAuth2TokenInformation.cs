@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2015-2016 Dapplo
+//  Copyright (C) 2016-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -27,16 +27,16 @@ using System;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
-	/// <summary>
-	///     A default implementation for the IOAuth2Token, nothing fancy
-	///     For more information, see the IOAuth2Token interface
-	/// </summary>
-	internal class OAuth2TokenInformation : IOAuth2Token
-	{
-		public string OAuth2AccessToken { get; set; }
+    /// <summary>
+    ///     A default implementation for the IOAuth2Token, nothing fancy
+    ///     For more information, see the IOAuth2Token interface
+    /// </summary>
+    internal class OAuth2TokenInformation : IOAuth2Token
+    {
+        public string OAuth2AccessToken { get; set; }
 
-		public DateTimeOffset OAuth2AccessTokenExpires { get; set; }
+        public DateTimeOffset OAuth2AccessTokenExpires { get; set; }
 
-		public string OAuth2RefreshToken { get; set; }
-	}
+        public string OAuth2RefreshToken { get; set; }
+    }
 }

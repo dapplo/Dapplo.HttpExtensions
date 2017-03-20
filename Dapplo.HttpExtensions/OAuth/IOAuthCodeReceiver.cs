@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2015-2016 Dapplo
+//  Copyright (C) 2016-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -29,18 +29,18 @@ using System.Threading.Tasks;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
-	/// <summary>
-	///     This is the interface for the OAuth code receiver
-	/// </summary>
-	public interface IOAuthCodeReceiver
-	{
-		/// <summary>
-		///     The actual code receiving code
-		/// </summary>
-		/// <param name="authorizeMode">AuthorizeModes will tell you for what mode you were called</param>
-		/// <param name="codeReceiverSettings">ICodeReceiverSettings with the settings for the code receiver</param>
-		/// <param name="cancellationToken">CancellationToken</param>
-		/// <returns>Dictionary with the returned key-values</returns>
-		Task<IDictionary<string, string>> ReceiveCodeAsync(AuthorizeModes authorizeMode, ICodeReceiverSettings codeReceiverSettings, CancellationToken cancellationToken = default(CancellationToken));
-	}
+    /// <summary>
+    ///     This is the interface for the OAuth code receiver
+    /// </summary>
+    public interface IOAuthCodeReceiver
+    {
+        /// <summary>
+        ///     The actual code receiving code
+        /// </summary>
+        /// <param name="authorizeMode">AuthorizeModes will tell you for what mode you were called</param>
+        /// <param name="codeReceiverSettings">ICodeReceiverSettings with the settings for the code receiver</param>
+        /// <param name="cancellationToken">CancellationToken</param>
+        /// <returns>Dictionary with the returned key-values</returns>
+        Task<IDictionary<string, string>> ReceiveCodeAsync(AuthorizeModes authorizeMode, ICodeReceiverSettings codeReceiverSettings, CancellationToken cancellationToken = default(CancellationToken));
+    }
 }

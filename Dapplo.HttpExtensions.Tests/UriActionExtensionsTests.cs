@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016 Dapplo
+//  Copyright (C) 2016-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -32,8 +32,8 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Xml.Linq;
 using Dapplo.HttpExtensions.Support;
-using Dapplo.Log.XUnit;
 using Dapplo.Log;
+using Dapplo.Log.XUnit;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -41,214 +41,214 @@ using Xunit.Abstractions;
 
 namespace Dapplo.HttpExtensions.Tests
 {
-	/// <summary>
-	///     Some tests which use http://httpbin.org/
-	/// </summary>
-	public class UriActionExtensionsTests
-	{
-		private static readonly LogSource Log = new LogSource();
-		private readonly Uri _bitmapUri = new Uri("http://httpbin.org/image/png");
+    /// <summary>
+    ///     Some tests which use http://httpbin.org/
+    /// </summary>
+    public class UriActionExtensionsTests
+    {
+        private static readonly LogSource Log = new LogSource();
+        private readonly Uri _bitmapUri = new Uri("http://httpbin.org/image/png");
 
-		public UriActionExtensionsTests(ITestOutputHelper testOutputHelper)
-		{
-			LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
-		}
+        public UriActionExtensionsTests(ITestOutputHelper testOutputHelper)
+        {
+            LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
+        }
 
-		/// <summary>
-		///     Test basic authentication
-		/// </summary>
-		[Fact]
-		public async Task TestBasicAuthAsync()
-		{
-			await new Uri("https://usern:passw@httpbin.org/basic-auth/usern/passw").GetAsAsync<string>();
-		}
+        /// <summary>
+        ///     Test basic authentication
+        /// </summary>
+        [Fact]
+        public async Task TestBasicAuthAsync()
+        {
+            await new Uri("https://usern:passw@httpbin.org/basic-auth/usern/passw").GetAsAsync<string>();
+        }
 
-		/// <summary>
-		///     Test DELETE
-		/// </summary>
-		[Fact]
-		public async Task TestDelete()
-		{
-			var result = await new Uri("https://httpbin.org/delete").DeleteAsync<dynamic>();
-			Assert.NotNull(result);
-		}
+        /// <summary>
+        ///     Test DELETE
+        /// </summary>
+        [Fact]
+        public async Task TestDelete()
+        {
+            var result = await new Uri("https://httpbin.org/delete").DeleteAsync<dynamic>();
+            Assert.NotNull(result);
+        }
 
-		/// <summary>
-		///     Test retrieval when a 204 (no content) is returned
-		/// </summary>
-		[Fact]
-		public async Task TestGetAsAsync204()
-		{
-			var result = await new Uri("https://httpbin.org/status/204").GetAsAsync<string>();
-			Assert.Null(result);
-		}
+        /// <summary>
+        ///     Test retrieval when a 204 (no content) is returned
+        /// </summary>
+        [Fact]
+        public async Task TestGetAsAsync204()
+        {
+            var result = await new Uri("https://httpbin.org/status/204").GetAsAsync<string>();
+            Assert.Null(result);
+        }
 
-		/// <summary>
-		///     Test getting the uri as Bitmap
-		/// </summary>
-		[Fact]
-		public async Task TestGetAsAsyncBitmap()
-		{
-			var downloadBehaviour = HttpBehaviour.Current.ShallowClone();
+        /// <summary>
+        ///     Test getting the uri as Bitmap
+        /// </summary>
+        [Fact]
+        public async Task TestGetAsAsyncBitmap()
+        {
+            var downloadBehaviour = HttpBehaviour.Current.ShallowClone();
 
-			downloadBehaviour.UseProgressStream = true;
-			downloadBehaviour.DownloadProgress += progress => { Log.Info().WriteLine("Progress {0}", (int) (progress*100)); };
-			downloadBehaviour.MakeCurrent();
+            downloadBehaviour.UseProgressStream = true;
+            downloadBehaviour.DownloadProgress += progress => { Log.Info().WriteLine("Progress {0}", (int) (progress * 100)); };
+            downloadBehaviour.MakeCurrent();
 
-			var bitmap = await _bitmapUri.GetAsAsync<Bitmap>();
-			Assert.NotNull(bitmap);
-			Assert.True(bitmap.Width > 0);
-			Assert.True(bitmap.Height > 0);
-		}
+            var bitmap = await _bitmapUri.GetAsAsync<Bitmap>();
+            Assert.NotNull(bitmap);
+            Assert.True(bitmap.Width > 0);
+            Assert.True(bitmap.Height > 0);
+        }
 
-		/// <summary>
-		///     Test getting the Uri as BitmapSource
-		/// </summary>
-		[Fact]
-		public async Task TestGetAsAsyncBitmapSource()
-		{
+        /// <summary>
+        ///     Test getting the Uri as BitmapSource
+        /// </summary>
+        [Fact]
+        public async Task TestGetAsAsyncBitmapSource()
+        {
+            var uploadBehaviour = HttpBehaviour.Current.ShallowClone();
 
-			var uploadBehaviour = HttpBehaviour.Current.ShallowClone();
+            bool hasProgress = false;
 
-			bool hasProgress = false;
+            uploadBehaviour.UseProgressStream = true;
+            uploadBehaviour.DownloadProgress += progress =>
+            {
+                Log.Info().WriteLine("Progress {0}", (int) (progress * 100));
+                hasProgress = true;
+            };
+            uploadBehaviour.MakeCurrent();
 
-			uploadBehaviour.UseProgressStream = true;
-			uploadBehaviour.DownloadProgress += progress => {
-				Log.Info().WriteLine("Progress {0}", (int)(progress * 100));
-				hasProgress = true;
-			};
-			uploadBehaviour.MakeCurrent();
+            var bitmap = await _bitmapUri.GetAsAsync<BitmapSource>();
+            Assert.NotNull(bitmap);
+            Assert.True(bitmap.Width > 0);
+            Assert.True(bitmap.Height > 0);
+            Assert.True(hasProgress);
+        }
 
-			var bitmap = await _bitmapUri.GetAsAsync<BitmapSource>();
-			Assert.NotNull(bitmap);
-			Assert.True(bitmap.Width > 0);
-			Assert.True(bitmap.Height > 0);
-			Assert.True(hasProgress);
-		}
+        /// <summary>
+        ///     Test getting the Uri as MemoryStream
+        /// </summary>
+        public async Task TestGetAsAsyncMemoryStream()
+        {
+            var stream = await _bitmapUri.GetAsAsync<MemoryStream>();
+            Assert.NotNull(stream);
+            Assert.True(stream.Length > 0);
+        }
 
-		/// <summary>
-		///     Test getting the Uri as MemoryStream
-		/// </summary>
-		public async Task TestGetAsAsyncMemoryStream()
-		{
-			var stream = await _bitmapUri.GetAsAsync<MemoryStream>();
-			Assert.NotNull(stream);
-			Assert.True(stream.Length > 0);
-		}
+        /// <summary>
+        ///     Test getting the uri as Feed
+        /// </summary>
+        [Fact]
+        public async Task TestGetAsAsyncSyndicationFeed()
+        {
+            var feed = await new Uri("http://lorem-rss.herokuapp.com/feed").GetAsAsync<SyndicationFeed>();
+            Assert.NotNull(feed);
+            Assert.True(feed.Items.Any());
+        }
 
-		/// <summary>
-		///     Test getting the uri as Feed
-		/// </summary>
-		[Fact]
-		public async Task TestGetAsAsyncSyndicationFeed()
-		{
-			var feed = await new Uri("http://lorem-rss.herokuapp.com/feed").GetAsAsync<SyndicationFeed>();
-			Assert.NotNull(feed);
-			Assert.True(feed.Items.Any());
-		}
+        /// <summary>
+        ///     Test getting the uri as an XML
+        /// </summary>
+        [Fact]
+        public async Task TestGetAsAsyncXDocument()
+        {
+            var xDocument = await new Uri("http://httpbin.org/xml").GetAsAsync<XDocument>();
+            Assert.NotNull(xDocument);
+            Assert.True(xDocument.Nodes().Any());
+        }
 
-		/// <summary>
-		///     Test getting the uri as an XML
-		/// </summary>
-		[Fact]
-		public async Task TestGetAsAsyncXDocument()
-		{
-			var xDocument = await new Uri("http://httpbin.org/xml").GetAsAsync<XDocument>();
-			Assert.NotNull(xDocument);
-			Assert.True(xDocument.Nodes().Any());
-		}
+        /// <summary>
+        ///     Test HandleErrorAsync
+        /// </summary>
+        [Fact]
+        public async Task TestHandleErrorAsync()
+        {
+            await Assert.ThrowsAsync<HttpRequestException>(async () => await new Uri("https://httpbin.orgf").HeadAsync());
+        }
 
-		/// <summary>
-		///     Test HandleErrorAsync
-		/// </summary>
-		[Fact]
-		public async Task TestHandleErrorAsync()
-		{
-			await Assert.ThrowsAsync<HttpRequestException>(async () => await new Uri("https://httpbin.orgf").HeadAsync());
-		}
+        /// <summary>
+        ///     Test HEAD
+        /// </summary>
+        [Fact]
+        public async Task TestHead()
+        {
+            var result = await new Uri("https://httpbin.org").HeadAsync();
+            Assert.Contains("text/html", result.ContentType.MediaType);
+        }
 
-		/// <summary>
-		///     Test HEAD
-		/// </summary>
-		[Fact]
-		public async Task TestHead()
-		{
-			var result = await new Uri("https://httpbin.org").HeadAsync();
-			Assert.Contains("text/html", result.ContentType.MediaType);
-		}
+        /// <summary>
+        ///     Test LastModified
+        /// </summary>
+        [Fact]
+        public async Task TestLastModified()
+        {
+            await new Uri("http://nu.nl").LastModifiedAsync();
+        }
 
-		/// <summary>
-		///     Test LastModified
-		/// </summary>
-		[Fact]
-		public async Task TestLastModified()
-		{
-			await new Uri("http://nu.nl").LastModifiedAsync();
-		}
+        /// <summary>
+        ///     Test POST
+        /// </summary>
+        [Fact]
+        public async Task TestPost()
+        {
+            await new Uri("https://httpbin.org/post").PostAsync(null);
+        }
 
-		/// <summary>
-		///     Test POST
-		/// </summary>
-		[Fact]
-		public async Task TestPost()
-		{
-			await new Uri("https://httpbin.org/post").PostAsync(null);
-		}
+        /// <summary>
+        ///     Test PUT without response
+        /// </summary>
+        [Fact]
+        public async Task TestPut()
+        {
+            await new Uri("https://httpbin.org/put").PutAsync(null);
+        }
 
-		/// <summary>
-		///     Test PUT
-		/// </summary>
-		[Fact]
-		public async Task TestPut_Response()
-		{
-			var result = await new Uri("https://httpbin.org/put").PutAsync<dynamic>(null);
-			Assert.NotNull(result);
-		}
+        /// <summary>
+        ///     Test PUT
+        /// </summary>
+        [Fact]
+        public async Task TestPut_Response()
+        {
+            var result = await new Uri("https://httpbin.org/put").PutAsync<dynamic>(null);
+            Assert.NotNull(result);
+        }
 
-		/// <summary>
-		///     Test PUT without response
-		/// </summary>
-		[Fact]
-		public async Task TestPut()
-		{
-			await new Uri("https://httpbin.org/put").PutAsync(null);
-		}
+        /// <summary>
+        ///     Test redirecting
+        /// </summary>
+        [Fact]
+        public async Task TestRedirectAndFollow()
+        {
+            var result = await new Uri("https://httpbin.org/redirect/5").GetAsAsync<string>();
+            Assert.NotNull(result);
+        }
 
-		/// <summary>
-		///     Test redirecting
-		/// </summary>
-		[Fact]
-		public async Task TestRedirectAndFollow()
-		{
-			var result = await new Uri("https://httpbin.org/redirect/5").GetAsAsync<string>();
-			Assert.NotNull(result);
-		}
+        /// <summary>
+        ///     Test NOT redirecting, also testing the MakeCurrent of the behavior
+        /// </summary>
+        [Fact]
+        public async Task TestRedirectAndNotFollow()
+        {
+            var behavior = new HttpBehaviour
+            {
+                HttpSettings = new HttpSettings()
+            };
+            behavior.HttpSettings.AllowAutoRedirect = false;
+            behavior.MakeCurrent();
+            await Assert.ThrowsAsync<HttpRequestException>(async () => await new Uri("https://httpbin.org/redirect/2").GetAsAsync<string>());
+        }
 
-		/// <summary>
-		///     Test NOT redirecting, also testing the MakeCurrent of the behavior
-		/// </summary>
-		[Fact]
-		public async Task TestRedirectAndNotFollow()
-		{
-			var behavior = new HttpBehaviour
-			{
-				HttpSettings = new HttpSettings()
-			};
-			behavior.HttpSettings.AllowAutoRedirect = false;
-			behavior.MakeCurrent();
-			await Assert.ThrowsAsync<HttpRequestException>(async () => await new Uri("https://httpbin.org/redirect/2").GetAsAsync<string>());
-		}
-
-		/// <summary>
-		///     Test user-agent
-		/// </summary>
-		[Fact]
-		public async Task TestUserAgent()
-		{
-			var result = await new Uri("https://httpbin.org/user-agent").GetAsAsync<IDictionary<string, string>>();
-			Assert.NotNull(result);
-			Assert.True(result.ContainsKey("user-agent"));
-			Assert.Equal(HttpExtensionsGlobals.HttpSettings.DefaultUserAgent, result["user-agent"]);
-		}
-	}
+        /// <summary>
+        ///     Test user-agent
+        /// </summary>
+        [Fact]
+        public async Task TestUserAgent()
+        {
+            var result = await new Uri("https://httpbin.org/user-agent").GetAsAsync<IDictionary<string, string>>();
+            Assert.NotNull(result);
+            Assert.True(result.ContainsKey("user-agent"));
+            Assert.Equal(HttpExtensionsGlobals.HttpSettings.DefaultUserAgent, result["user-agent"]);
+        }
+    }
 }

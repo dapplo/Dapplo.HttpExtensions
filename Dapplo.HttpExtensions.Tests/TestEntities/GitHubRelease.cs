@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016 Dapplo
+//  Copyright (C) 2016-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -22,26 +22,25 @@
 #region using
 
 using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 #endregion
 
 namespace Dapplo.HttpExtensions.Tests.TestEntities
 {
-	/// <summary>
-	///     Container for the release information from GitHub
-	/// </summary>
-	[DataContract]
-	public class GitHubRelease
-	{
-		[DataMember(Name = "html_url", EmitDefaultValue = false)]
-		public string HtmlUrl { get; set; }
+    /// <summary>
+    ///     Container for the release information from GitHub
+    /// </summary>
+    [DataContract]
+    public class GitHubRelease
+    {
+        [DataMember(Name = "html_url", EmitDefaultValue = false)]
+        public string HtmlUrl { get; set; }
 
-		[DataMember(Name = "prerelease", EmitDefaultValue = false)]
-		public bool Prerelease { get; set; }
+        [DataMember(Name = "prerelease", EmitDefaultValue = false)]
+        public bool Prerelease { get; set; }
 
-		[DataMember(Name = "published_at")]
-		public DateTime PublishedAt { get; set; }
-	}
+        [DataMember(Name = "published_at")]
+        public DateTime PublishedAt { get; set; }
+    }
 }

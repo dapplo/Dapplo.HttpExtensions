@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2015-2016 Dapplo
+//  Copyright (C) 2016-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -30,62 +30,64 @@ using Dapplo.HttpExtensions.Json;
 using System.Drawing;
 using System.Windows.Media.Imaging;
 #endif
+
 #endregion
 
 namespace Dapplo.HttpExtensions.Support
 {
-	/// <summary>
-	///     This defines the default way how Json is de-/serialized.
-	/// </summary>
-	public class SimpleJsonSerializer : IJsonSerializer
-	{
-		private static readonly Type[] NotSerializableTypes =
-		{
+    /// <summary>
+    ///     This defines the default way how Json is de-/serialized.
+    /// </summary>
+    public class SimpleJsonSerializer : IJsonSerializer
+    {
+        private static readonly Type[] NotSerializableTypes =
+        {
 #if NET45 || NET46
 			typeof(Bitmap),
 			typeof(BitmapSource),
 #endif
-			typeof(Stream),
-			typeof(MemoryStream)
-		};
-		/// <summary>
-		/// </summary>
-		/// <param name="targetType">Type to deserialize from a json string</param>
-		/// <param name="jsonString">json</param>
-		/// <returns>Deserialized json as targetType</returns>
-		public object Deserialize(Type targetType, string jsonString)
-		{
-			return SimpleJson.DeserializeObject(jsonString, targetType);
-		}
+            typeof(Stream),
+            typeof(MemoryStream)
+        };
 
-		/// <summary>
-		/// Test if the specified type can be serialized to JSON
-		/// </summary>
-		/// <param name="sourceType">Type to check</param>
-		/// <returns>bool</returns>
-		public bool CanSerializeTo(Type sourceType)
-		{
-			return NotSerializableTypes.All(type => type != sourceType);
-		}
+        /// <summary>
+        /// </summary>
+        /// <param name="targetType">Type to deserialize from a json string</param>
+        /// <param name="jsonString">json</param>
+        /// <returns>Deserialized json as targetType</returns>
+        public object Deserialize(Type targetType, string jsonString)
+        {
+            return SimpleJson.DeserializeObject(jsonString, targetType);
+        }
 
-		/// <summary>
-		/// Test if the specified type can be deserialized
-		/// </summary>
-		/// <param name="targetType">Type to check</param>
-		/// <returns>bool</returns>
-		public bool CanDeserializeFrom(Type targetType)
-		{
-			return NotSerializableTypes.All(type => type != targetType);
-		}
+        /// <summary>
+        ///     Test if the specified type can be serialized to JSON
+        /// </summary>
+        /// <param name="sourceType">Type to check</param>
+        /// <returns>bool</returns>
+        public bool CanSerializeTo(Type sourceType)
+        {
+            return NotSerializableTypes.All(type => type != sourceType);
+        }
 
-		/// <summary>
-		/// </summary>
-		/// <typeparam name="TContent">Type to serialize to json string</typeparam>
-		/// <param name="jsonObject">The actual object</param>
-		/// <returns>string with json</returns>
-		public string Serialize<TContent>(TContent jsonObject)
-		{
-			return SimpleJson.SerializeObject(jsonObject);
-		}
-	}
+        /// <summary>
+        ///     Test if the specified type can be deserialized
+        /// </summary>
+        /// <param name="targetType">Type to check</param>
+        /// <returns>bool</returns>
+        public bool CanDeserializeFrom(Type targetType)
+        {
+            return NotSerializableTypes.All(type => type != targetType);
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <typeparam name="TContent">Type to serialize to json string</typeparam>
+        /// <param name="jsonObject">The actual object</param>
+        /// <returns>string with json</returns>
+        public string Serialize<TContent>(TContent jsonObject)
+        {
+            return SimpleJson.SerializeObject(jsonObject);
+        }
+    }
 }

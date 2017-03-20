@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016 Dapplo
+//  Copyright (C) 2016-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -25,9 +25,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapplo.Log.XUnit;
 using Dapplo.HttpExtensions.Tests.TestEntities;
 using Dapplo.Log;
+using Dapplo.Log.XUnit;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -35,43 +35,43 @@ using Xunit.Abstractions;
 
 namespace Dapplo.HttpExtensions.Tests
 {
-	/// <summary>
-	///     Summary description for GithubTests
-	/// </summary>
-	public class GithubTests
-	{
-		public GithubTests(ITestOutputHelper testOutputHelper)
-		{
-			LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
-		}
+    /// <summary>
+    ///     Summary description for GithubTests
+    /// </summary>
+    public class GithubTests
+    {
+        public GithubTests(ITestOutputHelper testOutputHelper)
+        {
+            LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
+        }
 
-		/// <summary>
-		///     To make sure we test some of the functionality, we call the GitHub API to get the releases for this project.
-		/// </summary>
-		/// <returns></returns>
-		[Fact]
-		public async Task TestGetAsJsonAsync_GitHubApiReleases()
-		{
-			var githubApiUri = new Uri("https://api.github.com");
-			var releasesUri = githubApiUri.AppendSegments("repos", "dapplo", "Dapplo.HttpExtensions", "releases");
+        /// <summary>
+        ///     To make sure we test some of the functionality, we call the GitHub API to get the releases for this project.
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task TestGetAsJsonAsync_GitHubApiReleases()
+        {
+            var githubApiUri = new Uri("https://api.github.com");
+            var releasesUri = githubApiUri.AppendSegments("repos", "dapplo", "Dapplo.HttpExtensions", "releases");
 
-			// This is needed when running in AppVeyor, as AppVeyor has multiple request to GitHub, the rate-limit is exceeded.
-			var username = Environment.GetEnvironmentVariable("github_username");
-			var password = Environment.GetEnvironmentVariable("github_token");
-			if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
-			{
-				releasesUri = releasesUri.SetCredentials(username, password);
-			}
+            // This is needed when running in AppVeyor, as AppVeyor has multiple request to GitHub, the rate-limit is exceeded.
+            var username = Environment.GetEnvironmentVariable("github_username");
+            var password = Environment.GetEnvironmentVariable("github_token");
+            if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
+            {
+                releasesUri = releasesUri.SetCredentials(username, password);
+            }
 
-			var releases = await releasesUri.GetAsAsync<HttpResponse<List<GitHubRelease>, GitHubError>>();
-			Assert.NotNull(releases);
-			Assert.False(releases.HasError, $"{releases.StatusCode}: {releases.ErrorResponse?.Message} {releases.ErrorResponse?.DocumentationUrl}");
+            var releases = await releasesUri.GetAsAsync<HttpResponse<List<GitHubRelease>, GitHubError>>();
+            Assert.NotNull(releases);
+            Assert.False(releases.HasError, $"{releases.StatusCode}: {releases.ErrorResponse?.Message} {releases.ErrorResponse?.DocumentationUrl}");
 
-			var latestRelease = releases.Response
-				.Where(x => !x.Prerelease)
-				.OrderByDescending(x => x.PublishedAt)
-				.FirstOrDefault();
-			Assert.NotNull(latestRelease);
-		}
-	}
+            var latestRelease = releases.Response
+                .Where(x => !x.Prerelease)
+                .OrderByDescending(x => x.PublishedAt)
+                .FirstOrDefault();
+            Assert.NotNull(latestRelease);
+        }
+    }
 }

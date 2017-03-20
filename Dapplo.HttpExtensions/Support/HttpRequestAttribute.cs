@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2015-2016 Dapplo
+//  Copyright (C) 2016-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -27,15 +27,15 @@ using System;
 
 namespace Dapplo.HttpExtensions.Support
 {
-	/// <summary>
-	///     This attribute marks a class as "http content" for a request
-	/// </summary>
-	[AttributeUsage(AttributeTargets.Class)]
-	public class HttpRequestAttribute : Attribute
-	{
-		/// <summary>
-		///     "Force" multi-part, even if there is only one content
-		/// </summary>
-		public bool MultiPart { get; set; }
-	}
+    /// <summary>
+    ///     This attribute marks a class as "http content" for a request
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class)]
+    public class HttpRequestAttribute : Attribute
+    {
+        /// <summary>
+        ///     "Force" multi-part, even if there is only one content
+        /// </summary>
+        public bool MultiPart { get; set; }
+    }
 }

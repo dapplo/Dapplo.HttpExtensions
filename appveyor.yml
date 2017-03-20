@@ -2,7 +2,7 @@ version: 0.6.{build}
 skip_tags: true
 configuration: Release
 image: Visual Studio 2017
-platform: AnyCPU
+platform: Any CPU
 clone_depth: 2
 branches:
   only:

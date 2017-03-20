@@ -22,6 +22,7 @@
 #region using
 
 using System;
+using System.Net.Cache;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Factory;
 using Dapplo.Log;
@@ -41,6 +42,7 @@ namespace Dapplo.HttpExtensions.Tests
         public HttpRequestMessageExtensionsTests(ITestOutputHelper testOutputHelper)
         {
             LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
+            HttpExtensionsGlobals.HttpSettings.RequestCacheLevel = RequestCacheLevel.NoCacheNoStore;
         }
 
         /// <summary>

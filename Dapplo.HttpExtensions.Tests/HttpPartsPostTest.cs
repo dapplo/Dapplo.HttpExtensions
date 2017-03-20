@@ -23,6 +23,7 @@
 
 using System;
 using System.Drawing;
+using System.Net.Cache;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -47,6 +48,7 @@ namespace Dapplo.HttpExtensions.Tests
         public HttpPartsPostTest(ITestOutputHelper testOutputHelper)
         {
             LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
+            HttpExtensionsGlobals.HttpSettings.RequestCacheLevel = RequestCacheLevel.NoCacheNoStore;
         }
 
         /// <summary>

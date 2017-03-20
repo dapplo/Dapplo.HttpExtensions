@@ -23,6 +23,7 @@
 
 using System;
 using System.IO;
+using System.Net.Cache;
 using System.Threading.Tasks;
 using Dapplo.Log;
 using Dapplo.Log.XUnit;
@@ -43,6 +44,7 @@ namespace Dapplo.HttpExtensions.Tests
         public UriActionExtensionsMultiPartTests(ITestOutputHelper testOutputHelper)
         {
             LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
+            HttpExtensionsGlobals.HttpSettings.RequestCacheLevel = RequestCacheLevel.NoCacheNoStore;
         }
 
         /// <summary>

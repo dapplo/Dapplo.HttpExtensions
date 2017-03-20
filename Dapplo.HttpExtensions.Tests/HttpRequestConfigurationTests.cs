@@ -22,6 +22,7 @@
 #region using
 
 using System.Drawing.Imaging;
+using System.Net.Cache;
 using Dapplo.HttpExtensions.Extensions;
 using Dapplo.HttpExtensions.SharedDesktop.ContentConverter;
 using Dapplo.Log;
@@ -40,6 +41,7 @@ namespace Dapplo.HttpExtensions.Tests
         public HttpRequestConfigurationTests(ITestOutputHelper testOutputHelper)
         {
             LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
+            HttpExtensionsGlobals.HttpSettings.RequestCacheLevel = RequestCacheLevel.NoCacheNoStore;
         }
 
         /// <summary>

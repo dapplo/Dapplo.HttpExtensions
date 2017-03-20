@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net.Cache;
 using System.Net.Http;
 using System.ServiceModel.Syndication;
 using System.Threading.Tasks;
@@ -52,6 +53,7 @@ namespace Dapplo.HttpExtensions.Tests
         public UriActionExtensionsTests(ITestOutputHelper testOutputHelper)
         {
             LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
+            HttpExtensionsGlobals.HttpSettings.RequestCacheLevel = RequestCacheLevel.NoCacheNoStore;
         }
 
         /// <summary>
@@ -247,7 +249,6 @@ namespace Dapplo.HttpExtensions.Tests
         {
             var result = await new Uri("https://httpbin.org/user-agent").GetAsAsync<IDictionary<string, string>>();
             Assert.NotNull(result);
-            Assert.True(result.ContainsKey("user-agent"));
             Assert.Equal(HttpExtensionsGlobals.HttpSettings.DefaultUserAgent, result["user-agent"]);
         }
     }

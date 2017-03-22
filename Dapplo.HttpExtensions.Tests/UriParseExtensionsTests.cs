@@ -24,6 +24,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dapplo.HttpExtensions.Factory;
+using Dapplo.HttpExtensions.WinHttp;
 using Dapplo.Log.XUnit;
 using Dapplo.Log;
 using Xunit;
@@ -88,6 +90,30 @@ namespace Dapplo.HttpExtensions.Tests
 			var loopkup = _testUriComplex.QueryToLookup();
 			Assert.NotNull(loopkup);
 			Assert.Equal(2, loopkup[TestKey].Count(x => x == TestValue));
+		}
+
+		[Fact]
+		public void Test_GetProxy()
+		{
+			var uriToGet = new Uri("http://jira");
+			var proxy = WebProxyFactory.Create();
+			Assert.True(proxy.IsBypassed(uriToGet));
+
+			uriToGet = new Uri("https://nu.nl");
+			var proxyUri = proxy.GetProxy(uriToGet);
+			Assert.NotNull(proxyUri);
+		}
+
+		[Fact]
+		public void Test_WinHttp_GetProxy()
+		{
+			var uriToGet = new Uri("http://jira");
+			var proxyUri = uriToGet.GetProxyFor();
+			Assert.Null(proxyUri);
+
+			uriToGet = new Uri("https://nu.nl");
+			proxyUri = uriToGet.GetProxyFor();
+			Assert.NotNull(proxyUri);
 		}
 	}
 }

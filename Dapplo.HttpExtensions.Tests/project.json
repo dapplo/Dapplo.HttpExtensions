@@ -1,10 +1,12 @@
 {
-	"version": "1.0.0-*",
-	"title": "Dapplo.HttpExtensions.Tests",
-	"authors": [ "Robin Krom" ],
-	"copyright": "Copyright © Dapplo 2016-2017",
-	"description": "Tests for Dapplo.HttpExtensions",
-	"supports": {},
+  "version": "0.1.0.0",
+  "title": "Dapplo.HttpExtensions.Tests",
+  "authors": [
+    "Robin Krom"
+  ],
+  "copyright": "Copyright © Dapplo 2016-2017",
+  "description": "Tests for Dapplo.HttpExtensions",
+  "supports": {},
   "dependencies": {
     "Dapplo.HttpExtensions": "1.0.0-*",
     "xunit": "2.1.0",
@@ -15,38 +17,38 @@
     "Dapplo.HttpExtensions.JsonSimple": "*",
     "Dapplo.HttpExtensions.OAuth": "1.0.0-*"
   },
-	"frameworks": {
-		"net45": {
-			"dependencies": {
-				"NETStandard.Library": "1.6.0"
-			},
-			"frameworkAssemblies": {
-				"PresentationCore": "4.0.0.0",
-				"PresentationFramework": "4.0.0.0",
-				"System.Drawing": "4.0.0.0",
-				"System.Xaml": "4.0.0.0",
-				"WindowsBase": "4.0.0.0"
-			}
-		}
-	},
-	"configurations": {
-		"Release": {
-			"buildOptions": {
-				"optimize": true
-			}
-		},
-		"Debug": {
-			"buildOptions": {
-				"optimize": false
-			}
-		}
-	},
-	"tools": {
-		"coveralls.io": "1.3.4",
-		"OpenCover": "4.6.519",
-		"ReportGenerator": "2.5.0.0"
-	},
-	"buildOptions": {
-		"xmlDoc": false
-	}
+  "frameworks": {
+    "net45": {
+      "dependencies": {
+        "NETStandard.Library": "1.6.0"
+      },
+      "frameworkAssemblies": {
+        "PresentationCore": "4.0.0.0",
+        "PresentationFramework": "4.0.0.0",
+        "System.Drawing": "4.0.0.0",
+        "System.Xaml": "4.0.0.0",
+        "WindowsBase": "4.0.0.0"
+      }
+    }
+  },
+  "configurations": {
+    "Release": {
+      "buildOptions": {
+        "optimize": true
+      }
+    },
+    "Debug": {
+      "buildOptions": {
+        "optimize": false
+      }
+    }
+  },
+  "tools": {
+    "coveralls.io": "1.3.4",
+    "OpenCover": "4.6.519",
+    "ReportGenerator": "2.5.0.0"
+  },
+  "buildOptions": {
+    "xmlDoc": false
+  }
 }

@@ -1,5 +1,4 @@
 #tool "nuget:?package=xunit.runner.console"
-#tool "nuget:?package=GitVersion.CommandLine"
 #tool "nuget:?package=OpenCover"
 #tool "nuget:?package=gitlink"
 #tool coveralls.io
@@ -9,8 +8,9 @@
 
 var target = Argument("target", "Build");
 var projectName = Argument("projectName", "Dapplo.HttpExtensions");
-var configuration = Argument("configuration", "Release");
+var configuration = Argument("configuration", "release");
 var dotnetVersion = Argument("dotnetVersion", "net45");
+var version = Argument("version", EnvironmentVariable("APPVEYOR_BUILD_VERSION"));
 var solution = File("./" + projectName + ".sln");
 
 Task("Default")
@@ -29,15 +29,14 @@ Task("Clean")
 Task("Versioning")
 	.Does(() =>
 {
-	var version = GitVersion();
 	var projects = GetFiles(string.Format("./{0}*/project.json", projectName));
 
 	foreach(var project in projects)
 	{
-		Information("Fixing version in {0} to {1}", project, version.AssemblySemVer.ToString());
+		Information("Fixing version in {0} to {1}", project.FullPath, version);
 		TransformConfig(project.FullPath, 
 			new TransformationCollection {
-				{ "/Version", version.AssemblySemVer.ToString() }
+				{ "Version", version }
 			});
 	}
 
@@ -58,7 +57,6 @@ Task("Build")
 	var settings = new DotNetCoreBuildSettings
     {
 		Configuration = configuration,
-		OutputDirectory = "./artifacts/"
 	};
 	 
 	var projects = GetFiles(string.Format("./{0}*/project.json", projectName));
@@ -122,10 +120,14 @@ Task("Package")
 	.IsDependentOn("Upload-Coverage-Report")
 	.Does(()=>
 {
+	var settings = new DotNetCorePackSettings
+    {
+		Configuration = configuration,
+	};
 	var projects = GetFiles(string.Format("./{0}*/project.json", projectName));
 	foreach(var project in projects.Where(p => !p.FullPath.Contains("Test")))
 	{
-		DotNetCorePack(project.FullPath);
+		DotNetCorePack(project.FullPath, settings);
 	}
 });
 

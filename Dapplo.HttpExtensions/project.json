@@ -1,16 +1,24 @@
 {
-  "version": "1.0.0-*",
+  "version": "0.1.0.0",
   "title": "Dapplo.HttpExtensions",
-  "authors": [ "Robin Krom" ],
+  "authors": [
+    "Robin Krom"
+  ],
   "copyright": "Copyright © Dapplo 2016-2017",
   "description": "A library extensions to simplify HTTP usage.",
   "packOptions": {
-    "owners": [ "Dapplo" ],
+    "owners": [
+      "Dapplo"
+    ],
     "summary": "Simplify HTTP code",
     "licenseUrl": "http://www.gnu.org/licenses/lgpl-3.0.en.html",
     "projectUrl": "http://www.dapplo.net/blocks/Dapplo.HttpExtensions/",
     "iconUrl": "http://www.dapplo.net/favicon.ico",
-    "tags": [ "http", "uri", "extensions" ],
+    "tags": [
+      "http",
+      "uri",
+      "extensions"
+    ],
     "requireLicenseAcceptance": false,
     "repository": {
       "type": "git",
@@ -41,8 +49,7 @@
       }
     },
     "net45": {
-      "dependencies": {
-      },
+      "dependencies": {},
       "frameworkAssemblies": {
         "PresentationCore": "",
         "PresentationFramework": "",
@@ -61,8 +68,7 @@
       }
     },
     "net46": {
-      "dependencies": {
-      },
+      "dependencies": {},
       "frameworkAssemblies": {
         "PresentationCore": "",
         "PresentationFramework": "",

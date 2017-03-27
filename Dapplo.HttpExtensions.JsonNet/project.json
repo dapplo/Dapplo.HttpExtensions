@@ -1,16 +1,25 @@
 {
-  "version": "1.0.0-*",
+  "version": "0.1.0.0",
   "title": "Dapplo.HttpExtensions.JsonNet",
-  "authors": [ "Robin Krom" ],
+  "authors": [
+    "Robin Krom"
+  ],
   "copyright": "Copyright © Dapplo 2016-2017",
   "description": "Add Json.NET functionality to Dapplo.HttpExtensions.",
   "packOptions": {
-    "owners": [ "Dapplo" ],
+    "owners": [
+      "Dapplo"
+    ],
     "summary": "Add Json.NET functionality to Dapplo.HttpExtensions.",
     "licenseUrl": "http://www.gnu.org/licenses/lgpl-3.0.en.html",
     "projectUrl": "http://www.dapplo.net/blocks/Dapplo.HttpExtensions/",
     "iconUrl": "http://www.dapplo.net/favicon.ico",
-    "tags": [ "http", "uri", "extensions", "json.net" ],
+    "tags": [
+      "http",
+      "uri",
+      "extensions",
+      "json.net"
+    ],
     "requireLicenseAcceptance": false,
     "repository": {
       "type": "git",
@@ -43,8 +52,7 @@
       }
     },
     "net45": {
-      "dependencies": {
-      },
+      "dependencies": {},
       "frameworkAssemblies": {
         "System.ComponentModel.DataAnnotations": "4.0.0.0",
         "System.Net.Http": "4.0.0.0",
@@ -58,8 +66,7 @@
       }
     },
     "net46": {
-      "dependencies": {
-      },
+      "dependencies": {},
       "frameworkAssemblies": {
         "System.ComponentModel.DataAnnotations": "4.0.0.0",
         "System.Net.Http": "4.0.0.0",

@@ -23,8 +23,8 @@
 
 using System.Drawing.Imaging;
 using System.Net.Cache;
+using Dapplo.HttpExtensions.ContentConverter;
 using Dapplo.HttpExtensions.Extensions;
-using Dapplo.HttpExtensions.SharedDesktop.ContentConverter;
 using Dapplo.Log;
 using Dapplo.Log.XUnit;
 using Xunit;
@@ -36,7 +36,6 @@ namespace Dapplo.HttpExtensions.Tests
 {
     public class HttpRequestConfigurationTests
     {
-        private static readonly LogSource Log = new LogSource();
 
         public HttpRequestConfigurationTests(ITestOutputHelper testOutputHelper)
         {

@@ -27,7 +27,7 @@ using Dapplo.HttpExtensions.Extensions;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.Log;
 
-namespace Dapplo.HttpExtensions.SharedDesktop.ContentConverter
+namespace Dapplo.HttpExtensions.ContentConverter
 {
 	/// <summary>
 	/// This is a configuration class for the BitmapHttpContentConverter

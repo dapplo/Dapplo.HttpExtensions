@@ -22,7 +22,7 @@
  */
 
  #if NET45 || NET46
-namespace Dapplo.HttpExtensions.Desktop
+namespace Dapplo.HttpExtensions.OAuth.Desktop
 {
 	sealed partial class OAuthLoginForm
 	{

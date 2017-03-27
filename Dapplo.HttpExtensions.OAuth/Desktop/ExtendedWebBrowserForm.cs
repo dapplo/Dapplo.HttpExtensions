@@ -28,7 +28,7 @@ using System.Windows.Forms;
 
 #endregion
 
-namespace Dapplo.HttpExtensions.Desktop
+namespace Dapplo.HttpExtensions.OAuth.Desktop
 {
 	/// <summary>
 	/// Used to show an extended embedded web-browser

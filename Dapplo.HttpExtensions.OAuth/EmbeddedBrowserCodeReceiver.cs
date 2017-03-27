@@ -30,8 +30,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Threading;
-using Dapplo.HttpExtensions.Desktop;
 using Dapplo.HttpExtensions.Extensions;
+using Dapplo.HttpExtensions.OAuth.Desktop;
 using Dapplo.Log;
 
 #endregion

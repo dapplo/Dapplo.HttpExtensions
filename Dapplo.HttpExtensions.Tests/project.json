@@ -12,7 +12,8 @@
     "xunit.runner.visualstudio": "2.1.0",
     "Dapplo.Log": "1.0.23",
     "Dapplo.Log.XUnit": "1.0.23",
-    "Dapplo.HttpExtensions.JsonSimple": "*"
+    "Dapplo.HttpExtensions.JsonSimple": "*",
+    "Dapplo.HttpExtensions.OAuth": "1.0.0-*"
   },
 	"frameworks": {
 		"net45": {

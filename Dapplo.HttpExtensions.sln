@@ -1,20 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26228.9
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dapplo.HttpExtensions", "Dapplo.HttpExtensions\Dapplo.HttpExtensions.csproj", "{B3CD22AA-764E-4EF3-AA9D-FD6879518505}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Dapplo.HttpExtensions", "Dapplo.HttpExtensions\Dapplo.HttpExtensions.xproj", "{B3CD22AA-764E-4EF3-AA9D-FD6879518505}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dapplo.HttpExtensions.Tests", "Dapplo.HttpExtensions.Tests\Dapplo.HttpExtensions.Tests.csproj", "{03AB37FF-1220-4ECE-9964-FA6070C778D3}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{18E4C655-0051-414D-84CB-5CBBDB375973}"
-	ProjectSection(SolutionItems) = preProject
-		build.cake = build.cake
-	EndProjectSection
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Dapplo.HttpExtensions.Tests", "Dapplo.HttpExtensions.Tests\Dapplo.HttpExtensions.Tests.xproj", "{03AB37FF-1220-4ECE-9964-FA6070C778D3}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Dapplo.HttpExtensions.JsonSimple", "Dapplo.HttpExtensions.JsonSimple\Dapplo.HttpExtensions.JsonSimple.xproj", "{7926C6FC-F8D4-48E1-AD0F-B2887CF8D1A1}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Dapplo.HttpExtensions.JsonNet", "Dapplo.HttpExtensions.JsonNet\Dapplo.HttpExtensions.JsonNet.xproj", "{9BA13A63-CA7E-485B-B5BB-688AC0279515}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Dapplo.HttpExtensions.OAuth", "Dapplo.HttpExtensions.OAuth\Dapplo.HttpExtensions.OAuth.xproj", "{69948D3C-A983-4E71-A8D3-37BD904F9723}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +35,10 @@ Global
 		{9BA13A63-CA7E-485B-B5BB-688AC0279515}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BA13A63-CA7E-485B-B5BB-688AC0279515}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BA13A63-CA7E-485B-B5BB-688AC0279515}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69948D3C-A983-4E71-A8D3-37BD904F9723}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69948D3C-A983-4E71-A8D3-37BD904F9723}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69948D3C-A983-4E71-A8D3-37BD904F9723}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69948D3C-A983-4E71-A8D3-37BD904F9723}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

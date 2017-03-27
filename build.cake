@@ -12,8 +12,6 @@ var projectName = Argument("projectName", "Dapplo.HttpExtensions");
 var configuration = Argument("configuration", "Release");
 var dotnetVersion = Argument("dotnetVersion", "net45");
 var solution = File("./" + projectName + ".sln");
-var objPaths = string.Format("./**/obj/{0}/{1}", configuration, dotnetVersion);
-var binPaths = string.Format("./**/bin/{0}/{1}", configuration, dotnetVersion);
 
 Task("Default")
 	.IsDependentOn("Package");
@@ -21,8 +19,8 @@ Task("Default")
 Task("Clean")
 	.Does(() =>
 {
-	CleanDirectories(objPaths);
-	CleanDirectories(binPaths);
+	CleanDirectories("./**/obj");
+	CleanDirectories("./**/bin");
 	
 	// A nasty leftover
 	CleanDirectories("./tools/OpenCover/SampleSln");
@@ -32,14 +30,14 @@ Task("Versioning")
 	.Does(() =>
 {
 	var version = GitVersion();
-	var projects = GetFiles("./**/*.csproj");
+	var projects = GetFiles(string.Format("./{0}*/project.json", projectName));
 
 	foreach(var project in projects)
 	{
 		Information("Fixing version in {0} to {1}", project, version.AssemblySemVer.ToString());
-		TransformConfig(project.ToString(), 
+		TransformConfig(project.FullPath, 
 			new TransformationCollection {
-				{ "Project/PropertyGroup/Version", version.AssemblySemVer.ToString() }
+				{ "/Version", version.AssemblySemVer.ToString() }
 			});
 	}
 
@@ -48,7 +46,7 @@ Task("Versioning")
 Task("Restore-NuGet-Packages")
 	.Does(() =>
 {
-	NuGetRestore(solution);
+	DotNetCoreRestore();
 });
 
 Task("Build")
@@ -57,25 +55,34 @@ Task("Build")
 	.IsDependentOn("Versioning")
 	.Does(() =>
 {
-	MSBuild(solution, new MSBuildSettings {
-		Verbosity = Verbosity.Minimal,
-		ToolVersion = MSBuildToolVersion.VS2017,
+	var settings = new DotNetCoreBuildSettings
+    {
 		Configuration = configuration,
-		PlatformTarget = PlatformTarget.MSIL
-	});
+		OutputDirectory = "./artifacts/"
+	};
+	 
+	var projects = GetFiles(string.Format("./{0}*/project.json", projectName));
+	foreach(var project in projects)
+	{
+		DotNetCoreBuild(project.FullPath, settings);
+	}
 	
 	// Make sure the .dlls in the obj path are not found elsewhere
-	CleanDirectories(objPaths);
+	CleanDirectories("./**/obj");
 });
 
 Task("GitLink")
 	.IsDependentOn("Build")
 	.Does(() =>
 {
-	GitLink("./", new GitLinkSettings {
-		Configuration	= configuration,
-		PdbDirectoryPath = string.Format("./{0}/bin/{1}/{2}", projectName, configuration, dotnetVersion)
-	});
+	var projects = GetFiles(string.Format("./{0}*/project.json", projectName));
+	foreach(var project in projects.Where(p => !p.FullPath.Contains("Test")))
+	{
+		GitLink("./", new GitLinkSettings {
+			Configuration	= configuration,
+			PdbDirectoryPath = string.Format("./{0}/bin/{1}/{2}", project.GetDirectory(), configuration, dotnetVersion)
+		});
+	}
 });
 
 Task("Coverage")
@@ -112,15 +119,14 @@ Task("Upload-Coverage-Report")
 
 Task("Package")
 //	.IsDependentOn("GitLink")
-//	.IsDependentOn("Upload-Coverage-Report")
+	.IsDependentOn("Upload-Coverage-Report")
 	.Does(()=>
 {
-	var nuGetPackSettings   = new NuGetPackSettings {
-		BasePath                = projectName,
-		OutputDirectory         = "./packages"
-	};
-								 
-    NuGetPack("Dapplo.HttpExtensions/project.json", nuGetPackSettings);
+	var projects = GetFiles(string.Format("./{0}*/project.json", projectName));
+	foreach(var project in projects.Where(p => !p.FullPath.Contains("Test")))
+	{
+		DotNetCorePack(project.FullPath);
+	}
 });
 
 RunTarget(target);

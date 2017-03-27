@@ -31,7 +31,7 @@ using Dapplo.Log;
 
 #endregion
 
-namespace Dapplo.HttpExtensions.Desktop
+namespace Dapplo.HttpExtensions.OAuth.Desktop
 {
 	/// <summary>
 	///     The OAuthLoginForm is used to allow the user to authorize Greenshot with an "Oauth" application

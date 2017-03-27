@@ -25,7 +25,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace Dapplo.HttpExtensions.SharedDesktop.OAuth
+namespace Dapplo.HttpExtensions.OAuth
 {
     /// <summary>
     ///     Specify OAuth 1 request configuration

@@ -2,17 +2,18 @@
 	"version": "1.0.0-*",
 	"title": "Dapplo.HttpExtensions.Tests",
 	"authors": [ "Robin Krom" ],
-	"copyright": "Copyright © Dapplo 2016",
+	"copyright": "Copyright © Dapplo 2016-2017",
 	"description": "Tests for Dapplo.HttpExtensions",
 	"supports": {},
-	"dependencies": {
-		"Dapplo.HttpExtensions": "1.0.0-*",
-		"xunit": "2.1.0",
-		"xunit.runner.console": "2.1.0",
-		"xunit.runner.visualstudio": "2.1.0",
-		"Dapplo.Log": "1.0.23",
-		"Dapplo.Log.XUnit": "1.0.23"
-	},
+  "dependencies": {
+    "Dapplo.HttpExtensions": "1.0.0-*",
+    "xunit": "2.1.0",
+    "xunit.runner.console": "2.1.0",
+    "xunit.runner.visualstudio": "2.1.0",
+    "Dapplo.Log": "1.0.23",
+    "Dapplo.Log.XUnit": "1.0.23",
+    "Dapplo.HttpExtensions.JsonSimple": "*"
+  },
 	"frameworks": {
 		"net45": {
 			"dependencies": {

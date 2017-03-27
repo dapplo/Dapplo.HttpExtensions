@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016 Dapplo
+//  Copyright (C) 2016-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -35,7 +35,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("ING-DiBa AG")]
 [assembly: AssemblyProduct("Dappo.HttpExtensions.UnitTests")]
-[assembly: AssemblyCopyright("Copyright © ING-DiBa AG 2016")]
+[assembly: AssemblyCopyright("Copyright © ING-DiBa AG 2016-2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

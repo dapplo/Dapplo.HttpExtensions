@@ -2,7 +2,7 @@
     "version": "1.0.0-*",
     "title": "Dapplo.HttpExtensions",
     "authors": [ "Robin Krom" ],
-    "copyright": "Copyright © Dapplo 2016",
+    "copyright": "Copyright © Dapplo 2016-2017",
     "description": "A library extensions to simplify HTTP usage.",
     "packOptions": {
         "owners": [ "Dapplo" ],

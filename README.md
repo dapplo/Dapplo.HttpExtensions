@@ -30,7 +30,7 @@ This is not running during the build, as it needs "human" interaction with a bro
 
 Some of the features:
 - Fluent API
-- Json support build in
+- Json support build in (install nuget package Dapplo.HttpExtensions.JsonSimple and call SimpleJsonSerializer.Register();)
 - OAuth 1 & 2
 - Progress support, for uploading and downloading
 - Typed access to Http content (e.g. GetAsAsync<Bitmap> )
@@ -38,7 +38,7 @@ Some of the features:
 
 Notes:
 
-1. [This project](https://github.com/facebook-csharp-sdk/simple-json), extended for improved functionality, is internally used for the Json parser, as this is abstracted via a IJsonSerializer you could e.g. change this to Json.NET.
+1. [This project](https://github.com/facebook-csharp-sdk/simple-json), extended for improved functionality, is used for the Json parser in JsonSimple, as this is abstracted via a IJsonSerializer you could e.g. change this to Json.NET.
 2. This project uses async code, and tries to conform to the Task-bases Asynchronous Pattern (TAP). Just so you know why sometimes the method name look odd... Meaning all async methods have names which end with Async and (where possible) accept a CancellationToken. This is the final parameter, as adviced here: https://blogs.msdn.microsoft.com/andrewarnottms/2014/03/19/recommended-patterns-for-cancellationtoken/
 
 API Changes, with every 0.x change the signatures have changed:

@@ -1,5 +1,5 @@
 //  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016 Dapplo
+//  Copyright (C) 2016-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -65,6 +65,7 @@ using System.Globalization;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
+
 #if !SIMPLE_JSON_NO_LINQ_EXPRESSION
 #endif
 #if SIMPLE_JSON_DYNAMIC
@@ -76,7 +77,7 @@ using System.Text.RegularExpressions;
 // ReSharper disable RedundantExplicitArrayCreation
 // ReSharper disable SuggestUseVarKeywordEvident
 
-namespace Dapplo.HttpExtensions.Json
+namespace Dapplo.HttpExtensions.JsonSimple
 {
 	/// <summary>
 	///     This class encodes and decodes JSON strings.

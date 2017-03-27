@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016 Dapplo
+//  Copyright (C) 2016-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -25,6 +25,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Dapplo.HttpExtensions.JsonSimple;
+using Dapplo.HttpExtensions.Support;
 using Dapplo.Log.XUnit;
 using Dapplo.HttpExtensions.Tests.TestEntities;
 using Dapplo.Log;
@@ -43,6 +45,7 @@ namespace Dapplo.HttpExtensions.Tests
 		public GithubTests(ITestOutputHelper testOutputHelper)
 		{
 			LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
+            SimpleJsonSerializer.RegisterGlobally();
 		}
 
 		/// <summary>

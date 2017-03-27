@@ -1,5 +1,5 @@
 //  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016 Dapplo
+//  Copyright (C) 2016-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -27,7 +27,7 @@ using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
-namespace Dapplo.HttpExtensions.Json
+namespace Dapplo.HttpExtensions.JsonSimple
 {
 	[GeneratedCode("simple-json", "1.0.0")]
 #if SIMPLE_JSON_INTERNAL

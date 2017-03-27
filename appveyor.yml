@@ -34,10 +34,14 @@ artifacts:
   name: NuGet package
 build_script:
 - dotnet build Dapplo.HttpExtensions -c %CONFIGURATION% --no-dependencies
+- dotnet build Dapplo.HttpExtensions.JsonSimple -c %CONFIGURATION% --no-dependencies
+- dotnet build Dapplo.HttpExtensions.JsonNet -c %CONFIGURATION% --no-dependencies
 - dotnet build Dapplo.HttpExtensions.Tests -c %CONFIGURATION% --no-dependencies
 after_build:
 - ps: if(-not $env:APPVEYOR_PULL_REQUEST_NUMBER) { GitLink .\ }
 - dotnet pack Dapplo.HttpExtensions -c %CONFIGURATION% --no-build -o artifacts
+- dotnet pack Dapplo.HttpExtensions.JsonSimple -c %CONFIGURATION% --no-build -o artifacts
+- dotnet pack Dapplo.HttpExtensions.JsonNet -c %CONFIGURATION% --no-build -o artifacts
 notifications:
 - provider: Email
   to:

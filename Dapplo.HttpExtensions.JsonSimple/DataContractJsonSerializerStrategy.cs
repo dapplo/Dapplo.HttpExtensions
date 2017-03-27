@@ -30,7 +30,7 @@ using System.Runtime.Serialization;
 
 #endregion
 
-namespace Dapplo.HttpExtensions.Json
+namespace Dapplo.HttpExtensions.JsonSimple
 {
     [GeneratedCode("simple-json", "1.0.0")]
 #if SIMPLE_JSON_INTERNAL

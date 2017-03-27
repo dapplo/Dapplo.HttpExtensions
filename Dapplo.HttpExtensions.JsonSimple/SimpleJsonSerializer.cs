@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016-2017 Dapplo
+//  Copyright (C) 2015-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -24,16 +24,14 @@
 using System;
 using System.IO;
 using System.Linq;
-using Dapplo.HttpExtensions.Json;
 
 #if NET45 || NET46
 using System.Drawing;
 using System.Windows.Media.Imaging;
 #endif
-
 #endregion
 
-namespace Dapplo.HttpExtensions.Support
+namespace Dapplo.HttpExtensions.JsonSimple
 {
     /// <summary>
     ///     This defines the default way how Json is de-/serialized.
@@ -43,13 +41,24 @@ namespace Dapplo.HttpExtensions.Support
         private static readonly Type[] NotSerializableTypes =
         {
 #if NET45 || NET46
-			typeof(Bitmap),
-			typeof(BitmapSource),
+            typeof(Bitmap),
+            typeof(BitmapSource),
 #endif
             typeof(Stream),
             typeof(MemoryStream)
         };
 
+        /// <summary>
+        /// Register this IJsonSerializer globally
+        /// </summary>
+        /// <param name="force">bool to specify if this also needs to be set when another serializer is already specified</param>
+        public static void RegisterGlobally(bool force = true)
+        {
+            if (force || HttpExtensionsGlobals.JsonSerializer != null)
+            {
+                HttpExtensionsGlobals.JsonSerializer = new SimpleJsonSerializer();
+            }
+        }
         /// <summary>
         /// </summary>
         /// <param name="targetType">Type to deserialize from a json string</param>
@@ -61,7 +70,7 @@ namespace Dapplo.HttpExtensions.Support
         }
 
         /// <summary>
-        ///     Test if the specified type can be serialized to JSON
+        /// Test if the specified type can be serialized to JSON
         /// </summary>
         /// <param name="sourceType">Type to check</param>
         /// <returns>bool</returns>
@@ -71,7 +80,7 @@ namespace Dapplo.HttpExtensions.Support
         }
 
         /// <summary>
-        ///     Test if the specified type can be deserialized
+        /// Test if the specified type can be deserialized
         /// </summary>
         /// <param name="targetType">Type to check</param>
         /// <returns>bool</returns>

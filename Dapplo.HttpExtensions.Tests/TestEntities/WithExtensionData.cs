@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016-2017 Dapplo
+//  Copyright (C) 2015-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -19,32 +19,29 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region using
-
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using Dapplo.HttpExtensions.Json;
-
-#endregion
+using Dapplo.HttpExtensions.JsonSimple;
 
 namespace Dapplo.HttpExtensions.Tests.TestEntities
 {
-    /// <summary>
-    ///     Container for a test with Extension data
-    /// </summary>
-    [DataContract]
-    class WithExtensionData
-    {
-        [DataMember(Name = "name")]
-        public string Name { get; set; }
+	/// <summary>
+	///     Container for a test with Extension data
+	/// </summary>
+	[DataContract]
+	class WithExtensionData
+	{
+		[DataMember(Name = "name")]
+		public string Name { get; set; }
 
-        [JsonExtensionData(Pattern = "customstringfield_.*")]
-        public IDictionary<string, string> StringExtensionData { get; set; } = new Dictionary<string, string>();
+		[JsonExtensionData(Pattern = "customstringfield_.*")]
+		public IDictionary<string, string> StringExtensionData { get; set; } = new Dictionary<string, string>();
 
-        [JsonExtensionData(Pattern = "customintfield_.*")]
-        public IDictionary<string, int> IntExtensionData { get; set; } = new Dictionary<string, int>();
+		[JsonExtensionData(Pattern = "customintfield_.*")]
+		public IDictionary<string, int> IntExtensionData { get; set; } = new Dictionary<string, int>();
 
-        [JsonExtensionData]
-        public IDictionary<string, object> RestExtensionData { get; set; } = new Dictionary<string, object>();
-    }
+		[JsonExtensionData]
+		public IDictionary<string, object> RestExtensionData { get; set; } = new Dictionary<string, object>();
+
+	}
 }

@@ -25,7 +25,7 @@ using System;
 
 #endregion
 
-namespace Dapplo.HttpExtensions.Json
+namespace Dapplo.HttpExtensions.JsonSimple
 {
     /// <summary>
     ///     Use this attribute on a IDictionary to be able to receive all data which cannot be matched in the target type

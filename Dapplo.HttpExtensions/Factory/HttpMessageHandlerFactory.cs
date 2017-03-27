@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016-2017 Dapplo
+//  Copyright (C) 2015-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -23,22 +23,20 @@
 
 using System.Net;
 using System.Net.Http;
-
 #if NET45 || NET46
 using System.Net.Cache;
 using Dapplo.Log;
 #endif
-
 #endregion
 
 namespace Dapplo.HttpExtensions.Factory
 {
-    /// <summary>
-    ///     Creating a HttpMessageHandler is not very straightforward, that is why the logic is capsulated in the
-    ///     HttpMessageHandlerFactory.
-    /// </summary>
-    public static class HttpMessageHandlerFactory
-    {
+	/// <summary>
+	///     Creating a HttpMessageHandler is not very straightforward, that is why the logic is capsulated in the
+	///     HttpMessageHandlerFactory.
+	/// </summary>
+	public static class HttpMessageHandlerFactory
+	{
 #if NET45 || NET46
 		private static readonly LogSource Log = new LogSource();
 		/// <summary>
@@ -53,61 +51,59 @@ namespace Dapplo.HttpExtensions.Factory
 			return webRequestHandler;
 		}
 #else
-
-        /// <summary>
-        ///     This creates an advanced HttpMessageHandler, used in Apps
-        /// </summary>
-        /// <returns>HttpMessageHandler (HttpClientHandler)</returns>
-        private static HttpMessageHandler CreateHandler()
-        {
-            return CreateHttpClientHandler();
-        }
-
+		/// <summary>
+		///     This creates an advanced HttpMessageHandler, used in Apps
+		/// </summary>
+		/// <returns>HttpMessageHandler (HttpClientHandler)</returns>
+		private static HttpMessageHandler CreateHandler()
+		{
+			return CreateHttpClientHandler();
+		}
 #endif
 
-        /// <summary>
-        ///     This creates a HttpMessageHandler
-        ///     Should be the preferred method to use to create a HttpMessageHandler
-        /// </summary>
-        /// <returns>HttpMessageHandler (WebRequestHandler)</returns>
-        public static HttpMessageHandler Create()
-        {
-            var httpBehaviour = HttpBehaviour.Current;
-            var baseMessageHandler = CreateHandler();
-            if (httpBehaviour.OnHttpMessageHandlerCreated != null)
-            {
-                return httpBehaviour.OnHttpMessageHandlerCreated.Invoke(baseMessageHandler);
-            }
-            return baseMessageHandler;
-        }
+		/// <summary>
+		///     This creates a HttpMessageHandler
+		///     Should be the preferred method to use to create a HttpMessageHandler
+		/// </summary>
+		/// <returns>HttpMessageHandler (WebRequestHandler)</returns>
+		public static HttpMessageHandler Create()
+		{
+			var httpBehaviour = HttpBehaviour.Current;
+			var baseMessageHandler = CreateHandler();
+			if (httpBehaviour.OnHttpMessageHandlerCreated != null)
+			{
+				return httpBehaviour.OnHttpMessageHandlerCreated.Invoke(baseMessageHandler);
+			}
+			return baseMessageHandler;
+		}
 
-        /// <summary>
-        ///     This creates an HttpClientHandler, normally one should use CreateWebRequestHandler
-        ///     But this might be needed for Apps
-        /// </summary>
-        /// <returns>HttpMessageHandler (HttpClientHandler)</returns>
-        // ReSharper disable once UnusedMember.Local
-        private static HttpMessageHandler CreateHttpClientHandler()
-        {
-            var httpClientHandler = new HttpClientHandler();
-            SetDefaults(httpClientHandler);
-            return httpClientHandler;
-        }
+		/// <summary>
+		///     This creates an HttpClientHandler, normally one should use CreateWebRequestHandler
+		///     But this might be needed for Apps
+		/// </summary>
+		/// <returns>HttpMessageHandler (HttpClientHandler)</returns>
+		// ReSharper disable once UnusedMember.Local
+		private static HttpMessageHandler CreateHttpClientHandler()
+		{
+			var httpClientHandler = new HttpClientHandler();
+			SetDefaults(httpClientHandler);
+			return httpClientHandler;
+		}
 
-        /// <summary>
-        ///     Apply settings on the HttpClientHandler
-        /// </summary>
-        /// <param name="httpClientHandler"></param>
-        private static void SetDefaults(HttpClientHandler httpClientHandler)
-        {
-            var httpBehaviour = HttpBehaviour.Current;
-            var httpSettings = httpBehaviour.HttpSettings ?? HttpExtensionsGlobals.HttpSettings;
+		/// <summary>
+		///     Apply settings on the HttpClientHandler
+		/// </summary>
+		/// <param name="httpClientHandler"></param>
+		private static void SetDefaults(HttpClientHandler httpClientHandler)
+		{
+			var httpBehaviour = HttpBehaviour.Current;
+			var httpSettings = httpBehaviour.HttpSettings ?? HttpExtensionsGlobals.HttpSettings;
 
-            httpClientHandler.AllowAutoRedirect = httpSettings.AllowAutoRedirect;
-            httpClientHandler.AutomaticDecompression = httpSettings.DefaultDecompressionMethods;
-            httpClientHandler.CookieContainer = httpSettings.UseCookies ? httpBehaviour.CookieContainer : null;
-            httpClientHandler.Credentials = httpSettings.UseDefaultCredentials ? CredentialCache.DefaultCredentials : httpSettings.Credentials;
-            httpClientHandler.MaxAutomaticRedirections = httpSettings.MaxAutomaticRedirections;
+			httpClientHandler.AllowAutoRedirect = httpSettings.AllowAutoRedirect;
+			httpClientHandler.AutomaticDecompression = httpSettings.DefaultDecompressionMethods;
+			httpClientHandler.CookieContainer = httpSettings.UseCookies ? httpBehaviour.CookieContainer : null;
+			httpClientHandler.Credentials = httpSettings.UseDefaultCredentials ? CredentialCache.DefaultCredentials : httpSettings.Credentials;
+			httpClientHandler.MaxAutomaticRedirections = httpSettings.MaxAutomaticRedirections;
 
 #if NET45 || NET46
 			httpClientHandler.MaxRequestContentBufferSize = httpSettings.MaxRequestContentBufferSize;
@@ -119,16 +115,16 @@ namespace Dapplo.HttpExtensions.Factory
 			httpClientHandler.UseProxy = httpSettings.UseProxy;
 #endif
 
-            httpClientHandler.UseCookies = httpSettings.UseCookies;
-            httpClientHandler.UseDefaultCredentials = httpSettings.UseDefaultCredentials;
-            httpClientHandler.PreAuthenticate = httpSettings.PreAuthenticate;
-        }
+			httpClientHandler.UseCookies = httpSettings.UseCookies;
+			httpClientHandler.UseDefaultCredentials = httpSettings.UseDefaultCredentials;
+			httpClientHandler.PreAuthenticate = httpSettings.PreAuthenticate;
+		}
 
 #if NET45 || NET46
-/// <summary>
-///     Apply settings on the WebRequestHandler, this also calls the SetDefaults for the underlying HttpClientHandler
-/// </summary>
-/// <param name="webRequestHandler">WebRequestHandler to set the defaults to</param>
+		/// <summary>
+		///     Apply settings on the WebRequestHandler, this also calls the SetDefaults for the underlying HttpClientHandler
+		/// </summary>
+		/// <param name="webRequestHandler">WebRequestHandler to set the defaults to</param>
 		private static void SetDefaults(WebRequestHandler webRequestHandler)
 		{
 			var httpBehaviour = HttpBehaviour.Current;
@@ -165,5 +161,5 @@ namespace Dapplo.HttpExtensions.Factory
 			}
 		}
 #endif
-    }
+	}
 }

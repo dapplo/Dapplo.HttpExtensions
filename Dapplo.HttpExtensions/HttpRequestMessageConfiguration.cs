@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016-2017 Dapplo
+//  Copyright (C) 2015-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -19,33 +19,29 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region using
-
 using System;
 using System.Collections.Generic;
 
-#endregion
-
 namespace Dapplo.HttpExtensions
 {
-    /// <summary>
-    ///     Use this to configure the HttpRequestMessage, created in the HttpRequestMessageFactory
-    /// </summary>
-    public class HttpRequestMessageConfiguration : IHttpRequestConfiguration
-    {
-        /// <summary>
-        ///     The HTTP Message version, default is 1.1
-        /// </summary>
-        public Version HttpMessageVersion { get; set; } = new Version(1, 1);
+	/// <summary>
+	/// Use this to configure the HttpRequestMessage, created in the HttpRequestMessageFactory
+	/// </summary>
+	public class HttpRequestMessageConfiguration : IHttpRequestConfiguration
+	{
+		/// <summary>
+		/// Name of the configuration, this should be unique and usually is the type of the object
+		/// </summary>
+		public string Name { get; } = nameof(HttpRequestMessageConfiguration);
 
-        /// <summary>
-        ///     A set of properties for the HTTP request.
-        /// </summary>
-        public IDictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
+		/// <summary>
+		/// A set of properties for the HTTP request.
+		/// </summary>
+		public IDictionary<string, object> Properties { get; set; }= new Dictionary<string, object>();
 
-        /// <summary>
-        ///     Name of the configuration, this should be unique and usually is the type of the object
-        /// </summary>
-        public string Name { get; } = nameof(HttpRequestMessageConfiguration);
-    }
+		/// <summary>
+		/// The HTTP Message version, default is 1.1
+		/// </summary>
+		public Version HttpMessageVersion { get; set; } = new Version(1, 1);
+	}
 }

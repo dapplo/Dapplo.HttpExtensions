@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016-2017 Dapplo
+//  Copyright (C) 2015-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -19,37 +19,33 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region using
-
 using System.Collections.Generic;
 using Dapplo.HttpExtensions.Extensions;
 using Dapplo.HttpExtensions.Support;
 
-#endregion
-
 namespace Dapplo.HttpExtensions.ContentConverter
 {
-    /// <summary>
-    ///     Configuration for the StringHttpContentConverter
-    /// </summary>
-    public class StringConfiguration : IHttpRequestConfiguration
-    {
-        /// <summary>
-        ///     Specify the supported content types
-        /// </summary>
-        public IList<string> SupportedContentTypes { get; } = new List<string>
-        {
-            MediaTypes.Txt.EnumValueOf(),
-            MediaTypes.Html.EnumValueOf(),
-            MediaTypes.Xml.EnumValueOf(),
-            MediaTypes.Json.EnumValueOf(),
-            MediaTypes.XmlReadable.EnumValueOf()
-        };
+	/// <summary>
+	/// Configuration for the StringHttpContentConverter
+	/// </summary>
+	public class StringConfiguration : IHttpRequestConfiguration
+	{
+		/// <summary>
+		/// Specify the supported content types
+		/// </summary>
+		public IList<string> SupportedContentTypes { get; } = new List<string>
+		{
+			MediaTypes.Txt.EnumValueOf(),
+			MediaTypes.Html.EnumValueOf(),
+			MediaTypes.Xml.EnumValueOf(),
+			MediaTypes.Json.EnumValueOf(),
+			MediaTypes.XmlReadable.EnumValueOf()
+		};
 
 
-        /// <summary>
-        ///     Name of the configuration, this should be unique and usually is the type of the object
-        /// </summary>
-        public string Name { get; } = nameof(StringConfiguration);
-    }
+		/// <summary>
+		/// Name of the configuration, this should be unique and usually is the type of the object
+		/// </summary>
+		public string Name { get; } = nameof(StringConfiguration);
+	}
 }

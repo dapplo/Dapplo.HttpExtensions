@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016-2017 Dapplo
+//  Copyright (C) 2015-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -24,11 +24,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Dapplo.HttpExtensions.Extensions;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.Log;
 
@@ -55,16 +55,19 @@ namespace Dapplo.HttpExtensions
         public static async Task<TResponse> GetAsAsync<TResponse>(this HttpResponseMessage httpResponseMessage, CancellationToken cancellationToken = default(CancellationToken)) where TResponse : class
         {
             Log.Verbose().WriteLine("Response status code: {0}", httpResponseMessage.StatusCode);
-            var resultType = typeof(TResponse);
+            var resultType = typeof (TResponse);
             // Quick exit if the caller just wants the HttpResponseMessage
-            if (resultType == typeof(HttpResponseMessage))
+            if (resultType == typeof (HttpResponseMessage))
             {
                 return httpResponseMessage as TResponse;
             }
             // See if we have a container
             if (resultType.GetTypeInfo().GetCustomAttribute<HttpResponseAttribute>() != null)
             {
-                Log.Info().WriteLine("Filling type {0}", resultType.Name);
+                if (Log.IsVerboseEnabled())
+                {
+                    Log.Verbose().WriteLine("Filling type {0}", resultType.FriendlyName());
+                }
                 // special type
                 var instance = Activator.CreateInstance<TResponse>();
                 var properties = resultType.GetProperties().Where(x => x.GetCustomAttribute<HttpPartAttribute>() != null).ToList();
@@ -129,7 +132,7 @@ namespace Dapplo.HttpExtensions
                 var httpContent = httpResponseMessage.Content;
                 var result = await httpContent.GetAsAsync<TResponse>(httpResponseMessage.StatusCode, cancellationToken).ConfigureAwait(false);
                 // Make sure the httpContent is only disposed when it's not the return type
-                if (!typeof(HttpContent).IsAssignableFrom(typeof(TResponse)))
+                if (!typeof (HttpContent).IsAssignableFrom(typeof (TResponse)))
                 {
                     httpContent?.Dispose();
                 }
@@ -169,12 +172,12 @@ namespace Dapplo.HttpExtensions
                     }
                     // Write log if an error occured.
                     Log.Error().WriteLine("Http response {0} ({1}) for {2}, details from website:\n{3}", (int) httpResponseMessage.StatusCode, httpResponseMessage.StatusCode, requestUri, errorContent);
-
+                    
                     // Add some additional information
                     switch (httpResponseMessage.StatusCode)
                     {
-                        case HttpStatusCode.Redirect:
-                        case HttpStatusCode.MovedPermanently:
+                        case System.Net.HttpStatusCode.Redirect:
+                        case System.Net.HttpStatusCode.MovedPermanently:
                             Log.Error().WriteLine("{0} to: {1}", httpResponseMessage.StatusCode, httpResponseMessage.Headers.Location);
                             break;
                     }

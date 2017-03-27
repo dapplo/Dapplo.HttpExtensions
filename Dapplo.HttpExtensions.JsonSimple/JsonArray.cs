@@ -28,7 +28,7 @@ using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
-namespace Dapplo.HttpExtensions.Json
+namespace Dapplo.HttpExtensions.JsonSimple
 {
     /// <summary>
     ///     Represents the json array.

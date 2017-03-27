@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016-2017 Dapplo
+//  Copyright (C) 2015-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -21,47 +21,45 @@
 
 #region using
 
-using System.ComponentModel.DataAnnotations;
-#if NET45 || NET46
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using Dapplo.HttpExtensions.Support;
-#endif
 
 #endregion
 
 namespace Dapplo.HttpExtensions.OAuth
 {
-    /// <summary>
-    ///     The credentials which should be stored.
-    ///     This can be used to extend your Dapplo.Config.IIniSection extending interface.
-    /// </summary>
-    public interface IOAuth1Token
-    {
-        /// <summary>
-        ///     Token for accessing OAuth services
-        /// </summary>
+	/// <summary>
+	///     The credentials which should be stored.
+	///     This can be used to extend your Dapplo.Config.IIniSection extending interface.
+	/// </summary>
+	public interface IOAuth1Token
+	{
+		/// <summary>
+		///     Token for accessing OAuth services
+		/// </summary>
 #if NET45 || NET46
 		[TypeConverter(typeof (DelegatingStringEncryptionTypeConverter))]
 #endif
-        [Display(Description = "Contains the OAuth token (encrypted)")]
-        string OAuthToken { get; set; }
+		[Display(Description = "Contains the OAuth token (encrypted)")]
+		string OAuthToken { get; set; }
 
-        /// <summary>
-        ///     OAuth token secret
-        /// </summary>
-        [Display(Description = "OAuth token secret (encrypted)")]
+		/// <summary>
+		///     OAuth token secret
+		/// </summary>
+		[Display(Description = "OAuth token secret (encrypted)")]
 #if NET45 || NET46
 		[TypeConverter(typeof (DelegatingStringEncryptionTypeConverter))]
 #endif
-        string OAuthTokenSecret { get; set; }
+			string OAuthTokenSecret { get; set; }
 
-        /// <summary>
-        ///     OAuth token verifier
-        /// </summary>
-        [Display(Description = "OAuth token verifier (encrypted)")]
+		/// <summary>
+		///     OAuth token verifier
+		/// </summary>
+		[Display(Description = "OAuth token verifier (encrypted)")]
 #if NET45 || NET46
 		[TypeConverter(typeof (DelegatingStringEncryptionTypeConverter))]
 #endif
-        string OAuthTokenVerifier { get; set; }
-    }
+			string OAuthTokenVerifier { get; set; }
+	}
 }

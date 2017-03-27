@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016-2017 Dapplo
+//  Copyright (C) 2015-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -27,24 +27,24 @@ using System.Runtime.Serialization;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
-    /// <summary>
-    ///     Enum values for the OAuth grant types
-    /// </summary>
-    public enum GrantTypes
-    {
-        /// <summary>
-        ///     Requesting a Password
-        /// </summary>
-        [EnumMember(Value = "password")] Password,
+	/// <summary>
+	///     Enum values for the OAuth grant types
+	/// </summary>
+	public enum GrantTypes
+	{
+		/// <summary>
+		///     Requesting a Password
+		/// </summary>
+		[EnumMember(Value = "password")] Password,
 
-        /// <summary>
-        ///     Requesting a refresh token
-        /// </summary>
-        [EnumMember(Value = "refresh_token")] RefreshToken,
+		/// <summary>
+		///     Requesting a refresh token
+		/// </summary>
+		[EnumMember(Value = "refresh_token")] RefreshToken,
 
-        /// <summary>
-        ///     Requesting a authorization code
-        /// </summary>
-        [EnumMember(Value = "authorization_code")] AuthorizationCode
-    }
+		/// <summary>
+		///     Requesting a authorization code
+		/// </summary>
+		[EnumMember(Value = "authorization_code")] AuthorizationCode
+	}
 }

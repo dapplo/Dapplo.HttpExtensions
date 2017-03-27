@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016-2017 Dapplo
+//  Copyright (C) 2015-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -27,30 +27,30 @@ using System;
 
 namespace Dapplo.HttpExtensions.Support
 {
-    /// <summary>
-    ///     This attribute marks a property in a HttpRequestAttributed or HttpResponseAttribute class as being a part for
-    ///     processing
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Property)]
-    public class HttpPartAttribute : Attribute
-    {
-        /// <summary>
-        ///     Constructor
-        /// </summary>
-        /// <param name="part">HttpParts</param>
-        public HttpPartAttribute(HttpParts part)
-        {
-            Part = part;
-        }
+	/// <summary>
+	///     This attribute marks a property in a HttpRequestAttributed or HttpResponseAttribute class as being a part for
+	///     processing
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Property)]
+	public class HttpPartAttribute : Attribute
+	{
+		/// <summary>
+		///     Constructor
+		/// </summary>
+		/// <param name="part">HttpParts</param>
+		public HttpPartAttribute(HttpParts part)
+		{
+			Part = part;
+		}
 
-        /// <summary>
-        ///     Order of the content when using multi-part content
-        /// </summary>
-        public int Order { get; set; }
+		/// <summary>
+		///     Order of the content when using multi-part content
+		/// </summary>
+		public int Order { get; set; }
 
-        /// <summary>
-        ///     Use this to specify what the property is representing
-        /// </summary>
-        public HttpParts Part { get; set; }
-    }
+		/// <summary>
+		///     Use this to specify what the property is representing
+		/// </summary>
+		public HttpParts Part { get; set; }
+	}
 }

@@ -77,7 +77,7 @@ using System.Text.RegularExpressions;
 // ReSharper disable RedundantExplicitArrayCreation
 // ReSharper disable SuggestUseVarKeywordEvident
 
-namespace Dapplo.HttpExtensions.Json
+namespace Dapplo.HttpExtensions.JsonSimple
 {
     /// <summary>
     ///     This class encodes and decodes JSON strings.

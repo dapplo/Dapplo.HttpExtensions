@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016-2017 Dapplo
+//  Copyright (C) 2015-2017 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -95,13 +95,8 @@ namespace Dapplo.HttpExtensions.Factory
                 }
             }
 
-
             // Make sure the OnCreateHttpRequestMessage function is called
-            if (httpBehaviour.OnHttpRequestMessageCreated != null)
-            {
-                return httpBehaviour.OnHttpRequestMessageCreated.Invoke(httpRequestMessage);
-            }
-            return httpRequestMessage;
+            return httpBehaviour.OnHttpRequestMessageCreated?.Invoke(httpRequestMessage) ?? httpRequestMessage;
         }
 
         /// <summary>
@@ -116,7 +111,7 @@ namespace Dapplo.HttpExtensions.Factory
         public static HttpRequestMessage Create<TResponse, TContent>(HttpMethod method, Uri requestUri, TContent content = default(TContent))
             where TResponse : class where TContent : class
         {
-            return Create(method, requestUri, typeof(TResponse), typeof(TContent), content);
+            return Create(method, requestUri, typeof (TResponse), typeof (TContent), content);
         }
 
         /// <summary>
@@ -129,7 +124,7 @@ namespace Dapplo.HttpExtensions.Factory
         public static HttpRequestMessage Create<TResponse>(HttpMethod method, Uri requestUri)
             where TResponse : class
         {
-            return Create(method, requestUri, typeof(TResponse));
+            return Create(method, requestUri, typeof (TResponse));
         }
 
         /// <summary>
@@ -186,7 +181,7 @@ namespace Dapplo.HttpExtensions.Factory
         public static HttpRequestMessage CreatePost<TResponse>(Uri requestUri, object content = null)
             where TResponse : class
         {
-            return Create(HttpMethod.Post, requestUri, typeof(TResponse), content?.GetType(), content);
+            return Create(HttpMethod.Post, requestUri, typeof (TResponse), content?.GetType(), content);
         }
 
         /// <summary>
@@ -210,7 +205,7 @@ namespace Dapplo.HttpExtensions.Factory
         public static HttpRequestMessage CreatePut<TResponse>(Uri requestUri, object content = null)
             where TResponse : class
         {
-            return Create(HttpMethod.Put, requestUri, typeof(TResponse), content?.GetType(), content);
+            return Create(HttpMethod.Put, requestUri, typeof (TResponse), content?.GetType(), content);
         }
 
         /// <summary>

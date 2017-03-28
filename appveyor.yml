@@ -6,16 +6,6 @@ clone_depth: 2
 branches:
   only:
   - master
-install:
-- choco install gitlink -y
-before_build:
-- ps: .\SetVersion.ps1
-- appveyor-retry dotnet restore -v Minimal
-- ps: if(-not $env:APPVEYOR_PULL_REQUEST_NUMBER) { $env:is_not_pr = "true"; }
-after_test: 
-- ps: .\CreateCoverage.ps1
-- pip install codecov
-- codecov -f "coverage.xml"
 environment:
   github_username:
     secure: dGUm8ikFV7zt04Snv/YfNA==
@@ -27,23 +17,11 @@ build:
   publish_nuget: true
   publish_nuget_symbols: true
   verbosity: minimal
-#cache:
-#- '%USERPROFILE%\.nuget\packages'
 artifacts:
-- path: artifacts\**\*.*
+- path: artifacts\*.nupkg
   name: NuGet package
 build_script:
-- dotnet build Dapplo.HttpExtensions -c %CONFIGURATION% --no-dependencies
-- dotnet build Dapplo.HttpExtensions.OAuth -c %CONFIGURATION% --no-dependencies
-- dotnet build Dapplo.HttpExtensions.JsonSimple -c %CONFIGURATION% --no-dependencies
-- dotnet build Dapplo.HttpExtensions.JsonNet -c %CONFIGURATION% --no-dependencies
-- dotnet build Dapplo.HttpExtensions.Tests -c %CONFIGURATION% --no-dependencies
-after_build:
-- ps: if(-not $env:APPVEYOR_PULL_REQUEST_NUMBER) { GitLink .\ }
-- dotnet pack Dapplo.HttpExtensions -c %CONFIGURATION% --no-build -o artifacts
-- dotnet pack Dapplo.HttpExtensions.OAuth -c %CONFIGURATION% --no-build -o artifacts
-- dotnet pack Dapplo.HttpExtensions.JsonSimple -c %CONFIGURATION% --no-build -o artifacts
-- dotnet pack Dapplo.HttpExtensions.JsonNet -c %CONFIGURATION% --no-build -o artifacts
+- ps: .\build.ps1
 notifications:
 - provider: Email
   to:

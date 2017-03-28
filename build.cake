@@ -1,17 +1,17 @@
 #tool "nuget:?package=xunit.runner.console"
 #tool "nuget:?package=OpenCover"
-#tool "nuget:?package=gitlink"
 #tool coveralls.io
-#addin "MagicChunks"
-#addin "nuget:?package=Cake.FileHelpers"
+#addin MagicChunks
+#addin Cake.FileHelpers
 #addin Cake.Coveralls
 
 var target = Argument("target", "Build");
-var projectName = Argument("projectName", "Dapplo.HttpExtensions");
+var solutionName = Argument("solutionName", "Dapplo.HttpExtensions");
 var configuration = Argument("configuration", "release");
 var dotnetVersion = Argument("dotnetVersion", "net45");
-var version = Argument("version", EnvironmentVariable("APPVEYOR_BUILD_VERSION"));
-var solution = File("./" + projectName + ".sln");
+var version = Argument("version", EnvironmentVariable("APPVEYOR_BUILD_VERSION")?? "0.0.9.9");
+var pullRequest = Argument("pullRequest", EnvironmentVariable("APPVEYOR_PULL_REQUEST_NUMBER"));
+var coveralsRepoToken = Argument("coveralsRepoToken", EnvironmentVariable("COVERALLS_REPO_TOKEN"));
 
 Task("Default")
 	.IsDependentOn("Package");
@@ -20,16 +20,13 @@ Task("Clean")
 	.Does(() =>
 {
 	CleanDirectories("./**/obj");
-	CleanDirectories("./**/bin");
-	
-	// A nasty leftover
-	CleanDirectories("./tools/OpenCover/SampleSln");
+	CleanDirectories("./**/bin");	
 });
 
 Task("Versioning")
 	.Does(() =>
 {
-	var projects = GetFiles(string.Format("./{0}*/project.json", projectName));
+	var projects = GetFiles(string.Format("./{0}*/project.json", solutionName));
 
 	foreach(var project in projects)
 	{
@@ -59,7 +56,7 @@ Task("Build")
 		Configuration = configuration,
 	};
 	 
-	var projects = GetFiles(string.Format("./{0}*/project.json", projectName));
+	var projects = GetFiles(string.Format("./{0}*/project.json", solutionName));
 	foreach(var project in projects)
 	{
 		DotNetCoreBuild(project.FullPath, settings);
@@ -69,62 +66,52 @@ Task("Build")
 	CleanDirectories("./**/obj");
 });
 
-Task("GitLink")
-	.IsDependentOn("Build")
-	.Does(() =>
-{
-	var projects = GetFiles(string.Format("./{0}*/project.json", projectName));
-	foreach(var project in projects.Where(p => !p.FullPath.Contains("Test")))
-	{
-		GitLink("./", new GitLinkSettings {
-			Configuration	= configuration,
-			PdbDirectoryPath = string.Format("./{0}/bin/{1}/{2}", project.GetDirectory(), configuration, dotnetVersion)
-		});
-	}
-});
-
 Task("Coverage")
 	.IsDependentOn("Build")
 	.Does(() =>
 {
+	CreateDirectory("artifacts");
+
 	// Make XUnit 2 run via the OpenCover process
 	OpenCover(
 		// The test tool Lamdba
 		tool => {
-			tool.XUnit2("./**/" + projectName + ".Tests.dll",
+			tool.XUnit2("./**/" + solutionName + ".Tests.dll",
 				new XUnit2Settings {
 					ShadowCopy = false
 				});
 			},
 		// The output path
-		new FilePath("./coverage.xml"),
+		new FilePath("./artifacts/coverage.xml"),
 		// Settings
 		new OpenCoverSettings() {
 			ReturnTargetCodeOffset = 0
-		}.WithFilter("+[" + projectName + "]*").WithFilter("-[" + projectName + ".Tests]*")
+		}.WithFilter("+[" + solutionName + "]*").WithFilter("-[" + solutionName + ".Tests]*")
 	);
 });
 
 Task("Upload-Coverage-Report")
 	.IsDependentOn("Coverage")
+	.WithCriteria(() => !string.IsNullOrEmpty(coveralsRepoToken))
     .Does(() =>
 {
-    CoverallsIo("./coverage.xml", new CoverallsIoSettings()
+    CoverallsIo("./artifacts/coverage.xml", new CoverallsIoSettings()
     {
-        RepoToken = EnvironmentVariable("COVERALLS_REPO_TOKEN")
+        RepoToken = coveralsRepoToken
     });
 });
 
 Task("Package")
-//	.IsDependentOn("GitLink")
 	.IsDependentOn("Upload-Coverage-Report")
+	.WithCriteria(() => !string.IsNullOrEmpty(pullRequest))
 	.Does(()=>
 {
 	var settings = new DotNetCorePackSettings
     {
 		Configuration = configuration,
+		OutputDirectory = "./artifacts/"
 	};
-	var projects = GetFiles(string.Format("./{0}*/project.json", projectName));
+	var projects = GetFiles(string.Format("./{0}*/project.json", solutionName));
 	foreach(var project in projects.Where(p => !p.FullPath.Contains("Test")))
 	{
 		DotNetCorePack(project.FullPath, settings);

@@ -13,6 +13,8 @@ environment:
     secure: eBQPtXg53XgcvdcVY3wQAw6kkwNh+QhcsTDwzyQLLh6IOPyiePEaEhJR0D2YBjAj
   COVERALLS_REPO_TOKEN:
     secure: sVulFO20DgFcIIQPU926SJqzLWqv4EozRmXYa3MuSDz3fyFXie9wkptVMM5oz3nC
+  NuGet_Api_Key:
+    secure: xkDQ385+smLqdzhESsXBJvnUjK4FZ4Djjrqi9tFR29dwESIvPYOrQAqgri5Nf/fA
 build:
   publish_nuget: true
   publish_nuget_symbols: true

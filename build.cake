@@ -12,6 +12,8 @@ var dotnetVersion = Argument("dotnetVersion", "net45");
 var version = Argument("version", EnvironmentVariable("APPVEYOR_BUILD_VERSION")?? "0.0.9.9");
 var pullRequest = Argument("pullRequest", EnvironmentVariable("APPVEYOR_PULL_REQUEST_NUMBER"));
 var coveralsRepoToken = Argument("coveralsRepoToken", EnvironmentVariable("COVERALLS_REPO_TOKEN"));
+var isRelease = Argument<bool>("isRelease", string.Compare("[release]", EnvironmentVariable("appveyor_repo_commit_message_extended"), true) == 0);
+var nugetApiKey = Argument("nugetApiKey", EnvironmentVariable("NuGet_Api_Key"));
 
 Task("Default")
 	.IsDependentOn("Package");
@@ -104,6 +106,7 @@ Task("Upload-Coverage-Report")
 Task("Package")
 	.IsDependentOn("Upload-Coverage-Report")
 	.WithCriteria(() => !string.IsNullOrEmpty(pullRequest))
+	.WithCriteria(() => isRelease)
 	.Does(()=>
 {
 	var settings = new DotNetCorePackSettings

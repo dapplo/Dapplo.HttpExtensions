@@ -33,8 +33,8 @@ Some of the features:
 3. Typed access to Http content (e.g. GetAsAsync<Bitmap> )
 4. Typed upload
 5. Json support, in two variants:
- 1. [SimpleJson](https://github.com/facebook-csharp-sdk/simple-json) via nuget package Dapplo.HttpExtensions.JsonSimple and call SimpleJsonSerializer.RegisterGlobally() or set IHttpBehavior.JsonSerializer to new SimpleJsonSerializer();
- 2. install nuget package Dapplo.HttpExtensions.JsonNet and call JsonNetJsonSerializer.RegisterGlobally(); or set IHttpBehavior.JsonSerializer to new JsonNetJsonSerializer();
+  1. [SimpleJson](https://github.com/facebook-csharp-sdk/simple-json) via nuget package Dapplo.HttpExtensions.JsonSimple and call SimpleJsonSerializer.RegisterGlobally() or set IHttpBehavior.JsonSerializer to new SimpleJsonSerializer();
+  2. install nuget package Dapplo.HttpExtensions.JsonNet and call JsonNetJsonSerializer.RegisterGlobally(); or set IHttpBehavior.JsonSerializer to new JsonNetJsonSerializer();
 6. OAuth 1 & 2 via nuget package Dapplo.HttpExtensions.OAuth, this is currently work in process but with some servers it should already be usable.
 
 Notes:

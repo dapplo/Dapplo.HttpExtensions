@@ -27,14 +27,15 @@ There is also an OAuth test: [OAuth/OAuthTests.TestOAuthHttpMessageHandler](http
 This is not running during the build, as it needs "human" interaction with a browser.
 
 Some of the features:
-- Fluent API
-- Progress support, for uploading and downloading
-- Typed access to Http content (e.g. GetAsAsync<Bitmap> )
-- Typed upload
-- Json support, in two variants
-··- [SimpleJson](https://github.com/facebook-csharp-sdk/simple-json) via nuget package Dapplo.HttpExtensions.JsonSimple and call SimpleJsonSerializer.RegisterGlobally() or set IHttpBehavior.JsonSerializer to new SimpleJsonSerializer();
-··- install nuget package Dapplo.HttpExtensions.JsonNet and call JsonNetJsonSerializer.RegisterGlobally(); or set IHttpBehavior.JsonSerializer to new JsonNetJsonSerializer();
-- OAuth 1 & 2 via nuget package Dapplo.HttpExtensions.OAuth, this is currently work in process but with some servers it should already be usable.
+
+1. Fluent API
+2. Progress support, for uploading and downloading
+3. Typed access to Http content (e.g. GetAsAsync<Bitmap> )
+4. Typed upload
+5. Json support, in two variants:
+··1. [SimpleJson](https://github.com/facebook-csharp-sdk/simple-json) via nuget package Dapplo.HttpExtensions.JsonSimple and call SimpleJsonSerializer.RegisterGlobally() or set IHttpBehavior.JsonSerializer to new SimpleJsonSerializer();
+··2. install nuget package Dapplo.HttpExtensions.JsonNet and call JsonNetJsonSerializer.RegisterGlobally(); or set IHttpBehavior.JsonSerializer to new JsonNetJsonSerializer();
+6. OAuth 1 & 2 via nuget package Dapplo.HttpExtensions.OAuth, this is currently work in process but with some servers it should already be usable.
 
 Notes:
 This project uses async code, and tries to conform to the Task-bases Asynchronous Pattern (TAP). Just so you know why sometimes the method name look odd... Meaning all async methods have names which end with Async and (where possible) accept a CancellationToken. This is the final parameter, as adviced here: https://blogs.msdn.microsoft.com/andrewarnottms/2014/03/19/recommended-patterns-for-cancellationtoken/

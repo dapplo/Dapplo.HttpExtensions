@@ -11,8 +11,6 @@ Sometimes you just want to access a service in the internet or on a local server
 This project helps you to deal with a lot of difficult stuff, like having a default proxy or even making a specify proxy possible.
 Also it can handle Json communication, which a lot of REST based APIs use.
 
-Support for OAuth 2 is also build in, this is currently work in process but with some servers it should already be usable.
-
 A short example:
 ```
 	using Dapplo.HttpExtensions;
@@ -30,18 +28,20 @@ This is not running during the build, as it needs "human" interaction with a bro
 
 Some of the features:
 - Fluent API
-- Json support build in (install nuget package Dapplo.HttpExtensions.JsonSimple and call SimpleJsonSerializer.Register();)
-- OAuth 1 & 2
 - Progress support, for uploading and downloading
 - Typed access to Http content (e.g. GetAsAsync<Bitmap> )
 - Typed upload
+- Json support, in two variants
+··- [SimpleJson](https://github.com/facebook-csharp-sdk/simple-json) via nuget package Dapplo.HttpExtensions.JsonSimple and call SimpleJsonSerializer.RegisterGlobally() or set IHttpBehavior.JsonSerializer to new SimpleJsonSerializer();
+··- install nuget package Dapplo.HttpExtensions.JsonNet and call JsonNetJsonSerializer.RegisterGlobally(); or set IHttpBehavior.JsonSerializer to new JsonNetJsonSerializer();
+- OAuth 1 & 2 via nuget package Dapplo.HttpExtensions.OAuth, this is currently work in process but with some servers it should already be usable.
 
 Notes:
-
-1. [This project](https://github.com/facebook-csharp-sdk/simple-json), extended for improved functionality, is used for the Json parser in JsonSimple, as this is abstracted via a IJsonSerializer you could e.g. change this to Json.NET.
-2. This project uses async code, and tries to conform to the Task-bases Asynchronous Pattern (TAP). Just so you know why sometimes the method name look odd... Meaning all async methods have names which end with Async and (where possible) accept a CancellationToken. This is the final parameter, as adviced here: https://blogs.msdn.microsoft.com/andrewarnottms/2014/03/19/recommended-patterns-for-cancellationtoken/
+This project uses async code, and tries to conform to the Task-bases Asynchronous Pattern (TAP). Just so you know why sometimes the method name look odd... Meaning all async methods have names which end with Async and (where possible) accept a CancellationToken. This is the final parameter, as adviced here: https://blogs.msdn.microsoft.com/andrewarnottms/2014/03/19/recommended-patterns-for-cancellationtoken/
 
 API Changes, with every 0.x change the signatures have changed:
 In 0.2.x a HttpBehaviour object was added to prevent future signature changes as much as possible.
 In 0.3.x a lot of previous method were combined. (GetAsMemoryStream -> GetAsAsync<MemoryStream>, GetAsStringAsync -> GetAsAsync<string>)
 In 0.4.x the IHttpBehaviour was removed again, it's now passed via the CallContext. If you need to a specific behaviour for a call, than you will need to call MakeCurrent() on the behaviour before the call.
+In 0.5.x The configuration logic for the converters was changed
+In 0.6.x the Json and OAuth support were removed from the main package

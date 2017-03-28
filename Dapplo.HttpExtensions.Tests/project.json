@@ -8,26 +8,26 @@
   "description": "Tests for Dapplo.HttpExtensions",
   "supports": {},
   "dependencies": {
-    "Dapplo.HttpExtensions": "1.0.0-*",
+    "Dapplo.HttpExtensions": "*",
     "xunit": "2.1.0",
     "xunit.runner.console": "2.1.0",
     "xunit.runner.visualstudio": "2.1.0",
     "Dapplo.Log": "1.0.23",
     "Dapplo.Log.XUnit": "1.0.23",
     "Dapplo.HttpExtensions.JsonSimple": "*",
-    "Dapplo.HttpExtensions.OAuth": "1.0.0-*"
+    "Dapplo.HttpExtensions.OAuth": "*"
   },
   "frameworks": {
     "net45": {
       "dependencies": {
-        "NETStandard.Library": "1.6.0"
+        "NETStandard.Library": "1.6.1"
       },
       "frameworkAssemblies": {
-        "PresentationCore": "4.0.0.0",
-        "PresentationFramework": "4.0.0.0",
-        "System.Drawing": "4.0.0.0",
-        "System.Xaml": "4.0.0.0",
-        "WindowsBase": "4.0.0.0"
+        "PresentationCore": "",
+        "PresentationFramework": "",
+        "System.Drawing": "",
+        "System.Xaml": "",
+        "WindowsBase": ""
       }
     }
   },

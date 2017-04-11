@@ -20,7 +20,8 @@
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
 #if NET45 || NET46
-#region using
+
+#region Usings
 
 using System;
 using System.Collections.Generic;
@@ -35,58 +36,59 @@ using Dapplo.Log;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
-	/// <summary>
-	///     OAuth (2.0) verification code receiver that depending on the Mode:
-	///     OutOfBound: shows a simple dialog and waits for the answer
-	///     OutOfBoundAuto: monitors title changes
-	/// </summary>
-	internal class OutOfBoundCodeReceiver : IOAuthCodeReceiver
-	{
-		private static readonly LogSource Log = new LogSource();
+    /// <summary>
+    ///     OAuth (2.0) verification code receiver that depending on the Mode:
+    ///     OutOfBound: shows a simple dialog and waits for the answer
+    ///     OutOfBoundAuto: monitors title changes
+    /// </summary>
+    internal class OutOfBoundCodeReceiver : IOAuthCodeReceiver
+    {
+        private static readonly LogSource Log = new LogSource();
 
-		/// <summary>
-		///     The OAuth code receiver
-		/// </summary>
-		/// <param name="authorizeMode">which of the AuthorizeModes was used to call the method</param>
-		/// <param name="codeReceiverSettings"></param>
-		/// <param name="cancellationToken">CancellationToken</param>
-		/// <returns>Dictionary with values</returns>
-		public async Task<IDictionary<string, string>> ReceiveCodeAsync(AuthorizeModes authorizeMode, ICodeReceiverSettings codeReceiverSettings,
-			CancellationToken cancellationToken = default(CancellationToken))
-		{
-			// Force OOB Uri
-			switch (authorizeMode)
-			{
-				case AuthorizeModes.OutOfBound:
-					codeReceiverSettings.RedirectUrl = "urn:ietf:wg:oauth:2.0:oob";
-					break;
-				case AuthorizeModes.OutOfBoundAuto:
-					codeReceiverSettings.RedirectUrl = "urn:ietf:wg:oauth:2.0:oob:auto";
-					break;
-				default:
-					throw new NotSupportedException($"Only {AuthorizeModes.OutOfBound} and {AuthorizeModes.OutOfBoundAuto} are supported modes for this receiver");
-			}
+        /// <summary>
+        ///     The OAuth code receiver
+        /// </summary>
+        /// <param name="authorizeMode">which of the AuthorizeModes was used to call the method</param>
+        /// <param name="codeReceiverSettings"></param>
+        /// <param name="cancellationToken">CancellationToken</param>
+        /// <returns>Dictionary with values</returns>
+        public async Task<IDictionary<string, string>> ReceiveCodeAsync(AuthorizeModes authorizeMode, ICodeReceiverSettings codeReceiverSettings,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            // Force OOB Uri
+            switch (authorizeMode)
+            {
+                case AuthorizeModes.OutOfBound:
+                    codeReceiverSettings.RedirectUrl = "urn:ietf:wg:oauth:2.0:oob";
+                    break;
+                case AuthorizeModes.OutOfBoundAuto:
+                    codeReceiverSettings.RedirectUrl = "urn:ietf:wg:oauth:2.0:oob:auto";
+                    break;
+                default:
+                    throw new NotSupportedException($"Only {AuthorizeModes.OutOfBound} and {AuthorizeModes.OutOfBoundAuto} are supported modes for this receiver");
+            }
 
-			// while the listener is beging starter in the "background", here we prepare opening the browser
-			var uriBuilder = new UriBuilder(codeReceiverSettings.AuthorizationUri)
-			{
-				Query = codeReceiverSettings.AuthorizationUri.QueryToKeyValuePairs()
-					.Select(x => new KeyValuePair<string, string>(x.Key, x.Value.FormatWith(codeReceiverSettings)))
-					.ToQueryString()
-			};
+            // while the listener is beging starter in the "background", here we prepare opening the browser
+            var uriBuilder = new UriBuilder(codeReceiverSettings.AuthorizationUri)
+            {
+                Query = codeReceiverSettings.AuthorizationUri.QueryToKeyValuePairs()
+                    .Select(x => new KeyValuePair<string, string>(x.Key, x.Value.FormatWith(codeReceiverSettings)))
+                    .ToQueryString()
+            };
 
-			// Get the formatted FormattedAuthUrl
-			var authorizationUrl = uriBuilder.Uri;
-			Log.Info().WriteLine("Opening a browser with: {0}", authorizationUrl.AbsoluteUri);
-			// Open the url in the default browser
-			Process.Start(authorizationUrl.AbsoluteUri);
+            // Get the formatted FormattedAuthUrl
+            var authorizationUrl = uriBuilder.Uri;
+            Log.Info().WriteLine("Opening a browser with: {0}", authorizationUrl.AbsoluteUri);
+            // Open the url in the default browser
+            Process.Start(authorizationUrl.AbsoluteUri);
 
-			// TODO: Get the response here, this should be done via the windows title
+            // TODO: Get the response here, this should be done via the windows title
 
-			await Task.Delay(10*1000, cancellationToken).ConfigureAwait(false);
-			// Return result of the listening
-			return null;
-		}
-	}
+            await Task.Delay(10 * 1000, cancellationToken).ConfigureAwait(false);
+            // Return result of the listening
+            return null;
+        }
+    }
 }
+
 #endif

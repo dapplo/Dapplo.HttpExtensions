@@ -53,7 +53,7 @@
 #define SIMPLE_JSON_TYPEINFO
 #endif
 
-#region using
+#region Usings
 
 using System;
 using System.CodeDom.Compiler;
@@ -457,7 +457,8 @@ namespace Dapplo.HttpExtensions.JsonSimple
                                 if (remainingLength >= 6)
                                 {
                                     uint lowCodePoint;
-                                    if (new string(json, index, 2) == "\\u" && uint.TryParse(new string(json, index + 2, 4), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out lowCodePoint))
+                                    if (new string(json, index, 2) == "\\u" &&
+                                        uint.TryParse(new string(json, index + 2, 4), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out lowCodePoint))
                                     {
                                         if (0xDC00 <= lowCodePoint && lowCodePoint <= 0xDFFF) // if low surrogate
                                         {
@@ -927,14 +928,16 @@ namespace Dapplo.HttpExtensions.JsonSimple
         private static PocoJsonSerializerStrategy _pocoJsonSerializerStrategy;
 
         [EditorBrowsable(EditorBrowsableState.Advanced)]
-        public static PocoJsonSerializerStrategy PocoJsonSerializerStrategy => _pocoJsonSerializerStrategy ?? (_pocoJsonSerializerStrategy = new PocoJsonSerializerStrategy());
+        public static PocoJsonSerializerStrategy PocoJsonSerializerStrategy
+            => _pocoJsonSerializerStrategy ?? (_pocoJsonSerializerStrategy = new PocoJsonSerializerStrategy());
 
 #if SIMPLE_JSON_DATACONTRACT
 
         private static DataContractJsonSerializerStrategy _dataContractJsonSerializerStrategy;
 
         [EditorBrowsable(EditorBrowsableState.Advanced)]
-        public static DataContractJsonSerializerStrategy DataContractJsonSerializerStrategy => _dataContractJsonSerializerStrategy ?? (_dataContractJsonSerializerStrategy = new DataContractJsonSerializerStrategy());
+        public static DataContractJsonSerializerStrategy DataContractJsonSerializerStrategy
+            => _dataContractJsonSerializerStrategy ?? (_dataContractJsonSerializerStrategy = new DataContractJsonSerializerStrategy());
 
 #endif
     }

@@ -19,11 +19,12 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region using
+#region Usings
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading;
@@ -52,12 +53,13 @@ namespace Dapplo.HttpExtensions
         /// <param name="httpResponseMessage">HttpResponseMessage</param>
         /// <param name="cancellationToken">CancellationToken</param>
         /// <returns>the deserialized object of type T or default(T)</returns>
-        public static async Task<TResponse> GetAsAsync<TResponse>(this HttpResponseMessage httpResponseMessage, CancellationToken cancellationToken = default(CancellationToken)) where TResponse : class
+        public static async Task<TResponse> GetAsAsync<TResponse>(this HttpResponseMessage httpResponseMessage,
+            CancellationToken cancellationToken = default(CancellationToken)) where TResponse : class
         {
             Log.Verbose().WriteLine("Response status code: {0}", httpResponseMessage.StatusCode);
-            var resultType = typeof (TResponse);
+            var resultType = typeof(TResponse);
             // Quick exit if the caller just wants the HttpResponseMessage
-            if (resultType == typeof (HttpResponseMessage))
+            if (resultType == typeof(HttpResponseMessage))
             {
                 return httpResponseMessage as TResponse;
             }
@@ -99,7 +101,8 @@ namespace Dapplo.HttpExtensions
                     var httpContent = httpResponseMessage.Content;
 
                     // Convert the HttpContent to the value type 
-                    var convertedContent = await httpContent.GetAsAsync(targetPropertyInfo.PropertyType, httpResponseMessage.StatusCode, cancellationToken).ConfigureAwait(false);
+                    var convertedContent =
+                        await httpContent.GetAsAsync(targetPropertyInfo.PropertyType, httpResponseMessage.StatusCode, cancellationToken).ConfigureAwait(false);
 
                     // If we get null, we throw an error if the
                     if (convertedContent == null)
@@ -132,7 +135,7 @@ namespace Dapplo.HttpExtensions
                 var httpContent = httpResponseMessage.Content;
                 var result = await httpContent.GetAsAsync<TResponse>(httpResponseMessage.StatusCode, cancellationToken).ConfigureAwait(false);
                 // Make sure the httpContent is only disposed when it's not the return type
-                if (!typeof (HttpContent).IsAssignableFrom(typeof (TResponse)))
+                if (!typeof(HttpContent).IsAssignableFrom(typeof(TResponse)))
                 {
                     httpContent?.Dispose();
                 }
@@ -171,13 +174,15 @@ namespace Dapplo.HttpExtensions
                         Log.Debug().WriteLine("Error while reading the error content: {0}", ex.Message);
                     }
                     // Write log if an error occured.
-                    Log.Error().WriteLine("Http response {0} ({1}) for {2}, details from website:\n{3}", (int) httpResponseMessage.StatusCode, httpResponseMessage.StatusCode, requestUri, errorContent);
-                    
+                    Log.Error()
+                        .WriteLine("Http response {0} ({1}) for {2}, details from website:\n{3}", (int) httpResponseMessage.StatusCode, httpResponseMessage.StatusCode,
+                            requestUri, errorContent);
+
                     // Add some additional information
                     switch (httpResponseMessage.StatusCode)
                     {
-                        case System.Net.HttpStatusCode.Redirect:
-                        case System.Net.HttpStatusCode.MovedPermanently:
+                        case HttpStatusCode.Redirect:
+                        case HttpStatusCode.MovedPermanently:
                             Log.Error().WriteLine("{0} to: {1}", httpResponseMessage.StatusCode, httpResponseMessage.Headers.Location);
                             break;
                     }

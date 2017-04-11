@@ -19,7 +19,7 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region using
+#region Usings
 
 using System.Runtime.Serialization;
 
@@ -27,50 +27,59 @@ using System.Runtime.Serialization;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
-	/// <summary>
-	/// Enum with all the parameters for OAuth 1
-	/// </summary>
-	public enum OAuth1Parameters
-	{
-		/// <summary>
-		/// Consumer key is the key which a service provides for it's consumers
-		/// </summary>
-		[EnumMember(Value = "oauth_consumer_key")] ConsumerKey,
-		/// <summary>
-		/// Callback Uri
-		/// </summary>
-		[EnumMember(Value = "oauth_callback")] Callback,
-		/// <summary>
-		/// Used version
-		/// </summary>
-		[EnumMember(Value = "oauth_version")] Version,
-		/// <summary>
-		/// Signing method
-		/// </summary>
-		[EnumMember(Value = "oauth_signature_method")] SignatureMethod,
-		/// <summary>
-		/// Timestamp of the request
-		/// </summary>
-		[EnumMember(Value = "oauth_timestamp")] Timestamp,
-		/// <summary>
-		/// A unique code
-		/// </summary>
-		[EnumMember(Value = "oauth_nonce")] Nonce,
-		/// <summary>
-		/// Token
-		/// </summary>
-		[EnumMember(Value = "oauth_token")] Token,
-		/// <summary>
-		/// Token verifier
-		/// </summary>
-		[EnumMember(Value = "oauth_verifier")] Verifier,
-		/// <summary>
-		/// Token secret
-		/// </summary>
-		[EnumMember(Value = "oauth_token_secret")] TokenSecret,
-		/// <summary>
-		/// Signature for the request
-		/// </summary>
-		[EnumMember(Value = "oauth_signature")] Signature
-	}
+    /// <summary>
+    ///     Enum with all the parameters for OAuth 1
+    /// </summary>
+    public enum OAuth1Parameters
+    {
+        /// <summary>
+        ///     Consumer key is the key which a service provides for it's consumers
+        /// </summary>
+        [EnumMember(Value = "oauth_consumer_key")] ConsumerKey,
+
+        /// <summary>
+        ///     Callback Uri
+        /// </summary>
+        [EnumMember(Value = "oauth_callback")] Callback,
+
+        /// <summary>
+        ///     Used version
+        /// </summary>
+        [EnumMember(Value = "oauth_version")] Version,
+
+        /// <summary>
+        ///     Signing method
+        /// </summary>
+        [EnumMember(Value = "oauth_signature_method")] SignatureMethod,
+
+        /// <summary>
+        ///     Timestamp of the request
+        /// </summary>
+        [EnumMember(Value = "oauth_timestamp")] Timestamp,
+
+        /// <summary>
+        ///     A unique code
+        /// </summary>
+        [EnumMember(Value = "oauth_nonce")] Nonce,
+
+        /// <summary>
+        ///     Token
+        /// </summary>
+        [EnumMember(Value = "oauth_token")] Token,
+
+        /// <summary>
+        ///     Token verifier
+        /// </summary>
+        [EnumMember(Value = "oauth_verifier")] Verifier,
+
+        /// <summary>
+        ///     Token secret
+        /// </summary>
+        [EnumMember(Value = "oauth_token_secret")] TokenSecret,
+
+        /// <summary>
+        ///     Signature for the request
+        /// </summary>
+        [EnumMember(Value = "oauth_signature")] Signature
+    }
 }

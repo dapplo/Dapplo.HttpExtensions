@@ -18,28 +18,32 @@
 // 
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
+
+
 #if NET45 || NET46
+
 namespace Dapplo.HttpExtensions.OAuth
 {
-	/// <summary>
-	///     This factory can be used to create a IHttpBehaviour which handles OAuth requests
-	/// </summary>
-	public static class OAuth1HttpBehaviourFactory
-	{
-		/// <summary>
-		///     Create a specify OAuth IHttpBehaviour
-		/// </summary>
-		/// <param name="oAuthSettings">OAuthSettings</param>
-		/// <param name="fromHttpBehaviour">IHttpBehaviour or null</param>
-		/// <returns>IHttpBehaviour</returns>
-		public static OAuth1HttpBehaviour Create(OAuth1Settings oAuthSettings, IHttpBehaviour fromHttpBehaviour = null)
-		{
-			// Get a clone of a IHttpBehaviour (passed or current)
-			var oauthHttpBehaviour = new OAuth1HttpBehaviour(fromHttpBehaviour);
-			// Add a wrapper (delegate handler) which wraps all new HttpMessageHandlers
-			oauthHttpBehaviour.ChainOnHttpMessageHandlerCreated(httpMessageHandler => new OAuth1HttpMessageHandler(oAuthSettings, oauthHttpBehaviour, httpMessageHandler));
-			return oauthHttpBehaviour;
-		}
-	}
+    /// <summary>
+    ///     This factory can be used to create a IHttpBehaviour which handles OAuth requests
+    /// </summary>
+    public static class OAuth1HttpBehaviourFactory
+    {
+        /// <summary>
+        ///     Create a specify OAuth IHttpBehaviour
+        /// </summary>
+        /// <param name="oAuthSettings">OAuthSettings</param>
+        /// <param name="fromHttpBehaviour">IHttpBehaviour or null</param>
+        /// <returns>IHttpBehaviour</returns>
+        public static OAuth1HttpBehaviour Create(OAuth1Settings oAuthSettings, IHttpBehaviour fromHttpBehaviour = null)
+        {
+            // Get a clone of a IHttpBehaviour (passed or current)
+            var oauthHttpBehaviour = new OAuth1HttpBehaviour(fromHttpBehaviour);
+            // Add a wrapper (delegate handler) which wraps all new HttpMessageHandlers
+            oauthHttpBehaviour.ChainOnHttpMessageHandlerCreated(httpMessageHandler => new OAuth1HttpMessageHandler(oAuthSettings, oauthHttpBehaviour, httpMessageHandler));
+            return oauthHttpBehaviour;
+        }
+    }
 }
+
 #endif

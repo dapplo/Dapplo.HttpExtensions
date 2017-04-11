@@ -19,49 +19,48 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region using
+#region Usings
 
 using System;
-
+using System.ComponentModel.DataAnnotations;
 #if NET45 || NET46
 using System.ComponentModel;
 using Dapplo.HttpExtensions.Support;
 #endif
-using System.ComponentModel.DataAnnotations;
 
 #endregion
 
 namespace Dapplo.HttpExtensions.OAuth
 {
-	/// <summary>
-	///     The credentials which should be stored.
-	///     This can be used to extend your Dapplo.Config.IIniSection extending interface.
-	/// </summary>
-	public interface IOAuth2Token
-	{
-		/// <summary>
-		///     Bearer token for accessing OAuth 2 services
-		/// </summary>
-		[Display(Description = "Contains the OAuth 2 access token (encrypted)")]
+    /// <summary>
+    ///     The credentials which should be stored.
+    ///     This can be used to extend your Dapplo.Config.IIniSection extending interface.
+    /// </summary>
+    public interface IOAuth2Token
+    {
+        /// <summary>
+        ///     Bearer token for accessing OAuth 2 services
+        /// </summary>
+        [Display(Description = "Contains the OAuth 2 access token (encrypted)")]
 #if NET45 || NET46
-		[TypeConverter(typeof (DelegatingStringEncryptionTypeConverter))]
+        [TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
 #endif
-			string OAuth2AccessToken { get; set; }
+        string OAuth2AccessToken { get; set; }
 
-		/// <summary>
-		///     Expire time for the AccessToken, this time (-HttpExtensionsGlobals.OAuth2ExpireOffset) is check to know if a new
-		///     AccessToken needs to be generated with the RefreshToken
-		/// </summary>
-		[Display(Description = "When does the OAuth 2 AccessToken expire")]
-		DateTimeOffset OAuth2AccessTokenExpires { get; set; }
+        /// <summary>
+        ///     Expire time for the AccessToken, this time (-HttpExtensionsGlobals.OAuth2ExpireOffset) is check to know if a new
+        ///     AccessToken needs to be generated with the RefreshToken
+        /// </summary>
+        [Display(Description = "When does the OAuth 2 AccessToken expire")]
+        DateTimeOffset OAuth2AccessTokenExpires { get; set; }
 
-		/// <summary>
-		///     Token used to get a new Access Token
-		/// </summary>
-		[Display(Description = "Contains the OAuth 2 refresh token (encrypted)")]
+        /// <summary>
+        ///     Token used to get a new Access Token
+        /// </summary>
+        [Display(Description = "Contains the OAuth 2 refresh token (encrypted)")]
 #if NET45 || NET46
-		[TypeConverter(typeof (DelegatingStringEncryptionTypeConverter))]
+        [TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
 #endif
-			string OAuth2RefreshToken { get; set; }
-	}
+        string OAuth2RefreshToken { get; set; }
+    }
 }

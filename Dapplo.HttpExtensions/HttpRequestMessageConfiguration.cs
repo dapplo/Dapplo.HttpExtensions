@@ -19,29 +19,33 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
+#region Usings
+
 using System;
 using System.Collections.Generic;
 
+#endregion
+
 namespace Dapplo.HttpExtensions
 {
-	/// <summary>
-	/// Use this to configure the HttpRequestMessage, created in the HttpRequestMessageFactory
-	/// </summary>
-	public class HttpRequestMessageConfiguration : IHttpRequestConfiguration
-	{
-		/// <summary>
-		/// Name of the configuration, this should be unique and usually is the type of the object
-		/// </summary>
-		public string Name { get; } = nameof(HttpRequestMessageConfiguration);
+    /// <summary>
+    ///     Use this to configure the HttpRequestMessage, created in the HttpRequestMessageFactory
+    /// </summary>
+    public class HttpRequestMessageConfiguration : IHttpRequestConfiguration
+    {
+        /// <summary>
+        ///     Name of the configuration, this should be unique and usually is the type of the object
+        /// </summary>
+        public string Name { get; } = nameof(HttpRequestMessageConfiguration);
 
-		/// <summary>
-		/// A set of properties for the HTTP request.
-		/// </summary>
-		public IDictionary<string, object> Properties { get; set; }= new Dictionary<string, object>();
+        /// <summary>
+        ///     A set of properties for the HTTP request.
+        /// </summary>
+        public IDictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
 
-		/// <summary>
-		/// The HTTP Message version, default is 1.1
-		/// </summary>
-		public Version HttpMessageVersion { get; set; } = new Version(1, 1);
-	}
+        /// <summary>
+        ///     The HTTP Message version, default is 1.1
+        /// </summary>
+        public Version HttpMessageVersion { get; set; } = new Version(1, 1);
+    }
 }

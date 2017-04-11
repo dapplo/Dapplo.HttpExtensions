@@ -19,7 +19,7 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region using
+#region Usings
 
 using System;
 using System.IO;
@@ -29,6 +29,7 @@ using System.Linq;
 using System.Drawing;
 using System.Windows.Media.Imaging;
 #endif
+
 #endregion
 
 namespace Dapplo.HttpExtensions.JsonSimple
@@ -49,7 +50,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
         };
 
         /// <summary>
-        /// Register this IJsonSerializer globally
+        ///     Register this IJsonSerializer globally
         /// </summary>
         /// <param name="force">bool to specify if this also needs to be set when another serializer is already specified</param>
         public static void RegisterGlobally(bool force = true)
@@ -59,6 +60,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
                 HttpExtensionsGlobals.JsonSerializer = new SimpleJsonSerializer();
             }
         }
+
         /// <summary>
         /// </summary>
         /// <param name="targetType">Type to deserialize from a json string</param>
@@ -70,7 +72,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
         }
 
         /// <summary>
-        /// Test if the specified type can be serialized to JSON
+        ///     Test if the specified type can be serialized to JSON
         /// </summary>
         /// <param name="sourceType">Type to check</param>
         /// <returns>bool</returns>
@@ -80,7 +82,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
         }
 
         /// <summary>
-        /// Test if the specified type can be deserialized
+        ///     Test if the specified type can be deserialized
         /// </summary>
         /// <param name="targetType">Type to check</param>
         /// <returns>bool</returns>

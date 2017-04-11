@@ -1,72 +1,72 @@
 {
-  "version": "0.1.0.0",
-  "title": "Dapplo.HttpExtensions.OAuth",
-  "authors": [
-    "Robin Krom"
-  ],
-  "copyright": "Copyright © Dapplo 2016-2017",
-  "description": "OAuth for Dapplo.HttpExtensions",
-  "packOptions": {
-    "owners": [
-      "Dapplo"
+    "version": "0.1.0.0",
+    "title": "Dapplo.HttpExtensions.OAuth",
+    "authors": [
+        "Robin Krom"
     ],
-    "summary": "OAuth for Dapplo.HttpExtensions",
-    "licenseUrl": "http://www.gnu.org/licenses/lgpl-3.0.en.html",
-    "projectUrl": "http://www.dapplo.net/blocks/Dapplo.HttpExtensions/",
-    "iconUrl": "http://www.dapplo.net/favicon.ico",
-    "tags": [
-      "http",
-      "oauth"
-    ],
-    "requireLicenseAcceptance": false,
-    "repository": {
-      "type": "git",
-      "url": "https://github.com/dapplo/Dapplo.HttpExtensions"
-    }
-  },
-  "supports": {},
-  "dependencies": {
-    "Dapplo.Log": "1.0.23",
-    "Dapplo.HttpExtensions": "*"
-  },
-  "frameworks": {
-    "net45": {
-      "dependencies": {},
-      "frameworkAssemblies": {
-        "PresentationCore": "",
-        "PresentationFramework": "",
-        "System.ComponentModel.DataAnnotations": "",
-        "System.Drawing": "",
-        "System.Net.Http": "",
-        "System.Net.Http.WebRequest": "",
-        "System.Runtime.Caching": "",
-        "System.Runtime.Serialization": "",
-        "System.ServiceModel": "",
-        "System.Windows.Forms": "",
-        "System.Xaml": "",
-        "System.Xml": "",
-        "System.Xml.Linq": "",
-        "WindowsBase": ""
-      }
+    "copyright": "Copyright © Dapplo 2016-2017",
+    "description": "OAuth for Dapplo.HttpExtensions",
+    "packOptions": {
+        "owners": [
+            "Dapplo"
+        ],
+        "summary": "OAuth for Dapplo.HttpExtensions",
+        "licenseUrl": "http://www.gnu.org/licenses/lgpl-3.0.en.html",
+        "projectUrl": "http://www.dapplo.net/blocks/Dapplo.HttpExtensions/",
+        "iconUrl": "http://www.dapplo.net/favicon.ico",
+        "tags": [
+            "http",
+            "oauth"
+        ],
+        "requireLicenseAcceptance": false,
+        "repository": {
+            "type": "git",
+            "url": "https://github.com/dapplo/Dapplo.HttpExtensions"
+        }
     },
-    "net46": {
-      "dependencies": {},
-      "frameworkAssemblies": {
-        "PresentationCore": "",
-        "PresentationFramework": "",
-        "System.ComponentModel.DataAnnotations": "",
-        "System.Drawing": "",
-        "System.Net.Http": "",
-        "System.Net.Http.WebRequest": "",
-        "System.Runtime.Caching": "",
-        "System.Runtime.Serialization": "",
-        "System.ServiceModel": "",
-        "System.Windows.Forms": "",
-        "System.Xaml": "",
-        "System.Xml": "",
-        "System.Xml.Linq": "",
-        "WindowsBase": ""
-      }
+    "supports": {},
+    "dependencies": {
+        "Dapplo.Log": "1.0.23",
+        "Dapplo.HttpExtensions": "*"
+    },
+    "frameworks": {
+        "net45": {
+            "dependencies": {},
+            "frameworkAssemblies": {
+                "PresentationCore": "",
+                "PresentationFramework": "",
+                "System.ComponentModel.DataAnnotations": "",
+                "System.Drawing": "",
+                "System.Net.Http": "",
+                "System.Net.Http.WebRequest": "",
+                "System.Runtime.Caching": "",
+                "System.Runtime.Serialization": "",
+                "System.ServiceModel": "",
+                "System.Windows.Forms": "",
+                "System.Xaml": "",
+                "System.Xml": "",
+                "System.Xml.Linq": "",
+                "WindowsBase": ""
+            }
+        },
+        "net46": {
+            "dependencies": {},
+            "frameworkAssemblies": {
+                "PresentationCore": "",
+                "PresentationFramework": "",
+                "System.ComponentModel.DataAnnotations": "",
+                "System.Drawing": "",
+                "System.Net.Http": "",
+                "System.Net.Http.WebRequest": "",
+                "System.Runtime.Caching": "",
+                "System.Runtime.Serialization": "",
+                "System.ServiceModel": "",
+                "System.Windows.Forms": "",
+                "System.Xaml": "",
+                "System.Xml": "",
+                "System.Xml.Linq": "",
+                "WindowsBase": ""
+            }
+        }
     }
-  }
 }

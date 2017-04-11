@@ -19,22 +19,24 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
+
 #if NET45 || NET46
 
 namespace Dapplo.HttpExtensions.Support
 {
-	/// <summary>
-	///     This converter wraps the Dapplo.Config.Converters.StringEncryptionTypeConverter
-	///     As it is used in the IOAuth2Token as TypeConverter attribute, which is only used from the Dapplo.Config framework
-	/// </summary>
-	public class DelegatingStringEncryptionTypeConverter : DelegatingTypeConverter
-	{
-		/// <summary>
-		///     Delegating to the StringEncryptionTypeConverter
-		/// </summary>
-		public DelegatingStringEncryptionTypeConverter() : base("Dapplo.Config", "Dapplo.Config.Converters.StringEncryptionTypeConverter")
-		{
-		}
-	}
+    /// <summary>
+    ///     This converter wraps the Dapplo.Config.Converters.StringEncryptionTypeConverter
+    ///     As it is used in the IOAuth2Token as TypeConverter attribute, which is only used from the Dapplo.Config framework
+    /// </summary>
+    public class DelegatingStringEncryptionTypeConverter : DelegatingTypeConverter
+    {
+        /// <summary>
+        ///     Delegating to the StringEncryptionTypeConverter
+        /// </summary>
+        public DelegatingStringEncryptionTypeConverter() : base("Dapplo.Config", "Dapplo.Config.Converters.StringEncryptionTypeConverter")
+        {
+        }
+    }
 }
+
 #endif

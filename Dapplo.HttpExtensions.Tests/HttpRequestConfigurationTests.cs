@@ -19,7 +19,7 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region using
+#region Usings
 
 using System.Drawing.Imaging;
 using System.Net.Cache;
@@ -36,7 +36,6 @@ namespace Dapplo.HttpExtensions.Tests
 {
     public class HttpRequestConfigurationTests
     {
-
         public HttpRequestConfigurationTests(ITestOutputHelper testOutputHelper)
         {
             LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);

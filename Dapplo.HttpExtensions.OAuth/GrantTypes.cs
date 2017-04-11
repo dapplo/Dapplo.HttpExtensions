@@ -19,7 +19,7 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region using
+#region Usings
 
 using System.Runtime.Serialization;
 
@@ -27,24 +27,24 @@ using System.Runtime.Serialization;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
-	/// <summary>
-	///     Enum values for the OAuth grant types
-	/// </summary>
-	public enum GrantTypes
-	{
-		/// <summary>
-		///     Requesting a Password
-		/// </summary>
-		[EnumMember(Value = "password")] Password,
+    /// <summary>
+    ///     Enum values for the OAuth grant types
+    /// </summary>
+    public enum GrantTypes
+    {
+        /// <summary>
+        ///     Requesting a Password
+        /// </summary>
+        [EnumMember(Value = "password")] Password,
 
-		/// <summary>
-		///     Requesting a refresh token
-		/// </summary>
-		[EnumMember(Value = "refresh_token")] RefreshToken,
+        /// <summary>
+        ///     Requesting a refresh token
+        /// </summary>
+        [EnumMember(Value = "refresh_token")] RefreshToken,
 
-		/// <summary>
-		///     Requesting a authorization code
-		/// </summary>
-		[EnumMember(Value = "authorization_code")] AuthorizationCode
-	}
+        /// <summary>
+        ///     Requesting a authorization code
+        /// </summary>
+        [EnumMember(Value = "authorization_code")] AuthorizationCode
+    }
 }

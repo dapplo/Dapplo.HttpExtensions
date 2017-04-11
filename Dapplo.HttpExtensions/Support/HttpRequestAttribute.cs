@@ -19,7 +19,7 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region using
+#region Usings
 
 using System;
 
@@ -27,15 +27,15 @@ using System;
 
 namespace Dapplo.HttpExtensions.Support
 {
-	/// <summary>
-	///     This attribute marks a class as "http content" for a request
-	/// </summary>
-	[AttributeUsage(AttributeTargets.Class)]
-	public class HttpRequestAttribute : Attribute
-	{
-		/// <summary>
-		///     "Force" multi-part, even if there is only one content
-		/// </summary>
-		public bool MultiPart { get; set; }
-	}
+    /// <summary>
+    ///     This attribute marks a class as "http content" for a request
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class)]
+    public class HttpRequestAttribute : Attribute
+    {
+        /// <summary>
+        ///     "Force" multi-part, even if there is only one content
+        /// </summary>
+        public bool MultiPart { get; set; }
+    }
 }

@@ -19,7 +19,7 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region using
+#region Usings
 
 using System;
 
@@ -27,57 +27,57 @@ using System;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
-	/// <summary>
-	///     Settings interface the OAuth (2) protocol
-	/// </summary>
-	public interface ICodeReceiverSettings
-	{
-		/// <summary>
-		///     The autorization Uri where the values of this class will be "injected"
-		///     Example how this can be created:
-		///     <code>
-		/// new Uri("http://server").AppendSegments("auth").Query("client_id", "{ClientId}");
-		/// </code>
-		/// </summary>
-		Uri AuthorizationUri { get; set; }
+    /// <summary>
+    ///     Settings interface the OAuth (2) protocol
+    /// </summary>
+    public interface ICodeReceiverSettings
+    {
+        /// <summary>
+        ///     The autorization Uri where the values of this class will be "injected"
+        ///     Example how this can be created:
+        ///     <code>
+        /// new Uri("http://server").AppendSegments("auth").Query("client_id", "{ClientId}");
+        /// </code>
+        /// </summary>
+        Uri AuthorizationUri { get; set; }
 
-		/// <summary>
-		///     The OAuth (2) client id / consumer key
-		/// </summary>
-		string ClientId { get; set; }
+        /// <summary>
+        ///     The OAuth (2) client id / consumer key
+        /// </summary>
+        string ClientId { get; set; }
 
-		/// <summary>
-		///     The OAuth (2) client secret / consumer secret
-		/// </summary>
-		string ClientSecret { get; set; }
+        /// <summary>
+        ///     The OAuth (2) client secret / consumer secret
+        /// </summary>
+        string ClientSecret { get; set; }
 
-		/// <summary>
-		///     Specify the name of the cloud service, so it can be used in window titles, logs etc
-		/// </summary>
-		string CloudServiceName { get; set; }
+        /// <summary>
+        ///     Specify the name of the cloud service, so it can be used in window titles, logs etc
+        /// </summary>
+        string CloudServiceName { get; set; }
 
-		/// <summary>
-		///     The height of the embedded browser
-		/// </summary>
-		int EmbeddedBrowserHeight { get; set; }
+        /// <summary>
+        ///     The height of the embedded browser
+        /// </summary>
+        int EmbeddedBrowserHeight { get; set; }
 
-		/// <summary>
-		///     The width of the embedded browser, default
-		/// </summary>
-		int EmbeddedBrowserWidth { get; set; }
+        /// <summary>
+        ///     The width of the embedded browser, default
+        /// </summary>
+        int EmbeddedBrowserWidth { get; set; }
 
-		/// <summary>
-		///     This is the redirect URL, in some implementations this is automatically set (LocalServerCodeReceiver)
-		///     In some implementations this could be e.g. urn:ietf:wg:oauth:2.0:oob or urn:ietf:wg:oauth:2.0:oob:auto
-		/// </summary>
-		string RedirectUrl { get; set; }
+        /// <summary>
+        ///     This is the redirect URL, in some implementations this is automatically set (LocalServerCodeReceiver)
+        ///     In some implementations this could be e.g. urn:ietf:wg:oauth:2.0:oob or urn:ietf:wg:oauth:2.0:oob:auto
+        /// </summary>
+        string RedirectUrl { get; set; }
 
-		/// <summary>
-		///     The OAuth (2) state, this is something that is passed to the server, is not processed but returned back to the
-		///     client.
-		///     e.g. a correlation ID
-		///     Default this is filled with a new Guid
-		/// </summary>
-		string State { get; set; }
-	}
+        /// <summary>
+        ///     The OAuth (2) state, this is something that is passed to the server, is not processed but returned back to the
+        ///     client.
+        ///     e.g. a correlation ID
+        ///     Default this is filled with a new Guid
+        /// </summary>
+        string State { get; set; }
+    }
 }

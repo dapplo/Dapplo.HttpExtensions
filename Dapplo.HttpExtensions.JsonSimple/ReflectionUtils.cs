@@ -23,7 +23,7 @@
 #define SIMPLE_JSON_TYPEINFO
 #endif
 
-#region using
+#region Usings
 
 using System;
 using System.CodeDom.Compiler;
@@ -361,7 +361,9 @@ namespace Dapplo.HttpExtensions.JsonSimple
         {
             var getMethodInfo = GetGetterMethodInfo(propertyInfo);
             var instance = Expression.Parameter(typeof(object), "instance");
-            var instanceCast = !IsValueType(propertyInfo.DeclaringType) ? Expression.TypeAs(instance, propertyInfo.DeclaringType) : Expression.Convert(instance, propertyInfo.DeclaringType);
+            var instanceCast = !IsValueType(propertyInfo.DeclaringType)
+                ? Expression.TypeAs(instance, propertyInfo.DeclaringType)
+                : Expression.Convert(instance, propertyInfo.DeclaringType);
             var compiled = Expression.Lambda<Func<object, object>>(Expression.TypeAs(Expression.Call(instanceCast, getMethodInfo), typeof(object)), instance).Compile();
             return source => compiled(source);
         }
@@ -414,8 +416,12 @@ namespace Dapplo.HttpExtensions.JsonSimple
             var setMethodInfo = GetSetterMethodInfo(propertyInfo);
             var instance = Expression.Parameter(typeof(object), "instance");
             var value = Expression.Parameter(typeof(object), "value");
-            var instanceCast = !IsValueType(propertyInfo.DeclaringType) ? Expression.TypeAs(instance, propertyInfo.DeclaringType) : Expression.Convert(instance, propertyInfo.DeclaringType);
-            var valueCast = !IsValueType(propertyInfo.PropertyType) ? Expression.TypeAs(value, propertyInfo.PropertyType) : Expression.Convert(value, propertyInfo.PropertyType);
+            var instanceCast = !IsValueType(propertyInfo.DeclaringType)
+                ? Expression.TypeAs(instance, propertyInfo.DeclaringType)
+                : Expression.Convert(instance, propertyInfo.DeclaringType);
+            var valueCast = !IsValueType(propertyInfo.PropertyType)
+                ? Expression.TypeAs(value, propertyInfo.PropertyType)
+                : Expression.Convert(value, propertyInfo.PropertyType);
             var compiled = Expression.Lambda<Action<object, object>>(Expression.Call(instanceCast, setMethodInfo, valueCast), instance, value).Compile();
             return delegate(object source, object val) { compiled(source, val); };
         }
@@ -424,7 +430,10 @@ namespace Dapplo.HttpExtensions.JsonSimple
         {
             var instance = Expression.Parameter(typeof(object), "instance");
             var value = Expression.Parameter(typeof(object), "value");
-            var compiled = Expression.Lambda<Action<object, object>>(Assign(Expression.Field(Expression.Convert(instance, fieldInfo.DeclaringType), fieldInfo), Expression.Convert(value, fieldInfo.FieldType)), instance, value).Compile();
+            var compiled =
+                Expression.Lambda<Action<object, object>>(
+                    Assign(Expression.Field(Expression.Convert(instance, fieldInfo.DeclaringType), fieldInfo), Expression.Convert(value, fieldInfo.FieldType)), instance,
+                    value).Compile();
             return delegate(object source, object val) { compiled(source, val); };
         }
 

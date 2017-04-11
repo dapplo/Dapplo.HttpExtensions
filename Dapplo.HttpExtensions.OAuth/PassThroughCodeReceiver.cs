@@ -20,7 +20,8 @@
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
 #if NET45 || NET46
-#region using
+
+#region Usings
 
 using System.Collections.Generic;
 using System.Threading;
@@ -31,30 +32,31 @@ using Dapplo.HttpExtensions.Extensions;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
-	/// <summary>
-	///     Simply pass the Request token as the authentication
-	/// </summary>
-	internal class PassThroughCodeReceiver : IOAuthCodeReceiver
-	{
-		/// <summary>
-		///     The OAuth code receiver implementation
-		/// </summary>
-		/// <param name="authorizeMode">which of the AuthorizeModes was used to call the method</param>
-		/// <param name="codeReceiverSettings"></param>
-		/// <param name="cancellationToken">CancellationToken</param>
-		/// <returns>Dictionary with values</returns>
-		public Task<IDictionary<string, string>> ReceiveCodeAsync(AuthorizeModes authorizeMode, ICodeReceiverSettings codeReceiverSettings,
-			CancellationToken cancellationToken = default(CancellationToken))
-		{
-			var result = new Dictionary<string, string>();
-			var oauth1Settings = codeReceiverSettings as OAuth1Settings;
+    /// <summary>
+    ///     Simply pass the Request token as the authentication
+    /// </summary>
+    internal class PassThroughCodeReceiver : IOAuthCodeReceiver
+    {
+        /// <summary>
+        ///     The OAuth code receiver implementation
+        /// </summary>
+        /// <param name="authorizeMode">which of the AuthorizeModes was used to call the method</param>
+        /// <param name="codeReceiverSettings"></param>
+        /// <param name="cancellationToken">CancellationToken</param>
+        /// <returns>Dictionary with values</returns>
+        public Task<IDictionary<string, string>> ReceiveCodeAsync(AuthorizeModes authorizeMode, ICodeReceiverSettings codeReceiverSettings,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var result = new Dictionary<string, string>();
+            var oauth1Settings = codeReceiverSettings as OAuth1Settings;
 
-			if (oauth1Settings != null)
-			{
-				result.Add(OAuth1Parameters.Token.EnumValueOf(), oauth1Settings.RequestToken);
-			}
-			return Task.FromResult<IDictionary<string, string>>(result);
-		}
-	}
+            if (oauth1Settings != null)
+            {
+                result.Add(OAuth1Parameters.Token.EnumValueOf(), oauth1Settings.RequestToken);
+            }
+            return Task.FromResult<IDictionary<string, string>>(result);
+        }
+    }
 }
+
 #endif

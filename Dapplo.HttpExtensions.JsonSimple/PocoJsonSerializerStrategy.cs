@@ -19,7 +19,7 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region using
+#region Usings
 
 using System;
 using System.CodeDom.Compiler;
@@ -167,7 +167,8 @@ namespace Dapplo.HttpExtensions.JsonSimple
                 {
                     continue;
                 }
-                result[MapClrMemberNameToJsonFieldName(propertyInfo.Name)] = new KeyValuePair<Type, ReflectionUtils.SetDelegate>(propertyInfo.PropertyType, ReflectionUtils.GetSetMethod(propertyInfo));
+                result[MapClrMemberNameToJsonFieldName(propertyInfo.Name)] = new KeyValuePair<Type, ReflectionUtils.SetDelegate>(propertyInfo.PropertyType,
+                    ReflectionUtils.GetSetMethod(propertyInfo));
             }
             foreach (var fieldInfo in ReflectionUtils.GetFields(type))
             {
@@ -175,7 +176,8 @@ namespace Dapplo.HttpExtensions.JsonSimple
                 {
                     continue;
                 }
-                result[MapClrMemberNameToJsonFieldName(fieldInfo.Name)] = new KeyValuePair<Type, ReflectionUtils.SetDelegate>(fieldInfo.FieldType, ReflectionUtils.GetSetMethod(fieldInfo));
+                result[MapClrMemberNameToJsonFieldName(fieldInfo.Name)] = new KeyValuePair<Type, ReflectionUtils.SetDelegate>(fieldInfo.FieldType,
+                    ReflectionUtils.GetSetMethod(fieldInfo));
             }
             return result;
         }
@@ -216,7 +218,8 @@ namespace Dapplo.HttpExtensions.JsonSimple
                     }
                     if (type == typeof(DateTimeOffset) || ReflectionUtils.IsNullableType(type) && Nullable.GetUnderlyingType(type) == typeof(DateTimeOffset))
                     {
-                        return DateTimeOffset.ParseExact(str, Iso8601Format, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
+                        return DateTimeOffset.ParseExact(str, Iso8601Format, CultureInfo.InvariantCulture,
+                            DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
                     }
                     if (type == typeof(Guid) || ReflectionUtils.IsNullableType(type) && Nullable.GetUnderlyingType(type) == typeof(Guid))
                     {
@@ -274,7 +277,8 @@ namespace Dapplo.HttpExtensions.JsonSimple
             }
             if (valueIsDouble && type != typeof(double) || valueIsLong && type != typeof(long))
             {
-                obj = type == typeof(int) || type == typeof(long) || type == typeof(double) || type == typeof(float) || type == typeof(bool) || type == typeof(decimal) || type == typeof(byte) || type == typeof(short)
+                obj = type == typeof(int) || type == typeof(long) || type == typeof(double) || type == typeof(float) || type == typeof(bool) || type == typeof(decimal) ||
+                      type == typeof(byte) || type == typeof(short)
                     ? Convert.ChangeType(value, type, CultureInfo.InvariantCulture)
                     : value;
             }
@@ -334,7 +338,8 @@ namespace Dapplo.HttpExtensions.JsonSimple
                                             throw;
                                         }
                                         // Added additiona information for easier debugging
-                                        throw new ArgumentException($"Json field \"{setter.Key}\" with Value \"{jsonValue}\" cannot be converted to Type {setter.Value.Key}", ex);
+                                        throw new ArgumentException(
+                                            $"Json field \"{setter.Key}\" with Value \"{jsonValue}\" cannot be converted to Type {setter.Value.Key}", ex);
                                     }
                                 }
                             }

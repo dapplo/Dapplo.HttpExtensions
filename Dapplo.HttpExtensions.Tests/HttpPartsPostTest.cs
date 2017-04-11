@@ -19,19 +19,19 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region using
+#region Usings
 
 using System;
 using System.Drawing;
 using System.Threading.Tasks;
-using Dapplo.Log.XUnit;
-using Dapplo.HttpExtensions.Tests.TestEntities;
-using Dapplo.Log;
-using Xunit;
-using Xunit.Abstractions;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Dapplo.HttpExtensions.JsonSimple;
+using Dapplo.HttpExtensions.Tests.TestEntities;
+using Dapplo.Log;
+using Dapplo.Log.XUnit;
+using Xunit;
+using Xunit.Abstractions;
 
 #endregion
 
@@ -63,8 +63,9 @@ namespace Dapplo.HttpExtensions.Tests
             bool hasProgress = false;
 
             uploadBehaviour.UseProgressStream = true;
-            uploadBehaviour.UploadProgress += progress => {
-                Log.Info().WriteLine("Progress {0}", (int)(progress * 100));
+            uploadBehaviour.UploadProgress += progress =>
+            {
+                Log.Info().WriteLine("Progress {0}", (int) (progress * 100));
                 hasProgress = true;
             };
             uploadBehaviour.MakeCurrent();
@@ -93,8 +94,9 @@ namespace Dapplo.HttpExtensions.Tests
             bool hasProgress = false;
 
             uploadBehaviour.UseProgressStream = true;
-            uploadBehaviour.UploadProgress += progress => {
-                Log.Info().WriteLine("Progress {0}", (int)(progress * 100));
+            uploadBehaviour.UploadProgress += progress =>
+            {
+                Log.Info().WriteLine("Progress {0}", (int) (progress * 100));
                 hasProgress = true;
             };
             uploadBehaviour.MakeCurrent();
@@ -102,8 +104,8 @@ namespace Dapplo.HttpExtensions.Tests
             {
                 BitmapContentName = "MyBitmapContent",
                 BitmapFileName = "MyBitmapFilename",
-                OurBitmap = BitmapSource.Create(1, 1, 96, 96, PixelFormats.Bgr24, null, new byte[] { 0, 0, 0 }, 3),
-                JsonInformation = new GitHubError { DocumentationUrl = "http://test.de", Message = "Hello" }
+                OurBitmap = BitmapSource.Create(1, 1, 96, 96, PixelFormats.Bgr24, null, new byte[] {0, 0, 0}, 3),
+                JsonInformation = new GitHubError {DocumentationUrl = "http://test.de", Message = "Hello"}
             };
             testObject.Headers.Add("Name", "Dapplo");
             var result = await testUri.PostAsync<dynamic>(testObject);

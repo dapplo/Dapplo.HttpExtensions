@@ -19,7 +19,7 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region using
+#region Usings
 
 using System;
 using System.Collections.Generic;
@@ -53,6 +53,30 @@ namespace Dapplo.HttpExtensions.Tests
         {
             var uri = new Uri("http://jira/name?value1=1234");
             uri = uri.AppendSegments("joost");
+            Assert.Equal("http://jira/name/joost?value1=1234", uri.AbsoluteUri);
+        }
+
+        [Fact]
+        public void TestAppendSegments_SlashAlreadyThere1()
+        {
+            var uri = new Uri("http://jira/name/?value1=1234");
+            uri = uri.AppendSegments("joost");
+            Assert.Equal("http://jira/name/joost?value1=1234", uri.AbsoluteUri);
+        }
+
+        [Fact]
+        public void TestAppendSegments_SlashAlreadyThere2()
+        {
+            var uri = new Uri("http://jira/name/?value1=1234");
+            uri = uri.AppendSegments("/joost");
+            Assert.Equal("http://jira/name/joost?value1=1234", uri.AbsoluteUri);
+        }
+
+        [Fact]
+        public void TestAppendSegments_SlashAlreadyThere3()
+        {
+            var uri = new Uri("http://jira/name/?value1=1234");
+            uri = uri.AppendSegments("joost/");
             Assert.Equal("http://jira/name/joost?value1=1234", uri.AbsoluteUri);
         }
 
@@ -95,7 +119,7 @@ namespace Dapplo.HttpExtensions.Tests
             };
             var lookup = testValues.ToLookup(x => x.Key, x => x.Value);
             // Make sure we have one Key, which has multiple values
-            Assert.True(lookup.Count() == 1);
+            Assert.True(lookup.Count == 1);
 
             uri = uri.ExtendQuery(lookup);
             Assert.Equal($"{TestUriDuplicateValues}&{Key}={Value}&{Key}={Value}", uri.AbsoluteUri);

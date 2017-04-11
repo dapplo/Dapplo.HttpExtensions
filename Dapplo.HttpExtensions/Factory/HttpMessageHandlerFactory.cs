@@ -19,147 +19,151 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region using
+#region Usings
 
 using System.Net;
 using System.Net.Http;
+using System.Net.Security;
 #if NET45 || NET46
 using System.Net.Cache;
 using Dapplo.Log;
+
 #endif
+
 #endregion
 
 namespace Dapplo.HttpExtensions.Factory
 {
-	/// <summary>
-	///     Creating a HttpMessageHandler is not very straightforward, that is why the logic is capsulated in the
-	///     HttpMessageHandlerFactory.
-	/// </summary>
-	public static class HttpMessageHandlerFactory
-	{
+    /// <summary>
+    ///     Creating a HttpMessageHandler is not very straightforward, that is why the logic is capsulated in the
+    ///     HttpMessageHandlerFactory.
+    /// </summary>
+    public static class HttpMessageHandlerFactory
+    {
 #if NET45 || NET46
-		private static readonly LogSource Log = new LogSource();
-		/// <summary>
-		///     This creates an advanced HttpMessageHandler, used in desktop applications
-		///     Should be preferred
-		/// </summary>
-		/// <returns>HttpMessageHandler (WebRequestHandler)</returns>
-		private static HttpMessageHandler CreateHandler()
-		{
-			var webRequestHandler = new WebRequestHandler();
-			SetDefaults(webRequestHandler);
-			return webRequestHandler;
-		}
+        private static readonly LogSource Log = new LogSource();
+
+        /// <summary>
+        ///     This creates an advanced HttpMessageHandler, used in desktop applications
+        ///     Should be preferred
+        /// </summary>
+        /// <returns>HttpMessageHandler (WebRequestHandler)</returns>
+        private static HttpMessageHandler CreateHandler()
+        {
+            var webRequestHandler = new WebRequestHandler();
+            SetDefaults(webRequestHandler);
+            return webRequestHandler;
+        }
 #else
-		/// <summary>
-		///     This creates an advanced HttpMessageHandler, used in Apps
-		/// </summary>
-		/// <returns>HttpMessageHandler (HttpClientHandler)</returns>
+/// <summary>
+///     This creates an advanced HttpMessageHandler, used in Apps
+/// </summary>
+/// <returns>HttpMessageHandler (HttpClientHandler)</returns>
 		private static HttpMessageHandler CreateHandler()
 		{
 			return CreateHttpClientHandler();
 		}
 #endif
 
-		/// <summary>
-		///     This creates a HttpMessageHandler
-		///     Should be the preferred method to use to create a HttpMessageHandler
-		/// </summary>
-		/// <returns>HttpMessageHandler (WebRequestHandler)</returns>
-		public static HttpMessageHandler Create()
-		{
-			var httpBehaviour = HttpBehaviour.Current;
-			var baseMessageHandler = CreateHandler();
-			if (httpBehaviour.OnHttpMessageHandlerCreated != null)
-			{
-				return httpBehaviour.OnHttpMessageHandlerCreated.Invoke(baseMessageHandler);
-			}
-			return baseMessageHandler;
-		}
+        /// <summary>
+        ///     This creates a HttpMessageHandler
+        ///     Should be the preferred method to use to create a HttpMessageHandler
+        /// </summary>
+        /// <returns>HttpMessageHandler (WebRequestHandler)</returns>
+        public static HttpMessageHandler Create()
+        {
+            var httpBehaviour = HttpBehaviour.Current;
+            var baseMessageHandler = CreateHandler();
+            if (httpBehaviour.OnHttpMessageHandlerCreated != null)
+            {
+                return httpBehaviour.OnHttpMessageHandlerCreated.Invoke(baseMessageHandler);
+            }
+            return baseMessageHandler;
+        }
 
-		/// <summary>
-		///     This creates an HttpClientHandler, normally one should use CreateWebRequestHandler
-		///     But this might be needed for Apps
-		/// </summary>
-		/// <returns>HttpMessageHandler (HttpClientHandler)</returns>
-		// ReSharper disable once UnusedMember.Local
-		private static HttpMessageHandler CreateHttpClientHandler()
-		{
-			var httpClientHandler = new HttpClientHandler();
-			SetDefaults(httpClientHandler);
-			return httpClientHandler;
-		}
+        /// <summary>
+        ///     This creates an HttpClientHandler, normally one should use CreateWebRequestHandler
+        ///     But this might be needed for Apps
+        /// </summary>
+        /// <returns>HttpMessageHandler (HttpClientHandler)</returns>
+        // ReSharper disable once UnusedMember.Local
+        private static HttpMessageHandler CreateHttpClientHandler()
+        {
+            var httpClientHandler = new HttpClientHandler();
+            SetDefaults(httpClientHandler);
+            return httpClientHandler;
+        }
 
-		/// <summary>
-		///     Apply settings on the HttpClientHandler
-		/// </summary>
-		/// <param name="httpClientHandler"></param>
-		private static void SetDefaults(HttpClientHandler httpClientHandler)
-		{
-			var httpBehaviour = HttpBehaviour.Current;
-			var httpSettings = httpBehaviour.HttpSettings ?? HttpExtensionsGlobals.HttpSettings;
+        /// <summary>
+        ///     Apply settings on the HttpClientHandler
+        /// </summary>
+        /// <param name="httpClientHandler"></param>
+        private static void SetDefaults(HttpClientHandler httpClientHandler)
+        {
+            var httpBehaviour = HttpBehaviour.Current;
+            var httpSettings = httpBehaviour.HttpSettings ?? HttpExtensionsGlobals.HttpSettings;
 
-			httpClientHandler.AllowAutoRedirect = httpSettings.AllowAutoRedirect;
-			httpClientHandler.AutomaticDecompression = httpSettings.DefaultDecompressionMethods;
-			httpClientHandler.CookieContainer = httpSettings.UseCookies ? httpBehaviour.CookieContainer : null;
-			httpClientHandler.Credentials = httpSettings.UseDefaultCredentials ? CredentialCache.DefaultCredentials : httpSettings.Credentials;
-			httpClientHandler.MaxAutomaticRedirections = httpSettings.MaxAutomaticRedirections;
-
-#if NET45 || NET46
-			httpClientHandler.MaxRequestContentBufferSize = httpSettings.MaxRequestContentBufferSize;
-
-			if (!httpSettings.UseProxy)
-			{
-				httpClientHandler.Proxy = null;
-			}
-			httpClientHandler.UseProxy = httpSettings.UseProxy;
-#endif
-
-			httpClientHandler.UseCookies = httpSettings.UseCookies;
-			httpClientHandler.UseDefaultCredentials = httpSettings.UseDefaultCredentials;
-			httpClientHandler.PreAuthenticate = httpSettings.PreAuthenticate;
-		}
+            httpClientHandler.AllowAutoRedirect = httpSettings.AllowAutoRedirect;
+            httpClientHandler.AutomaticDecompression = httpSettings.DefaultDecompressionMethods;
+            httpClientHandler.CookieContainer = httpSettings.UseCookies ? httpBehaviour.CookieContainer : null;
+            httpClientHandler.Credentials = httpSettings.UseDefaultCredentials ? CredentialCache.DefaultCredentials : httpSettings.Credentials;
+            httpClientHandler.MaxAutomaticRedirections = httpSettings.MaxAutomaticRedirections;
 
 #if NET45 || NET46
-		/// <summary>
-		///     Apply settings on the WebRequestHandler, this also calls the SetDefaults for the underlying HttpClientHandler
-		/// </summary>
-		/// <param name="webRequestHandler">WebRequestHandler to set the defaults to</param>
-		private static void SetDefaults(WebRequestHandler webRequestHandler)
-		{
-			var httpBehaviour = HttpBehaviour.Current;
-			SetDefaults(webRequestHandler as HttpClientHandler);
+            httpClientHandler.MaxRequestContentBufferSize = httpSettings.MaxRequestContentBufferSize;
 
-			var httpSettings = httpBehaviour.HttpSettings ?? HttpExtensionsGlobals.HttpSettings;
-
-			webRequestHandler.AllowPipelining = httpSettings.AllowPipelining;
-			webRequestHandler.AuthenticationLevel = httpSettings.AuthenticationLevel;
-			webRequestHandler.CachePolicy = new RequestCachePolicy(httpSettings.RequestCacheLevel);
-			webRequestHandler.ClientCertificateOptions = httpSettings.ClientCertificateOptions;
-			// Add certificates, if any
-			if (httpSettings.ClientCertificates?.Count > 0)
-			{
-				webRequestHandler.ClientCertificates.AddRange(httpSettings.ClientCertificates);
-			}
-			webRequestHandler.ContinueTimeout = httpSettings.ContinueTimeout;
-			webRequestHandler.ImpersonationLevel = httpSettings.ImpersonationLevel;
-			webRequestHandler.MaxResponseHeadersLength = httpSettings.MaxResponseHeadersLength;
-			webRequestHandler.Proxy = httpSettings.UseProxy ? WebProxyFactory.Create() : null;
-			webRequestHandler.ReadWriteTimeout = httpSettings.ReadWriteTimeout;
-
-			// Add logic to ignore the certificate
-			if (httpSettings.IgnoreSslCertificateErrors)
-			{
-				webRequestHandler.ServerCertificateValidationCallback = (sender, cert, chain, sslPolicyErrors) =>
-				{
-					if (sslPolicyErrors != System.Net.Security.SslPolicyErrors.None)
-					{
-						Log.Warn().WriteLine("Ssl policy error {0}", sslPolicyErrors);
-					}
-					return true;
-				};
-			}
-		}
+            if (!httpSettings.UseProxy)
+            {
+                httpClientHandler.Proxy = null;
+            }
+            httpClientHandler.UseProxy = httpSettings.UseProxy;
 #endif
-	}
+
+            httpClientHandler.UseCookies = httpSettings.UseCookies;
+            httpClientHandler.UseDefaultCredentials = httpSettings.UseDefaultCredentials;
+            httpClientHandler.PreAuthenticate = httpSettings.PreAuthenticate;
+        }
+
+#if NET45 || NET46
+        /// <summary>
+        ///     Apply settings on the WebRequestHandler, this also calls the SetDefaults for the underlying HttpClientHandler
+        /// </summary>
+        /// <param name="webRequestHandler">WebRequestHandler to set the defaults to</param>
+        private static void SetDefaults(WebRequestHandler webRequestHandler)
+        {
+            var httpBehaviour = HttpBehaviour.Current;
+            SetDefaults(webRequestHandler as HttpClientHandler);
+
+            var httpSettings = httpBehaviour.HttpSettings ?? HttpExtensionsGlobals.HttpSettings;
+
+            webRequestHandler.AllowPipelining = httpSettings.AllowPipelining;
+            webRequestHandler.AuthenticationLevel = httpSettings.AuthenticationLevel;
+            webRequestHandler.CachePolicy = new RequestCachePolicy(httpSettings.RequestCacheLevel);
+            webRequestHandler.ClientCertificateOptions = httpSettings.ClientCertificateOptions;
+            // Add certificates, if any
+            if (httpSettings.ClientCertificates?.Count > 0)
+            {
+                webRequestHandler.ClientCertificates.AddRange(httpSettings.ClientCertificates);
+            }
+            webRequestHandler.ContinueTimeout = httpSettings.ContinueTimeout;
+            webRequestHandler.ImpersonationLevel = httpSettings.ImpersonationLevel;
+            webRequestHandler.MaxResponseHeadersLength = httpSettings.MaxResponseHeadersLength;
+            webRequestHandler.Proxy = httpSettings.UseProxy ? WebProxyFactory.Create() : null;
+            webRequestHandler.ReadWriteTimeout = httpSettings.ReadWriteTimeout;
+
+            // Add logic to ignore the certificate
+            if (httpSettings.IgnoreSslCertificateErrors)
+            {
+                webRequestHandler.ServerCertificateValidationCallback = (sender, cert, chain, sslPolicyErrors) =>
+                {
+                    if (sslPolicyErrors != SslPolicyErrors.None)
+                    {
+                        Log.Warn().WriteLine("Ssl policy error {0}", sslPolicyErrors);
+                    }
+                    return true;
+                };
+            }
+        }
+#endif
+    }
 }

@@ -23,18 +23,22 @@
 
 #endregion
 
+#region Usings
+
 using System;
 using System.Reflection;
+
+#endregion
 
 namespace Dapplo.HttpExtensions.Extensions
 {
     /// <summary>
-    /// Extensions for the Type class
+    ///     Extensions for the Type class
     /// </summary>
     public static class TypeExtensions
     {
         /// <summary>
-        /// Get the name of a type which is readable, even if generics are used.
+        ///     Get the name of a type which is readable, even if generics are used.
         /// </summary>
         /// <param name="type">Type</param>
         /// <returns>string</returns>
@@ -53,7 +57,7 @@ namespace Dapplo.HttpExtensions.Extensions
                 for (int i = 0; i < typeParameters.Length; i++)
                 {
                     string typeParamName = typeParameters[i].FriendlyName();
-                    friendlyName += (i == 0 ? typeParamName : ", " + typeParamName);
+                    friendlyName += i == 0 ? typeParamName : ", " + typeParamName;
                 }
                 friendlyName += ">";
             }

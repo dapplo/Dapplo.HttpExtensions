@@ -19,7 +19,7 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region using
+#region Usings
 
 using System;
 using System.Collections.Generic;
@@ -111,7 +111,7 @@ namespace Dapplo.HttpExtensions.Factory
         public static HttpRequestMessage Create<TResponse, TContent>(HttpMethod method, Uri requestUri, TContent content = default(TContent))
             where TResponse : class where TContent : class
         {
-            return Create(method, requestUri, typeof (TResponse), typeof (TContent), content);
+            return Create(method, requestUri, typeof(TResponse), typeof(TContent), content);
         }
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace Dapplo.HttpExtensions.Factory
         public static HttpRequestMessage Create<TResponse>(HttpMethod method, Uri requestUri)
             where TResponse : class
         {
-            return Create(method, requestUri, typeof (TResponse));
+            return Create(method, requestUri, typeof(TResponse));
         }
 
         /// <summary>
@@ -181,7 +181,7 @@ namespace Dapplo.HttpExtensions.Factory
         public static HttpRequestMessage CreatePost<TResponse>(Uri requestUri, object content = null)
             where TResponse : class
         {
-            return Create(HttpMethod.Post, requestUri, typeof (TResponse), content?.GetType(), content);
+            return Create(HttpMethod.Post, requestUri, typeof(TResponse), content?.GetType(), content);
         }
 
         /// <summary>
@@ -205,7 +205,7 @@ namespace Dapplo.HttpExtensions.Factory
         public static HttpRequestMessage CreatePut<TResponse>(Uri requestUri, object content = null)
             where TResponse : class
         {
-            return Create(HttpMethod.Put, requestUri, typeof (TResponse), content?.GetType(), content);
+            return Create(HttpMethod.Put, requestUri, typeof(TResponse), content?.GetType(), content);
         }
 
         /// <summary>

@@ -20,7 +20,8 @@
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
 #if NET45 || NET46
-#region using
+
+#region Usings
 
 using System;
 using System.Collections.Generic;
@@ -38,48 +39,50 @@ using Dapplo.Log;
 
 namespace Dapplo.HttpExtensions.OAuth
 {
-	/// <summary>
-	///     This will start an embedded browser to wait for the code
-	/// </summary>
-	public class EmbeddedBrowserCodeReceiver : IOAuthCodeReceiver
-	{
-		private static readonly LogSource Log = new LogSource();
+    /// <summary>
+    ///     This will start an embedded browser to wait for the code
+    /// </summary>
+    public class EmbeddedBrowserCodeReceiver : IOAuthCodeReceiver
+    {
+        private static readonly LogSource Log = new LogSource();
 
-		/// <summary>
-		/// Receive the code from an OAuth server
-		/// </summary>
-		/// <param name="authorizeMode">AuthorizeModes</param>
-		/// <param name="codeReceiverSettings">ICodeReceiverSettings</param>
-		/// <param name="cancellationToken">CancellationToken</param>
-		/// <returns>IDictionary with information</returns>
-		public Task<IDictionary<string, string>> ReceiveCodeAsync(AuthorizeModes authorizeMode, ICodeReceiverSettings codeReceiverSettings,
-			CancellationToken cancellationToken = default(CancellationToken))
-		{
-			if (codeReceiverSettings.RedirectUrl == null)
-			{
-				throw new ArgumentNullException(nameof(codeReceiverSettings.RedirectUrl), "The EmbeddedBrowserCodeReceiver needs a redirect url.");
-			}
-			// while the listener is beging starter in the "background", here we prepare opening the browser
-			var uriBuilder = new UriBuilder(codeReceiverSettings.AuthorizationUri)
-			{
-				Query = codeReceiverSettings.AuthorizationUri.QueryToKeyValuePairs()
-					.Select(x => new KeyValuePair<string, string>(x.Key, x.Value.FormatWith(codeReceiverSettings)))
-					.ToQueryString()
-			};
-			Log.Verbose().WriteLine("Opening Uri {0}", uriBuilder.Uri.AbsoluteUri);
+        /// <summary>
+        ///     Receive the code from an OAuth server
+        /// </summary>
+        /// <param name="authorizeMode">AuthorizeModes</param>
+        /// <param name="codeReceiverSettings">ICodeReceiverSettings</param>
+        /// <param name="cancellationToken">CancellationToken</param>
+        /// <returns>IDictionary with information</returns>
+        public Task<IDictionary<string, string>> ReceiveCodeAsync(AuthorizeModes authorizeMode, ICodeReceiverSettings codeReceiverSettings,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (codeReceiverSettings.RedirectUrl == null)
+            {
+                throw new ArgumentNullException(nameof(codeReceiverSettings.RedirectUrl), "The EmbeddedBrowserCodeReceiver needs a redirect url.");
+            }
+            // while the listener is beging starter in the "background", here we prepare opening the browser
+            var uriBuilder = new UriBuilder(codeReceiverSettings.AuthorizationUri)
+            {
+                Query = codeReceiverSettings.AuthorizationUri.QueryToKeyValuePairs()
+                    .Select(x => new KeyValuePair<string, string>(x.Key, x.Value.FormatWith(codeReceiverSettings)))
+                    .ToQueryString()
+            };
+            Log.Verbose().WriteLine("Opening Uri {0}", uriBuilder.Uri.AbsoluteUri);
 
-			// Needs to run on th UI thread.
-			return Dispatcher.CurrentDispatcher.Invoke(async () => await Task.Run(() =>
-			{
-					var oAuthLoginForm = new OAuthLoginForm(codeReceiverSettings.CloudServiceName, new Size(codeReceiverSettings.EmbeddedBrowserWidth, codeReceiverSettings.EmbeddedBrowserHeight), uriBuilder.Uri, codeReceiverSettings.RedirectUrl);
+            // Needs to run on th UI thread.
+            return Dispatcher.CurrentDispatcher.Invoke(async () => await Task.Run(() =>
+            {
+                var oAuthLoginForm = new OAuthLoginForm(codeReceiverSettings.CloudServiceName,
+                    new Size(codeReceiverSettings.EmbeddedBrowserWidth, codeReceiverSettings.EmbeddedBrowserHeight), uriBuilder.Uri, codeReceiverSettings.RedirectUrl);
 
-					if (oAuthLoginForm.ShowDialog() == DialogResult.OK)
-					{
-						return oAuthLoginForm.CallbackParameters;
-					}
-					return null;
-			}, cancellationToken));
-		}
-	}
+                if (oAuthLoginForm.ShowDialog() == DialogResult.OK)
+                {
+                    return oAuthLoginForm.CallbackParameters;
+                }
+                return null;
+            }, cancellationToken));
+        }
+    }
 }
+
 #endif

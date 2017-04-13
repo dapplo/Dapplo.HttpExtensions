@@ -28,9 +28,9 @@
     },
     "supports": {},
     "dependencies": {
-        "Dapplo.Log": "1.0.23",
         "Dapplo.HttpExtensions": "*",
-        "Newtonsoft.Json": "10.0.1"
+        "Dapplo.Log": "1.0.29",
+        "Newtonsoft.Json": "10.0.2"
     },
     "frameworks": {
         "netstandard1.3": {

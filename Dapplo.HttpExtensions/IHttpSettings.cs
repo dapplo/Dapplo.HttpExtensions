@@ -22,11 +22,13 @@
 #region Usings
 
 using System;
+#if !PCL
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
+#endif
 using System.Net;
 using System.Net.Http;
-using System.Runtime.Serialization;
 #if NET45 || NET46
 using System.Net.Security;
 using System.Net.Cache;
@@ -59,50 +61,59 @@ namespace Dapplo.HttpExtensions
         ///     For more details, click
         ///     <a href="https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.allowautoredirect.aspx">here</a>
         /// </summary>
+#if !PCL
         [DefaultValue(true)]
         [Display(Description = "When true a connection would automatically redirect, if the server says so")]
         [DataMember(EmitDefaultValue = true)]
+#endif
         bool AllowAutoRedirect { get; set; }
 
         /// <summary>
         ///     For more details, click
         ///     <a href="https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.credentials.aspx">here</a>
         /// </summary>
+#if !PCL
         [Display(Description = "The credentials for the request, only used when UseDefaultCredentials is set to false")]
+#endif
         ICredentials Credentials { get; set; }
 
         /// <summary>
         ///     For more details, click
         ///     <a href="https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.clientcertificateoptions.aspx">here</a>
         /// </summary>
+#if !PCL
         [DefaultValue(ClientCertificateOption.Automatic)]
-        [Display(
-            Description =
-                "A value that indicates if the certificate is automatically picked from the certificate store or if the caller is allowed to pass in a specific client certificate."
-        )]
+        [Display(Description = "A value that indicates if the certificate is automatically picked from the certificate store or if the caller is allowed to pass in a specific client certificate.")]
+#endif
         ClientCertificateOption ClientCertificateOptions { get; set; }
 
         /// <summary>
         ///     For more details, click
         ///     <a href="https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.automaticdecompression.aspx">here</a>
         /// </summary>
+#if !PCL
         [DefaultValue(DecompressionMethods.Deflate | DecompressionMethods.GZip)]
         [Display(Description = "Decompression methods used")]
+#endif
         DecompressionMethods DefaultDecompressionMethods { get; set; }
 
         /// <summary>
         ///     The default User-Agent value to use, a lot of services don't like it when this is empty or the behaviour depends on
         ///     the value
         /// </summary>
+#if !PCL
         [Display(Description = "The default User-Agent value to use, a lot of services don't like it when this is empty or the behaviour depends on the value")]
+#endif
         string DefaultUserAgent { get; set; }
 
         /// <summary>
         ///     When true the configured proxy will used the default user credentials
         /// </summary>
+#if !PCL
         [DefaultValue(false)]
         [Display(Description = "When true the configured proxy will used the default user credentials")]
         [DataMember(EmitDefaultValue = true)]
+#endif
         bool Expect100Continue { get; set; }
 
         /// <summary>
@@ -110,16 +121,20 @@ namespace Dapplo.HttpExtensions
         ///     <a href="https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.maxautomaticredirections.aspx">here</a>
         ///     and <a href="https://msdn.microsoft.com/en-us/library/system.net.httpwebrequest.allowautoredirect.aspx">here</a>
         /// </summary>
+#if !PCL
         [DefaultValue(50)]
         [Display(Description = "The maximum amount of redirections that are followed")]
+#endif
         int MaxAutomaticRedirections { get; set; }
 
         /// <summary>
         ///     For more details, click
         ///     <a href="https://msdn.microsoft.com/en-us/library/system.net.http.httpclient.maxresponsecontentbuffersize.aspx">here</a>
         /// </summary>
-        [DefaultValue(2 * 1024 * 1024 * 1024L - 1L)]
+#if !PCL
+       [DefaultValue(2 * 1024 * 1024 * 1024L - 1L)]
         [Display(Description = "Max response content buffer size")]
+#endif
         long MaxResponseContentBufferSize { get; set; }
 
         /// <summary>
@@ -128,18 +143,22 @@ namespace Dapplo.HttpExtensions
         ///     And
         ///     <a href="http://weblog.west-wind.com/posts/2010/Feb/18/NET-WebRequestPreAuthenticate-not-quite-what-it-sounds-like">here</a>
         /// </summary>
-        [DefaultValue(false)]
+#if !PCL
+       [DefaultValue(false)]
         [Display(Description = "When true the request is directly send with a HTTP Authorization header.")]
         [DataMember(EmitDefaultValue = true)]
+#endif
         bool PreAuthenticate { get; set; }
 
         /// <summary>
         ///     For more details, click
         ///     <a href="https://msdn.microsoft.com/en-us/library/system.net.http.httpclient.timeout.aspx">here</a>
         /// </summary>
+#if !PCL
         [DefaultValue("0:01:40")]
         [Display(Description = "Request timeout")]
         [DataMember(EmitDefaultValue = true)]
+#endif
         TimeSpan RequestTimeout { get; set; }
 
         /// <summary>
@@ -148,17 +167,21 @@ namespace Dapplo.HttpExtensions
         ///     And
         ///     <a href="https://msdn.microsoft.com/en-us/library/system.net.http.httpclienthandler.cookiecontainer.aspx">here</a>
         /// </summary>
+#if !PCL
         [DefaultValue(true)]
         [Display(Description = "Should requests store & resend cookies?")]
         [DataMember(EmitDefaultValue = true)]
+#endif
         bool UseCookies { get; set; }
 
         /// <summary>
         ///     When true every http request will supply the default user credentials when the server asks for them
         /// </summary>
+#if !PCL
         [DefaultValue(true)]
         [Display(Description = "When true every http request will supply the default user credentials when the server asks for them")]
         [DataMember(EmitDefaultValue = true)]
+#endif
         bool UseDefaultCredentials { get; set; }
 
         /// <summary>

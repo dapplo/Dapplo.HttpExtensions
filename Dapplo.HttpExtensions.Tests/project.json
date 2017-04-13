@@ -9,13 +9,13 @@
     "supports": {},
     "dependencies": {
         "Dapplo.HttpExtensions": "*",
-        "xunit": "2.1.0",
-        "xunit.runner.console": "2.1.0",
-        "xunit.runner.visualstudio": "2.1.0",
-        "Dapplo.Log": "1.0.23",
-        "Dapplo.Log.XUnit": "1.0.23",
         "Dapplo.HttpExtensions.JsonSimple": "*",
-        "Dapplo.HttpExtensions.OAuth": "*"
+        "Dapplo.HttpExtensions.OAuth": "*",
+        "Dapplo.Log": "1.0.29",
+        "Dapplo.Log.XUnit": "1.0.29",
+        "xunit": "2.2.0",
+        "xunit.runner.console": "2.2.0",
+        "xunit.runner.visualstudio": "2.2.0"
     },
     "frameworks": {
         "net45": {
@@ -46,7 +46,7 @@
     "tools": {
         "coveralls.io": "1.3.4",
         "OpenCover": "4.6.519",
-        "ReportGenerator": "2.5.0.0"
+        "ReportGenerator": "2.5.6"
     },
     "buildOptions": {
         "xmlDoc": false

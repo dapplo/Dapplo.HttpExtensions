@@ -28,8 +28,8 @@
     },
     "supports": {},
     "dependencies": {
-        "Dapplo.Log": "1.0.23",
-        "Dapplo.HttpExtensions": "*"
+        "Dapplo.HttpExtensions": "*",
+        "Dapplo.Log": "1.0.29"
     },
     "frameworks": {
         "netstandard1.3": {

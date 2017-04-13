@@ -21,8 +21,6 @@
 
 #region Usings
 
-#region using
-
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -30,16 +28,12 @@ using System.Net.Http;
 using System.Text;
 #if !NET45
 using System.Threading;
-#endif
-
-#endregion
-
-#if NET45
+#else
 using Nito.AsyncEx.AsyncLocal;
-
 #endif
 
 #endregion
+
 
 namespace Dapplo.HttpExtensions
 {

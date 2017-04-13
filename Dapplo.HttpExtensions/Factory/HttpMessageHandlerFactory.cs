@@ -21,9 +21,13 @@
 
 #region Usings
 
+#if !PCL
 using System.Net;
-using System.Net.Http;
 using System.Net.Security;
+#endif
+
+using System.Net.Http;
+
 #if NET45 || NET46
 using System.Net.Cache;
 using Dapplo.Log;
@@ -59,10 +63,12 @@ namespace Dapplo.HttpExtensions.Factory
 ///     This creates an advanced HttpMessageHandler, used in Apps
 /// </summary>
 /// <returns>HttpMessageHandler (HttpClientHandler)</returns>
-		private static HttpMessageHandler CreateHandler()
-		{
-			return CreateHttpClientHandler();
-		}
+        private static HttpMessageHandler CreateHandler()
+        {
+            var httpClientHandler = new HttpClientHandler();
+            SetDefaults(httpClientHandler);
+            return httpClientHandler;
+        }
 #endif
 
         /// <summary>
@@ -82,19 +88,6 @@ namespace Dapplo.HttpExtensions.Factory
         }
 
         /// <summary>
-        ///     This creates an HttpClientHandler, normally one should use CreateWebRequestHandler
-        ///     But this might be needed for Apps
-        /// </summary>
-        /// <returns>HttpMessageHandler (HttpClientHandler)</returns>
-        // ReSharper disable once UnusedMember.Local
-        private static HttpMessageHandler CreateHttpClientHandler()
-        {
-            var httpClientHandler = new HttpClientHandler();
-            SetDefaults(httpClientHandler);
-            return httpClientHandler;
-        }
-
-        /// <summary>
         ///     Apply settings on the HttpClientHandler
         /// </summary>
         /// <param name="httpClientHandler"></param>
@@ -106,7 +99,11 @@ namespace Dapplo.HttpExtensions.Factory
             httpClientHandler.AllowAutoRedirect = httpSettings.AllowAutoRedirect;
             httpClientHandler.AutomaticDecompression = httpSettings.DefaultDecompressionMethods;
             httpClientHandler.CookieContainer = httpSettings.UseCookies ? httpBehaviour.CookieContainer : null;
+#if PCL
+            httpClientHandler.Credentials = httpSettings.Credentials;
+#else
             httpClientHandler.Credentials = httpSettings.UseDefaultCredentials ? CredentialCache.DefaultCredentials : httpSettings.Credentials;
+#endif
             httpClientHandler.MaxAutomaticRedirections = httpSettings.MaxAutomaticRedirections;
 
 #if NET45 || NET46

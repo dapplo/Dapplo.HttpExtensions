@@ -1,124 +1,226 @@
-#tool "nuget:?package=xunit.runner.console"
-#tool "nuget:?package=OpenCover"
-#tool coveralls.io
-#addin MagicChunks
-#addin Cake.FileHelpers
-#addin Cake.Coveralls
+#tool "xunit.runner.console"
+#tool "OpenCover"
+#tool "GitVersion.CommandLine"
+#tool "docfx.console"
+#tool "coveralls.io"
+// Needed for Cake.Compression, as described here: https://github.com/akordowski/Cake.Compression/issues/3
+#addin "SharpZipLib"
+#addin "MagicChunks"
+#addin "Cake.FileHelpers"
+#addin "Cake.DocFx"
+#addin "Cake.Coveralls"
+#addin "Cake.Compression"
 
 var target = Argument("target", "Build");
-var solutionName = Argument("solutionName", "Dapplo.HttpExtensions");
 var configuration = Argument("configuration", "release");
-var dotnetVersion = Argument("dotnetVersion", "net45");
-var version = Argument("version", EnvironmentVariable("APPVEYOR_BUILD_VERSION")?? "0.0.9.9");
-var pullRequest = Argument("pullRequest", EnvironmentVariable("APPVEYOR_PULL_REQUEST_NUMBER"));
-var coveralsRepoToken = Argument("coveralsRepoToken", EnvironmentVariable("COVERALLS_REPO_TOKEN"));
+
+// Used to publish NuGet packages
+var nugetApiKey = Argument("nugetApiKey", EnvironmentVariable("NuGetApiKey"));
+
+// Used to publish coverage report
+var coverallsRepoToken = Argument("coverallsRepoToken", EnvironmentVariable("COVERALLS_REPO_TOKEN"));
+
+// where is our solution located?
+var solutionFilePath = GetFiles("./**/*.sln").First();
+
+// Check if we are in a pull request, publishing of packages and coverage should be skipped
+var isPullRequest = !string.IsNullOrEmpty(EnvironmentVariable("APPVEYOR_PULL_REQUEST_NUMBER"));
+
+// Check if the commit is marked as release
 var isRelease = Argument<bool>("isRelease", string.Compare("[release]", EnvironmentVariable("appveyor_repo_commit_message_extended"), true) == 0);
-var nugetApiKey = Argument("nugetApiKey", EnvironmentVariable("NuGet_Api_Key"));
+
+// Used to store the version, which is needed during the build and the packaging
+var version = EnvironmentVariable("APPVEYOR_BUILD_VERSION") ?? "1.0.0";
 
 Task("Default")
-	.IsDependentOn("Package");
+    .IsDependentOn("Publish");
 
-Task("Clean")
-	.Does(() =>
+// Publish taks depends on publish specifics
+Task("Publish")
+	.IsDependentOn("PublishCoverage")
+	.IsDependentOn("PublishPackages")
+    .WithCriteria(() => !BuildSystem.IsLocalBuild);
+
+// Publish the coveralls report to Coveralls.NET
+Task("PublishCoverage")
+    .IsDependentOn("Coverage")
+    .WithCriteria(() => !BuildSystem.IsLocalBuild)
+    .WithCriteria(() => !string.IsNullOrEmpty(coverallsRepoToken))
+    .WithCriteria(() => !isPullRequest)
+    .Does(()=>
 {
-	CleanDirectories("./**/obj");
-	CleanDirectories("./**/bin");	
-});
-
-Task("Versioning")
-	.Does(() =>
-{
-	var projects = GetFiles(string.Format("./{0}*/project.json", solutionName));
-
-	foreach(var project in projects)
-	{
-		Information("Fixing version in {0} to {1}", project.FullPath, version);
-		TransformConfig(project.FullPath, 
-			new TransformationCollection {
-				{ "Version", version }
-			});
-	}
-
-});
-
-Task("Restore-NuGet-Packages")
-	.Does(() =>
-{
-	DotNetCoreRestore();
-});
-
-Task("Build")
-	.IsDependentOn("Restore-NuGet-Packages")
-	.IsDependentOn("Clean")
-	.IsDependentOn("Versioning")
-	.Does(() =>
-{
-	var settings = new DotNetCoreBuildSettings
+	CoverallsIo("./artifacts/coverage.xml", new CoverallsIoSettings()
     {
-		Configuration = configuration,
-	};
-	 
-	var projects = GetFiles(string.Format("./{0}*/project.json", solutionName));
-	foreach(var project in projects)
-	{
-		DotNetCoreBuild(project.FullPath, settings);
-	}
-	
-	// Make sure the .dlls in the obj path are not found elsewhere
-	CleanDirectories("./**/obj");
-});
-
-Task("Coverage")
-	.IsDependentOn("Build")
-	.Does(() =>
-{
-	CreateDirectory("artifacts");
-
-	// Make XUnit 2 run via the OpenCover process
-	OpenCover(
-		// The test tool Lamdba
-		tool => {
-			tool.XUnit2("./**/" + solutionName + ".Tests.dll",
-				new XUnit2Settings {
-					ShadowCopy = false
-				});
-			},
-		// The output path
-		new FilePath("./artifacts/coverage.xml"),
-		// Settings
-		new OpenCoverSettings() {
-			ReturnTargetCodeOffset = 0
-		}.WithFilter("+[" + solutionName + "]*").WithFilter("-[" + solutionName + ".Tests]*")
-	);
-});
-
-Task("Upload-Coverage-Report")
-	.IsDependentOn("Coverage")
-	.WithCriteria(() => !string.IsNullOrEmpty(coveralsRepoToken))
-    .Does(() =>
-{
-    CoverallsIo("./artifacts/coverage.xml", new CoverallsIoSettings()
-    {
-        RepoToken = coveralsRepoToken
+        RepoToken = coverallsRepoToken
     });
 });
 
-Task("Package")
-	.IsDependentOn("Upload-Coverage-Report")
-	.WithCriteria(() => !string.IsNullOrEmpty(pullRequest))
-	.WithCriteria(() => isRelease)
-	.Does(()=>
+// Publish the Artifacts of the Package Task to NuGet
+Task("PublishPackages")
+    .IsDependentOn("Package")
+    .WithCriteria(() => !BuildSystem.IsLocalBuild)
+    .WithCriteria(() => !string.IsNullOrEmpty(nugetApiKey))
+    .WithCriteria(() => !isPullRequest)
+    .WithCriteria(() => isRelease)
+    .Does(()=>
 {
-	var settings = new DotNetCorePackSettings
+    var settings = new NuGetPushSettings {
+        Source = "https://www.nuget.org/api/v2/package",
+        ApiKey = nugetApiKey
+    };
+
+    var packages = GetFiles("./artifacts/*.nupkg").Where(p => !p.FullPath.Contains("symbols"));
+    NuGetPush(packages, settings);
+});
+
+// Package the results of the build, if the tests worked, into a NuGet Package
+Task("Package")
+	.IsDependentOn("Build")
+	.IsDependentOn("Documentation")
+    .Does(()=>
+{
+    var settings = new DotNetCorePackSettings  
     {
-		Configuration = configuration,
-		OutputDirectory = "./artifacts/"
-	};
-	var projects = GetFiles(string.Format("./{0}*/project.json", solutionName));
-	foreach(var project in projects.Where(p => !p.FullPath.Contains("Test")))
+        OutputDirectory = "./artifacts/",
+        Verbose = true,
+        Configuration = configuration
+    };
+
+    var projectFilePaths = GetFiles("./**/project.json").Where(p => !p.FullPath.Contains("Test") && !p.FullPath.Contains("packages") &&!p.FullPath.Contains("tools"));
+    foreach(var projectFilePath in projectFilePaths)
+    {
+		// Skipping powershell for now, until it's more stable
+		if (projectFilePath.FullPath.Contains("Power")) {
+			continue;
+		}
+        Information("Packaging: " + projectFilePath.FullPath);
+		DotNetCorePack(projectFilePath.GetDirectory().FullPath, settings);
+    }
+});
+
+// Build the DocFX documentation site
+Task("Documentation")
+    .Does(() =>
+{
+	// Run DocFX
+    DocFxMetadata("./doc/docfx.json");
+    DocFxBuild("./doc/docfx.json");
+	
+	CreateDirectory("artifacts");
+	// Archive the generated site
+	ZipCompress("./doc/_site", "./artifacts/site.zip");
+});
+
+// Run the XUnit tests via OpenCover, so be get an coverage.xml report
+Task("Coverage")
+    .IsDependentOn("Build")
+    .Does(() =>
+{
+    CreateDirectory("artifacts");
+
+    var openCoverSettings = new OpenCoverSettings() {
+        // Forces error in build when tests fail
+        ReturnTargetCodeOffset = 0
+    };
+
+    var projectFiles = GetFiles("./**/*.xproj");
+    foreach(var projectFile in projectFiles)
+    {
+        var projectName = projectFile.GetDirectory().GetDirectoryName();
+        if (projectName.Contains("Test")) {
+           openCoverSettings.WithFilter("-["+projectName+"]*");
+        }
+        else {
+           openCoverSettings.WithFilter("+["+projectName+"]*");
+        }
+    }
+
+    // Make XUnit 2 run via the OpenCover process
+    OpenCover(
+        // The test tool Lamdba
+        tool => {
+            tool.XUnit2("./**/*.Tests.dll",
+                new XUnit2Settings {
+					// Add AppVeyor output, this "should" take care of a report inside AppVeyor
+					ArgumentCustomization = args => {
+						if (!BuildSystem.IsLocalBuild) {
+							args.Append("-appveyor");
+						}
+						return args;
+					},
+                    ShadowCopy = false,
+					XmlReport = true,
+					HtmlReport = true,
+					ReportName = "Dapplo.HttpExtensions",
+					OutputDirectory = "./artifacts",
+					WorkingDirectory = "./src"
+                });
+            },
+        // The output path
+        new FilePath("./artifacts/coverage.xml"),
+        // Settings
+       openCoverSettings
+    );
+});
+
+// This starts the actual MSBuild
+Task("Build")
+    .IsDependentOn("RestoreNuGetPackages")
+    .IsDependentOn("Clean")
+    .IsDependentOn("Versioning")
+    .Does(() =>
+{
+	DotNetBuild(solutionFilePath, settings => settings.SetConfiguration(configuration));
+    // Make sure the .dlls in the obj path are not found elsewhere
+    CleanDirectories("./**/obj");
+});
+
+// Load the needed NuGet packages to make the build work
+Task("RestoreNuGetPackages")
+    .Does(() =>
+{
+    DotNetCoreRestore("./", new DotNetCoreRestoreSettings
 	{
-		DotNetCorePack(project.FullPath, settings);
+		Verbose = false,
+		Verbosity = DotNetCoreRestoreVerbosity.Warning,
+		Sources = new [] {
+			"https://api.nuget.org/v3/index.json"
+		}
+	});
+});
+
+// Update the versioning
+Task("Versioning")
+    .Does(() =>
+{
+	Information("Version of this build: " + version);
+	
+	// Overwrite version if it's not set.
+	if (string.IsNullOrEmpty(version)) {
+		var gitVersion = GitVersion();
+		Information("Git Version of this build: " + gitVersion.AssemblySemVer);
+		version = gitVersion.AssemblySemVer;
 	}
+    	
+	var projectFilePaths = GetFiles("./**/project.json").Where(p => !p.FullPath.Contains("Test") && !p.FullPath.Contains("packages") &&!p.FullPath.Contains("tools"));
+    foreach(var projectFilePath in projectFilePaths)
+    {
+        Information("Changing version in : " + projectFilePath.FullPath + " to " + version);
+		 TransformConfig(projectFilePath.FullPath, 
+            new TransformationCollection {
+                { "version", version }
+            });
+	}
+});
+
+
+// Clean all unneeded files, so we build on a clean file system
+Task("Clean")
+    .Does(() =>
+{
+    CleanDirectories("./**/obj");
+    CleanDirectories("./**/bin");
+    CleanDirectories("./artifacts");
 });
 
 RunTarget(target);

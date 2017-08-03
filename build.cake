@@ -94,7 +94,7 @@ Task("Package")
         IncludeSymbols = false
     };
 
-    var projectFilePaths = GetFiles("./**/*.csproj").Where(p => !p.FullPath.Contains("Test") && !p.FullPath.Contains("packages") &&!p.FullPath.Contains("tools"));
+    var projectFilePaths = GetFiles("./**/*.nuspec").Where(p => !p.FullPath.Contains("Test") && !p.FullPath.Contains("packages") &&!p.FullPath.Contains("tools"));
     foreach(var projectFilePath in projectFilePaths)
     {
         Information("Packaging: " + projectFilePath.FullPath);

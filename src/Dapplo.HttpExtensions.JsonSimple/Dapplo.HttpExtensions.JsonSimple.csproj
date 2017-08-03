@@ -23,6 +23,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Dapplo.Log" Version="1.0.29" />
+    <PackageReference Include="gitlink" Version="3.0.0" />
   </ItemGroup>
   <ItemGroup>
       <ProjectReference Include="..\Dapplo.HttpExtensions\Dapplo.HttpExtensions.csproj" />

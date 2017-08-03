@@ -23,6 +23,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Dapplo.Log" Version="1.0.29" />
+    <PackageReference Include="gitlink" Version="3.0.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
     <PackageReference Include="Microsoft.NETCore.Portable.Compatibility" Version="1.0.1" />

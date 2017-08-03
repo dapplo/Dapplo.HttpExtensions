@@ -1,0 +1,21 @@
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+	<id>$id$</id>
+	<version>$version$</version>
+	<authors>$author$</authors>
+	<owners>$author$</owners>
+    <licenseUrl>http://www.gnu.org/licenses/lgpl-3.0.en.html</licenseUrl>
+    <projectUrl>http://www.dapplo.net/blocks/$id$/</projectUrl>
+    <iconUrl>http://www.dapplo.net/favicon.ico</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <language>en-us</language>
+	<copyright>$copyright$</copyright>
+    <tags>http,uri,extensions,dapplo,json</tags>
+  </metadata>
+  <files>
+    <file src="bin\$configuration$\net45\$id$.pdb" target="lib\net45\" />
+    <file src="bin\$configuration$\net45\$id$.pdb" target="lib\net46\" />
+    <file src="bin\$configuration$\net45\$id$.pdb" target="lib\netstandard1.3\" />
+  </files>
+</package>

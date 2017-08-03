@@ -91,7 +91,7 @@ Task("Package")
     {
         OutputDirectory = "./artifacts/",
         Configuration = configuration,
-        IncludeSymbols = true
+        IncludeSymbols = false
     };
 
     var projectFilePaths = GetFiles("./**/*.csproj").Where(p => !p.FullPath.Contains("Test") && !p.FullPath.Contains("packages") &&!p.FullPath.Contains("tools"));

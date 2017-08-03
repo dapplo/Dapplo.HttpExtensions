@@ -163,8 +163,8 @@ Task("Coverage")
 // This starts the actual MSBuild
 Task("Build")
     .IsDependentOn("Clean")
-    .IsDependentOn("RestoreNuGetPackages")
     .IsDependentOn("Versioning")
+    .IsDependentOn("RestoreNuGetPackages")
     .Does(() =>
 {
 	DotNetCoreBuild(solutionFilePath.FullPath, new DotNetCoreBuildSettings 

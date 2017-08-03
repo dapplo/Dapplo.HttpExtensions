@@ -3,7 +3,7 @@
     <Description>Simple functionality for Dapplo.HttpExtensions</Description>
     <Copyright>Copyright © Dapplo 2016-2017</Copyright>
     <AssemblyTitle>Dapplo.HttpExtensions.JsonSimple</AssemblyTitle>
-    <Authors>Robin Krom</Authors>
+    <Authors>Dapplo</Authors>
     <TargetFrameworks>netstandard1.3;net45;net46</TargetFrameworks>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <AssemblyName>Dapplo.HttpExtensions.JsonSimple</AssemblyName>

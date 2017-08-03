@@ -82,7 +82,6 @@ Task("Package")
     var settings = new DotNetCorePackSettings  
     {
         OutputDirectory = "./artifacts/",
-        Verbose = true,
         Configuration = configuration
     };
 

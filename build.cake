@@ -81,23 +81,24 @@ Task("Package")
     .Does(()=>
 {
 	// Run GitLink before packaging the files
-	GitLink("./", new GitLinkSettings {
-        SolutionFileName = solutionFilePath.FullPath,
-        ErrorsAsWarnings = false,
-    });
+    foreach(var pdbFilePath in GetFiles("./**/bin/**/*.pdb"))
+    {
+        Information("Enhancing PDB: " + pdbFilePath.FullPath);
+        GitLink(pdbFilePath.FullPath);
+    }
 
     var settings = new DotNetCorePackSettings  
     {
         OutputDirectory = "./artifacts/",
         Configuration = configuration,
-		IncludeSymbols = true
+        IncludeSymbols = true
     };
 
     var projectFilePaths = GetFiles("./**/*.csproj").Where(p => !p.FullPath.Contains("Test") && !p.FullPath.Contains("packages") &&!p.FullPath.Contains("tools"));
     foreach(var projectFilePath in projectFilePaths)
     {
         Information("Packaging: " + projectFilePath.FullPath);
-		DotNetCorePack(projectFilePath.GetDirectory().FullPath, settings);
+        DotNetCorePack(projectFilePath.GetDirectory().FullPath, settings);
     }
 });
 
@@ -105,13 +106,13 @@ Task("Package")
 Task("Documentation")
     .Does(() =>
 {
-	// Run DocFX
+    // Run DocFX
     DocFxMetadata("./doc/docfx.json");
     DocFxBuild("./doc/docfx.json");
-	
-	CreateDirectory("artifacts");
-	// Archive the generated site
-	ZipCompress("./doc/_site", "./artifacts/site.zip");
+
+    CreateDirectory("artifacts");
+    // Archive the generated site
+    ZipCompress("./doc/_site", "./artifacts/site.zip");
 });
 
 // Run the XUnit tests via OpenCover, so be get an coverage.xml report

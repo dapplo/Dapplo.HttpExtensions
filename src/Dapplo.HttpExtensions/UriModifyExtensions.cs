@@ -138,6 +138,21 @@ namespace Dapplo.HttpExtensions
             {
                 throw new ArgumentNullException(nameof(values));
             }
+            return uri.ExtendQuery(values.Select(item => item));
+        }
+
+        /// <summary>
+        ///     Adds query string value to an existing url, both absolute and relative URI's are supported.
+        /// </summary>
+        /// <param name="uri">Uri to extend</param>
+        /// <param name="values">IEnumerable of KeyValuePair with values</param>
+        /// <returns>Uri with extended query</returns>
+        public static Uri ExtendQuery<T>(this Uri uri, IEnumerable<KeyValuePair<string, T>> values)
+        {
+            if (values == null)
+            {
+                throw new ArgumentNullException(nameof(values));
+            }
             var keyValuePairs = uri.QueryToKeyValuePairs()
                 .Concat(values.Select(nameValue => new KeyValuePair<string, string>(nameValue.Key, nameValue.Value?.ToString())));
 

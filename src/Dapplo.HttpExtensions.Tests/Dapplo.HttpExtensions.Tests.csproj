@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>Tests for Dapplo.HttpExtensions</Description>
+    <Copyright>Copyright © Dapplo 2016-2017</Copyright>
+    <AssemblyTitle>Dapplo.HttpExtensions.Tests</AssemblyTitle>
+    <Authors>Robin Krom</Authors>
+    <TargetFrameworks>net45</TargetFrameworks>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <AssemblyName>Dapplo.HttpExtensions.Tests</AssemblyName>
+    <Version>0.1.0.0</Version>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <FileVersion>0.1.0.0</FileVersion>
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>True</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Dapplo.Log" Version="1.0.29" />
+    <PackageReference Include="Dapplo.Log.XUnit" Version="1.0.29" />
+	<PackageReference Include="xunit" Version="2.2.0" />
+	<PackageReference Include="xunit.runner.console" Version="2.2.0" />
+	<PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Dapplo.HttpExtensions\Dapplo.HttpExtensions.csproj" />
+    <ProjectReference Include="..\Dapplo.HttpExtensions.OAuth\Dapplo.HttpExtensions.OAuth.csproj" />
+    <ProjectReference Include="..\Dapplo.HttpExtensions.JsonNet\Dapplo.HttpExtensions.JsonNet.csproj" />
+    <ProjectReference Include="..\Dapplo.HttpExtensions.JsonSimple\Dapplo.HttpExtensions.JsonSimple.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+	<Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+</Project>

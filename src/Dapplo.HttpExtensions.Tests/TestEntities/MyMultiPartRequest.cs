@@ -29,7 +29,7 @@ using Dapplo.HttpExtensions.Support;
 namespace Dapplo.HttpExtensions.Tests.TestEntities
 {
     /// <summary>
-    ///     Example class wich is posted & filled automatically from the response information
+    ///     Example class wich is posted and filled automatically from the response information
     /// </summary>
     [HttpRequest]
     public class MyMultiPartRequest<TBitmap>

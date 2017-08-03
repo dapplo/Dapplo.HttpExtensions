@@ -21,7 +21,7 @@ var nugetApiKey = Argument("nugetApiKey", EnvironmentVariable("NuGetApiKey"));
 var coverallsRepoToken = Argument("coverallsRepoToken", EnvironmentVariable("COVERALLS_REPO_TOKEN"));
 
 // where is our solution located?
-var solutionFilePath = GetFiles("./**/*.sln").First();
+var solutionFilePath = GetFiles("src/*.sln").First();
 
 // Check if we are in a pull request, publishing of packages and coverage should be skipped
 var isPullRequest = !string.IsNullOrEmpty(EnvironmentVariable("APPVEYOR_PULL_REQUEST_NUMBER"));
@@ -86,13 +86,9 @@ Task("Package")
         Configuration = configuration
     };
 
-    var projectFilePaths = GetFiles("./**/project.json").Where(p => !p.FullPath.Contains("Test") && !p.FullPath.Contains("packages") &&!p.FullPath.Contains("tools"));
+    var projectFilePaths = GetFiles("./**/*.csproj").Where(p => !p.FullPath.Contains("Test") && !p.FullPath.Contains("packages") &&!p.FullPath.Contains("tools"));
     foreach(var projectFilePath in projectFilePaths)
     {
-		// Skipping powershell for now, until it's more stable
-		if (projectFilePath.FullPath.Contains("Power")) {
-			continue;
-		}
         Information("Packaging: " + projectFilePath.FullPath);
 		DotNetCorePack(projectFilePath.GetDirectory().FullPath, settings);
     }
@@ -123,15 +119,17 @@ Task("Coverage")
         ReturnTargetCodeOffset = 0
     };
 
-    var projectFiles = GetFiles("./**/*.xproj");
+    var projectFiles = GetFiles("./**/*.csproj").Where(p => !p.FullPath.Contains("packages") &&!p.FullPath.Contains("tools"));
     foreach(var projectFile in projectFiles)
     {
         var projectName = projectFile.GetDirectory().GetDirectoryName();
         if (projectName.Contains("Test")) {
-           openCoverSettings.WithFilter("-["+projectName+"]*");
+            openCoverSettings.WithFilter("-["+projectName+"]*");
+            Information("OpenCover added filter -" + projectName);
         }
         else {
-           openCoverSettings.WithFilter("+["+projectName+"]*");
+            openCoverSettings.WithFilter("+["+projectName+"]*");
+            Information("OpenCover added filter +" + projectName);
         }
     }
 
@@ -139,21 +137,21 @@ Task("Coverage")
     OpenCover(
         // The test tool Lamdba
         tool => {
-            tool.XUnit2("./**/*.Tests.dll",
+            tool.XUnit2("./**/bin/**/*.Tests.dll",
                 new XUnit2Settings {
-					// Add AppVeyor output, this "should" take care of a report inside AppVeyor
-					ArgumentCustomization = args => {
-						if (!BuildSystem.IsLocalBuild) {
-							args.Append("-appveyor");
-						}
-						return args;
-					},
+                    // Add AppVeyor output, this "should" take care of a report inside AppVeyor
+                    ArgumentCustomization = args => {
+                        if (!BuildSystem.IsLocalBuild) {
+                            args.Append("-appveyor");
+                        }
+                        return args;
+                    },
                     ShadowCopy = false,
-					XmlReport = true,
-					HtmlReport = true,
-					ReportName = "Dapplo.HttpExtensions",
-					OutputDirectory = "./artifacts",
-					WorkingDirectory = "./src"
+                    XmlReport = true,
+                    HtmlReport = true,
+                    ReportName = "Dapplo.HttpExtensions",
+                    OutputDirectory = "./artifacts",
+                    WorkingDirectory = "./src"
                 });
             },
         // The output path
@@ -165,24 +163,23 @@ Task("Coverage")
 
 // This starts the actual MSBuild
 Task("Build")
-    .IsDependentOn("RestoreNuGetPackages")
     .IsDependentOn("Clean")
+    .IsDependentOn("RestoreNuGetPackages")
     .IsDependentOn("Versioning")
     .Does(() =>
 {
-	DotNetBuild(solutionFilePath, settings => settings.SetConfiguration(configuration));
-    // Make sure the .dlls in the obj path are not found elsewhere
-    CleanDirectories("./**/obj");
+	DotNetCoreBuild(solutionFilePath.FullPath, new DotNetCoreBuildSettings 
+	{
+		Configuration = configuration
+	});
 });
 
 // Load the needed NuGet packages to make the build work
 Task("RestoreNuGetPackages")
     .Does(() =>
 {
-    DotNetCoreRestore("./", new DotNetCoreRestoreSettings
+    DotNetCoreRestore(solutionFilePath.FullPath, new DotNetCoreRestoreSettings
 	{
-		Verbose = false,
-		Verbosity = DotNetCoreRestoreVerbosity.Warning,
 		Sources = new [] {
 			"https://api.nuget.org/v3/index.json"
 		}
@@ -193,24 +190,26 @@ Task("RestoreNuGetPackages")
 Task("Versioning")
     .Does(() =>
 {
-	Information("Version of this build: " + version);
-	
-	// Overwrite version if it's not set.
-	if (string.IsNullOrEmpty(version)) {
-		var gitVersion = GitVersion();
-		Information("Git Version of this build: " + gitVersion.AssemblySemVer);
-		version = gitVersion.AssemblySemVer;
-	}
+    Information("Version of this build: " + version);
+    
+    // Overwrite version if it's not set.
+    if (string.IsNullOrEmpty(version)) {
+        var gitVersion = GitVersion();
+        Information("Git Version of this build: " + gitVersion.AssemblySemVer);
+        version = gitVersion.AssemblySemVer;
+    }
     	
-	var projectFilePaths = GetFiles("./**/project.json").Where(p => !p.FullPath.Contains("Test") && !p.FullPath.Contains("packages") &&!p.FullPath.Contains("tools"));
+    var projectFilePaths = GetFiles("./**/*.csproj").Where(p => !p.FullPath.Contains("Test") && !p.FullPath.Contains("packages") &&!p.FullPath.Contains("tools"));
     foreach(var projectFilePath in projectFilePaths)
     {
         Information("Changing version in : " + projectFilePath.FullPath + " to " + version);
-		 TransformConfig(projectFilePath.FullPath, 
+        TransformConfig(projectFilePath.FullPath, 
             new TransformationCollection {
-                { "version", version }
+                { "Project/PropertyGroup/Version", version },
+                { "Project/PropertyGroup/AssemblyVersion", version },
+                { "Project/PropertyGroup/FileVersion", version }
             });
-	}
+    }
 });
 
 

@@ -1,6 +1,7 @@
-version: 0.7.{build}
+version: 0.8.{build}
 skip_tags: true
 configuration: Release
+os: Visual Studio 2017
 platform: Any CPU
 clone_depth: 2
 branches:
@@ -16,14 +17,14 @@ environment:
   NuGet_Api_Key:
     secure: xkDQ385+smLqdzhESsXBJvnUjK4FZ4Djjrqi9tFR29dwESIvPYOrQAqgri5Nf/fA
 build:
-  publish_nuget: true
-  publish_nuget_symbols: true
   verbosity: minimal
-artifacts:
-- path: artifacts\*.nupkg
-  name: NuGet package
 build_script:
 - ps: .\build.ps1
+artifacts:
+- path: artifacts\**\*.nupkg
+- path: artifacts\**\site.zip
+- path: artifacts\*.xml
+- path: artifacts\*.html
 notifications:
 - provider: Email
   to:
@@ -31,12 +32,3 @@ notifications:
   on_build_success: true
   on_build_failure: true
   on_build_status_changed: false
-deploy:
-- provider: NuGet
-  skip_symbols: true
-  api_key:
-    secure: xkDQ385+smLqdzhESsXBJvnUjK4FZ4Djjrqi9tFR29dwESIvPYOrQAqgri5Nf/fA
-  on:
-    branch: master
-    is_not_pr: true
-    appveyor_repo_commit_message_extended: /\[release\]/

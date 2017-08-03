@@ -89,6 +89,13 @@ namespace Dapplo.HttpExtensions.OAuth
         ///     The HttpMethod which is used for getting the token
         /// </summary>
         public HttpMethod TokenMethod { get; set; } = HttpMethod.Post;
+
+        /// <summary>
+        /// This defines the transport "way" which the OAuth signature takes.
+        /// Default is OAuth1SignatureTransports.Headers, which is normal, but SOME systems want the information in the query parameters.
+        /// (An example is Atlassians Confluence)
+        /// </summary>
+        public OAuth1SignatureTransports SignatureTransport { get; set; } = OAuth1SignatureTransports.Headers;
     }
 }
 

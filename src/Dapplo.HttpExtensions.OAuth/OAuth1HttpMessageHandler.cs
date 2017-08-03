@@ -410,7 +410,7 @@ namespace Dapplo.HttpExtensions.OAuth
             {
                 parameters.Add(OAuth1Parameters.Token.EnumValueOf(), _oAuth1Settings.AuthorizeToken);
             }
-            // Create a copy of the parameters, so we add the query parameters as signle parameters to the signature base
+            // Create a copy of the parameters, so we add the query parameters as single parameters to the signature base
             var signatureParameters = new Dictionary<string, object>(parameters);
             foreach (var valuePair in httpRequestMessage.RequestUri.QueryToKeyValuePairs())
             {
@@ -450,12 +450,21 @@ namespace Dapplo.HttpExtensions.OAuth
                     throw new ArgumentException("Unknown SignatureType", nameof(_oAuth1Settings.SignatureType));
             }
 
-            var authorizationHeaderValues = string.Join(", ",
-                parameters.Where(x => x.Key.StartsWith("oauth_") && x.Value is string)
-                    .OrderBy(x => x.Key)
-                    .Select(x => $"{x.Key}=\"{Uri.EscapeDataString((string) x.Value)}\""));
-            // Add the OAuth to the headers
-            httpRequestMessage.SetAuthorization("OAuth", authorizationHeaderValues);
+            if (_oAuth1Settings.SignatureTransport == OAuth1SignatureTransports.QueryParameters)
+            {
+                // Add the OAuth values to the query parameters
+                httpRequestMessage.RequestUri.ExtendQuery(parameters.Where(x => x.Key.StartsWith("oauth_") && x.Value is string).OrderBy(x => x.Key));
+            }
+            else
+            {
+                var authorizationHeaderValues = string.Join(", ",
+                    parameters.Where(x => x.Key.StartsWith("oauth_") && x.Value is string)
+                        .OrderBy(x => x.Key)
+                        .Select(x => $"{x.Key}=\"{Uri.EscapeDataString((string)x.Value)}\""));
+                // Add the OAuth values to the headers
+                httpRequestMessage.SetAuthorization("OAuth", authorizationHeaderValues);
+
+            }
 
             if (httpRequestMessage.Method == HttpMethod.Post && httpRequestMessage.Properties.Count > 0)
             {

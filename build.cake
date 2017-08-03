@@ -94,11 +94,11 @@ Task("Package")
         IncludeSymbols = false
     };
 
-    var projectFilePaths = GetFiles("./**/*.nuspec").Where(p => !p.FullPath.Contains("Test") && !p.FullPath.Contains("packages") &&!p.FullPath.Contains("tools"));
-    foreach(var projectFilePath in projectFilePaths)
+    var nuSpecFilePaths = GetFiles("./**/*.nuspec").Where(p => !p.FullPath.Contains("Test") && !p.FullPath.Contains("packages") &&!p.FullPath.Contains("tools"));
+    foreach(var nuSpecFilePath in nuSpecFilePaths)
     {
-        Information("Packaging: " + projectFilePath.FullPath);
-        DotNetCorePack(projectFilePath.GetDirectory().FullPath, settings);
+        Information("Packaging: " + nuSpecFilePath.FullPath);
+        DotNetCorePack(nuSpecFilePath.FullPath, settings);
     }
 });
 

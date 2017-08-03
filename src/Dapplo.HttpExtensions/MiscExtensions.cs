@@ -39,9 +39,8 @@ namespace Dapplo.HttpExtensions
         /// </summary>
         /// <typeparam name="T">type for the value, sometimes it's easier to let this method call ToString on your type.</typeparam>
         /// <param name="keyValuePairs">list of keyValuePair with string,T</param>
-        /// <param name="useEscapeDataString">bool to define what escaping to use, default is false as ToQueryString should mainly be used for query strings</param>
         /// <returns>name1=value1&amp;name2=value2 etc...</returns>
-        public static string ToQueryString<T>(this IEnumerable<KeyValuePair<string, T>> keyValuePairs , bool useEscapeDataString = false)
+        public static string ToQueryString<T>(this IEnumerable<KeyValuePair<string, T>> keyValuePairs)
         {
             if (keyValuePairs == null)
             {
@@ -54,7 +53,7 @@ namespace Dapplo.HttpExtensions
                 queryBuilder.Append($"{keyValuePair.Key}");
                 if (keyValuePair.Value != null)
                 {
-                    var encodedValue = useEscapeDataString ? Uri.EscapeDataString(keyValuePair.Value?.ToString()) : Uri.EscapeUriString(keyValuePair.Value?.ToString());
+                    var encodedValue = Uri.EscapeDataString(keyValuePair.Value?.ToString());
                     queryBuilder.Append($"={encodedValue}");
                 }
                 queryBuilder.Append('&');

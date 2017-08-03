@@ -15,8 +15,8 @@
     <tags>http,uri,extensions,dapplo</tags>
   </metadata>
   <files>
-    <file src="bin\$configuration$\net45\$id$.pdb" target="lib\net45\" />
-    <file src="bin\$configuration$\net45\$id$.pdb" target="lib\net46\" />
-    <file src="bin\$configuration$\net45\$id$.pdb" target="lib\netstandard1.3\" />
+    <file src="$id$\bin\$configuration$\net45\$id$.pdb" target="lib\net45\" />
+    <file src="$id$\bin\$configuration$\net46\$id$.pdb" target="lib\net46\" />
+    <file src="$id$\bin\$configuration$\netstandard1.3\$id$.pdb" target="lib\netstandard1.3\" />
   </files>
 </package>

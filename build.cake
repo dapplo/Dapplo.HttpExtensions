@@ -3,6 +3,7 @@
 #tool "GitVersion.CommandLine"
 #tool "docfx.console"
 #tool "coveralls.io"
+#tool "gitlink"
 // Needed for Cake.Compression, as described here: https://github.com/akordowski/Cake.Compression/issues/3
 #addin "SharpZipLib"
 #addin "MagicChunks"
@@ -79,6 +80,12 @@ Task("Package")
 	.IsDependentOn("Documentation")
     .Does(()=>
 {
+	// Run GitLink before packaging the files
+	GitLink("./", new GitLinkSettings {
+        SolutionFileName = solutionFilePath.FullPath,
+        ErrorsAsWarnings = false,
+    });
+
     var settings = new DotNetCorePackSettings  
     {
         OutputDirectory = "./artifacts/",

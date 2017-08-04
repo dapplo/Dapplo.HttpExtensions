@@ -22,15 +22,15 @@
     <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
   <ItemGroup Label="dotnet pack instructions" Condition="'$(BuildingInsideVisualStudio)' != 'true'">
-    <None Include="bin/$(Configuration)/netstandard1.3/*.pdb">
+    <None Include="bin/$(Configuration)/netstandard1.3/$(AssemblyName).pdb">
       <Pack>true</Pack>
       <PackagePath>lib/netstandard1.3</PackagePath>
     </None>
-    <None Include="bin/$(Configuration)/net45/*.pdb">
+    <None Include="bin/$(Configuration)/net45/$(AssemblyName).pdb">
       <Pack>true</Pack>
       <PackagePath>lib/net45</PackagePath>
     </None>
-    <None Include="bin/$(Configuration)/net46/*.pdb">
+    <None Include="bin/$(Configuration)/net46/$(AssemblyName).pdb">
       <Pack>true</Pack>
       <PackagePath>lib/net46</PackagePath>
     </None>

@@ -26,11 +26,11 @@
       <Pack>true</Pack>
       <PackagePath>lib/netstandard1.3</PackagePath>
     </None>
-    <None Include="bin/$(Configuration)/net45/*OAuth.pdb">
+    <None Include="bin/$(Configuration)/net45/$(AssemblyName).pdb">
       <Pack>true</Pack>
       <PackagePath>lib/net45</PackagePath>
     </None>
-    <None Include="bin/$(Configuration)/net46/*OAuth.pdb">
+    <None Include="bin/$(Configuration)/net46/$(AssemblyName).pdb">
       <Pack>true</Pack>
       <PackagePath>lib/net46</PackagePath>
     </None>

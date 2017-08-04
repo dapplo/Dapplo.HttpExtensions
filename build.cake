@@ -83,6 +83,7 @@ Task("Package")
 	var gitLinkSettings = new GitLinkSettings {
 		IsDebug = false
 	};
+
 	// Run GitLink before packaging the files
     foreach(var pdbFilePath in GetFiles("./**/bin/**/*.pdb"))
     {
@@ -93,8 +94,7 @@ Task("Package")
     var settings = new DotNetCorePackSettings  
     {
         OutputDirectory = "./artifacts/",
-        Configuration = configuration,
-        IncludeSymbols = false
+        Configuration = configuration
     };
 
     var projectFiles = GetFiles("./**/*.csproj").Where(p => !p.FullPath.Contains("Test") && !p.FullPath.Contains("packages") &&!p.FullPath.Contains("tools"));

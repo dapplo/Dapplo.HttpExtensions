@@ -47,4 +47,4 @@ In 0.4.x the IHttpBehaviour was removed again, it's now passed via the CallConte
 In 0.5.x The configuration logic for the converters was changed
 In 0.6.x the Json and OAuth support were removed from the main package
 In 0.7.x doesn't have changes (switched to 0.8 by mistake)
-In 0.8.x the project / build was changed to use the new csproj
+In 0.8.x the project / build was changed to use the new csproj, build with VS2017 15.3 (due to csproj limitations in 15.2)

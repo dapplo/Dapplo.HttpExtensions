@@ -20,6 +20,7 @@
     <FileVersion>1.0.0</FileVersion>
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>True</DebugSymbols>
+	<DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
   </PropertyGroup>
   <ItemGroup Label="dotnet pack instructions" Condition="'$(BuildingInsideVisualStudio)' != 'true'">
     <None Include="bin/$(Configuration)/netstandard1.3/$(AssemblyName).pdb">

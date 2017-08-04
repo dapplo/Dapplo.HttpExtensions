@@ -4,7 +4,7 @@
     <Copyright>Copyright © Dapplo 2016-2017</Copyright>
     <AssemblyTitle>Dapplo.HttpExtensions</AssemblyTitle>
     <Authors>Dapplo</Authors>
-    <TargetFrameworks>netstandard1.3;net45;net46</TargetFrameworks>
+    <TargetFrameworks>net45;net46;netstandard1.3</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Dapplo.HttpExtensions</AssemblyName>
     <PackageId>Dapplo.HttpExtensions</PackageId>
@@ -20,6 +20,7 @@
     <FileVersion>1.0.0</FileVersion>
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>True</DebugSymbols>
+	<DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
   </PropertyGroup>
   <ItemGroup Label="dotnet pack instructions" Condition="'$(BuildingInsideVisualStudio)' != 'true'">
     <None Include="bin/$(Configuration)/netstandard1.3/$(AssemblyName).pdb">

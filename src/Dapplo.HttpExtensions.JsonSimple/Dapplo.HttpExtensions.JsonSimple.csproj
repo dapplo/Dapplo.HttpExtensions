@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>Simple functionality for Dapplo.HttpExtensions</Description>
     <Copyright>Copyright © Dapplo 2016-2017</Copyright>
@@ -21,19 +21,19 @@
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
-  <ItemGroup Label="dotnet pack instructions">
-    <Content Include="$(OutputPath)netstandard1.3/*JsonSimple.pdb">
+  <ItemGroup Label="dotnet pack instructions" Condition="'$(BuildingInsideVisualStudio)' != 'true'">
+    <None Include="bin/$(Configuration)/netstandard1.3/*JsonSimple.pdb">
       <Pack>true</Pack>
       <PackagePath>lib/netstandard1.3</PackagePath>
-    </Content>
-    <Content Include="$(OutputPath)net45/*JsonSimple.pdb">
+    </None>
+    <None Include="bin/$(Configuration)/net45/*JsonSimple.pdb">
       <Pack>true</Pack>
       <PackagePath>lib/net45</PackagePath>
-    </Content>
-    <Content Include="$(OutputPath)net46/*JsonSimple.pdb">
+    </None>
+    <None Include="bin/$(Configuration)/net46/*JsonSimple.pdb">
       <Pack>true</Pack>
       <PackagePath>lib/net46</PackagePath>
-    </Content>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Dapplo.Log" Version="1.0.29" />

@@ -21,19 +21,19 @@
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
-  <ItemGroup>
-    <Content Include="$(OutputPath)netstandard1.3/*.pdb">
+  <ItemGroup Label="dotnet pack instructions" Condition="'$(BuildingInsideVisualStudio)' != 'true'">
+    <None Include="bin/$(Configuration)/netstandard1.3/*.pdb">
       <Pack>true</Pack>
       <PackagePath>lib/netstandard1.3</PackagePath>
-    </Content>
-    <Content Include="$(OutputPath)net45/*.pdb">
+    </None>
+    <None Include="bin/$(Configuration)/net45/*.pdb">
       <Pack>true</Pack>
       <PackagePath>lib/net45</PackagePath>
-    </Content>
-    <Content Include="$(OutputPath)net46/*.pdb">
+    </None>
+    <None Include="bin/$(Configuration)/net46/*.pdb">
       <Pack>true</Pack>
       <PackagePath>lib/net46</PackagePath>
-    </Content>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Dapplo.Log" Version="1.0.29" />

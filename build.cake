@@ -80,11 +80,14 @@ Task("Package")
 	.IsDependentOn("Documentation")
     .Does(()=>
 {
+	var gitLinkSettings = new GitLinkSettings {
+		IsDebug = false
+	};
 	// Run GitLink before packaging the files
     foreach(var pdbFilePath in GetFiles("./**/bin/**/*.pdb"))
     {
         Information("Enhancing PDB: " + pdbFilePath.FullPath);
-        GitLink(pdbFilePath.FullPath);
+        GitLink(pdbFilePath.FullPath, gitLinkSettings);
     }
 
     var settings = new DotNetCorePackSettings  
@@ -94,11 +97,11 @@ Task("Package")
         IncludeSymbols = false
     };
 
-    var nuSpecFilePaths = GetFiles("./**/*.nuspec").Where(p => !p.FullPath.Contains("Test") && !p.FullPath.Contains("packages") &&!p.FullPath.Contains("tools"));
-    foreach(var nuSpecFilePath in nuSpecFilePaths)
+    var projectFiles = GetFiles("./**/*.csproj").Where(p => !p.FullPath.Contains("Test") && !p.FullPath.Contains("packages") &&!p.FullPath.Contains("tools"));
+    foreach(var projectFile in projectFiles)
     {
-        Information("Packaging: " + nuSpecFilePath.FullPath);
-        DotNetCorePack(nuSpecFilePath.FullPath, settings);
+        Information("Packaging: " + projectFile.FullPath);
+        DotNetCorePack(projectFile.FullPath, settings);
     }
 });
 

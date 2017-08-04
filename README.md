@@ -46,3 +46,5 @@ In 0.3.x a lot of previous method were combined. (GetAsMemoryStream -> GetAsAsyn
 In 0.4.x the IHttpBehaviour was removed again, it's now passed via the CallContext. If you need to a specific behaviour for a call, than you will need to call MakeCurrent() on the behaviour before the call.
 In 0.5.x The configuration logic for the converters was changed
 In 0.6.x the Json and OAuth support were removed from the main package
+In 0.7.x doesn't have changes (switched to 0.8 by mistake)
+In 0.8.x the project / build was changed to use the new csproj

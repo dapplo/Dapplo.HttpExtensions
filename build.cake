@@ -95,7 +95,6 @@ Task("Package")
     {
         OutputDirectory = "./artifacts/",
         Configuration = configuration,
-		Verbosity = DotNetCoreVerbosity.Diagnostic,
 		NoBuild = true
     };
 

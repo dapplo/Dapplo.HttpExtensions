@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>A library extensions to simplify HTTP usage.</Description>
     <Copyright>Copyright © Dapplo 2016-2017</Copyright>
@@ -21,7 +21,7 @@
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
-  <ItemGroup Label="dotnet pack instructions">
+  <ItemGroup>
     <Content Include="$(OutputPath)netstandard1.3/*.pdb">
       <Pack>true</Pack>
       <PackagePath>lib/netstandard1.3</PackagePath>

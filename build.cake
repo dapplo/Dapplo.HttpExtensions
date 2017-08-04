@@ -94,7 +94,9 @@ Task("Package")
     var settings = new DotNetCorePackSettings  
     {
         OutputDirectory = "./artifacts/",
-        Configuration = configuration
+        Configuration = configuration,
+		Verbosity = DotNetCoreVerbosity.Diagnostic,
+		NoBuild = true
     };
 
     var projectFiles = GetFiles("./**/*.csproj").Where(p => !p.FullPath.Contains("Test") && !p.FullPath.Contains("packages") &&!p.FullPath.Contains("tools"));

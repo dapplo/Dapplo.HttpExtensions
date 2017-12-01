@@ -446,7 +446,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
 
         protected virtual object SerializeEnum(Enum p)
         {
-            return p.ToString();
+            return p.ToString().ToLower();
         }
 
         [SuppressMessage("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate", Justification = "Need to support .NET 2")]

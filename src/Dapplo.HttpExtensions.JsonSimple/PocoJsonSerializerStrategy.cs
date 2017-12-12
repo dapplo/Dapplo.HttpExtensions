@@ -29,6 +29,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 
 #endregion
@@ -444,9 +445,10 @@ namespace Dapplo.HttpExtensions.JsonSimple
             return obj;
         }
 
-        protected virtual object SerializeEnum(Enum p)
+        protected virtual object SerializeEnum(Enum enumerationItem)
         {
-            return p.ToString();
+            var attributes = (EnumMemberAttribute[])enumerationItem.GetType().GetRuntimeField(enumerationItem.ToString()).GetCustomAttributes(typeof(EnumMemberAttribute), false);
+            return attributes.Length > 0 ? attributes[0].Value : enumerationItem.ToString();
         }
 
         [SuppressMessage("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate", Justification = "Need to support .NET 2")]

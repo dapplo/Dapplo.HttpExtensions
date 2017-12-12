@@ -57,16 +57,20 @@ namespace Dapplo.HttpExtensions.Tests
             {
                 HtmlUrl = "http://test.url",
                 Prerelease = false,
-                PublishedAt = DateTime.Now
+                PublishedAt = DateTime.Now,
+                ReleaseType = ReleaseTypes.Private
             };
             var jsonString = SimpleJson.SerializeObject(gitHubRelease);
             Assert.Contains("html_url", jsonString);
             Assert.DoesNotContain("prerelease", jsonString);
+            Assert.Contains("private", jsonString);
 
             gitHubRelease.Prerelease = true;
             gitHubRelease.HtmlUrl = null;
+            gitHubRelease.ReleaseType = ReleaseTypes.Public;
             jsonString = SimpleJson.SerializeObject(gitHubRelease);
             Assert.DoesNotContain("html_url", jsonString);
+            Assert.DoesNotContain("private", jsonString);
             Assert.Contains("prerelease", jsonString);
         }
 

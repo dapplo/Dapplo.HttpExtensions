@@ -42,5 +42,8 @@ namespace Dapplo.HttpExtensions.Tests.TestEntities
 
         [DataMember(Name = "published_at")]
         public DateTime PublishedAt { get; set; }
+
+        [DataMember(Name = "releaseType")]
+        public ReleaseTypes ReleaseType { get; set; }
     }
 }

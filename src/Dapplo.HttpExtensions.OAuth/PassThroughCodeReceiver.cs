@@ -45,12 +45,11 @@ namespace Dapplo.HttpExtensions.OAuth
         /// <param name="cancellationToken">CancellationToken</param>
         /// <returns>Dictionary with values</returns>
         public Task<IDictionary<string, string>> ReceiveCodeAsync(AuthorizeModes authorizeMode, ICodeReceiverSettings codeReceiverSettings,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = default)
         {
             var result = new Dictionary<string, string>();
-            var oauth1Settings = codeReceiverSettings as OAuth1Settings;
 
-            if (oauth1Settings != null)
+            if (codeReceiverSettings is OAuth1Settings oauth1Settings)
             {
                 result.Add(OAuth1Parameters.Token.EnumValueOf(), oauth1Settings.RequestToken);
             }

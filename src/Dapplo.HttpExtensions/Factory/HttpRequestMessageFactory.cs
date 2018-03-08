@@ -76,8 +76,7 @@ namespace Dapplo.HttpExtensions.Factory
             {
                 // And a property has a HttpAttribute with HttpPart.RequestHeaders
                 var headersPropertyInfo = contentType.GetProperties().FirstOrDefault(t => t.GetCustomAttribute<HttpPartAttribute>()?.Part == HttpParts.RequestHeaders);
-                var headersValue = headersPropertyInfo?.GetValue(content) as IDictionary<string, string>;
-                if (headersValue != null)
+                if (headersPropertyInfo?.GetValue(content) is IDictionary<string, string> headersValue)
                 {
                     foreach (var headerName in headersValue.Keys)
                     {
@@ -108,7 +107,7 @@ namespace Dapplo.HttpExtensions.Factory
         /// <param name="requestUri">the target uri for this message</param>
         /// <param name="content">HttpContent</param>
         /// <returns>HttpRequestMessage</returns>
-        public static HttpRequestMessage Create<TResponse, TContent>(HttpMethod method, Uri requestUri, TContent content = default(TContent))
+        public static HttpRequestMessage Create<TResponse, TContent>(HttpMethod method, Uri requestUri, TContent content = default)
             where TResponse : class where TContent : class
         {
             return Create(method, requestUri, typeof(TResponse), typeof(TContent), content);

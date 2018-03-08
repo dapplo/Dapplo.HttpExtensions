@@ -52,7 +52,7 @@ namespace Dapplo.HttpExtensions.Listener
         /// <param name="cancellationToken">CancellationToken</param>
         /// <returns>Task</returns>
         public static async Task RespondAsync<TContent>(this HttpListenerContext httpListenerContext, TContent content,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = default)
             where TContent : class
         {
             HttpContent httpContent;

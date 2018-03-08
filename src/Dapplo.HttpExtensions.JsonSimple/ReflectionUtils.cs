@@ -555,8 +555,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
                     }
                     else
                     {
-                        TValue val;
-                        if (_dictionary.TryGetValue(key, out val))
+                        if (_dictionary.TryGetValue(key, out var val))
                         {
                             return val;
                         }
@@ -573,8 +572,8 @@ namespace Dapplo.HttpExtensions.JsonSimple
                 {
                     return AddValue(key);
                 }
-                TValue value;
-                if (!_dictionary.TryGetValue(key, out value))
+
+                if (!_dictionary.TryGetValue(key, out var value))
                 {
                     return AddValue(key);
                 }

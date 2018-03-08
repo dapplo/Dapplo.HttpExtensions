@@ -73,7 +73,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
         }
 
         /// <inheritdoc />
-        public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken cancellationToken = default)
         {
             if (!CanConvertFromHttpContent(resultType, httpContent))
             {
@@ -102,8 +102,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
                 return null;
             }
 
-            var bitmap = content as Bitmap;
-            if (bitmap == null)
+            if (!(content is Bitmap bitmap))
             {
                 return null;
             }

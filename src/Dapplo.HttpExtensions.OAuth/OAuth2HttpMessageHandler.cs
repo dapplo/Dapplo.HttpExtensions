@@ -107,11 +107,9 @@ namespace Dapplo.HttpExtensions.OAuth
         /// </summary>
         /// <param name="cancellationToken">CancellationToken</param>
         /// <returns>false if it was canceled, true if it worked, exception if not</returns>
-        private async Task<bool> AuthenticateAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private async Task<bool> AuthenticateAsync(CancellationToken cancellationToken = default)
         {
-            IOAuthCodeReceiver codeReceiver;
-
-            if (!CodeReceivers.TryGetValue(_oAuth2Settings.AuthorizeMode, out codeReceiver))
+            if (!CodeReceivers.TryGetValue(_oAuth2Settings.AuthorizeMode, out var codeReceiver))
             {
                 throw new NotImplementedException($"Authorize mode '{_oAuth2Settings.AuthorizeMode}' is not implemented/registered.");
             }
@@ -122,11 +120,9 @@ namespace Dapplo.HttpExtensions.OAuth
                 return false;
             }
 
-            string error;
-            if (result.TryGetValue(OAuth2Fields.Error.EnumValueOf(), out error))
+            if (result.TryGetValue(OAuth2Fields.Error.EnumValueOf(), out var error))
             {
-                string errorDescription;
-                if (result.TryGetValue(OAuth2Fields.ErrorDescription.EnumValueOf(), out errorDescription))
+                if (result.TryGetValue(OAuth2Fields.ErrorDescription.EnumValueOf(), out var errorDescription))
                 {
                     throw new Exception(errorDescription);
                 }
@@ -136,8 +132,8 @@ namespace Dapplo.HttpExtensions.OAuth
                 }
                 throw new Exception(error);
             }
-            string code;
-            if (result.TryGetValue(OAuth2Fields.Code.EnumValueOf(), out code) && !string.IsNullOrEmpty(code))
+
+            if (result.TryGetValue(OAuth2Fields.Code.EnumValueOf(), out var code) && !string.IsNullOrEmpty(code))
             {
                 _oAuth2Settings.Code = code;
                 Log.Debug().WriteLine("Exchangeing code for an access or refresh token.");
@@ -151,7 +147,7 @@ namespace Dapplo.HttpExtensions.OAuth
         ///     Check and authenticate or refresh tokens
         /// </summary>
         /// <param name="cancellationToken">CancellationToken</param>
-        private async Task CheckAndAuthenticateOrRefreshAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private async Task CheckAndAuthenticateOrRefreshAsync(CancellationToken cancellationToken = default)
         {
             _httpBehaviour.MakeCurrent();
 
@@ -191,7 +187,7 @@ namespace Dapplo.HttpExtensions.OAuth
         ///     Will upate the access token, refresh token, expire date
         /// </summary>
         /// <param name="cancellationToken">CancellationToken</param>
-        private async Task GenerateAccessTokenAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private async Task GenerateAccessTokenAsync(CancellationToken cancellationToken = default)
         {
             Log.Debug().WriteLine("Generating a access token.");
             var data = new Dictionary<string, string>
@@ -257,7 +253,7 @@ namespace Dapplo.HttpExtensions.OAuth
         ///     Step 2: Generate an OAuth 2 AccessToken / RefreshToken
         /// </summary>
         /// <param name="cancellationToken">CancellationToken</param>
-        private async Task GenerateRefreshTokenAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private async Task GenerateRefreshTokenAsync(CancellationToken cancellationToken = default)
         {
             Log.Debug().WriteLine("Generating a refresh token.");
             var data = new Dictionary<string, string>

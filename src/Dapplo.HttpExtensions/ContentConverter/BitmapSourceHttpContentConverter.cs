@@ -31,7 +31,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Dapplo.HttpExtensions.Extensions;
-using Dapplo.HttpExtensions.SharedDesktop.ContentConverter;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.Log;
 
@@ -72,7 +71,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
         }
 
         /// <inheritdoc />
-        public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken cancellationToken = default)
         {
             if (!CanConvertFromHttpContent(resultType, httpContent))
             {
@@ -106,35 +105,37 @@ namespace Dapplo.HttpExtensions.ContentConverter
         /// <inheritdoc />
         public HttpContent ConvertToHttpContent(Type typeToConvert, object content)
         {
-            if (CanConvertToHttpContent(typeToConvert, content))
+            if (!CanConvertToHttpContent(typeToConvert, content))
             {
-                var bitmapSource = content as BitmapSource;
-                if (bitmapSource != null)
-                {
-                    var httpBehaviour = HttpBehaviour.Current;
-                    var configuration = httpBehaviour.GetConfig<BitmapSourceConfiguration>();
-                    Stream stream = new MemoryStream();
-                    var encoder = configuration.CreateEncoder();
-                    encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
-                    encoder.Save(stream);
-                    stream.Seek(0, SeekOrigin.Begin);
-
-                    // Add progress support, if this is enabled
-                    if (httpBehaviour.UseProgressStream)
-                    {
-                        var progressStream = new ProgressStream(stream)
-                        {
-                            BytesRead = (sender, eventArgs) => { httpBehaviour.UploadProgress?.Invoke((float) eventArgs.StreamPosition / eventArgs.StreamLength); }
-                        };
-                        stream = progressStream;
-                    }
-
-                    var httpContent = new StreamContent(stream);
-                    httpContent.Headers.Add("Content-Type", "image/" + configuration.Format.ToString().ToLowerInvariant());
-                    return httpContent;
-                }
+                return null;
             }
-            return null;
+
+            if (!(content is BitmapSource bitmapSource))
+            {
+                return null;
+            }
+
+            var httpBehaviour = HttpBehaviour.Current;
+            var configuration = httpBehaviour.GetConfig<BitmapSourceConfiguration>();
+            Stream stream = new MemoryStream();
+            var encoder = configuration.CreateEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+            encoder.Save(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+
+            // Add progress support, if this is enabled
+            if (httpBehaviour.UseProgressStream)
+            {
+                var progressStream = new ProgressStream(stream)
+                {
+                    BytesRead = (sender, eventArgs) => { httpBehaviour.UploadProgress?.Invoke((float) eventArgs.StreamPosition / eventArgs.StreamLength); }
+                };
+                stream = progressStream;
+            }
+
+            var httpContent = new StreamContent(stream);
+            httpContent.Headers.Add("Content-Type", "image/" + configuration.Format.ToString().ToLowerInvariant());
+            return httpContent;
         }
 
         /// <inheritdoc />

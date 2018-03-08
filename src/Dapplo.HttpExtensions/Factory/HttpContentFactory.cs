@@ -62,91 +62,94 @@ namespace Dapplo.HttpExtensions.Factory
 
             var httpContentAttribute = inputType.GetTypeInfo().GetCustomAttribute<HttpRequestAttribute>();
             // Process the input type
-            if (httpContentAttribute != null)
+            if (httpContentAttribute == null)
             {
-                var contentItems = new List<ContentItem>();
-                // We have a type which specifies the request content
-                foreach (var propertyInfo in inputType.GetProperties())
-                {
-                    var httpAttribute = propertyInfo.GetCustomAttribute<HttpPartAttribute>();
-                    if (httpAttribute == null)
-                    {
-                        continue;
-                    }
-                    // skip all not request based HttpParts
-                    if (!httpAttribute.Part.ToString().StartsWith("Request"))
-                    {
-                        continue;
-                    }
-
-                    var order = httpAttribute.Order;
-                    var contentItem = contentItems.FirstOrDefault(ci => ci.Order == order) ?? new ContentItem {Order = order};
-
-                    switch (httpAttribute.Part)
-                    {
-                        case HttpParts.RequestContent:
-                            var value = propertyInfo.GetValue(content);
-                            if (value == null)
-                            {
-                                continue;
-                            }
-                            contentItem.Content = value;
-                            break;
-                        case HttpParts.RequestContentType:
-                            contentItem.ContentType = propertyInfo.GetValue(content) as string;
-                            break;
-                        case HttpParts.RequestMultipartName:
-                            contentItem.ContentName = propertyInfo.GetValue(content) as string;
-                            break;
-                        case HttpParts.RequestMultipartFilename:
-                            contentItem.ContentFileName = propertyInfo.GetValue(content) as string;
-                            break;
-                        default:
-                            // No know request value, go to the next
-                            continue;
-                    }
-                    if (contentItems.All(x => x.Order != contentItem.Order))
-                    {
-                        contentItems.Add(contentItem);
-                    }
-                }
-                // Having a HttpContentAttribute with MultiPart= true will skip this, even if one content is used
-                if (contentItems.Count == 1 && !httpContentAttribute.MultiPart)
-                {
-                    var contentItem = contentItems[0];
-                    return Create(httpBehaviour, contentItem);
-                }
-                if (contentItems.Count > 0)
-                {
-                    var multipartContent = new MultipartFormDataContent();
-
-                    foreach (var contentItem in contentItems.OrderBy(x => x.Order))
-                    {
-                        // If the content would be null, and we would continue, a NullPointerReference would be thrown
-                        if (contentItem.Content == null)
-                        {
-                            Log.Debug().WriteLine("Skipping content {0} as the content is null.", contentItem.ContentName);
-                            continue;
-                        }
-                        var httpContent = Create(httpBehaviour, contentItem);
-                        if (contentItem.ContentName != null && contentItem.ContentFileName != null)
-                        {
-                            multipartContent.Add(httpContent, contentItem.ContentName, contentItem.ContentFileName);
-                        }
-                        else if (contentItem.ContentName != null)
-                        {
-                            multipartContent.Add(httpContent, contentItem.ContentName);
-                        }
-                        else
-                        {
-                            multipartContent.Add(httpContent);
-                        }
-                    }
-                    return multipartContent;
-                }
+                return Create(httpBehaviour, inputType, content);
             }
 
-            return Create(httpBehaviour, inputType, content);
+            var contentItems = new List<ContentItem>();
+            // We have a type which specifies the request content
+            foreach (var propertyInfo in inputType.GetProperties())
+            {
+                var httpAttribute = propertyInfo.GetCustomAttribute<HttpPartAttribute>();
+                if (httpAttribute == null)
+                {
+                    continue;
+                }
+                // skip all not request based HttpParts
+                if (!httpAttribute.Part.ToString().StartsWith("Request"))
+                {
+                    continue;
+                }
+
+                var order = httpAttribute.Order;
+                var contentItem = contentItems.FirstOrDefault(ci => ci.Order == order) ?? new ContentItem {Order = order};
+
+                switch (httpAttribute.Part)
+                {
+                    case HttpParts.RequestContent:
+                        var value = propertyInfo.GetValue(content);
+                        if (value == null)
+                        {
+                            continue;
+                        }
+                        contentItem.Content = value;
+                        break;
+                    case HttpParts.RequestContentType:
+                        contentItem.ContentType = propertyInfo.GetValue(content) as string;
+                        break;
+                    case HttpParts.RequestMultipartName:
+                        contentItem.ContentName = propertyInfo.GetValue(content) as string;
+                        break;
+                    case HttpParts.RequestMultipartFilename:
+                        contentItem.ContentFileName = propertyInfo.GetValue(content) as string;
+                        break;
+                    default:
+                        // No know request value, go to the next
+                        continue;
+                }
+                if (contentItems.All(x => x.Order != contentItem.Order))
+                {
+                    contentItems.Add(contentItem);
+                }
+            }
+            // Having a HttpContentAttribute with MultiPart= true will skip this, even if one content is used
+            if (contentItems.Count == 1 && !httpContentAttribute.MultiPart)
+            {
+                var contentItem = contentItems[0];
+                return Create(httpBehaviour, contentItem);
+            }
+
+            if (contentItems.Count <= 0)
+            {
+                return Create(httpBehaviour, inputType, content);
+            }
+
+            var multipartContent = new MultipartFormDataContent();
+
+            foreach (var contentItem in contentItems.OrderBy(x => x.Order))
+            {
+                // If the content would be null, and we would continue, a NullPointerReference would be thrown
+                if (contentItem.Content == null)
+                {
+                    Log.Debug().WriteLine("Skipping content {0} as the content is null.", contentItem.ContentName);
+                    continue;
+                }
+                var httpContent = Create(httpBehaviour, contentItem);
+                if (contentItem.ContentName != null && contentItem.ContentFileName != null)
+                {
+                    multipartContent.Add(httpContent, contentItem.ContentName, contentItem.ContentFileName);
+                }
+                else if (contentItem.ContentName != null)
+                {
+                    multipartContent.Add(httpContent, contentItem.ContentName);
+                }
+                else
+                {
+                    multipartContent.Add(httpContent);
+                }
+            }
+            return multipartContent;
         }
 
         /// <summary>

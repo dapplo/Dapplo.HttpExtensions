@@ -70,7 +70,7 @@ namespace Dapplo.HttpExtensions
         /// <param name="cancellationToken">CancellationToken</param>
         /// <returns>the deserialized object of type T</returns>
         public static async Task<TResult> GetAsAsync<TResult>(this HttpContent httpContent, HttpStatusCode httpStatusCode,
-            CancellationToken cancellationToken = default(CancellationToken)) where TResult : class
+            CancellationToken cancellationToken = default) where TResult : class
         {
             return (TResult) await httpContent.GetAsAsync(typeof(TResult), httpStatusCode, cancellationToken).ConfigureAwait(false);
         }
@@ -86,7 +86,7 @@ namespace Dapplo.HttpExtensions
         /// <param name="cancellationToken">CancellationToken</param>
         /// <returns>the deserialized object of type T</returns>
         public static async Task<object> GetAsAsync(this HttpContent httpContent, Type resultType, HttpStatusCode httpStatusCode,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = default)
         {
             // Quick exit when the requested type is from HttpContent
             if (typeof(HttpContent).IsAssignableFrom(resultType))

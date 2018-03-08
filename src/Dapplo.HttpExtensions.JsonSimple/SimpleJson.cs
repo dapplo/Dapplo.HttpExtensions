@@ -131,8 +131,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
         /// <returns>An IList&lt;object>, a IDictionary&lt;string,object>, a double, a string, null, true, or false</returns>
         public static object DeserializeObject(string json)
         {
-            object obj;
-            if (TryDeserializeObject(json, out obj))
+            if (TryDeserializeObject(json, out var obj))
             {
                 return obj;
             }
@@ -443,8 +442,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
                         if (remainingLength >= 4)
                         {
                             // parse the 32 bit hex into an integer codepoint
-                            uint codePoint;
-                            if (!(success = uint.TryParse(new string(json, index, 4), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out codePoint)))
+                            if (!(success = uint.TryParse(new string(json, index, 4), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var codePoint)))
                             {
                                 return "";
                             }
@@ -456,9 +454,8 @@ namespace Dapplo.HttpExtensions.JsonSimple
                                 remainingLength = json.Length - index;
                                 if (remainingLength >= 6)
                                 {
-                                    uint lowCodePoint;
                                     if (new string(json, index, 2) == "\\u" &&
-                                        uint.TryParse(new string(json, index + 2, 4), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out lowCodePoint))
+                                        uint.TryParse(new string(json, index + 2, 4), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var lowCodePoint))
                                     {
                                         if (0xDC00 <= lowCodePoint && lowCodePoint <= 0xDFFF) // if low surrogate
                                         {
@@ -524,25 +521,20 @@ namespace Dapplo.HttpExtensions.JsonSimple
             if (numberAsString.IndexOf(".", StringComparison.OrdinalIgnoreCase) != -1
                 || numberAsString.IndexOf("e", StringComparison.OrdinalIgnoreCase) != -1)
             {
-                double number;
-                success = double.TryParse(numberAsString, NumberStyles.Any, CultureInfo.InvariantCulture, out number);
+                success = double.TryParse(numberAsString, NumberStyles.Any, CultureInfo.InvariantCulture, out var number);
                 returnNumber = number;
             }
             else
             {
-                long longNumber;
-                decimal decimalNumber;
-                double doubleNumber;
-
-                if (long.TryParse(numberAsString, NumberStyles.Any, CultureInfo.InvariantCulture, out longNumber))
+                if (long.TryParse(numberAsString, NumberStyles.Any, CultureInfo.InvariantCulture, out var longNumber))
                 {
                     returnNumber = longNumber;
                 }
-                else if (decimal.TryParse(numberAsString, NumberStyles.Any, CultureInfo.InvariantCulture, out decimalNumber))
+                else if (decimal.TryParse(numberAsString, NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalNumber))
                 {
                     returnNumber = decimalNumber;
                 }
-                else if (double.TryParse(numberAsString, NumberStyles.Any, CultureInfo.InvariantCulture, out doubleNumber))
+                else if (double.TryParse(numberAsString, NumberStyles.Any, CultureInfo.InvariantCulture, out var doubleNumber))
                 {
                     returnNumber = doubleNumber;
                 }
@@ -657,8 +649,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
         private static bool SerializeValue(IJsonSerializerStrategy jsonSerializerStrategy, object value, StringBuilder builder)
         {
             var success = true;
-            var stringValue = value as string;
-            if (stringValue != null)
+            if (value is string stringValue)
             {
                 return SerializeString(stringValue, builder);
             }
@@ -666,29 +657,25 @@ namespace Dapplo.HttpExtensions.JsonSimple
             {
                 return SerializeString(((char) value).ToString(), builder);
             }
-            var dict = value as IDictionary<string, object>;
-            if (dict != null)
+
+            switch (value)
             {
-                return SerializeObject(jsonSerializerStrategy, dict.Keys, dict.Values, builder);
+                case IDictionary<string, object> dict:
+                    return SerializeObject(jsonSerializerStrategy, dict.Keys, dict.Values, builder);
+                case IDictionary<string, string> stringDictionary:
+                    return SerializeObject(jsonSerializerStrategy, stringDictionary.Keys, stringDictionary.Values, builder);
+                case IEnumerable enumerableValue:
+                    return SerializeArray(jsonSerializerStrategy, enumerableValue, builder);
             }
-            var stringDictionary = value as IDictionary<string, string>;
-            if (stringDictionary != null)
-            {
-                return SerializeObject(jsonSerializerStrategy, stringDictionary.Keys, stringDictionary.Values, builder);
-            }
-            var enumerableValue = value as IEnumerable;
-            if (enumerableValue != null)
-            {
-                return SerializeArray(jsonSerializerStrategy, enumerableValue, builder);
-            }
+
             if (IsNumeric(value))
             {
                 return SerializeNumber(value, builder);
             }
 
-            if (value is bool)
+            if (value is bool b)
             {
-                builder.Append((bool) value ? "true" : "false");
+                builder.Append(b ? "true" : "false");
             }
             else if (value == null)
             {
@@ -696,8 +683,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
             }
             else
             {
-                object serializedObject;
-                success = jsonSerializerStrategy.TrySerializeNonPrimitiveObject(value, out serializedObject);
+                success = jsonSerializerStrategy.TrySerializeNonPrimitiveObject(value, out var serializedObject);
                 if (success)
                 {
                     SerializeValue(jsonSerializerStrategy, serializedObject, builder);
@@ -720,8 +706,8 @@ namespace Dapplo.HttpExtensions.JsonSimple
                 {
                     builder.Append(",");
                 }
-                var stringKey = key as string;
-                if (stringKey != null)
+
+                if (key is string stringKey)
                 {
                     SerializeString(stringKey, builder);
                 }
@@ -811,9 +797,9 @@ namespace Dapplo.HttpExtensions.JsonSimple
 
         private static bool SerializeNumber(object number, StringBuilder builder)
         {
-            if (number is long)
+            if (number is long l)
             {
-                builder.Append(((long) number).ToString(CultureInfo.InvariantCulture));
+                builder.Append(l.ToString(CultureInfo.InvariantCulture));
             }
             else if (number is ulong)
             {

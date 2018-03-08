@@ -15,29 +15,19 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/dapplo/Dapplo.HttpExtensions</RepositoryUrl>
     <NetStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard1.3' ">1.6.1</NetStandardImplicitPackageVersion>
+	<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <Version>1.0.0</Version>
     <AssemblyVersion>1.0.0</AssemblyVersion>
     <FileVersion>1.0.0</FileVersion>
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>True</DebugSymbols>
+	<LangVersion>latest</LangVersion>
+    <Optimize>true</Optimize>
+	<IsPackable>true</IsPackable>
 	<DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
   </PropertyGroup>
-  <ItemGroup Label="dotnet pack instructions" Condition="'$(BuildingInsideVisualStudio)' != 'true'">
-    <None Include="bin/$(Configuration)/netstandard1.3/$(AssemblyName).pdb">
-      <Pack>true</Pack>
-      <PackagePath>lib/netstandard1.3</PackagePath>
-    </None>
-    <None Include="bin/$(Configuration)/net45/$(AssemblyName).pdb">
-      <Pack>true</Pack>
-      <PackagePath>lib/net45</PackagePath>
-    </None>
-    <None Include="bin/$(Configuration)/net46/$(AssemblyName).pdb">
-      <Pack>true</Pack>
-      <PackagePath>lib/net46</PackagePath>
-    </None>
-  </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Dapplo.Log" Version="1.0.29" />
+    <PackageReference Include="Dapplo.Log" Version="1.1.4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Dapplo.HttpExtensions\Dapplo.HttpExtensions.csproj" />
@@ -46,14 +36,14 @@
     <PackageReference Include="Microsoft.NETCore.Portable.Compatibility" Version="1.0.1" />
     <PackageReference Include="System.Collections.Concurrent" Version="4.3.0" />
     <PackageReference Include="System.ComponentModel" Version="4.3.0" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.3.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.1" />
     <PackageReference Include="System.ComponentModel.Primitives" Version="4.3.0" />
     <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
     <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />
     <PackageReference Include="System.IO.Compression" Version="4.3.0" />
     <PackageReference Include="System.ObjectModel" Version="4.3.0" />
     <PackageReference Include="System.Reflection" Version="4.3.0" />
-    <PackageReference Include="System.Reflection.TypeExtensions" Version="4.3.0" />
+    <PackageReference Include="System.Reflection.TypeExtensions" Version="4.4.0" />
     <PackageReference Include="System.Runtime.Extensions" Version="4.3.0" />
     <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.0" />
@@ -64,6 +54,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.WebRequest" />
@@ -77,6 +68,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.WebRequest" />

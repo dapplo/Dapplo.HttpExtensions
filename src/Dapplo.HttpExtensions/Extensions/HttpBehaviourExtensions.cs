@@ -40,8 +40,8 @@ namespace Dapplo.HttpExtensions.Extensions
             {
                 httpBehaviour = HttpBehaviour.Current;
             }
-            IHttpRequestConfiguration configurationUntyped;
-            httpBehaviour.RequestConfigurations.TryGetValue(typeof(THttpRequestConfiguration).Name, out configurationUntyped);
+
+            httpBehaviour.RequestConfigurations.TryGetValue(typeof(THttpRequestConfiguration).Name, out var configurationUntyped);
             return configurationUntyped as THttpRequestConfiguration ?? new THttpRequestConfiguration();
         }
 

@@ -87,7 +87,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
         }
 
         /// <inheritdoc />
-        public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken cancellationToken = default)
         {
             if (!CanConvertFromHttpContent(resultType, httpContent))
             {

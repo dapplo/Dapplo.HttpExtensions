@@ -230,8 +230,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
                     {
                         var isValid = Uri.IsWellFormedUriString(str, UriKind.RelativeOrAbsolute);
 
-                        Uri result;
-                        if (isValid && Uri.TryCreate(str, UriKind.RelativeOrAbsolute, out result))
+                        if (isValid && Uri.TryCreate(str, UriKind.RelativeOrAbsolute, out var result))
                         {
                             return result;
                         }
@@ -276,6 +275,8 @@ namespace Dapplo.HttpExtensions.JsonSimple
             {
                 return value;
             }
+
+            var objects = value as IDictionary<string, object>;
             if (valueIsDouble && type != typeof(double) || valueIsLong && type != typeof(long))
             {
                 obj = type == typeof(int) || type == typeof(long) || type == typeof(double) || type == typeof(float) || type == typeof(bool) || type == typeof(decimal) ||
@@ -285,7 +286,6 @@ namespace Dapplo.HttpExtensions.JsonSimple
             }
             else
             {
-                var objects = value as IDictionary<string, object>;
                 if (objects != null)
                 {
                     var jsonObject = objects;
@@ -319,8 +319,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
                             obj = ConstructorCache[type]();
                             foreach (var setter in SetCache[type])
                             {
-                                object jsonValue;
-                                if (jsonObject.TryGetValue(setter.Key, out jsonValue))
+                                if (jsonObject.TryGetValue(setter.Key, out var jsonValue))
                                 {
                                     try
                                     {
@@ -358,8 +357,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
                                     continue;
                                 }
                                 var matchRegex = new Regex(jsonExtensionDataAtrribute.Pattern ?? ".*");
-                                var extensionData = extensionPropertyInfo?.GetValue(obj) as IDictionary;
-                                if (extensionData != null)
+                                if (extensionPropertyInfo?.GetValue(obj) is IDictionary extensionData)
                                 {
                                     // Get the type, if possible, so we can convert
                                     var valueType = typeof(string);
@@ -409,8 +407,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
                 }
                 else
                 {
-                    var valueAsList = value as IList<object>;
-                    if (valueAsList != null)
+                    if (value is IList<object> valueAsList)
                     {
                         var jsonObject = valueAsList;
                         IList list = null;
@@ -455,9 +452,9 @@ namespace Dapplo.HttpExtensions.JsonSimple
         protected virtual bool TrySerializeKnownTypes(object input, out object output)
         {
             var returnValue = true;
-            if (input is DateTime)
+            if (input is DateTime time)
             {
-                output = ((DateTime) input).ToUniversalTime().ToString(Iso8601Format[0], CultureInfo.InvariantCulture);
+                output = time.ToUniversalTime().ToString(Iso8601Format[0], CultureInfo.InvariantCulture);
             }
             else if (input is DateTimeOffset)
             {
@@ -477,8 +474,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
             }
             else
             {
-                var inputEnum = input as Enum;
-                if (inputEnum != null)
+                if (input is Enum inputEnum)
                 {
                     output = SerializeEnum(inputEnum);
                 }
@@ -495,7 +491,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
         {
             foreach (var jsonExtensionDataMember in JsonExtensionDataPropertyInfos(type))
             {
-                var value = jsonExtensionDataMember.GetValue(input) as IDictionary;
+                var value = (IDictionary) jsonExtensionDataMember.GetValue(input);
                 if (value == null)
                 {
                     continue;
@@ -509,8 +505,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
 
             foreach (var jsonExtensionDataMember in JsonExtensionDataFieldInfo(type))
             {
-                var value = jsonExtensionDataMember.GetValue(input) as IDictionary;
-                if (value == null)
+                if (!(jsonExtensionDataMember.GetValue(input) is IDictionary value))
                 {
                     continue;
                 }

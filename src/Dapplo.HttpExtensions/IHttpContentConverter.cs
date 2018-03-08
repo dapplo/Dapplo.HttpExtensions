@@ -70,7 +70,7 @@ namespace Dapplo.HttpExtensions
         /// <param name="httpContent">HttpContent</param>
         /// <param name="cancellationToken">CancellationToken</param>
         /// <returns>object of type resultType</returns>
-        Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken cancellationToken = default(CancellationToken));
+        Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken cancellationToken = default);
 
         /// <summary>
         ///     Create HttpContent for the supplied object/type

@@ -32,7 +32,7 @@ using Dapplo.HttpExtensions.Support;
 
 #endregion
 
-namespace Dapplo.HttpExtensions.SharedDesktop.ContentConverter
+namespace Dapplo.HttpExtensions.ContentConverter
 {
     /// <summary>
     ///     This is a configuration class for the BitmapSourceHttpContentConverter

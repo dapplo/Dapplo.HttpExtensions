@@ -62,7 +62,7 @@ namespace Dapplo.HttpExtensions
         /// <param name="cancellationToken">CancellationToken</param>
         /// <returns>the deserialized object of type T or default(T)</returns>
         public static async Task<TResponse> SendAsync<TResponse>(this HttpRequestMessage httpRequestMessage,
-            CancellationToken cancellationToken = default(CancellationToken)) where TResponse : class
+            CancellationToken cancellationToken = default) where TResponse : class
         {
             using (var httpClient = HttpClientFactory.Create(httpRequestMessage.RequestUri))
             {
@@ -79,7 +79,7 @@ namespace Dapplo.HttpExtensions
         /// <param name="cancellationToken">CancellationToken</param>
         /// <returns>the deserialized object of type T or default(T)</returns>
         public static async Task<TResponse> SendAsync<TResponse>(this HttpRequestMessage httpRequestMessage, HttpClient httpClient,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = default)
             where TResponse : class
         {
             var httpBehaviour = HttpBehaviour.Current;
@@ -107,7 +107,7 @@ namespace Dapplo.HttpExtensions
         /// <param name="httpClient">HttpClient</param>
         /// <param name="cancellationToken">CancellationToken</param>
         public static async Task SendAsync(this HttpRequestMessage httpRequestMessage, HttpClient httpClient,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = default)
         {
             var httpBehaviour = HttpBehaviour.Current;
             Log.Verbose().WriteLine("Sending {0} HttpRequestMessage with Uri: {1}", httpRequestMessage.Method, httpRequestMessage.RequestUri);

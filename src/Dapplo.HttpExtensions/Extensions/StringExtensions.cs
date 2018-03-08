@@ -93,11 +93,9 @@ namespace Dapplo.HttpExtensions.Extensions
                 var formatGroup = m.Groups["format"];
                 var endGroup = m.Groups["end"];
 
-                object value;
-                if (properties.TryGetValue(propertyGroup.Value, out value))
+                if (properties.TryGetValue(propertyGroup.Value, out var value))
                 {
-                    var enumValue = value as Enum;
-                    values.Add(enumValue != null ? enumValue.EnumValueOf() : value);
+                    values.Add(value is Enum enumValue ? enumValue.EnumValueOf() : value);
                 }
                 else
                 {
@@ -177,14 +175,16 @@ namespace Dapplo.HttpExtensions.Extensions
             }
 
             var dictionaryType = dictionary.GetType().GetTypeInfo();
-            if (dictionaryType.IsGenericType && dictionaryType.GenericTypeArguments[0] == typeof(TKey))
+            if (!dictionaryType.IsGenericType || dictionaryType.GenericTypeArguments[0] != typeof(TKey))
             {
-                foreach (DictionaryEntry item in dictionary)
-                {
-                    var key = (TKey) item.Key;
-                    var value = (TValue) item.Value;
-                    properties[key] = value;
-                }
+                return true;
+            }
+
+            foreach (DictionaryEntry item in dictionary)
+            {
+                var key = (TKey) item.Key;
+                var value = (TValue) item.Value;
+                properties[key] = value;
             }
             // Also return true if the dictionary didn't have keys of type string, as we don't know what to do with it.
             return true;

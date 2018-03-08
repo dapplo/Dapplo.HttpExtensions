@@ -72,7 +72,7 @@ namespace Nito.AsyncEx.AsyncLocal
         ///     Creates a new async-local variable with the default value of <typeparamref name="TImmutableType" />.
         /// </summary>
         public AsyncLocal()
-            : this(default(TImmutableType))
+            : this(default)
         {
         }
 

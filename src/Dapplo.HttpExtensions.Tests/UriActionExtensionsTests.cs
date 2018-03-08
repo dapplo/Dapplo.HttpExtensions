@@ -131,6 +131,7 @@ namespace Dapplo.HttpExtensions.Tests
         /// <summary>
         ///     Test getting the Uri as MemoryStream
         /// </summary>
+        [Fact]
         public async Task TestGetAsAsyncMemoryStream()
         {
             var stream = await _bitmapUri.GetAsAsync<MemoryStream>();

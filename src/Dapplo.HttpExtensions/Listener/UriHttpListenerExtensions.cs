@@ -51,7 +51,7 @@ namespace Dapplo.HttpExtensions.Listener
         /// <param name="cancellationToken">CancellationToken</param>
         /// <returns>The value from the httpListenerContextHandler</returns>
         public static Task<T> ListenAsync<T>(this Uri listenUri, Func<HttpListenerContext, Task<T>> httpListenerContextHandler,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = default)
         {
             var listenUriString = listenUri.AbsoluteUri.EndsWith("/") ? listenUri.AbsoluteUri : listenUri.AbsoluteUri + "/";
             Log.Debug().WriteLine("Start listening on {0}", listenUriString);

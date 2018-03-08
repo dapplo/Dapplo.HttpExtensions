@@ -53,7 +53,7 @@ namespace Dapplo.HttpExtensions.OAuth
         /// <param name="cancellationToken">CancellationToken</param>
         /// <returns>Dictionary with values</returns>
         public async Task<IDictionary<string, string>> ReceiveCodeAsync(AuthorizeModes authorizeMode, ICodeReceiverSettings codeReceiverSettings,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = default)
         {
             // Force OOB Uri
             switch (authorizeMode)

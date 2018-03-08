@@ -71,7 +71,7 @@ namespace Dapplo.HttpExtensions.Tests
         {
             var keyValuePairs = _testUriComplex.QueryToKeyValuePairs();
             Assert.NotNull(keyValuePairs);
-            Assert.True(keyValuePairs.Any(x => x.Key == TestKey && x.Value == TestValue));
+            Assert.Contains(keyValuePairs, x => x.Key == TestKey && x.Value == TestValue);
         }
 
         [Fact]
@@ -79,7 +79,7 @@ namespace Dapplo.HttpExtensions.Tests
         {
             var loopkup = TestUriSimple.QueryToLookup();
             Assert.NotNull(loopkup);
-            Assert.True(loopkup.Any(x => x.Key == TestKey && x.Contains(TestValue)));
+            Assert.Contains(loopkup, x => x.Key == TestKey && x.Contains(TestValue));
         }
 
         [Fact]

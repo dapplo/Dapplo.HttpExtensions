@@ -54,7 +54,7 @@ namespace Dapplo.HttpExtensions
         /// <param name="cancellationToken">CancellationToken</param>
         /// <returns>the deserialized object of type T or default(T)</returns>
         public static async Task<TResponse> GetAsAsync<TResponse>(this HttpResponseMessage httpResponseMessage,
-            CancellationToken cancellationToken = default(CancellationToken)) where TResponse : class
+            CancellationToken cancellationToken = default) where TResponse : class
         {
             Log.Verbose().WriteLine("Response status code: {0}", httpResponseMessage.StatusCode);
             var resultType = typeof(TResponse);
@@ -74,10 +74,8 @@ namespace Dapplo.HttpExtensions
                 var instance = Activator.CreateInstance<TResponse>();
                 var properties = resultType.GetProperties().Where(x => x.GetCustomAttribute<HttpPartAttribute>() != null).ToList();
 
-                PropertyInfo targetPropertyInfo;
-
                 // Headers
-                if (properties.TryFindTarget(HttpParts.ResponseHeaders, out targetPropertyInfo))
+                if (properties.TryFindTarget(HttpParts.ResponseHeaders, out PropertyInfo targetPropertyInfo))
                 {
                     targetPropertyInfo.SetValue(instance, httpResponseMessage.Headers);
                 }
@@ -143,7 +141,7 @@ namespace Dapplo.HttpExtensions
                 return result;
             }
             await httpResponseMessage.HandleErrorAsync().ConfigureAwait(false);
-            return default(TResponse);
+            return default;
         }
 
         /// <summary>

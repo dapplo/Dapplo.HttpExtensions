@@ -202,7 +202,7 @@ namespace Dapplo.HttpExtensions.OAuth
         /// </summary>
         /// <param name="cancellationToken">CancellationToken</param>
         /// <returns>The access token.</returns>
-        private async Task GetAccessTokenAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private async Task GetAccessTokenAsync(CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(_oAuth1Settings.AuthorizeToken))
             {
@@ -226,14 +226,13 @@ namespace Dapplo.HttpExtensions.OAuth
             {
                 Log.Verbose().WriteLine("Access token response: {0}", response);
                 var resultParameters = UriParseExtensions.QueryStringToDictionary(response);
-                string tokenValue;
-                if (resultParameters.TryGetValue(OAuth1Parameters.Token.EnumValueOf(), out tokenValue))
+                if (resultParameters.TryGetValue(OAuth1Parameters.Token.EnumValueOf(), out var tokenValue))
                 {
                     _oAuth1Settings.Token.OAuthToken = tokenValue;
                     resultParameters.Remove(OAuth1Parameters.Token.EnumValueOf());
                 }
-                string secretValue;
-                if (resultParameters.TryGetValue(OAuth1Parameters.TokenSecret.EnumValueOf(), out secretValue))
+
+                if (resultParameters.TryGetValue(OAuth1Parameters.TokenSecret.EnumValueOf(), out var secretValue))
                 {
                     _oAuth1Settings.Token.OAuthTokenSecret = secretValue;
                     resultParameters.Remove(OAuth1Parameters.TokenSecret.EnumValueOf());
@@ -247,15 +246,14 @@ namespace Dapplo.HttpExtensions.OAuth
         ///     Authorize the token by showing the authorization uri of the oauth service
         /// </summary>
         /// <param name="cancellationToken">CancellationToken</param>
-        private async Task GetAuthorizeTokenAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private async Task GetAuthorizeTokenAsync(CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(_oAuth1Settings.RequestToken))
             {
                 throw new ArgumentNullException(nameof(_oAuth1Settings.RequestToken), "The request token is not set");
             }
-            IOAuthCodeReceiver codeReceiver;
 
-            if (!CodeReceivers.TryGetValue(_oAuth1Settings.AuthorizeMode, out codeReceiver))
+            if (!CodeReceivers.TryGetValue(_oAuth1Settings.AuthorizeMode, out var codeReceiver))
             {
                 throw new NotImplementedException($"Authorize mode '{_oAuth1Settings.AuthorizeMode}' is not implemented/registered.");
             }
@@ -264,13 +262,12 @@ namespace Dapplo.HttpExtensions.OAuth
 
             if (result != null)
             {
-                string tokenValue;
-                if (result.TryGetValue(OAuth1Parameters.Token.EnumValueOf(), out tokenValue))
+                if (result.TryGetValue(OAuth1Parameters.Token.EnumValueOf(), out var tokenValue))
                 {
                     _oAuth1Settings.AuthorizeToken = tokenValue;
                 }
-                string verifierValue;
-                if (result.TryGetValue(OAuth1Parameters.Verifier.EnumValueOf(), out verifierValue))
+
+                if (result.TryGetValue(OAuth1Parameters.Verifier.EnumValueOf(), out var verifierValue))
                 {
                     _oAuth1Settings.Token.OAuthTokenVerifier = verifierValue;
                 }
@@ -288,7 +285,7 @@ namespace Dapplo.HttpExtensions.OAuth
         ///     Get the request token using the consumer id and secret.  Also initializes token secret
         /// </summary>
         /// <param name="cancellationToken">CancellationToken</param>
-        private async Task GetRequestTokenAsync(CancellationToken cancellationToken = default(CancellationToken))
+        private async Task GetRequestTokenAsync(CancellationToken cancellationToken = default)
         {
             _oAuth1HttpBehaviour.MakeCurrent();
             // Create a HttpRequestMessage for the Token-Url
@@ -302,14 +299,13 @@ namespace Dapplo.HttpExtensions.OAuth
             {
                 Log.Verbose().WriteLine("Request token response: {0}", response);
                 var resultParameters = UriParseExtensions.QueryStringToDictionary(response);
-                string tokenValue;
-                if (resultParameters.TryGetValue(OAuth1Parameters.Token.EnumValueOf(), out tokenValue))
+                if (resultParameters.TryGetValue(OAuth1Parameters.Token.EnumValueOf(), out var tokenValue))
                 {
                     Log.Verbose().WriteLine("Storing token {0}", tokenValue);
                     _oAuth1Settings.RequestToken = tokenValue;
                 }
-                string tokenSecretValue;
-                if (resultParameters.TryGetValue(OAuth1Parameters.TokenSecret.EnumValueOf(), out tokenSecretValue))
+
+                if (resultParameters.TryGetValue(OAuth1Parameters.TokenSecret.EnumValueOf(), out var tokenSecretValue))
                 {
                     Log.Verbose().WriteLine("Storing token secret {0}", tokenSecretValue);
                     _oAuth1Settings.RequestTokenSecret = tokenSecretValue;

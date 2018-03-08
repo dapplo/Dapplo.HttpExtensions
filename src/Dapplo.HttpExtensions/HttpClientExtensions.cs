@@ -65,7 +65,7 @@ namespace Dapplo.HttpExtensions
         /// <param name="uri">Uri to send the delete request to</param>
         /// <param name="cancellationToken">CancellationToken</param>
         /// <returns>TResult</returns>
-        public static async Task<TResponse> DeleteAsync<TResponse>(this HttpClient httpClient, Uri uri, CancellationToken cancellationToken = default(CancellationToken))
+        public static async Task<TResponse> DeleteAsync<TResponse>(this HttpClient httpClient, Uri uri, CancellationToken cancellationToken = default)
             where TResponse : class
         {
             if (uri == null)
@@ -86,7 +86,7 @@ namespace Dapplo.HttpExtensions
         /// <param name="uri">Uri to send the delete request to</param>
         /// <param name="cancellationToken">CancellationToken</param>
         /// <returns>Task</returns>
-        public static async Task DeleteAsync(this HttpClient httpClient, Uri uri, CancellationToken cancellationToken = default(CancellationToken))
+        public static async Task DeleteAsync(this HttpClient httpClient, Uri uri, CancellationToken cancellationToken = default)
         {
             if (uri == null)
             {
@@ -109,7 +109,7 @@ namespace Dapplo.HttpExtensions
         /// <param name="uri">URI</param>
         /// <param name="cancellationToken">CancellationToken</param>
         /// <returns>the deserialized object of type T or default(T)</returns>
-        public static async Task<TResponse> GetAsAsync<TResponse>(this HttpClient client, Uri uri, CancellationToken cancellationToken = default(CancellationToken))
+        public static async Task<TResponse> GetAsAsync<TResponse>(this HttpClient client, Uri uri, CancellationToken cancellationToken = default)
             where TResponse : class
         {
             if (uri == null)
@@ -144,7 +144,7 @@ namespace Dapplo.HttpExtensions
         /// <param name="uri">Uri to get HEAD for</param>
         /// <param name="cancellationToken">CancellationToken</param>
         /// <returns>HttpContentHeaders</returns>
-        public static async Task<HttpContentHeaders> HeadAsync(this HttpClient httpClient, Uri uri, CancellationToken cancellationToken = default(CancellationToken))
+        public static async Task<HttpContentHeaders> HeadAsync(this HttpClient httpClient, Uri uri, CancellationToken cancellationToken = default)
         {
             if (uri == null)
             {
@@ -174,7 +174,7 @@ namespace Dapplo.HttpExtensions
         /// <param name="cancellationToken">CancellationToken</param>
         /// <returns>TResult</returns>
         public static async Task<TResponse> PostAsync<TResponse>(this HttpClient httpClient, Uri uri, object content,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = default)
             where TResponse : class
         {
             if (uri == null)
@@ -200,7 +200,7 @@ namespace Dapplo.HttpExtensions
         /// <param name="uri">Uri to post an empty request to</param>
         /// <param name="content">Content to post</param>
         /// <param name="cancellationToken">CancellationToken</param>
-        public static async Task PostAsync(this HttpClient httpClient, Uri uri, object content, CancellationToken cancellationToken = default(CancellationToken))
+        public static async Task PostAsync(this HttpClient httpClient, Uri uri, object content, CancellationToken cancellationToken = default)
         {
             if (uri == null)
             {
@@ -230,7 +230,7 @@ namespace Dapplo.HttpExtensions
         /// <param name="cancellationToken">CancellationToken</param>
         /// <returns>TResult</returns>
         public static async Task<TResponse> PutAsync<TResponse>(this HttpClient httpClient, Uri uri, object content,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = default)
             where TResponse : class
         {
             if (uri == null)
@@ -256,7 +256,7 @@ namespace Dapplo.HttpExtensions
         /// <param name="content">Content to put</param>
         /// <param name="cancellationToken">CancellationToken</param>
         /// <returns>Task</returns>
-        public static async Task PutAsync(this HttpClient httpClient, Uri uri, object content, CancellationToken cancellationToken = default(CancellationToken))
+        public static async Task PutAsync(this HttpClient httpClient, Uri uri, object content, CancellationToken cancellationToken = default)
         {
             if (uri == null)
             {

@@ -75,7 +75,7 @@ The authentication process received information from CloudServiceName. You can c
         /// <param name="cancellationToken">CancellationToken</param>
         /// <returns>Dictionary with values</returns>
         public async Task<IDictionary<string, string>> ReceiveCodeAsync(AuthorizeModes authorizeMode, ICodeReceiverSettings codeReceiverSettings,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = default)
         {
             Uri redirectUri;
             if (codeReceiverSettings.RedirectUrl == null)

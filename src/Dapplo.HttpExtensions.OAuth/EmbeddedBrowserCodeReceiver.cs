@@ -54,7 +54,7 @@ namespace Dapplo.HttpExtensions.OAuth
         /// <param name="cancellationToken">CancellationToken</param>
         /// <returns>IDictionary with information</returns>
         public Task<IDictionary<string, string>> ReceiveCodeAsync(AuthorizeModes authorizeMode, ICodeReceiverSettings codeReceiverSettings,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = default)
         {
             if (codeReceiverSettings.RedirectUrl == null)
             {

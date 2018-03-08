@@ -42,6 +42,6 @@ namespace Dapplo.HttpExtensions.OAuth
         /// <param name="cancellationToken">CancellationToken</param>
         /// <returns>Dictionary with the returned key-values</returns>
         Task<IDictionary<string, string>> ReceiveCodeAsync(AuthorizeModes authorizeMode, ICodeReceiverSettings codeReceiverSettings,
-            CancellationToken cancellationToken = default(CancellationToken));
+            CancellationToken cancellationToken = default);
     }
 }

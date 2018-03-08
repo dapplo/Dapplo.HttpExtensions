@@ -24,6 +24,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.JsonSimple;
 using Dapplo.HttpExtensions.Tests.TestEntities;
@@ -45,6 +46,8 @@ namespace Dapplo.HttpExtensions.Tests
         {
             LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
             SimpleJsonSerializer.RegisterGlobally();
+
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
         }
 
         /// <summary>

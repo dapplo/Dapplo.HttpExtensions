@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2015-2017 Dapplo
+//  Copyright (C) 2016-2018 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -25,15 +25,15 @@
 namespace Dapplo.HttpExtensions.Support
 {
     /// <summary>
-    ///     This converter wraps the Dapplo.Config.Converters.StringEncryptionTypeConverter
+    ///     This converter wraps the Dapplo.Ini.Converters.StringEncryptionTypeConverter
     ///     As it is used in the IOAuth2Token as TypeConverter attribute, which is only used from the Dapplo.Config framework
     /// </summary>
     public class DelegatingStringEncryptionTypeConverter : DelegatingTypeConverter
     {
-        /// <summary>
-        ///     Delegating to the StringEncryptionTypeConverter
-        /// </summary>
-        public DelegatingStringEncryptionTypeConverter() : base("Dapplo.Config", "Dapplo.Config.Converters.StringEncryptionTypeConverter")
+		/// <summary>
+		///     Delegating to the StringEncryptionTypeConverter
+		/// </summary>
+		public DelegatingStringEncryptionTypeConverter() : base("Dapplo.Ini", "Dapplo.Ini.Converters.StringEncryptionTypeConverter")
         {
         }
     }

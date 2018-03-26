@@ -1,5 +1,5 @@
 ﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2015-2017 Dapplo
+//  Copyright (C) 2016-2018 Dapplo
 // 
 //  For more information see: http://dapplo.net/
 //  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
@@ -45,7 +45,7 @@ namespace Dapplo.HttpExtensions.Support
         /// </summary>
         /// <param name="assemblyName">string</param>
         /// <param name="typeName">string</param>
-        public DelegatingTypeConverter(string assemblyName, string typeName)
+        protected DelegatingTypeConverter(string assemblyName, string typeName)
         {
             var handle = Activator.CreateInstance(assemblyName, typeName);
             _innerTypeConverter = handle.Unwrap() as TypeConverter;

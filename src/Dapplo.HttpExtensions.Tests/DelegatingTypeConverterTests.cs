@@ -21,27 +21,32 @@
 
 #region Usings
 
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+using System;
+using Dapplo.HttpExtensions.Support;
+using Dapplo.Log;
+using Dapplo.Log.XUnit;
+using Xunit;
+using Xunit.Abstractions;
 
 #endregion
 
-namespace Dapplo.HttpExtensions.OAuth
+namespace Dapplo.HttpExtensions.Tests
 {
-    /// <summary>
-    ///     This is the interface for the OAuth code receiver
-    /// </summary>
-    public interface IOAuthCodeReceiver
+    public class DelegatingTypeConverterTests
     {
+        public DelegatingTypeConverterTests(ITestOutputHelper testOutputHelper)
+        {
+            LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
+        }
+
         /// <summary>
-        ///     The actual code receiving code
+        ///     Test creating the DelegatingStringEncryptionTypeConverter
         /// </summary>
-        /// <param name="authorizeMode">AuthorizeModes will tell you for what mode you were called</param>
-        /// <param name="codeReceiverSettings">ICodeReceiverSettings with the settings for the code receiver</param>
-        /// <param name="cancellationToken">CancellationToken</param>
-        /// <returns>Dictionary with the returned key-values</returns>
-        Task<IDictionary<string, string>> ReceiveCodeAsync(AuthorizeModes authorizeMode, ICodeReceiverSettings codeReceiverSettings,
-            CancellationToken cancellationToken = default);
+        [Fact]
+        public void Test_DelegatingTypeConverter()
+        {
+            // We should get an InvalidOperationException, as the encryption is not initialized
+            Assert.Throws<InvalidOperationException>(() => new DelegatingStringEncryptionTypeConverter());
+        }
     }
 }

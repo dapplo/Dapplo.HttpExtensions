@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>Json.NET functionality for Dapplo.HttpExtensions</Description>
-    <Copyright>Copyright © Dapplo 2016-2017</Copyright>
+    <Copyright>Copyright © Dapplo 2016-2018</Copyright>
     <AssemblyTitle>Dapplo.HttpExtensions.JsonNet</AssemblyTitle>
     <Authors>Robin Krom</Authors>
     <TargetFrameworks>netstandard1.3;net45;net46</TargetFrameworks>

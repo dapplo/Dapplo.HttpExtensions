@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>Tests for Dapplo.HttpExtensions</Description>
-    <Copyright>Copyright © Dapplo 2016-2017</Copyright>
+    <Copyright>Copyright © Dapplo 2016-2018</Copyright>
     <AssemblyTitle>Dapplo.HttpExtensions.Tests</AssemblyTitle>
     <Authors>Dapplo</Authors>
     <TargetFrameworks>net461</TargetFrameworks>
@@ -17,6 +17,7 @@
 	<IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Dapplo.Ini" Version="0.5.24" />
     <PackageReference Include="Dapplo.Log" Version="1.1.4" />
     <PackageReference Include="Dapplo.Log.XUnit" Version="1.1.4" />
 	<PackageReference Include="xunit" Version="2.3.1" />

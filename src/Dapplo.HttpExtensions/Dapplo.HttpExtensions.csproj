@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>A library extensions to simplify HTTP usage.</Description>
-    <Copyright>Copyright © Dapplo 2016-2017</Copyright>
+    <Copyright>Copyright © Dapplo 2016-2018</Copyright>
     <AssemblyTitle>Dapplo.HttpExtensions</AssemblyTitle>
     <Authors>Dapplo</Authors>
     <TargetFrameworks>net45;net46;netstandard1.3</TargetFrameworks>

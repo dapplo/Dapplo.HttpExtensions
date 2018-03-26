@@ -30,7 +30,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Threading;
 using Dapplo.HttpExtensions.Extensions;
 using Dapplo.HttpExtensions.OAuth.Desktop;
 using Dapplo.Log;
@@ -70,17 +69,19 @@ namespace Dapplo.HttpExtensions.OAuth
             Log.Verbose().WriteLine("Opening Uri {0}", uriBuilder.Uri.AbsoluteUri);
 
             // Needs to run on th UI thread.
-            return Dispatcher.CurrentDispatcher.Invoke(async () => await Task.Run(() =>
+            return Task.Factory.StartNew(() =>
             {
                 var oAuthLoginForm = new OAuthLoginForm(codeReceiverSettings.CloudServiceName,
-                    new Size(codeReceiverSettings.EmbeddedBrowserWidth, codeReceiverSettings.EmbeddedBrowserHeight), uriBuilder.Uri, codeReceiverSettings.RedirectUrl);
+                    new Size(codeReceiverSettings.EmbeddedBrowserWidth, codeReceiverSettings.EmbeddedBrowserHeight),
+                    uriBuilder.Uri, codeReceiverSettings.RedirectUrl);
 
                 if (oAuthLoginForm.ShowDialog() == DialogResult.OK)
                 {
                     return oAuthLoginForm.CallbackParameters;
                 }
+
                 return null;
-            }, cancellationToken));
+            }, cancellationToken, TaskCreationOptions.None, codeReceiverSettings.UiTaskScheduler ?? TaskScheduler.FromCurrentSynchronizationContext());
         }
     }
 }

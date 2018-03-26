@@ -24,6 +24,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -57,54 +58,32 @@ namespace Dapplo.HttpExtensions.OAuth
 
         #region ICodeReceiverSettings
 
-        /// <summary>
-        ///     The autorization Uri where the values of this class will be "injected"
-        ///     Example how this can be created:
-        ///     <code>
-        /// new Uri("http://server").AppendSegments("auth").Query("client_id", "{ClientId}");
-        /// </code>
-        /// </summary>
+        /// <inheritdoc />
         public Uri AuthorizationUri { get; set; }
 
-        /// <summary>
-        ///     This is the redirect URL, in some implementations this is automatically set (LocalServerCodeReceiver)
-        ///     In some implementations this could be e.g. urn:ietf:wg:oauth:2.0:oob or urn:ietf:wg:oauth:2.0:oob:auto
-        /// </summary>
+        /// <inheritdoc />
         public string RedirectUrl { get; set; }
 
-        /// <summary>
-        ///     Specify the name of the cloud service, so it can be used in window titles, logs etc
-        /// </summary>
+        /// <inheritdoc />
         public string CloudServiceName { get; set; } = "the remote server";
 
-        /// <summary>
-        ///     The OAuth client id / consumer key
-        /// </summary>
+        /// <inheritdoc />
         public string ClientId { get; set; }
 
-        /// <summary>
-        ///     The OAuth client/consumer secret
-        ///     For OAuth1SignatureTypes.RsaSha1 use RsaSha1Provider instead!
-        /// </summary>
+        /// <inheritdoc />
         public string ClientSecret { get; set; }
 
-        /// <summary>
-        ///     The OAuth state, this is something that is passed to the server, is not processed but returned back to the client.
-        ///     e.g. a correlation ID
-        ///     Default this is filled with a new Guid
-        /// </summary>
+        /// <inheritdoc />
         public string State { get; set; } = Guid.NewGuid().ToString();
 
-        /// <summary>
-        ///     This can be used to specify the width of the embedded browser window
-        /// </summary>
+        /// <inheritdoc />
         public int EmbeddedBrowserWidth { get; set; } = 600;
 
-        /// <summary>
-        ///     This can be used to specify the height of the embedded browser window
-        /// </summary>
+        /// <inheritdoc />
         public int EmbeddedBrowserHeight { get; set; } = 400;
 
+        /// <inheritdoc />
+        public TaskScheduler UiTaskScheduler { get; set; }
         #endregion
     }
 }

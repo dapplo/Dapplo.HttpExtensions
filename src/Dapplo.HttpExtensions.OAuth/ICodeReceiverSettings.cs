@@ -22,6 +22,7 @@
 #region Usings
 
 using System;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -48,6 +49,8 @@ namespace Dapplo.HttpExtensions.OAuth
 
         /// <summary>
         ///     The OAuth (2) client secret / consumer secret
+        ///     The OAuth client/consumer secret
+        ///     For OAuth1SignatureTypes.RsaSha1 use RsaSha1Provider instead!
         /// </summary>
         string ClientSecret { get; set; }
 
@@ -57,12 +60,12 @@ namespace Dapplo.HttpExtensions.OAuth
         string CloudServiceName { get; set; }
 
         /// <summary>
-        ///     The height of the embedded browser
+        ///     This can be used to specify the height of the embedded browser window, default is 400
         /// </summary>
         int EmbeddedBrowserHeight { get; set; }
 
         /// <summary>
-        ///     The width of the embedded browser, default
+        ///     This can be used to specify the width of the embedded browser window, default is 600
         /// </summary>
         int EmbeddedBrowserWidth { get; set; }
 
@@ -79,5 +82,10 @@ namespace Dapplo.HttpExtensions.OAuth
         ///     Default this is filled with a new Guid
         /// </summary>
         string State { get; set; }
+
+        /// <summary>
+        /// A TaskScheduler which is used to schedule tasks on the UI 
+        /// </summary>
+        TaskScheduler UiTaskScheduler { get; set; }
     }
 }

@@ -145,7 +145,7 @@ namespace Dapplo.HttpExtensions.Tests
         [Fact]
         public async Task TestGetAsAsyncSyndicationFeed()
         {
-            var feed = await new Uri("http://lorem-rss.herokuapp.com/feed").GetAsAsync<SyndicationFeed>();
+            var feed = await new Uri("https://blogs.msdn.microsoft.com/dotnet/feed/").GetAsAsync<SyndicationFeed>();
             Assert.NotNull(feed);
             Assert.True(feed.Items.Any());
         }

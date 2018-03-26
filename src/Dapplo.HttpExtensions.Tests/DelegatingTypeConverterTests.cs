@@ -22,7 +22,9 @@
 #region Usings
 
 using System;
+using System.Reflection;
 using Dapplo.HttpExtensions.Support;
+using Dapplo.Ini.Converters;
 using Dapplo.Log;
 using Dapplo.Log.XUnit;
 using Xunit;
@@ -34,6 +36,8 @@ namespace Dapplo.HttpExtensions.Tests
 {
     public class DelegatingTypeConverterTests
     {
+        private static readonly LogSource Log = new LogSource();
+
         public DelegatingTypeConverterTests(ITestOutputHelper testOutputHelper)
         {
             LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
@@ -45,8 +49,7 @@ namespace Dapplo.HttpExtensions.Tests
         [Fact]
         public void Test_DelegatingTypeConverter()
         {
-            // We should get an InvalidOperationException, as the encryption is not initialized
-            Assert.Throws<InvalidOperationException>(() => new DelegatingStringEncryptionTypeConverter());
+            Assert.Throws<TargetInvocationException>(() => new DelegatingStringEncryptionTypeConverter());
         }
     }
 }

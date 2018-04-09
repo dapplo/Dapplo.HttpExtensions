@@ -29,6 +29,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Dapplo.Log;
+using Dapplo.Windows.Dpi.Forms;
 
 #endregion
 
@@ -37,7 +38,7 @@ namespace Dapplo.HttpExtensions.OAuth.Desktop
     /// <summary>
     ///     The OAuthLoginForm is used to allow the user to authorize Greenshot with an "Oauth" application
     /// </summary>
-    public sealed partial class OAuthLoginForm : Form
+    public sealed partial class OAuthLoginForm : DpiAwareForm
     {
         private static readonly LogSource Log = new LogSource();
         private readonly string _callbackUrl;

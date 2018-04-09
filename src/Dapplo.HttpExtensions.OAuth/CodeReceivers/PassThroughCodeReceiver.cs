@@ -30,7 +30,7 @@ using Dapplo.HttpExtensions.Extensions;
 
 #endregion
 
-namespace Dapplo.HttpExtensions.OAuth
+namespace Dapplo.HttpExtensions.OAuth.CodeReceivers
 {
     /// <summary>
     ///     Simply pass the Request token as the authentication

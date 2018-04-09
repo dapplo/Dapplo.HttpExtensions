@@ -27,14 +27,17 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Extensions;
 using Dapplo.Log;
+using Dapplo.Windows.Desktop;
 
 #endregion
 
-namespace Dapplo.HttpExtensions.OAuth
+namespace Dapplo.HttpExtensions.OAuth.CodeReceivers
 {
     /// <summary>
     ///     OAuth (2.0) verification code receiver that depending on the Mode:
@@ -68,7 +71,6 @@ namespace Dapplo.HttpExtensions.OAuth
                     throw new NotSupportedException($"Only {AuthorizeModes.OutOfBound} and {AuthorizeModes.OutOfBoundAuto} are supported modes for this receiver");
             }
 
-            // while the listener is beging starter in the "background", here we prepare opening the browser
             var uriBuilder = new UriBuilder(codeReceiverSettings.AuthorizationUri)
             {
                 Query = codeReceiverSettings.AuthorizationUri.QueryToKeyValuePairs()
@@ -78,15 +80,22 @@ namespace Dapplo.HttpExtensions.OAuth
 
             // Get the formatted FormattedAuthUrl
             var authorizationUrl = uriBuilder.Uri;
-            Log.Info().WriteLine("Opening a browser with: {0}", authorizationUrl.AbsoluteUri);
+            Log.Debug().WriteLine("Opening a browser with: {0}", authorizationUrl.AbsoluteUri);
             // Open the url in the default browser
             Process.Start(authorizationUrl.AbsoluteUri);
 
-            // TODO: Get the response here, this should be done via the windows title
-
-            await Task.Delay(10 * 1000, cancellationToken).ConfigureAwait(false);
+            Log.Debug().WriteLine("Waiting until a window gets a title with the state {0}", codeReceiverSettings.State);
+            // Wait until a window get's a title which contains the state object
+            var title = await WinEventHook.WindowTileChangeObservable()
+                .Select(info => InteropWindowFactory.CreateFor(info.Handle).Fill())
+                .Where(interopWindow => !string.IsNullOrEmpty(interopWindow?.Caption))
+                .Where(interopWindow => interopWindow.Caption.Contains(codeReceiverSettings.State))
+                .Select(interopWindow => interopWindow.Caption)
+                .Take(1).ToTask(cancellationToken);
+            
+            Log.Debug().WriteLine("Got window title: {0}", title);
             // Return result of the listening
-            return null;
+            return UriParseExtensions.QueryStringToDictionary(title);
         }
     }
 }

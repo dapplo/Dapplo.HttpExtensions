@@ -35,6 +35,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Extensions;
 using Dapplo.HttpExtensions.Factory;
+using Dapplo.HttpExtensions.OAuth.CodeReceivers;
 using Dapplo.Log;
 
 #endregion

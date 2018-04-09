@@ -36,7 +36,7 @@ using Dapplo.Log;
 
 #endregion
 
-namespace Dapplo.HttpExtensions.OAuth
+namespace Dapplo.HttpExtensions.OAuth.CodeReceivers
 {
     /// <summary>
     ///     This will start an embedded browser to wait for the code

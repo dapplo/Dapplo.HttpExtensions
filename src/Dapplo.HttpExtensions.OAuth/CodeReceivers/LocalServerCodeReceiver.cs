@@ -37,7 +37,7 @@ using Dapplo.Log;
 
 #endregion
 
-namespace Dapplo.HttpExtensions.OAuth
+namespace Dapplo.HttpExtensions.OAuth.CodeReceivers
 {
     /// <summary>
     ///     OAuth (2.0) verification code receiver that runs a local server on a free port

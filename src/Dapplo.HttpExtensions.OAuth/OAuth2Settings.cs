@@ -19,12 +19,6 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace Dapplo.HttpExtensions.OAuth
 {
     /// <summary>
@@ -46,11 +40,8 @@ namespace Dapplo.HttpExtensions.OAuth
         {
             get
             {
-                var expired = false;
-                if (!string.IsNullOrEmpty(Token.OAuth2AccessToken) && Token.OAuth2AccessTokenExpires != default)
-                {
-                    expired = DateTimeOffset.Now.AddSeconds(HttpExtensionsGlobals.OAuth2ExpireOffset) > Token.OAuth2AccessTokenExpires;
-                }
+                var expired = Token.IsAccessTokenExpired();
+                
                 // Make sure the token is not usable
                 if (expired)
                 {

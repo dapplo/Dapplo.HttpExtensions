@@ -21,10 +21,7 @@
 
 #region Usings
 
-using System;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Factory;
@@ -121,60 +118,6 @@ namespace Dapplo.HttpExtensions
                     httpResponseMessage.EnsureSuccessStatusCode();
                 }
             }
-        }
-
-        /// <summary>
-        ///     Simplest way to set the authorization header
-        /// </summary>
-        /// <param name="httpRequestMessage">HttpRequestMessage</param>
-        /// <param name="scheme">The authorization scheme, e.g. Bearer or Basic</param>
-        /// <param name="parameter">the value to the scheme</param>
-        /// <returns>HttpRequestMessage for fluent usage</returns>
-        public static HttpRequestMessage SetAuthorization(this HttpRequestMessage httpRequestMessage, string scheme, string parameter)
-        {
-            var authenticationHeaderValue = new AuthenticationHeaderValue(scheme, parameter);
-            httpRequestMessage.Headers.Authorization = authenticationHeaderValue;
-            return httpRequestMessage;
-        }
-
-        /// <summary>
-        ///     Set Basic Authentication for the HttpRequestMessage
-        /// </summary>
-        /// <param name="httpRequestMessage">HttpRequestMessage</param>
-        /// <param name="user">username</param>
-        /// <param name="password">password</param>
-        /// <returns>HttpRequestMessage for fluent usage</returns>
-        public static HttpRequestMessage SetBasicAuthorization(this HttpRequestMessage httpRequestMessage, string user, string password)
-        {
-            var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{user}:{password}"));
-            return httpRequestMessage.SetAuthorization("Basic", credentials);
-        }
-
-        /// <summary>
-        ///     Use the UserInfo from the Uri to set the basic authorization information
-        /// </summary>
-        /// <param name="httpRequestMessage">HttpRequestMessage</param>
-        /// <param name="uri">Uri with UserInfo</param>
-        /// <returns>HttpRequestMessage for fluent usage</returns>
-        public static HttpRequestMessage SetBasicAuthorization(this HttpRequestMessage httpRequestMessage, Uri uri)
-        {
-            if (string.IsNullOrEmpty(uri?.UserInfo))
-            {
-                return httpRequestMessage;
-            }
-            var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(uri.UserInfo));
-            return httpRequestMessage.SetAuthorization("Basic", credentials);
-        }
-
-        /// <summary>
-        ///     Set Bearer "Authentication" for the HttpRequestMessage
-        /// </summary>
-        /// <param name="httpRequestMessage">HttpRequestMessage</param>
-        /// <param name="bearer">Bearer for the authorization</param>
-        /// <returns>HttpRequestMessage for fluent usage</returns>
-        public static HttpRequestMessage SetBearer(this HttpRequestMessage httpRequestMessage, string bearer)
-        {
-            return httpRequestMessage.SetAuthorization("Bearer", bearer);
         }
     }
 }

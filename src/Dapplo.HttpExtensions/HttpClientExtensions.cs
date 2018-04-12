@@ -24,7 +24,6 @@
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Factory;
@@ -271,63 +270,6 @@ namespace Dapplo.HttpExtensions
             {
                 await httpRequestMessage.SendAsync(httpClient, cancellationToken).ConfigureAwait(false);
             }
-        }
-
-        /// <summary>
-        ///     Set Authorization for the current client
-        /// </summary>
-        /// <param name="client">HttpClient</param>
-        /// <param name="scheme">scheme</param>
-        /// <param name="authorization">value</param>
-        /// <returns>HttpClient for fluent usage</returns>
-        public static HttpClient SetAuthorization(this HttpClient client, string scheme, string authorization)
-        {
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme, authorization);
-            return client;
-        }
-
-        /// <summary>
-        ///     Set Basic Authentication for the current client
-        /// </summary>
-        /// <param name="client">HttpClient</param>
-        /// <param name="user">username</param>
-        /// <param name="password">password</param>
-        /// <returns>HttpClient for fluent usage</returns>
-        public static HttpClient SetBasicAuthorization(this HttpClient client, string user, string password)
-        {
-            var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{user}:{password}"));
-            return client.SetAuthorization("Basic", credentials);
-        }
-
-        /// <summary>
-        ///     Use the UserInfo from the Uri to set the basic authorization information
-        /// </summary>
-        /// <param name="client">HttpClient</param>
-        /// <param name="uri">Uri with UserInfo</param>
-        /// <returns>HttpClient for fluent usage</returns>
-        public static HttpClient SetBasicAuthorization(this HttpClient client, Uri uri)
-        {
-            if (uri == null)
-            {
-                throw new ArgumentNullException(nameof(uri));
-            }
-            if (string.IsNullOrEmpty(uri.UserInfo))
-            {
-                return client;
-            }
-            var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(uri.UserInfo));
-            return client.SetAuthorization("Basic", credentials);
-        }
-
-        /// <summary>
-        ///     Set Bearer "Authentication" for the current client
-        /// </summary>
-        /// <param name="client">HttpClient</param>
-        /// <param name="bearer">Bearer for the authorization</param>
-        /// <returns>HttpClient for fluent usage</returns>
-        public static HttpClient SetBearer(this HttpClient client, string bearer)
-        {
-            return client.SetAuthorization("Bearer", bearer);
         }
     }
 }

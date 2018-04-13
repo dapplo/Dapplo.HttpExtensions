@@ -43,7 +43,7 @@ namespace Dapplo.HttpExtensions
         /// <returns>string with Base64 encoded username and password</returns>
         private static string EncodeBasic(string user, string password)
         {
-            return Convert.ToBase64String(Encoding.UTF8.GetBytes($"{user}:{Uri.EscapeDataString(password)}"));
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes($"{user}:{password}"));
         }
 
         /// <summary>
@@ -87,7 +87,9 @@ namespace Dapplo.HttpExtensions
             {
                 return client;
             }
-            var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(uri.UserInfo));
+
+            var userInfo = Uri.UnescapeDataString(uri.UserInfo);
+            var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(userInfo));
             return client.SetAuthorization("Basic", credentials);
         }
 
@@ -141,7 +143,8 @@ namespace Dapplo.HttpExtensions
             {
                 return httpRequestMessage;
             }
-            var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(uri.UserInfo));
+            var userInfo = Uri.UnescapeDataString(uri.UserInfo);
+            var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(userInfo));
             return httpRequestMessage.SetAuthorization("Basic", credentials);
         }
 
@@ -156,5 +159,21 @@ namespace Dapplo.HttpExtensions
             return httpRequestMessage.SetAuthorization("Bearer", bearer);
         }
 
+        /// <summary>
+        ///     Sets the UserInfo of the Uri
+        /// </summary>
+        /// <param name="uri">Uri to extend</param>
+        /// <param name="username">username of value</param>
+        /// <param name="password">password for the user</param>
+        /// <returns>Uri with extended query</returns>
+        public static Uri SetCredentials(this Uri uri, string username, string password)
+        {
+            var uriBuilder = new UriBuilder(uri)
+            {
+                UserName = username,
+                Password = Uri.EscapeDataString(password)
+            };
+            return uriBuilder.Uri;
+        }
     }
 }

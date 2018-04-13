@@ -77,8 +77,12 @@ namespace Dapplo.HttpExtensions
             {
                 stringBuilder.Append("/");
             }
-            // Create the path of the segments, removing all starting and ending /
-            var path = string.Join("/", segments.Where(s => !string.IsNullOrEmpty(s)).Select(s => s.TrimStart('/').TrimEnd('/')));
+            // Create the path of the segments, removing all starting and ending /, and encode the part
+            var path = string.Join("/", segments
+                .Where(s => !string.IsNullOrEmpty(s))
+                .Select(s => s.TrimStart('/').TrimEnd('/'))
+                .Where(s => !string.IsNullOrEmpty(s))
+                .Select(s => Uri.EscapeUriString(s)));
 
             // Append this to the string builder
             stringBuilder.Append(path);
@@ -106,11 +110,7 @@ namespace Dapplo.HttpExtensions
         /// <returns>Uri with extended query</returns>
         public static Uri ExtendQuery<T>(this Uri uri, string name, T value)
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
-            var keyValuePairs = uri.QueryToKeyValuePairs().Concat(new[] {new KeyValuePair<string, string>(name, value.ToString())});
+            var keyValuePairs = uri.QueryToKeyValuePairs().Concat(new[] {new KeyValuePair<string, string>(name, value?.ToString())});
 
             var uriBuilder = new UriBuilder(uri)
             {
@@ -154,7 +154,8 @@ namespace Dapplo.HttpExtensions
                 throw new ArgumentNullException(nameof(values));
             }
             var keyValuePairs = uri.QueryToKeyValuePairs()
-                .Concat(values.Select(nameValue => new KeyValuePair<string, string>(nameValue.Key, nameValue.Value?.ToString())));
+                .Concat(values
+                    .Select(nameValue => new KeyValuePair<string, string>(nameValue.Key, nameValue.Value?.ToString())));
 
             var uriBuilder = new UriBuilder(uri)
             {
@@ -184,23 +185,6 @@ namespace Dapplo.HttpExtensions
             var uriBuilder = new UriBuilder(uri)
             {
                 Query = keyValuePairs.ToQueryString()
-            };
-            return uriBuilder.Uri;
-        }
-
-        /// <summary>
-        ///     Sets the userinfo of the Uri
-        /// </summary>
-        /// <param name="uri">Uri to extend</param>
-        /// <param name="username">username of value</param>
-        /// <param name="password">password for the user</param>
-        /// <returns>Uri with extended query</returns>
-        public static Uri SetCredentials(this Uri uri, string username, string password)
-        {
-            var uriBuilder = new UriBuilder(uri)
-            {
-                UserName = username,
-                Password = password
             };
             return uriBuilder.Uri;
         }

@@ -48,7 +48,7 @@ namespace Dapplo.HttpExtensions.Tests
     public class UriActionExtensionsTests
     {
         private static readonly LogSource Log = new LogSource();
-        private readonly Uri _bitmapUri = new Uri("http://httpbin.org/image/png");
+        private readonly Uri _httpBinUri = new Uri("http://httpbin.org");
 
         public UriActionExtensionsTests(ITestOutputHelper testOutputHelper)
         {
@@ -62,7 +62,10 @@ namespace Dapplo.HttpExtensions.Tests
         [Fact]
         public async Task TestBasicAuthAsync()
         {
-            await new Uri("https://usern:passw@httpbin.org/basic-auth/usern/passw").GetAsAsync<string>();
+            const string password = @"pass\w";
+            const string username = "usern";
+            var authUri = _httpBinUri.AppendSegments("basic-auth", username, password).SetCredentials(username, password);
+            await authUri.GetAsAsync<string>();
         }
 
         /// <summary>
@@ -93,11 +96,12 @@ namespace Dapplo.HttpExtensions.Tests
         {
             var downloadBehaviour = HttpBehaviour.Current.ShallowClone();
 
+            var bitmapUri = _httpBinUri.AppendSegments("image", "png");
             downloadBehaviour.UseProgressStream = true;
             downloadBehaviour.DownloadProgress += progress => { Log.Info().WriteLine("Progress {0}", (int) (progress * 100)); };
             downloadBehaviour.MakeCurrent();
 
-            var bitmap = await _bitmapUri.GetAsAsync<Bitmap>();
+            var bitmap = await bitmapUri.GetAsAsync<Bitmap>();
             Assert.NotNull(bitmap);
             Assert.True(bitmap.Width > 0);
             Assert.True(bitmap.Height > 0);
@@ -110,7 +114,7 @@ namespace Dapplo.HttpExtensions.Tests
         public async Task TestGetAsAsyncBitmapSource()
         {
             var uploadBehaviour = HttpBehaviour.Current.ShallowClone();
-
+            var bitmapUri = _httpBinUri.AppendSegments("image", "png");
             bool hasProgress = false;
 
             uploadBehaviour.UseProgressStream = true;
@@ -121,7 +125,7 @@ namespace Dapplo.HttpExtensions.Tests
             };
             uploadBehaviour.MakeCurrent();
 
-            var bitmap = await _bitmapUri.GetAsAsync<BitmapSource>();
+            var bitmap = await bitmapUri.GetAsAsync<BitmapSource>();
             Assert.NotNull(bitmap);
             Assert.True(bitmap.Width > 0);
             Assert.True(bitmap.Height > 0);
@@ -134,7 +138,8 @@ namespace Dapplo.HttpExtensions.Tests
         [Fact]
         public async Task TestGetAsAsyncMemoryStream()
         {
-            var stream = await _bitmapUri.GetAsAsync<MemoryStream>();
+            var bitmapUri = _httpBinUri.AppendSegments("image", "png");
+            var stream = await bitmapUri.GetAsAsync<MemoryStream>();
             Assert.NotNull(stream);
             Assert.True(stream.Length > 0);
         }

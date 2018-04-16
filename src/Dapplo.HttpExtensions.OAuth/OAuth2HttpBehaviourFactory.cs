@@ -31,8 +31,8 @@ namespace Dapplo.HttpExtensions.OAuth
         /// </summary>
         /// <param name="oAuth2Settings">OAuth2Settings</param>
         /// <param name="fromHttpBehaviour">IHttpBehaviour to clone, null if a new needs to be generated</param>
-        /// <returns>IHttpBehaviour</returns>
-        public static IHttpBehaviour Create(OAuth2Settings oAuth2Settings, IHttpBehaviour fromHttpBehaviour = null)
+        /// <returns>IChangeableHttpBehaviour</returns>
+        public static IChangeableHttpBehaviour Create(OAuth2Settings oAuth2Settings, IHttpBehaviour fromHttpBehaviour = null)
         {
             // Get a clone of a IHttpBehaviour (passed or current)
             var oauthHttpBehaviour = (fromHttpBehaviour ?? HttpBehaviour.Current).ShallowClone();

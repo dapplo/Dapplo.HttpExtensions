@@ -24,7 +24,6 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Extensions;
@@ -325,7 +324,8 @@ namespace Dapplo.HttpExtensions.OAuth
             {
                 _oAuth2Settings.Lock.Release();
             }
-            httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _oAuth2Settings.Token.OAuth2AccessToken);
+
+            httpRequestMessage.SetBearerAuthorization(_oAuth2Settings.Token.OAuth2AccessToken);
             Log.Verbose().WriteLine("Continueing original request to {0}", httpRequestMessage.RequestUri);
             var result = await base.SendAsync(httpRequestMessage, cancellationToken).ConfigureAwait(false);
             return result;

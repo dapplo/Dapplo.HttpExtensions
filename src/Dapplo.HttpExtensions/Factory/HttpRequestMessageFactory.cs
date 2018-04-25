@@ -42,7 +42,7 @@ namespace Dapplo.HttpExtensions.Factory
     public static class HttpRequestMessageFactory
     {
         private static readonly LogSource Log = new LogSource();
-
+        private static readonly HttpMethod PatchMethod = new HttpMethod("PATCH");
         /// <summary>
         ///     Create a HttpRequestMessage for the specified method
         /// </summary>
@@ -168,6 +168,30 @@ namespace Dapplo.HttpExtensions.Factory
         public static HttpRequestMessage CreateHead(Uri requestUri)
         {
             return Create(HttpMethod.Head, requestUri);
+        }
+
+        /// <summary>
+        ///     Create a HttpRequestMessage for the PATCH method
+        /// </summary>
+        /// <typeparam name="TResponse">The type for the response, this modifies the Accept headers</typeparam>
+        /// <param name="requestUri">the target uri for this message</param>
+        /// <param name="content">HttpContent</param>
+        /// <returns>HttpRequestMessage</returns>
+        public static HttpRequestMessage CreatePatch<TResponse>(Uri requestUri, object content = null)
+            where TResponse : class
+        {
+            return Create(PatchMethod, requestUri, typeof(TResponse), content?.GetType(), content);
+        }
+
+        /// <summary>
+        ///     Create a HttpRequestMessage for the PATCH method
+        /// </summary>
+        /// <param name="requestUri">the target uri for this message</param>
+        /// <param name="content">HttpContent</param>
+        /// <returns>HttpRequestMessage</returns>
+        public static HttpRequestMessage CreatePatch(Uri requestUri, object content = null)
+        {
+            return Create(PatchMethod, requestUri, null, content?.GetType(), content);
         }
 
         /// <summary>

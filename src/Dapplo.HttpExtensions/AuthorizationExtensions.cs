@@ -68,7 +68,7 @@ namespace Dapplo.HttpExtensions
         /// <returns>HttpClient for fluent usage</returns>
         public static HttpClient SetBasicAuthorization(this HttpClient client, string user, string password)
         {
-            return client.SetAuthorization("Basic", EncodeBasic(user, password));
+            return client.SetBasicAuthorization(EncodeBasic(user, password));
         }
 
         /// <summary>
@@ -90,6 +90,17 @@ namespace Dapplo.HttpExtensions
 
             var userInfo = Uri.UnescapeDataString(uri.UserInfo);
             var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(userInfo));
+            return client.SetBasicAuthorization(credentials);
+        }
+
+        /// <summary>
+        ///     Set Basic "Authentication" for the current client
+        /// </summary>
+        /// <param name="client">HttpClient</param>
+        /// <param name="credentials">Credentials for the authorization</param>
+        /// <returns>HttpClient for fluent usage</returns>
+        public static HttpClient SetBasicAuthorization(this HttpClient client, string credentials)
+        {
             return client.SetAuthorization("Basic", credentials);
         }
 
@@ -99,11 +110,10 @@ namespace Dapplo.HttpExtensions
         /// <param name="client">HttpClient</param>
         /// <param name="bearer">Bearer for the authorization</param>
         /// <returns>HttpClient for fluent usage</returns>
-        public static HttpClient SetBearer(this HttpClient client, string bearer)
+        public static HttpClient SetBearerAuthorization(this HttpClient client, string bearer)
         {
             return client.SetAuthorization("Bearer", bearer);
         }
-
 
         /// <summary>
         ///     Simplest way to set the authorization header
@@ -123,12 +133,23 @@ namespace Dapplo.HttpExtensions
         ///     Set Basic Authentication for the HttpRequestMessage
         /// </summary>
         /// <param name="httpRequestMessage">HttpRequestMessage</param>
-        /// <param name="user">username</param>
-        /// <param name="password">password</param>
+        /// <param name="credentials">string</param>
+        /// <returns>HttpRequestMessage for fluent usage</returns>
+        public static HttpRequestMessage SetBasicAuthorization(this HttpRequestMessage httpRequestMessage, string credentials)
+        {
+            return httpRequestMessage.SetAuthorization("Basic", credentials);
+        }
+
+        /// <summary>
+        ///     Set Basic Authentication for the HttpRequestMessage
+        /// </summary>
+        /// <param name="httpRequestMessage">HttpRequestMessage</param>
+        /// <param name="user">string username</param>
+        /// <param name="password">string password</param>
         /// <returns>HttpRequestMessage for fluent usage</returns>
         public static HttpRequestMessage SetBasicAuthorization(this HttpRequestMessage httpRequestMessage, string user, string password)
         {
-            return httpRequestMessage.SetAuthorization("Basic", EncodeBasic(user, password));
+            return httpRequestMessage.SetBasicAuthorization(EncodeBasic(user, password));
         }
 
         /// <summary>
@@ -145,7 +166,7 @@ namespace Dapplo.HttpExtensions
             }
             var userInfo = Uri.UnescapeDataString(uri.UserInfo);
             var credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(userInfo));
-            return httpRequestMessage.SetAuthorization("Basic", credentials);
+            return httpRequestMessage.SetBasicAuthorization(credentials);
         }
 
         /// <summary>
@@ -154,7 +175,7 @@ namespace Dapplo.HttpExtensions
         /// <param name="httpRequestMessage">HttpRequestMessage</param>
         /// <param name="bearer">Bearer for the authorization</param>
         /// <returns>HttpRequestMessage for fluent usage</returns>
-        public static HttpRequestMessage SetBearer(this HttpRequestMessage httpRequestMessage, string bearer)
+        public static HttpRequestMessage SetBearerAuthorization(this HttpRequestMessage httpRequestMessage, string bearer)
         {
             return httpRequestMessage.SetAuthorization("Bearer", bearer);
         }

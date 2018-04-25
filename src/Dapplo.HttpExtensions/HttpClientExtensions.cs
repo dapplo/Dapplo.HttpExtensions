@@ -161,6 +161,62 @@ namespace Dapplo.HttpExtensions
         }
 
         /// <summary>
+        ///     Patch the content, and get the reponse
+        /// </summary>
+        /// <typeparam name="TResponse">
+        ///     the generic type to return the result into, use HttpContent or HttpResponseMessage to get
+        ///     those unprocessed
+        /// </typeparam>
+        /// <param name="httpClient">HttpClient</param>
+        /// <param name="uri">Uri to patch request to</param>
+        /// <param name="content">Content to patch</param>
+        /// <param name="cancellationToken">CancellationToken</param>
+        /// <returns>TResult</returns>
+        public static async Task<TResponse> PatchAsync<TResponse>(this HttpClient httpClient, Uri uri, object content,
+            CancellationToken cancellationToken = default)
+            where TResponse : class
+        {
+            if (uri == null)
+            {
+                throw new ArgumentNullException(nameof(uri));
+            }
+
+            if (content == null)
+            {
+                Log.Warn().WriteLine("No content supplied, this is ok but unusual.");
+            }
+
+            using (var httpRequestMessage = HttpRequestMessageFactory.CreatePatch<TResponse>(uri, content))
+            {
+                return await httpRequestMessage.SendAsync<TResponse>(httpClient, cancellationToken).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        ///     Patch the content, and don't expect (ignore) the response
+        /// </summary>
+        /// <param name="httpClient">HttpClient</param>
+        /// <param name="uri">Uri to patch an empty request to</param>
+        /// <param name="content">Content to patch</param>
+        /// <param name="cancellationToken">CancellationToken</param>
+        public static async Task PatchAsync(this HttpClient httpClient, Uri uri, object content, CancellationToken cancellationToken = default)
+        {
+            if (uri == null)
+            {
+                throw new ArgumentNullException(nameof(uri));
+            }
+            if (content == null)
+            {
+                Log.Warn().WriteLine("No content supplied, this is ok but unusual.");
+            }
+
+            using (var httpRequestMessage = HttpRequestMessageFactory.CreatePatch(uri, content))
+            {
+                await httpRequestMessage.SendAsync(httpClient, cancellationToken).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         ///     Post the content, and get the reponse
         /// </summary>
         /// <typeparam name="TResponse">

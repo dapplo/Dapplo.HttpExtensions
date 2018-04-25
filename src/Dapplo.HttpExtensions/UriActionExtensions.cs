@@ -148,6 +148,50 @@ namespace Dapplo.HttpExtensions
         }
 
         /// <summary>
+        ///     Method to Patch content
+        /// </summary>
+        /// <typeparam name="TResponse">
+        ///     the generic type to return the result into, use HttpContent or HttpResponseMessage to get
+        ///     those unprocessed
+        /// </typeparam>
+        /// <param name="uri">Uri to patch to</param>
+        /// <param name="content">Content to patch</param>
+        /// <param name="cancellationToken">CancellationToken</param>
+        /// <returns>TResponse</returns>
+        public static async Task<TResponse> PatchAsync<TResponse>(this Uri uri, object content, CancellationToken cancellationToken = default)
+            where TResponse : class
+        {
+            if (uri == null)
+            {
+                throw new ArgumentNullException(nameof(uri));
+            }
+
+            using (var client = HttpClientFactory.Create(uri))
+            {
+                return await client.PatchAsync<TResponse>(uri, content, cancellationToken).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        ///     Method to Patch content, ignore response
+        /// </summary>
+        /// <param name="uri">Uri to patch to</param>
+        /// <param name="content">Content to patch</param>
+        /// <param name="cancellationToken">CancellationToken</param>
+        public static async Task PatchAsync(this Uri uri, object content, CancellationToken cancellationToken = default)
+        {
+            if (uri == null)
+            {
+                throw new ArgumentNullException(nameof(uri));
+            }
+
+            using (var client = HttpClientFactory.Create(uri))
+            {
+                await client.PatchAsync(uri, content, cancellationToken).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         ///     Method to Post content
         /// </summary>
         /// <typeparam name="TResponse">

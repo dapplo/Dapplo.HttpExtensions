@@ -21,7 +21,9 @@
 	along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/>.
  */
 
- #if NET45 || NET46
+using Dapplo.Windows.EmbeddedBrowser;
+
+#if NET45 || NET46
 namespace Dapplo.HttpExtensions.OAuth.Desktop
 {
 	sealed partial class OAuthLoginForm
@@ -53,7 +55,7 @@ namespace Dapplo.HttpExtensions.OAuth.Desktop
 		private void InitializeComponent()
 		{
 			this._addressTextBox = new System.Windows.Forms.TextBox();
-			this._browser = new ExtendedWebBrowserForm();
+			this._browser = new ExtendedWebBrowser();
 			this.SuspendLayout();
 			// 
 			// _addressTextBox
@@ -94,7 +96,7 @@ namespace Dapplo.HttpExtensions.OAuth.Desktop
 #endregion
 
 		private System.Windows.Forms.TextBox _addressTextBox;
-		private ExtendedWebBrowserForm _browser;
+		private ExtendedWebBrowser _browser;
 	}
 }
 #endif

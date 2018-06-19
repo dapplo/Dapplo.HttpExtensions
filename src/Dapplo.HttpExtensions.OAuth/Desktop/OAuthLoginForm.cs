@@ -26,10 +26,11 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Dapplo.Log;
 using Dapplo.Windows.Dpi.Forms;
+using Dapplo.Windows.EmbeddedBrowser;
+using Dapplo.Windows.User32;
 
 #endregion
 
@@ -52,6 +53,9 @@ namespace Dapplo.HttpExtensions.OAuth.Desktop
         /// <param name="callbackUrl">Uri for the callback</param>
         public OAuthLoginForm(string browserTitle, Size size, Uri authorizationLink, string callbackUrl)
         {
+            // Make sure we use the most recent version of IE
+            InternetExplorerVersion.ChangeEmbeddedVersion();
+
             _callbackUrl = callbackUrl;
             InitializeComponent();
             ClientSize = size;
@@ -121,12 +125,8 @@ namespace Dapplo.HttpExtensions.OAuth.Desktop
         private void OAuthLoginForm_Load(object sender, EventArgs e)
         {
             Visible = true;
-            SetForegroundWindow(Handle);
+            User32Api.SetForegroundWindow(Handle);
         }
-
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool SetForegroundWindow(IntPtr hWnd);
     }
 }
 

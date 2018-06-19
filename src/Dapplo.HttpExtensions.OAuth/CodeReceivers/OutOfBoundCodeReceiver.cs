@@ -58,17 +58,20 @@ namespace Dapplo.HttpExtensions.OAuth.CodeReceivers
         public async Task<IDictionary<string, string>> ReceiveCodeAsync(AuthorizeModes authorizeMode, ICodeReceiverSettings codeReceiverSettings,
             CancellationToken cancellationToken = default)
         {
-            // Force OOB Uri
-            switch (authorizeMode)
+            // Force OOB Uri, if nothing is set
+            if (string.IsNullOrEmpty(codeReceiverSettings.RedirectUrl))
             {
-                case AuthorizeModes.OutOfBound:
-                    codeReceiverSettings.RedirectUrl = "urn:ietf:wg:oauth:2.0:oob";
-                    break;
-                case AuthorizeModes.OutOfBoundAuto:
-                    codeReceiverSettings.RedirectUrl = "urn:ietf:wg:oauth:2.0:oob:auto";
-                    break;
-                default:
-                    throw new NotSupportedException($"Only {AuthorizeModes.OutOfBound} and {AuthorizeModes.OutOfBoundAuto} are supported modes for this receiver");
+                switch (authorizeMode)
+                {
+                    case AuthorizeModes.OutOfBound:
+                        codeReceiverSettings.RedirectUrl = "urn:ietf:wg:oauth:2.0:oob";
+                        break;
+                    case AuthorizeModes.OutOfBoundAuto:
+                        codeReceiverSettings.RedirectUrl = "urn:ietf:wg:oauth:2.0:oob:auto";
+                        break;
+                    default:
+                        throw new NotSupportedException($"Only {AuthorizeModes.OutOfBound} and {AuthorizeModes.OutOfBoundAuto} are supported modes for this receiver");
+                }
             }
 
             var uriBuilder = new UriBuilder(codeReceiverSettings.AuthorizationUri)

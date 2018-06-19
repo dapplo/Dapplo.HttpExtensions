@@ -58,6 +58,10 @@ namespace Dapplo.HttpExtensions.OAuth
                 new OutOfBoundCodeReceiver()
             );
             CodeReceivers.Add(
+                AuthorizeModes.OutOfBoundAuto,
+                new OutOfBoundCodeReceiver()
+            );
+            CodeReceivers.Add(
                 AuthorizeModes.EmbeddedBrowser,
                 new EmbeddedBrowserCodeReceiver()
             );

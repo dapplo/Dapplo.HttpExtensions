@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using Dapplo.Log;
 #if !NET45
 using System.Threading;
 #else
@@ -43,6 +44,7 @@ namespace Dapplo.HttpExtensions
     /// </summary>
     public class HttpBehaviour : IChangeableHttpBehaviour
     {
+        private static readonly LogSource Log = new LogSource();
         private static readonly AsyncLocal<IHttpBehaviour> AsyncLocalBehavior = new AsyncLocal<IHttpBehaviour>();
 
         /// <summary>
@@ -128,7 +130,16 @@ namespace Dapplo.HttpExtensions
         public IChangeableHttpBehaviour ShallowClone()
         {
             var result = (HttpBehaviour) MemberwiseClone();
-            result.HttpSettings = HttpSettings.ShallowClone();
+            // Sometimes we can't ShallowClone, use the original in this case
+            try
+            {
+                result.HttpSettings = HttpSettings.ShallowClone();
+            }
+            catch (NotImplementedException ex)
+            {
+                Log.Warn().WriteLine(ex, "Couldn't ShallowClone {0}, using original", GetType());
+                result.HttpSettings = HttpSettings;
+            }
             // Make sure the RequestConfigurations are copied but changeable
             if (RequestConfigurations != null)
             {

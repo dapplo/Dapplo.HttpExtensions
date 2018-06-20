@@ -98,9 +98,10 @@ namespace Dapplo.HttpExtensions.OAuth.CodeReceivers
                 .Select(info => InteropWindowFactory.CreateFor(info.Handle).Fill())
                 .Where(interopWindow => !string.IsNullOrEmpty(interopWindow?.Caption))
                 .Where(interopWindow => interopWindow.Caption.Contains(codeReceiverSettings.State))
+                // Skip temporary titles, where the redirect URL os briefly seen
+                .Where(interopWindow => interopWindow?.Caption.Contains(codeReceiverSettings.RedirectUrl) != true)
                 .Select(interopWindow => interopWindow.Caption)
                 .Take(1).ToTask(cancellationToken);
-
 
             Log.Debug().WriteLine("Got title {0}", title);
             if (string.IsNullOrEmpty(title))

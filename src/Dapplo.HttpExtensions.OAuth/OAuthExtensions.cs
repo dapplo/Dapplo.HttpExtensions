@@ -35,8 +35,8 @@ namespace Dapplo.HttpExtensions.OAuth
         /// <returns>true if the specified IOAuth1Token has token information</returns>
         public static bool HasToken(this IOAuth1Token oAuth1Token)
         {
-            return string.IsNullOrEmpty(oAuth1Token.OAuthToken) ||
-                   string.IsNullOrEmpty(oAuth1Token.OAuthTokenSecret);
+            return !string.IsNullOrEmpty(oAuth1Token.OAuthToken) ||
+                   !string.IsNullOrEmpty(oAuth1Token.OAuthTokenSecret);
         }
 
         /// <summary>
@@ -57,8 +57,8 @@ namespace Dapplo.HttpExtensions.OAuth
         /// <returns>true if the specified IOAuth2Token has token information</returns>
         public static bool HasToken(this IOAuth2Token oAuth2Token)
         {
-            return string.IsNullOrEmpty(oAuth2Token.OAuth2AccessToken) ||
-                   string.IsNullOrEmpty(oAuth2Token.OAuth2RefreshToken);
+            return !string.IsNullOrEmpty(oAuth2Token.OAuth2AccessToken) ||
+                   !string.IsNullOrEmpty(oAuth2Token.OAuth2RefreshToken);
         }
 
         /// <summary>

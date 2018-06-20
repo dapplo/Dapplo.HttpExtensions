@@ -29,6 +29,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Extensions;
@@ -43,10 +44,14 @@ namespace Dapplo.HttpExtensions.OAuth.CodeReceivers
     ///     OAuth (2.0) verification code receiver that depending on the Mode:
     ///     OutOfBound: shows a simple dialog and waits for the answer
     ///     OutOfBoundAuto: monitors title changes
+    ///
+    /// This implementation is for OutOfBoundAuto, but due to issues with the title, expects a prefix || and suffix ||
+    /// Alternatively, when this is not available, it just tries to parse the title as a query.
     /// </summary>
     internal class OutOfBoundCodeReceiver : IOAuthCodeReceiver
     {
         private static readonly LogSource Log = new LogSource();
+        private static readonly Regex QueryPartOfTitleRegEx = new Regex(@".*\|\|(?<query>.*)\|\|.*", RegexOptions.IgnoreCase);
 
         /// <summary>
         ///     The OAuth code receiver
@@ -95,10 +100,28 @@ namespace Dapplo.HttpExtensions.OAuth.CodeReceivers
                 .Where(interopWindow => interopWindow.Caption.Contains(codeReceiverSettings.State))
                 .Select(interopWindow => interopWindow.Caption)
                 .Take(1).ToTask(cancellationToken);
-            
-            Log.Debug().WriteLine("Got window title: {0}", title);
+
+
+            Log.Debug().WriteLine("Got title {0}", title);
+            if (string.IsNullOrEmpty(title))
+            {
+                return new Dictionary<string, string>();
+            }
+
+            var match = QueryPartOfTitleRegEx.Match(title);
+            if (!match.Success)
+            {
+                return UriParseExtensions.QueryStringToDictionary(title);
+            }
+
+            var queryParameters = match.Groups["query"]?.Value;
+            if (string.IsNullOrEmpty(queryParameters))
+            {
+                return new Dictionary<string, string>();
+            }
+            Log.Debug().WriteLine("Query parameters: {0}", queryParameters);
             // Return result of the listening
-            return UriParseExtensions.QueryStringToDictionary(title);
+            return UriParseExtensions.QueryStringToDictionary(queryParameters);
         }
     }
 }

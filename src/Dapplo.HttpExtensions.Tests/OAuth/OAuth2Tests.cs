@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Dapplo.HttpExtensions.OAuth;
 using Dapplo.Log;
@@ -79,6 +80,27 @@ namespace Dapplo.HttpExtensions.Tests.OAuth
             var response = await calendarApiUri.AppendSegments("users", "me", "calendarList").GetAsAsync<dynamic>();
             Assert.True(response.ContainsKey("items"));
             Assert.True(response["items"].Count > 0);
+        }
+
+        [Fact]
+        public void TestOutOfBoundCodeReceiverParseTitle()
+        {
+            var queryPartOfTitleRegEx = new Regex(@".*\|\|(?<query>.*)\|\|.*", RegexOptions.IgnoreCase);
+            var state = Guid.NewGuid().ToString();
+            const string code = "2497hf29ruh234zruif390ugo34t23jfg23";
+            var query = $"state={state}&code={code}";
+            var testString = $"Greenshot authenticated with Imgur||{query}|| - Google Chrome";
+            Assert.False(string.IsNullOrEmpty(testString));
+            var match = queryPartOfTitleRegEx.Match(testString);
+            Assert.True(match.Success);
+            var queryParameters = match.Groups["query"]?.Value;
+            Assert.NotNull(queryParameters);
+            Assert.NotEmpty(queryParameters);
+            Assert.Equal(query, queryParameters);
+            var dict = UriParseExtensions.QueryStringToDictionary(queryParameters);
+            Assert.Equal(code, dict["code"]);
+            Assert.Equal(state, dict["state"]);
+
         }
     }
 }

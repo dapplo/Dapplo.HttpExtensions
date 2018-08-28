@@ -17,13 +17,13 @@
 	<IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Dapplo.Ini" Version="0.5.28" />
+    <PackageReference Include="Dapplo.Ini" Version="0.5.29" />
     <PackageReference Include="Dapplo.Log" Version="1.2.1" />
     <PackageReference Include="Dapplo.Log.XUnit" Version="1.2.1" />
 	<PackageReference Include="xunit" Version="2.3.1" />
 	<PackageReference Include="xunit.runner.console" Version="2.3.1" />
 	<PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
-	<PackageReference Include="Xunit.StaFact" Version="0.2.9" />
+	<PackageReference Include="Xunit.StaFact" Version="0.2.17" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Dapplo.HttpExtensions\Dapplo.HttpExtensions.csproj" />

@@ -69,7 +69,7 @@ namespace Dapplo.HttpExtensions.Listener
                     listener.Start();
                     // As the LocalEndpoint is of type EndPoint, this doesn't have the port, we need to cast it to IPEndPoint
                     var port = ((IPEndPoint) listener.LocalEndpoint).Port;
-                    Log.Debug().WriteLine("Found free listener port {0} for the local code receiver.", port);
+                    Log.Debug().WriteLine("Found free listener port {0}.", port);
                     return port;
                 }
                 catch

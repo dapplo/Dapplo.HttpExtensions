@@ -37,9 +37,9 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Dapplo.Log" Version="1.2.1" />
-    <PackageReference Include="Dapplo.Windows" Version="0.5.80" />
-    <PackageReference Include="Dapplo.Windows.Dpi" Version="0.5.80" />
-    <PackageReference Include="Dapplo.Windows.EmbeddedBrowser" Version="0.5.80" />
+    <PackageReference Include="Dapplo.Windows" Version="0.5.109" />
+    <PackageReference Include="Dapplo.Windows.Dpi" Version="0.5.109" />
+    <PackageReference Include="Dapplo.Windows.EmbeddedBrowser" Version="0.5.109" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Dapplo.HttpExtensions\Dapplo.HttpExtensions.csproj" />

@@ -23,7 +23,7 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
-#if NET45 || NET46
+#if NET45 || NET461
 using System.ComponentModel;
 using Dapplo.HttpExtensions.Support;
 #endif
@@ -42,7 +42,7 @@ namespace Dapplo.HttpExtensions.OAuth
         ///     Bearer token for accessing OAuth 2 services
         /// </summary>
         [Display(Description = "Contains the OAuth 2 access token (encrypted)")]
-#if NET45 || NET46
+#if NET45 || NET461
         [TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
 #endif
         string OAuth2AccessToken { get; set; }
@@ -58,7 +58,7 @@ namespace Dapplo.HttpExtensions.OAuth
         ///     Token used to get a new Access Token
         /// </summary>
         [Display(Description = "Contains the OAuth 2 refresh token (encrypted)")]
-#if NET45 || NET46
+#if NET45 || NET461
         [TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
 #endif
         string OAuth2RefreshToken { get; set; }

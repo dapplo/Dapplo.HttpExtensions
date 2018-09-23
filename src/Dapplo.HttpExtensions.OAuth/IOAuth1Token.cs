@@ -38,7 +38,7 @@ namespace Dapplo.HttpExtensions.OAuth
         /// <summary>
         ///     Token for accessing OAuth services
         /// </summary>
-#if NET45 || NET46
+#if NET45 || NET461
         [TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
 #endif
         [Display(Description = "Contains the OAuth token (encrypted)")]
@@ -48,7 +48,7 @@ namespace Dapplo.HttpExtensions.OAuth
         ///     OAuth token secret
         /// </summary>
         [Display(Description = "OAuth token secret (encrypted)")]
-#if NET45 || NET46
+#if NET45 || NET461
         [TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
 #endif
         string OAuthTokenSecret { get; set; }
@@ -57,7 +57,7 @@ namespace Dapplo.HttpExtensions.OAuth
         ///     OAuth token verifier
         /// </summary>
         [Display(Description = "OAuth token verifier (encrypted)")]
-#if NET45 || NET46
+#if NET45 || NET461
         [TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
 #endif
         string OAuthTokenVerifier { get; set; }

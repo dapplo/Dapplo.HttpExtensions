@@ -67,6 +67,10 @@ namespace Dapplo.HttpExtensions.ContentConverter
         /// </summary>
         public int Quality { get; set; } = 80;
 
+        /// <summary>
+        /// This creates a BitmapEncoder
+        /// </summary>
+        /// <returns>BitmapEncoder</returns>
         public BitmapEncoder CreateEncoder()
         {
             if (Format.Guid == ImageFormat.Bmp.Guid)

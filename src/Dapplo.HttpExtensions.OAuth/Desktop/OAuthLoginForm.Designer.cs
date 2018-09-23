@@ -23,7 +23,7 @@
 
 using Dapplo.Windows.EmbeddedBrowser;
 
-#if NET45 || NET46
+#if NET45 || NET461
 namespace Dapplo.HttpExtensions.OAuth.Desktop
 {
 	sealed partial class OAuthLoginForm

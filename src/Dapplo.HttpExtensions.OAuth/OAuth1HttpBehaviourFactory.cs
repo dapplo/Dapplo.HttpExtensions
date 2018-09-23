@@ -20,7 +20,7 @@
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
 
-#if NET45 || NET46
+#if NET45 || NET461
 
 namespace Dapplo.HttpExtensions.OAuth
 {

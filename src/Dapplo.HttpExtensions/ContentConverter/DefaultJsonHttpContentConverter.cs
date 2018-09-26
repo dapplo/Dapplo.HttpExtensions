@@ -90,13 +90,13 @@ namespace Dapplo.HttpExtensions.ContentConverter
             if (Log.IsVerboseEnabled())
             {
                 var defaultJsonHttpContentConverterConfiguration = HttpBehaviour.Current.GetConfig<DefaultJsonHttpContentConverterConfiguration>();
-                var logThreashold = defaultJsonHttpContentConverterConfiguration.LogThreshold;
+                var logThreshold = defaultJsonHttpContentConverterConfiguration.LogThreshold;
 
-                if (logThreashold > 0)
+                if (logThreshold > 0)
                 {
                     Log.Verbose()
-                        .WriteLine("Read Json content: {0}{1}", jsonString.Substring(0, Math.Min(jsonString.Length, logThreashold)),
-                            jsonString.Length > logThreashold ? defaultJsonHttpContentConverterConfiguration.AppendedWhenCut : string.Empty);
+                        .WriteLine("Read Json content: {0}{1}", jsonString.Substring(0, Math.Min(jsonString.Length, logThreshold)),
+                            jsonString.Length > logThreshold ? defaultJsonHttpContentConverterConfiguration.AppendedWhenCut : string.Empty);
                 }
                 else
                 {

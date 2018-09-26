@@ -83,7 +83,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
 
         internal static object GetAtIndex(IDictionary<string, object> obj, int index)
         {
-            if (obj == null)
+            if (obj is null)
             {
                 throw new ArgumentNullException(nameof(obj));
             }
@@ -203,7 +203,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
         /// <param name="arrayIndex">Index of the array.</param>
         public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
         {
-            if (array == null)
+            if (array is null)
             {
                 throw new ArgumentNullException(nameof(array));
             }
@@ -285,7 +285,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
 		public override bool TryConvert(ConvertBinder binder, out object result)
 		{
 			// <pex>
-			if (binder == null)
+			if (binder is null)
 				throw new ArgumentNullException(nameof(binder));
 			// </pex>
 			Type targetType = binder.Type;
@@ -312,7 +312,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
 		public override bool TryDeleteMember(DeleteMemberBinder binder)
 		{
 			// <pex>
-			if (binder == null)
+			if (binder is null)
 				throw new ArgumentNullException(nameof(binder));
 			// </pex>
 			return _members.Remove(binder.Name);
@@ -329,7 +329,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
 		/// </returns>
 		public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
 		{
-			if (indexes == null) throw new ArgumentNullException(nameof(indexes));
+			if (indexes is null) throw new ArgumentNullException(nameof(indexes));
 			if (indexes.Length == 1)
 			{
 				result = ((IDictionary<string, object>)this)[(string)indexes[0]];
@@ -370,7 +370,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
 		/// </returns>
 		public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object value)
 		{
-			if (indexes == null) throw new ArgumentNullException(nameof(indexes));
+			if (indexes is null) throw new ArgumentNullException(nameof(indexes));
 			if (indexes.Length == 1)
 			{
 				((IDictionary<string, object>)this)[(string)indexes[0]] = value;
@@ -390,7 +390,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
 		public override bool TrySetMember(SetMemberBinder binder, object value)
 		{
 			// <pex>
-			if (binder == null)
+			if (binder is null)
 				throw new ArgumentNullException(nameof(binder));
 			// </pex>
 			_members[binder.Name] = value;

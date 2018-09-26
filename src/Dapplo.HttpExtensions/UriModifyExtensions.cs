@@ -58,12 +58,12 @@ namespace Dapplo.HttpExtensions
         /// <returns>new Uri with segments added to the path</returns>
         public static Uri AppendSegments(this Uri uri, IEnumerable<string> segments)
         {
-            if (uri == null)
+            if (uri is null)
             {
                 throw new ArgumentNullException(nameof(uri));
             }
 
-            if (segments == null)
+            if (segments is null)
             {
                 return uri;
             }
@@ -134,7 +134,7 @@ namespace Dapplo.HttpExtensions
         /// <returns>Uri with extended query</returns>
         public static Uri ExtendQuery<T>(this Uri uri, IDictionary<string, T> values)
         {
-            if (values == null)
+            if (values is null)
             {
                 throw new ArgumentNullException(nameof(values));
             }
@@ -149,7 +149,7 @@ namespace Dapplo.HttpExtensions
         /// <returns>Uri with extended query</returns>
         public static Uri ExtendQuery<T>(this Uri uri, IEnumerable<KeyValuePair<string, T>> values)
         {
-            if (values == null)
+            if (values is null)
             {
                 throw new ArgumentNullException(nameof(values));
             }

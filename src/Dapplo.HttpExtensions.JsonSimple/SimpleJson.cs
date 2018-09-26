@@ -165,7 +165,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
         public static object DeserializeObject(string json, Type type, IJsonSerializerStrategy jsonSerializerStrategy = null)
         {
             var jsonObject = DeserializeObject(json);
-            return type == null || jsonObject != null && ReflectionUtils.IsAssignableFrom(jsonObject.GetType(), type)
+            return type is null || jsonObject != null && ReflectionUtils.IsAssignableFrom(jsonObject.GetType(), type)
                 ? jsonObject
                 : (jsonSerializerStrategy ?? CurrentJsonSerializerStrategy).DeserializeObject(jsonObject, type);
         }
@@ -677,7 +677,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
             {
                 builder.Append(b ? "true" : "false");
             }
-            else if (value == null)
+            else if (value is null)
             {
                 builder.Append("null");
             }

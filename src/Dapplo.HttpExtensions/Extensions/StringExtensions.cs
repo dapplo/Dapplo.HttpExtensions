@@ -69,11 +69,11 @@ namespace Dapplo.HttpExtensions.Extensions
         /// <returns>Formatted string</returns>
         public static string FormatWith(this string format, IFormatProvider provider, params object[] sources)
         {
-            if (format == null)
+            if (format is null)
             {
                 throw new ArgumentNullException(nameof(format));
             }
-            if (sources == null)
+            if (sources is null)
             {
                 return format;
             }
@@ -116,7 +116,7 @@ namespace Dapplo.HttpExtensions.Extensions
         /// <param name="source">object</param>
         private static void MapToProperties(IDictionary<string, object> properties, int index, object source)
         {
-            if (source == null)
+            if (source is null)
             {
                 return;
             }
@@ -140,7 +140,7 @@ namespace Dapplo.HttpExtensions.Extensions
                 }
 
                 var value = propertyInfo.GetValue(source, null);
-                if (value == null)
+                if (value is null)
                 {
                     properties[propertyInfo.Name] = "";
                     continue;
@@ -169,7 +169,7 @@ namespace Dapplo.HttpExtensions.Extensions
         /// <returns>false if dictionary was null</returns>
         private static bool DictionaryToGenericDictionary<TKey, TValue>(this IDictionary<TKey, TValue> properties, IDictionary dictionary)
         {
-            if (dictionary == null)
+            if (dictionary is null)
             {
                 return false;
             }

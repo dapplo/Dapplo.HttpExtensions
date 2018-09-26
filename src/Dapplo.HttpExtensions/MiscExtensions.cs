@@ -42,7 +42,7 @@ namespace Dapplo.HttpExtensions
         /// <returns>name1=value1&amp;name2=value2 etc...</returns>
         public static string ToQueryString<T>(this IEnumerable<KeyValuePair<string, T>> keyValuePairs)
         {
-            if (keyValuePairs == null)
+            if (keyValuePairs is null)
             {
                 throw new ArgumentNullException(nameof(keyValuePairs));
             }

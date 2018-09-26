@@ -141,11 +141,11 @@ namespace Dapplo.HttpExtensions.ContentConverter
         /// <inheritdoc />
         public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage)
         {
-            if (resultType == null)
+            if (resultType is null)
             {
                 throw new ArgumentNullException(nameof(resultType));
             }
-            if (httpRequestMessage == null)
+            if (httpRequestMessage is null)
             {
                 throw new ArgumentNullException(nameof(httpRequestMessage));
             }

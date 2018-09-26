@@ -67,7 +67,7 @@ namespace Dapplo.HttpExtensions
         public static async Task<TResponse> DeleteAsync<TResponse>(this HttpClient httpClient, Uri uri, CancellationToken cancellationToken = default)
             where TResponse : class
         {
-            if (uri == null)
+            if (uri is null)
             {
                 throw new ArgumentNullException(nameof(uri));
             }
@@ -87,7 +87,7 @@ namespace Dapplo.HttpExtensions
         /// <returns>Task</returns>
         public static async Task DeleteAsync(this HttpClient httpClient, Uri uri, CancellationToken cancellationToken = default)
         {
-            if (uri == null)
+            if (uri is null)
             {
                 throw new ArgumentNullException(nameof(uri));
             }
@@ -111,7 +111,7 @@ namespace Dapplo.HttpExtensions
         public static async Task<TResponse> GetAsAsync<TResponse>(this HttpClient client, Uri uri, CancellationToken cancellationToken = default)
             where TResponse : class
         {
-            if (uri == null)
+            if (uri is null)
             {
                 throw new ArgumentNullException(nameof(uri));
             }
@@ -145,7 +145,7 @@ namespace Dapplo.HttpExtensions
         /// <returns>HttpContentHeaders</returns>
         public static async Task<HttpContentHeaders> HeadAsync(this HttpClient httpClient, Uri uri, CancellationToken cancellationToken = default)
         {
-            if (uri == null)
+            if (uri is null)
             {
                 throw new ArgumentNullException(nameof(uri));
             }
@@ -176,12 +176,12 @@ namespace Dapplo.HttpExtensions
             CancellationToken cancellationToken = default)
             where TResponse : class
         {
-            if (uri == null)
+            if (uri is null)
             {
                 throw new ArgumentNullException(nameof(uri));
             }
 
-            if (content == null)
+            if (content is null)
             {
                 Log.Warn().WriteLine("No content supplied, this is ok but unusual.");
             }
@@ -201,11 +201,11 @@ namespace Dapplo.HttpExtensions
         /// <param name="cancellationToken">CancellationToken</param>
         public static async Task PatchAsync(this HttpClient httpClient, Uri uri, object content, CancellationToken cancellationToken = default)
         {
-            if (uri == null)
+            if (uri is null)
             {
                 throw new ArgumentNullException(nameof(uri));
             }
-            if (content == null)
+            if (content is null)
             {
                 Log.Warn().WriteLine("No content supplied, this is ok but unusual.");
             }
@@ -232,12 +232,12 @@ namespace Dapplo.HttpExtensions
             CancellationToken cancellationToken = default)
             where TResponse : class
         {
-            if (uri == null)
+            if (uri is null)
             {
                 throw new ArgumentNullException(nameof(uri));
             }
 
-            if (content == null)
+            if (content is null)
             {
                 Log.Warn().WriteLine("No content supplied, this is ok but unusual.");
             }
@@ -257,11 +257,11 @@ namespace Dapplo.HttpExtensions
         /// <param name="cancellationToken">CancellationToken</param>
         public static async Task PostAsync(this HttpClient httpClient, Uri uri, object content, CancellationToken cancellationToken = default)
         {
-            if (uri == null)
+            if (uri is null)
             {
                 throw new ArgumentNullException(nameof(uri));
             }
-            if (content == null)
+            if (content is null)
             {
                 Log.Warn().WriteLine("No content supplied, this is ok but unusual.");
             }
@@ -288,11 +288,11 @@ namespace Dapplo.HttpExtensions
             CancellationToken cancellationToken = default)
             where TResponse : class
         {
-            if (uri == null)
+            if (uri is null)
             {
                 throw new ArgumentNullException(nameof(uri));
             }
-            if (content == null)
+            if (content is null)
             {
                 Log.Warn().WriteLine("No content supplied, this is ok but unusual.");
             }
@@ -313,11 +313,11 @@ namespace Dapplo.HttpExtensions
         /// <returns>Task</returns>
         public static async Task PutAsync(this HttpClient httpClient, Uri uri, object content, CancellationToken cancellationToken = default)
         {
-            if (uri == null)
+            if (uri is null)
             {
                 throw new ArgumentNullException(nameof(uri));
             }
-            if (content == null)
+            if (content is null)
             {
                 Log.Warn().WriteLine("No content supplied, this is ok but unusual.");
             }

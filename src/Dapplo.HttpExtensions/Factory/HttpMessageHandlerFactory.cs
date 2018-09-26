@@ -21,15 +21,13 @@
 
 #region Usings
 
-#if !PCL
 using System.Net;
-using System.Net.Security;
-#endif
 
 using System.Net.Http;
 
 #if NET45 || NET46
 using System.Net.Cache;
+using System.Net.Security;
 using Dapplo.Log;
 
 #endif

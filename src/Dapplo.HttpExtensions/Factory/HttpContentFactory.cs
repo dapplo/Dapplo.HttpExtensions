@@ -48,7 +48,7 @@ namespace Dapplo.HttpExtensions.Factory
         /// <returns>HttpContent</returns>
         public static HttpContent Create(Type inputType, object content)
         {
-            if (content == null)
+            if (content is null)
             {
                 return null;
             }
@@ -62,7 +62,7 @@ namespace Dapplo.HttpExtensions.Factory
 
             var httpContentAttribute = inputType.GetTypeInfo().GetCustomAttribute<HttpRequestAttribute>();
             // Process the input type
-            if (httpContentAttribute == null)
+            if (httpContentAttribute is null)
             {
                 return Create(httpBehaviour, inputType, content);
             }
@@ -72,7 +72,7 @@ namespace Dapplo.HttpExtensions.Factory
             foreach (var propertyInfo in inputType.GetProperties())
             {
                 var httpAttribute = propertyInfo.GetCustomAttribute<HttpPartAttribute>();
-                if (httpAttribute == null)
+                if (httpAttribute is null)
                 {
                     continue;
                 }
@@ -89,7 +89,7 @@ namespace Dapplo.HttpExtensions.Factory
                 {
                     case HttpParts.RequestContent:
                         var value = propertyInfo.GetValue(content);
-                        if (value == null)
+                        if (value is null)
                         {
                             continue;
                         }
@@ -130,7 +130,7 @@ namespace Dapplo.HttpExtensions.Factory
             foreach (var contentItem in contentItems.OrderBy(x => x.Order))
             {
                 // If the content would be null, and we would continue, a NullPointerReference would be thrown
-                if (contentItem.Content == null)
+                if (contentItem.Content is null)
                 {
                     Log.Debug().WriteLine("Skipping content {0} as the content is null.", contentItem.ContentName);
                     continue;
@@ -182,7 +182,7 @@ namespace Dapplo.HttpExtensions.Factory
             else
             {
                 var httpContentConverter = httpBehaviour.HttpContentConverters.OrderBy(x => x.Order).FirstOrDefault(x => x.CanConvertToHttpContent(inputType, content));
-                if (httpContentConverter == null)
+                if (httpContentConverter is null)
                 {
                     return null;
                 }

@@ -36,7 +36,7 @@ namespace Dapplo.HttpExtensions.Extensions
             where THttpRequestConfiguration : class, IHttpRequestConfiguration, new()
         {
             // Although this probably doesn't happen... if null is passed HttpBehaviour.Current is used
-            if (httpBehaviour == null)
+            if (httpBehaviour is null)
             {
                 httpBehaviour = HttpBehaviour.Current;
             }
@@ -54,7 +54,7 @@ namespace Dapplo.HttpExtensions.Extensions
         public static IHttpBehaviour SetConfig(this IHttpBehaviour httpBehaviour, IHttpRequestConfiguration configuration)
         {
             // Although this probably doesn't happen... if null is passed HttpBehaviour.Current is used
-            if (httpBehaviour == null)
+            if (httpBehaviour is null)
             {
                 httpBehaviour = HttpBehaviour.Current;
             }

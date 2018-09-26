@@ -51,7 +51,7 @@ namespace Dapplo.HttpExtensions
         public static async Task<TResponse> DeleteAsync<TResponse>(this Uri uri, CancellationToken cancellationToken = default)
             where TResponse : class
         {
-            if (uri == null)
+            if (uri is null)
             {
                 throw new ArgumentNullException(nameof(uri));
             }
@@ -70,7 +70,7 @@ namespace Dapplo.HttpExtensions
         /// <returns>Task</returns>
         public static async Task DeleteAsync(this Uri uri, CancellationToken cancellationToken = default)
         {
-            if (uri == null)
+            if (uri is null)
             {
                 throw new ArgumentNullException(nameof(uri));
             }
@@ -90,7 +90,7 @@ namespace Dapplo.HttpExtensions
         /// <returns>TResponse</returns>
         public static async Task<TResponse> GetAsAsync<TResponse>(this Uri uri, CancellationToken cancellationToken = default) where TResponse : class
         {
-            if (uri == null)
+            if (uri is null)
             {
                 throw new ArgumentNullException(nameof(uri));
             }
@@ -108,7 +108,7 @@ namespace Dapplo.HttpExtensions
         /// <returns>HttpContentHeaders</returns>
         public static async Task<HttpContentHeaders> HeadAsync(this Uri uri, CancellationToken cancellationToken = default)
         {
-            if (uri == null)
+            if (uri is null)
             {
                 throw new ArgumentNullException(nameof(uri));
             }
@@ -126,7 +126,7 @@ namespace Dapplo.HttpExtensions
         /// <returns>DateTime</returns>
         public static async Task<DateTimeOffset> LastModifiedAsync(this Uri uri, CancellationToken cancellationToken = default)
         {
-            if (uri == null)
+            if (uri is null)
             {
                 throw new ArgumentNullException(nameof(uri));
             }
@@ -161,7 +161,7 @@ namespace Dapplo.HttpExtensions
         public static async Task<TResponse> PatchAsync<TResponse>(this Uri uri, object content, CancellationToken cancellationToken = default)
             where TResponse : class
         {
-            if (uri == null)
+            if (uri is null)
             {
                 throw new ArgumentNullException(nameof(uri));
             }
@@ -180,7 +180,7 @@ namespace Dapplo.HttpExtensions
         /// <param name="cancellationToken">CancellationToken</param>
         public static async Task PatchAsync(this Uri uri, object content, CancellationToken cancellationToken = default)
         {
-            if (uri == null)
+            if (uri is null)
             {
                 throw new ArgumentNullException(nameof(uri));
             }
@@ -205,7 +205,7 @@ namespace Dapplo.HttpExtensions
         public static async Task<TResponse> PostAsync<TResponse>(this Uri uri, object content, CancellationToken cancellationToken = default)
             where TResponse : class
         {
-            if (uri == null)
+            if (uri is null)
             {
                 throw new ArgumentNullException(nameof(uri));
             }
@@ -224,7 +224,7 @@ namespace Dapplo.HttpExtensions
         /// <param name="cancellationToken">CancellationToken</param>
         public static async Task PostAsync(this Uri uri, object content, CancellationToken cancellationToken = default)
         {
-            if (uri == null)
+            if (uri is null)
             {
                 throw new ArgumentNullException(nameof(uri));
             }
@@ -249,7 +249,7 @@ namespace Dapplo.HttpExtensions
         public static async Task<TResponse> PutAsync<TResponse>(this Uri uri, object content, CancellationToken cancellationToken = default)
             where TResponse : class
         {
-            if (uri == null)
+            if (uri is null)
             {
                 throw new ArgumentNullException(nameof(uri));
             }
@@ -269,7 +269,7 @@ namespace Dapplo.HttpExtensions
         /// <returns>task</returns>
         public static async Task PutAsync(this Uri uri, object content, CancellationToken cancellationToken = default)
         {
-            if (uri == null)
+            if (uri is null)
             {
                 throw new ArgumentNullException(nameof(uri));
             }

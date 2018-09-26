@@ -58,123 +58,123 @@ namespace Dapplo.HttpExtensions.OAuth
         /// </summary>
         public Action<IDictionary<string, string>> OnAccessTokenValues { get; set; }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public IDictionary<string, IHttpRequestConfiguration> RequestConfigurations
         {
-            get { return _wrapped.RequestConfigurations; }
-            set { _wrapped.RequestConfigurations = value; }
+            get => _wrapped.RequestConfigurations;
+            set => _wrapped.RequestConfigurations = value;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public Encoding DefaultEncoding
         {
-            get { return _wrapped.DefaultEncoding; }
-            set { _wrapped.DefaultEncoding = value; }
+            get => _wrapped.DefaultEncoding;
+            set => _wrapped.DefaultEncoding = value;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public Action<float> DownloadProgress
         {
-            get { return _wrapped.DownloadProgress; }
-            set { _wrapped.DownloadProgress = value; }
+            get => _wrapped.DownloadProgress;
+            set => _wrapped.DownloadProgress = value;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public HttpCompletionOption HttpCompletionOption
         {
-            get { return _wrapped.HttpCompletionOption; }
-            set { _wrapped.HttpCompletionOption = value; }
+            get => _wrapped.HttpCompletionOption;
+            set => _wrapped.HttpCompletionOption = value;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public IList<IHttpContentConverter> HttpContentConverters
         {
-            get { return _wrapped.HttpContentConverters; }
-            set { _wrapped.HttpContentConverters = value; }
+            get => _wrapped.HttpContentConverters;
+            set => _wrapped.HttpContentConverters = value;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public IHttpSettings HttpSettings
         {
-            get { return _wrapped.HttpSettings; }
-            set { _wrapped.HttpSettings = value; }
+            get => _wrapped.HttpSettings;
+            set => _wrapped.HttpSettings = value;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public IJsonSerializer JsonSerializer
         {
-            get { return _wrapped.JsonSerializer; }
-            set { _wrapped.JsonSerializer = value; }
+            get => _wrapped.JsonSerializer;
+            set => _wrapped.JsonSerializer = value;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public Action<HttpClient> OnHttpClientCreated
         {
-            get { return _wrapped.OnHttpClientCreated; }
-            set { _wrapped.OnHttpClientCreated = value; }
+            get => _wrapped.OnHttpClientCreated;
+            set => _wrapped.OnHttpClientCreated = value;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public Func<HttpContent, HttpContent> OnHttpContentCreated
         {
-            get { return _wrapped.OnHttpContentCreated; }
-            set { _wrapped.OnHttpContentCreated = value; }
+            get => _wrapped.OnHttpContentCreated;
+            set => _wrapped.OnHttpContentCreated = value;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public Func<HttpMessageHandler, HttpMessageHandler> OnHttpMessageHandlerCreated
         {
-            get { return _wrapped.OnHttpMessageHandlerCreated; }
-            set { _wrapped.OnHttpMessageHandlerCreated = value; }
+            get => _wrapped.OnHttpMessageHandlerCreated;
+            set => _wrapped.OnHttpMessageHandlerCreated = value;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public Func<HttpRequestMessage, HttpRequestMessage> OnHttpRequestMessageCreated
         {
-            get { return _wrapped.OnHttpRequestMessageCreated; }
-            set { _wrapped.OnHttpRequestMessageCreated = value; }
+            get => _wrapped.OnHttpRequestMessageCreated;
+            set => _wrapped.OnHttpRequestMessageCreated = value;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public int ReadBufferSize
         {
-            get { return _wrapped.ReadBufferSize; }
-            set { _wrapped.ReadBufferSize = value; }
+            get => _wrapped.ReadBufferSize;
+            set => _wrapped.ReadBufferSize = value;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public bool ThrowOnError
         {
-            get { return _wrapped.ThrowOnError; }
-            set { _wrapped.ThrowOnError = value; }
+            get => _wrapped.ThrowOnError;
+            set => _wrapped.ThrowOnError = value;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public Action<float> UploadProgress
         {
-            get { return _wrapped.UploadProgress; }
-            set { _wrapped.UploadProgress = value; }
+            get => _wrapped.UploadProgress;
+            set => _wrapped.UploadProgress = value;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public bool UseProgressStream
         {
-            get { return _wrapped.UseProgressStream; }
-            set { _wrapped.UseProgressStream = value; }
+            get => _wrapped.UseProgressStream;
+            set => _wrapped.UseProgressStream = value;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public bool ValidateResponseContentType
         {
-            get { return _wrapped.ValidateResponseContentType; }
-            set { _wrapped.ValidateResponseContentType = value; }
+            get => _wrapped.ValidateResponseContentType;
+            set => _wrapped.ValidateResponseContentType = value;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public CookieContainer CookieContainer
         {
-            get { return _wrapped.CookieContainer; }
-            set { _wrapped.CookieContainer = value; }
+            get => _wrapped.CookieContainer;
+            set => _wrapped.CookieContainer = value;
         }
 
         /// <inheritdoc />

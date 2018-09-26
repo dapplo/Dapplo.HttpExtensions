@@ -78,7 +78,7 @@ The authentication process received information from CloudServiceName. You can c
             CancellationToken cancellationToken = default)
         {
             Uri redirectUri;
-            if (codeReceiverSettings.RedirectUrl == null)
+            if (codeReceiverSettings.RedirectUrl is null)
             {
                 redirectUri = new[] {0}.CreateLocalHostUri();
                 // TODO: This will create a problem that with the next "authorize" call it will try to use the same Url, while it might not work

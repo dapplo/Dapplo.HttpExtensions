@@ -82,7 +82,7 @@ namespace Dapplo.HttpExtensions.Support
         /// <param name="bytesMoved">int with the number of bytes</param>
         protected virtual void OnBytesRead(int bytesMoved)
         {
-            if (bytesMoved == 0 || BytesRead == null)
+            if (bytesMoved == 0 || BytesRead is null)
             {
                 return;
             }
@@ -104,7 +104,7 @@ namespace Dapplo.HttpExtensions.Support
         /// <param name="bytesMoved">int with the number of bytes</param>
         protected virtual void OnBytesWritten(int bytesMoved)
         {
-            if (bytesMoved == 0 || BytesWritten == null)
+            if (bytesMoved == 0 || BytesWritten is null)
             {
                 return;
             }
@@ -127,7 +127,7 @@ namespace Dapplo.HttpExtensions.Support
         /// <param name="isRead">true if the bytes were read, false if written</param>
         protected virtual void OnBytesMoved(int bytesMoved, bool isRead)
         {
-            if (bytesMoved == 0 || BytesMoved == null)
+            if (bytesMoved == 0 || BytesMoved is null)
             {
                 return;
             }

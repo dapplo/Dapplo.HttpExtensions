@@ -29,6 +29,7 @@ using System;
 using System.CodeDom.Compiler;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -74,13 +75,13 @@ namespace Dapplo.HttpExtensions.JsonSimple
         public static Attribute GetAttribute(MemberInfo info, Type type)
         {
 #if SIMPLE_JSON_TYPEINFO
-            if (info == null || type == null || !info.IsDefined(type))
+            if (info is null || type is null || !info.IsDefined(type))
             {
                 return null;
             }
             return info.GetCustomAttribute(type);
 #else
-			if (info == null || type == null || !Attribute.IsDefined(info, type))
+			if (info is null || type is null || !Attribute.IsDefined(info, type))
 				return null;
 			return Attribute.GetCustomAttribute(info, type);
 #endif
@@ -107,13 +108,13 @@ namespace Dapplo.HttpExtensions.JsonSimple
         public static Attribute GetAttribute(Type objectType, Type attributeType)
         {
 #if SIMPLE_JSON_TYPEINFO
-            if (objectType == null || attributeType == null || !objectType.GetTypeInfo().IsDefined(attributeType))
+            if (objectType is null || attributeType is null || !objectType.GetTypeInfo().IsDefined(attributeType))
             {
                 return null;
             }
             return objectType.GetTypeInfo().GetCustomAttribute(attributeType);
 #else
-			if (objectType == null || attributeType == null || !Attribute.IsDefined(objectType, attributeType))
+			if (objectType is null || attributeType is null || !Attribute.IsDefined(objectType, attributeType))
 				return null;
 			return Attribute.GetCustomAttribute(objectType, attributeType);
 #endif
@@ -184,7 +185,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
 
         public static object ToNullableType(object obj, Type nullableType)
         {
-            return obj == null ? null : Convert.ChangeType(obj, Nullable.GetUnderlyingType(nullableType), CultureInfo.InvariantCulture);
+            return obj is null ? null : Convert.ChangeType(obj, Nullable.GetUnderlyingType(nullableType), CultureInfo.InvariantCulture);
         }
 
         public static bool IsValueType(Type type)
@@ -290,7 +291,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
 			public static ConstructorDelegate GetConstructorByReflection(Type type, params Type[] argsType)
 			{
 				ConstructorInfo constructorInfo = GetConstructorInfo(type, argsType);
-				return constructorInfo == null ? null : GetConstructorByReflection(constructorInfo);
+				return constructorInfo is null ? null : GetConstructorByReflection(constructorInfo);
 			}
 			public static ConstructorDelegate GetConstructorByReflection(ConstructorInfo constructorInfo)
 			{
@@ -320,7 +321,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
         public static ConstructorDelegate GetConstructorByExpression(Type type, params Type[] argsType)
         {
             var constructorInfo = GetConstructorInfo(type, argsType);
-            return constructorInfo == null ? null : GetConstructorByExpression(constructorInfo);
+            return constructorInfo is null ? null : GetConstructorByExpression(constructorInfo);
         }
 
 #endif
@@ -361,6 +362,10 @@ namespace Dapplo.HttpExtensions.JsonSimple
         {
             var getMethodInfo = GetGetterMethodInfo(propertyInfo);
             var instance = Expression.Parameter(typeof(object), "instance");
+            if (propertyInfo.DeclaringType is null)
+            {
+                throw new NotSupportedException($"propertyInfo for {propertyInfo.Name} doesn't have a declaring type.");
+            }
             var instanceCast = !IsValueType(propertyInfo.DeclaringType)
                 ? Expression.TypeAs(instance, propertyInfo.DeclaringType)
                 : Expression.Convert(instance, propertyInfo.DeclaringType);
@@ -370,6 +375,10 @@ namespace Dapplo.HttpExtensions.JsonSimple
 
         public static GetDelegate GetGetMethodByExpression(FieldInfo fieldInfo)
         {
+            if (fieldInfo.DeclaringType is null)
+            {
+                throw new NotSupportedException($"fieldInfo for {fieldInfo.Name} doesn't have a declaring type.");
+            }
             var instance = Expression.Parameter(typeof(object), "instance");
             var unaryExpression = Expression.Convert(instance, fieldInfo.DeclaringType);
             var member = Expression.Field(unaryExpression, fieldInfo);
@@ -549,7 +558,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
                 var value = _valueFactory(key);
                 lock (_lock)
                 {
-                    if (_dictionary == null)
+                    if (_dictionary is null)
                     {
                         _dictionary = new Dictionary<TKey, TValue> {[key] = value};
                     }
@@ -568,7 +577,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
 
             private TValue Get(TKey key)
             {
-                if (_dictionary == null)
+                if (_dictionary is null)
                 {
                     return AddValue(key);
                 }

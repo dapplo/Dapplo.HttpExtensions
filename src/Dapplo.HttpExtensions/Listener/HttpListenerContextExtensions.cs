@@ -67,7 +67,7 @@ namespace Dapplo.HttpExtensions.Listener
 
             using (var response = httpListenerContext.Response)
             {
-                if (httpContent == null)
+                if (httpContent is null)
                 {
                     Log.Error().WriteLine("Nothing to respond with...");
                     response.StatusCode = (int) HttpStatusCode.InternalServerError;

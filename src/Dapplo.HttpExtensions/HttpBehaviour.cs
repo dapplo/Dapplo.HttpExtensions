@@ -56,7 +56,7 @@ namespace Dapplo.HttpExtensions
             get
             {
                 var httpBehaviour = AsyncLocalBehavior.Value;
-                if (httpBehaviour == null)
+                if (httpBehaviour is null)
                 {
                     httpBehaviour = new HttpBehaviour();
                     httpBehaviour.MakeCurrent();
@@ -65,40 +65,37 @@ namespace Dapplo.HttpExtensions
             }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public IHttpSettings HttpSettings { get; set; } = HttpExtensionsGlobals.HttpSettings;
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public IJsonSerializer JsonSerializer { get; set; } = HttpExtensionsGlobals.JsonSerializer;
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public IList<IHttpContentConverter> HttpContentConverters { get; set; } = HttpExtensionsGlobals.HttpContentConverters;
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public Func<HttpRequestMessage, HttpRequestMessage> OnHttpRequestMessageCreated { get; set; }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public Action<HttpClient> OnHttpClientCreated { get; set; }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public Func<HttpMessageHandler, HttpMessageHandler> OnHttpMessageHandlerCreated { get; set; }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public Func<HttpContent, HttpContent> OnHttpContentCreated { get; set; }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public Action<float> UploadProgress { get; set; }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public Action<float> DownloadProgress { get; set; }
 
-        /// <inheritdoc />
-        public bool CallProgressOnUiContext { get; set; } = HttpExtensionsGlobals.CallProgressOnUiContext;
-
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public bool UseProgressStream { get; set; } = HttpExtensionsGlobals.UseProgressStream;
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public bool ThrowOnError { get; set; } = HttpExtensionsGlobals.ThrowOnError;
 
         /// <summary>
@@ -108,7 +105,7 @@ namespace Dapplo.HttpExtensions
         /// </summary>
         public HttpCompletionOption HttpCompletionOption { get; set; } = HttpCompletionOption.ResponseHeadersRead;
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public bool ValidateResponseContentType { get; set; } = HttpExtensionsGlobals.ValidateResponseContentType;
 
         /// <summary>
@@ -117,16 +114,16 @@ namespace Dapplo.HttpExtensions
         /// </summary>
         public IDictionary<string, IHttpRequestConfiguration> RequestConfigurations { get; set; } = new Dictionary<string, IHttpRequestConfiguration>();
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public Encoding DefaultEncoding { get; set; } = HttpExtensionsGlobals.DefaultEncoding;
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public int ReadBufferSize { get; set; } = HttpExtensionsGlobals.ReadBufferSize;
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public CookieContainer CookieContainer { get; set; } = new CookieContainer();
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public IChangeableHttpBehaviour ShallowClone()
         {
             var result = (HttpBehaviour) MemberwiseClone();
@@ -157,7 +154,7 @@ namespace Dapplo.HttpExtensions
             return result;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         public void MakeCurrent()
         {
             AsyncLocalBehavior.Value = this;

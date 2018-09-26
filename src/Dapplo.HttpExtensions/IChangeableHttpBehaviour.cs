@@ -138,7 +138,7 @@ namespace Dapplo.HttpExtensions
         /// </summary>
         new bool ValidateResponseContentType { get; set; }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IHttpBehaviour" />
         new IDictionary<string, IHttpRequestConfiguration> RequestConfigurations { get; set; }
     }
 }

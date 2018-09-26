@@ -44,12 +44,11 @@ namespace Dapplo.HttpExtensions.Tests.OAuth
     public class ImgurOAuth2Tests
     {
         private static readonly LogSource Log = new LogSource();
-        private static readonly Uri GoogleApiUri = new Uri("https://www.googleapis.com");
         private readonly IHttpBehaviour _oAuthHttpBehaviour;
-	private static readonly string ClientId = Environment.GetEnvironmentVariable("imgur_clientid");
-	private static readonly string ClientSecret = Environment.GetEnvironmentVariable("imgur_clientsecret");
+	    private static readonly string ClientId = Environment.GetEnvironmentVariable("imgur_clientid");
+	    private static readonly string ClientSecret = Environment.GetEnvironmentVariable("imgur_clientsecret");
         private static readonly Uri ApiUri = new Uri("https://api.imgur.com/");
-        private readonly HttpBehaviour _behavior;
+
         public ImgurOAuth2Tests(ITestOutputHelper testOutputHelper)
         {
             LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
@@ -72,7 +71,7 @@ namespace Dapplo.HttpExtensions.Tests.OAuth
                 AuthorizeMode = AuthorizeModes.OutOfBoundAuto
             };
 
-            _behavior = new HttpBehaviour
+            var behavior = new HttpBehaviour
             {
                 JsonSerializer = new JsonNetJsonSerializer(),
                 OnHttpClientCreated = httpClient =>
@@ -81,7 +80,7 @@ namespace Dapplo.HttpExtensions.Tests.OAuth
                     httpClient.DefaultRequestHeaders.ExpectContinue = false;
                 }
             };
-            _oAuthHttpBehaviour = OAuth2HttpBehaviourFactory.Create(oAuth2Settings, _behavior);
+            _oAuthHttpBehaviour = OAuth2HttpBehaviourFactory.Create(oAuth2Settings, behavior);
         }
 
         /// <summary>

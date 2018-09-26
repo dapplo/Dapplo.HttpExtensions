@@ -55,7 +55,7 @@ namespace Dapplo.HttpExtensions.OAuth.CodeReceivers
         public Task<IDictionary<string, string>> ReceiveCodeAsync(AuthorizeModes authorizeMode, ICodeReceiverSettings codeReceiverSettings,
             CancellationToken cancellationToken = default)
         {
-            if (codeReceiverSettings.RedirectUrl == null)
+            if (codeReceiverSettings.RedirectUrl is null)
             {
                 throw new ArgumentNullException(nameof(codeReceiverSettings.RedirectUrl), "The EmbeddedBrowserCodeReceiver needs a redirect url.");
             }

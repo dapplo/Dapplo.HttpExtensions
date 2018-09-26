@@ -87,7 +87,7 @@ namespace Dapplo.HttpExtensions.Support
         {
             get
             {
-                if (_userAgent == null)
+                if (_userAgent is null)
                 {
                     var clientAssembly = typeof(HttpSettings).GetTypeInfo().Assembly;
                     var userAgentBuilder = new StringBuilder();

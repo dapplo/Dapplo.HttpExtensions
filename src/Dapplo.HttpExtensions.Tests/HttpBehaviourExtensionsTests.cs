@@ -39,7 +39,6 @@ namespace Dapplo.HttpExtensions.Tests
     /// </summary>
     public class HttpBehaviourExtensionsTests
     {
-        private static readonly LogSource Log = new LogSource();
         private readonly Uri _bitmapUri = new Uri("http://httpbin.org/image/png");
 
         public HttpBehaviourExtensionsTests(ITestOutputHelper testOutputHelper)

@@ -71,11 +71,11 @@ namespace Dapplo.HttpExtensions.ContentConverter
         /// <inheritdoc />
         public async Task<object> ConvertFromHttpContentAsync(Type resultType, HttpContent httpContent, CancellationToken cancellationToken = default)
         {
-            if (resultType == null)
+            if (resultType is null)
             {
                 throw new ArgumentNullException(nameof(resultType));
             }
-            if (httpContent == null)
+            if (httpContent is null)
             {
                 throw new ArgumentNullException(nameof(httpContent));
             }
@@ -113,11 +113,11 @@ namespace Dapplo.HttpExtensions.ContentConverter
         /// <param name="httpRequestMessage">HttpRequestMessage</param>
         public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage)
         {
-            if (resultType == null)
+            if (resultType is null)
             {
                 throw new ArgumentNullException(nameof(resultType));
             }
-            if (httpRequestMessage == null)
+            if (httpRequestMessage is null)
             {
                 throw new ArgumentNullException(nameof(httpRequestMessage));
             }

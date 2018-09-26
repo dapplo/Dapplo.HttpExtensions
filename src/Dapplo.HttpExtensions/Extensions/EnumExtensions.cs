@@ -46,7 +46,7 @@ namespace Dapplo.HttpExtensions.Extensions
         /// <returns>string</returns>
         public static string EnumValueOf(this Enum enumerationItem)
         {
-            if (enumerationItem == null)
+            if (enumerationItem is null)
             {
                 return null;
             }

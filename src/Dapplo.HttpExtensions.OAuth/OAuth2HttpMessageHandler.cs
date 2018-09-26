@@ -76,15 +76,15 @@ namespace Dapplo.HttpExtensions.OAuth
         /// <param name="innerHandler">HttpMessageHandler</param>
         public OAuth2HttpMessageHandler(OAuth2Settings oAuth2Settings, IHttpBehaviour httpBehaviour, HttpMessageHandler innerHandler) : base(innerHandler)
         {
-            if (oAuth2Settings.ClientId == null)
+            if (oAuth2Settings.ClientId is null)
             {
                 throw new ArgumentNullException(nameof(oAuth2Settings.ClientId));
             }
-            if (oAuth2Settings.ClientSecret == null)
+            if (oAuth2Settings.ClientSecret is null)
             {
                 throw new ArgumentNullException(nameof(oAuth2Settings.ClientSecret));
             }
-            if (oAuth2Settings.TokenUrl == null)
+            if (oAuth2Settings.TokenUrl is null)
             {
                 throw new ArgumentNullException(nameof(oAuth2Settings.TokenUrl));
             }
@@ -119,7 +119,7 @@ namespace Dapplo.HttpExtensions.OAuth
             }
 
             var result = await codeReceiver.ReceiveCodeAsync(_oAuth2Settings.AuthorizeMode, _oAuth2Settings, cancellationToken).ConfigureAwait(false);
-            if (result == null)
+            if (result is null)
             {
                 return false;
             }

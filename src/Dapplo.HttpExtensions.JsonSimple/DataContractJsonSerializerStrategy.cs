@@ -78,7 +78,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
         {
             var result = new Dictionary<string, Func<object, bool>>();
             var dataContractAttribute = (DataContractAttribute) ReflectionUtils.GetAttribute(type, typeof(DataContractAttribute));
-            if (dataContractAttribute == null)
+            if (dataContractAttribute is null)
             {
                 return result;
             }
@@ -117,7 +117,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
         internal override IDictionary<string, ReflectionUtils.GetDelegate> GetterValueFactory(Type type)
         {
             var dataContractAttribute = (DataContractAttribute) ReflectionUtils.GetAttribute(type, typeof(DataContractAttribute));
-            if (dataContractAttribute == null)
+            if (dataContractAttribute is null)
             {
                 return base.GetterValueFactory(type);
             }
@@ -227,7 +227,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
                 return false;
             }
             dataMemberAttribute = (DataMemberAttribute) ReflectionUtils.GetAttribute(info, typeof(DataMemberAttribute));
-            if (dataMemberAttribute == null)
+            if (dataMemberAttribute is null)
             {
                 return false;
             }

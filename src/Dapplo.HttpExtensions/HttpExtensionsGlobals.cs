@@ -37,11 +37,6 @@ namespace Dapplo.HttpExtensions
     public static class HttpExtensionsGlobals
     {
         /// <summary>
-        ///     The glocal value which specifies if Progress actions are called with UiContext.RunOn
-        /// </summary>
-        public static bool CallProgressOnUiContext { get; internal set; } = true;
-
-        /// <summary>
         ///     The global default encoding
         /// </summary>
         public static Encoding DefaultEncoding { get; set; } = Encoding.UTF8;

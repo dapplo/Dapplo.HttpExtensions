@@ -103,7 +103,7 @@ namespace Dapplo.HttpExtensions
                         await httpContent.GetAsAsync(targetPropertyInfo.PropertyType, httpResponseMessage.StatusCode, cancellationToken).ConfigureAwait(false);
 
                     // If we get null, we throw an error if the
-                    if (convertedContent == null)
+                    if (convertedContent is null)
                     {
                         httpResponseMessage.EnsureSuccessStatusCode();
                         // If still here, we have a mapping issue
@@ -151,7 +151,7 @@ namespace Dapplo.HttpExtensions
         /// <returns>string with the error content if HttpBehaviour.ThrowErrorOnNonSuccess = false</returns>
         public static async Task<string> HandleErrorAsync(this HttpResponseMessage httpResponseMessage)
         {
-            if (httpResponseMessage == null)
+            if (httpResponseMessage is null)
             {
                 throw new ArgumentNullException(nameof(httpResponseMessage));
             }

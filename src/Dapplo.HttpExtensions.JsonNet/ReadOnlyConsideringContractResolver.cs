@@ -44,7 +44,7 @@ namespace Dapplo.HttpExtensions.JsonNet
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
             var property = base.CreateProperty(member, memberSerialization);
-            property.ShouldSerialize = o => member.GetCustomAttribute<ReadOnlyAttribute>() == null;
+            property.ShouldSerialize = o => member.GetCustomAttribute<ReadOnlyAttribute>() is null;
             return property;
         }
     }

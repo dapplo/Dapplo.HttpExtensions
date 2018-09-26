@@ -102,7 +102,7 @@ namespace Dapplo.HttpExtensions.OAuth.Desktop
 
         private void CheckUrl(Uri uri)
         {
-            if (uri == null)
+            if (uri is null)
             {
                 return;
             }

@@ -66,7 +66,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
         public bool CanConvertFromHttpContent(Type typeToConvertTo, HttpContent httpContent)
         {
             var httpBehaviour = HttpBehaviour.Current;
-            if (httpBehaviour.JsonSerializer == null || !httpBehaviour.JsonSerializer.CanDeserializeFrom(typeToConvertTo))
+            if (httpBehaviour.JsonSerializer is null || !httpBehaviour.JsonSerializer.CanDeserializeFrom(typeToConvertTo))
             {
                 return false;
             }
@@ -135,7 +135,7 @@ namespace Dapplo.HttpExtensions.ContentConverter
         public bool CanConvertToHttpContent(Type typeToConvert, object content)
         {
             var httpBehaviour = HttpBehaviour.Current;
-            if (httpBehaviour.JsonSerializer == null || !httpBehaviour.JsonSerializer.CanSerializeTo(typeToConvert))
+            if (httpBehaviour.JsonSerializer is null || !httpBehaviour.JsonSerializer.CanSerializeTo(typeToConvert))
             {
                 return false;
             }
@@ -160,11 +160,11 @@ namespace Dapplo.HttpExtensions.ContentConverter
         /// <param name="httpRequestMessage">HttpRequestMessage</param>
         public void AddAcceptHeadersForType(Type resultType, HttpRequestMessage httpRequestMessage)
         {
-            if (resultType == null)
+            if (resultType is null)
             {
                 throw new ArgumentNullException(nameof(resultType));
             }
-            if (httpRequestMessage == null)
+            if (httpRequestMessage is null)
             {
                 throw new ArgumentNullException(nameof(httpRequestMessage));
             }

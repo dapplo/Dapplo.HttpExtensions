@@ -79,7 +79,7 @@ namespace Dapplo.HttpExtensions
         /// <returns>HttpClient for fluent usage</returns>
         public static HttpClient SetBasicAuthorization(this HttpClient client, Uri uri)
         {
-            if (uri == null)
+            if (uri is null)
             {
                 throw new ArgumentNullException(nameof(uri));
             }

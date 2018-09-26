@@ -91,11 +91,11 @@ namespace Dapplo.HttpExtensions.ContentConverter
         /// <param name="httpRequestMessage">HttpRequestMessage</param>
         public void AddAcceptHeadersForType(Type typeToConvertTo, HttpRequestMessage httpRequestMessage)
         {
-            if (typeToConvertTo == null)
+            if (typeToConvertTo is null)
             {
                 throw new ArgumentNullException(nameof(typeToConvertTo));
             }
-            if (httpRequestMessage == null)
+            if (httpRequestMessage is null)
             {
                 throw new ArgumentNullException(nameof(httpRequestMessage));
             }

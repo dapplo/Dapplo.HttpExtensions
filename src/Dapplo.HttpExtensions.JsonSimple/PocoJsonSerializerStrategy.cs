@@ -191,7 +191,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         public virtual object DeserializeObject(object value, Type type)
         {
-            if (type == null)
+            if (type is null)
             {
                 throw new ArgumentNullException(nameof(type));
             }
@@ -202,7 +202,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
                 return default(Guid);
             }
 
-            if (value == null)
+            if (value is null)
             {
                 return null;
             }
@@ -352,7 +352,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
                             foreach (var extensionPropertyInfo in type.GetProperties())
                             {
                                 var jsonExtensionDataAtrribute = extensionPropertyInfo.GetCustomAttribute<JsonExtensionDataAttribute>();
-                                if (jsonExtensionDataAtrribute == null)
+                                if (jsonExtensionDataAtrribute is null)
                                 {
                                     continue;
                                 }
@@ -374,7 +374,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
                                             continue;
                                         }
                                         var jsonValue = jsonObject[key];
-                                        if (jsonValue == null && valueType.GetTypeInfo().IsValueType)
+                                        if (jsonValue is null && valueType.GetTypeInfo().IsValueType)
                                         {
                                             // no value, but we need to add it... create instance
                                             jsonValue = Activator.CreateInstance(valueType);
@@ -492,7 +492,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
             foreach (var jsonExtensionDataMember in JsonExtensionDataPropertyInfos(type))
             {
                 var value = (IDictionary) jsonExtensionDataMember.GetValue(input);
-                if (value == null)
+                if (value is null)
                 {
                     continue;
                 }
@@ -520,13 +520,13 @@ namespace Dapplo.HttpExtensions.JsonSimple
         [SuppressMessage("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate", Justification = "Need to support .NET 2")]
         protected virtual bool TrySerializeUnknownTypes(object input, out object output)
         {
-            if (input == null)
+            if (input is null)
             {
                 throw new ArgumentNullException(nameof(input));
             }
             output = null;
             var type = input.GetType();
-            if (type.FullName == null)
+            if (type.FullName is null)
             {
                 return false;
             }

@@ -89,22 +89,22 @@ namespace Dapplo.HttpExtensions.OAuth
         /// <param name="innerHandler">HttpMessageHandler</param>
         public OAuth1HttpMessageHandler(OAuth1Settings oAuth1Settings, OAuth1HttpBehaviour oAuth1HttpBehaviour, HttpMessageHandler innerHandler) : base(innerHandler)
         {
-            if (oAuth1Settings.ClientId == null)
+            if (oAuth1Settings.ClientId is null)
             {
                 throw new ArgumentNullException(nameof(oAuth1Settings.ClientId));
             }
             if (oAuth1Settings.SignatureType == OAuth1SignatureTypes.RsaSha1)
             {
-                if (oAuth1Settings.RsaSha1Provider == null)
+                if (oAuth1Settings.RsaSha1Provider is null)
                 {
                     throw new ArgumentNullException(nameof(oAuth1Settings.RsaSha1Provider));
                 }
             }
-            else if (oAuth1Settings.ClientSecret == null)
+            else if (oAuth1Settings.ClientSecret is null)
             {
                 throw new ArgumentNullException(nameof(oAuth1Settings.ClientSecret));
             }
-            if (oAuth1Settings.TokenUrl == null)
+            if (oAuth1Settings.TokenUrl is null)
             {
                 throw new ArgumentNullException(nameof(oAuth1Settings.TokenUrl));
             }
@@ -138,7 +138,7 @@ namespace Dapplo.HttpExtensions.OAuth
         /// <returns>a Base64 string of the hash value</returns>
         public static string ComputeHash(HashAlgorithm hashAlgorithm, string data)
         {
-            if (hashAlgorithm == null)
+            if (hashAlgorithm is null)
             {
                 throw new ArgumentNullException(nameof(hashAlgorithm));
             }
@@ -171,7 +171,7 @@ namespace Dapplo.HttpExtensions.OAuth
         /// <returns>a string with the normalized query parameters</returns>
         private static string GenerateNormalizedParametersString<T>(IDictionary<string, T> queryParameters)
         {
-            if (queryParameters == null || queryParameters.Count == 0)
+            if (queryParameters is null || queryParameters.Count == 0)
             {
                 return string.Empty;
             }

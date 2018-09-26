@@ -97,7 +97,7 @@ namespace Nito.AsyncEx.AsyncLocal
             get
             {
                 var ret = CallContext.LogicalGetData(_slotName);
-                if (ret == null)
+                if (ret is null)
                 {
                     return _defaultValue;
                 }

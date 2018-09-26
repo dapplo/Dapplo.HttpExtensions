@@ -81,6 +81,14 @@ namespace Dapplo.HttpExtensions.Tests
         }
 
         [Fact]
+        public void TestAppendSegments_SquareBrackets()
+        {
+            var uri = new Uri("http://jira/name/?value1=1234");
+            uri = uri.AppendSegments("blub[1]/");
+            Assert.Equal("http://jira/name/blub%5B1%5D?value1=1234", uri.AbsoluteUri);
+        }
+
+        [Fact]
         public void TestExtendQuery_WithDictionary()
         {
             var uri = new Uri(TestUriSingleValue);

@@ -21,6 +21,7 @@
 
 #region Usings
 
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Dapplo.HttpExtensions.ContentConverter;
@@ -58,6 +59,12 @@ namespace Dapplo.HttpExtensions
             StreamHttpContentConverter.Instance.Value,
             StringHttpContentConverter.Instance.Value
         };
+
+        /// <summary>
+        /// The GLOBAL default function for the uri escaping, this is Uri.EscapeDataString
+        /// Some projects might rather use Uri.EscapeUriString, be careful changing this!
+        /// </summary>
+        public static Func<string, string> DefaultUriEscapeFunc { get; } = Uri.EscapeDataString;
 
         /// <summary>
         ///     The global IHttpSettings

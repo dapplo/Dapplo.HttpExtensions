@@ -49,14 +49,29 @@ namespace Dapplo.HttpExtensions
         }
 
         /// <summary>
+        ///     Append path segment(s) to the specified Uri
+        ///     When adding a segment the logic takes care that there is always one single slash separating the segments.
+        ///     Null or empty segments are ignored.
+        /// </summary>
+        /// <param name="uri">Uri to extend</param>
+        /// <param name="urlEscapeFunc">Func used for the encoding</param>
+        /// <param name="segments">params with objects which will be converted to string and adding them as segments</param>
+        /// <returns>new Uri with segments added to the path</returns>
+        public static Uri AppendSegments(this Uri uri, Func<string, string> urlEscapeFunc, params object[] segments)
+        {
+            return uri.AppendSegments(urlEscapeFunc, segments.Select(o => o?.ToString()));
+        }
+
+        /// <summary>
         ///     Append segment(s) to the path of the specified Uri.
         ///     When adding a segment the logic takes care that there is always one single slash separating the segments.
         ///     Null or empty segments are ignored.
         /// </summary>
         /// <param name="uri">Uri to extend</param>
+        /// <param name="urlEscapeFunc">Func used for the encoding</param>
         /// <param name="segments">IEnumerable of string with the segments which need to be added</param>
         /// <returns>new Uri with segments added to the path</returns>
-        public static Uri AppendSegments(this Uri uri, IEnumerable<string> segments)
+        public static Uri AppendSegments(this Uri uri, Func<string, string> urlEscapeFunc, IEnumerable<string> segments)
         {
             if (uri is null)
             {
@@ -82,7 +97,7 @@ namespace Dapplo.HttpExtensions
                 .Where(s => !string.IsNullOrEmpty(s))
                 .Select(s => s.TrimStart('/').TrimEnd('/'))
                 .Where(s => !string.IsNullOrEmpty(s))
-                .Select(s => Uri.EscapeUriString(s)));
+                .Select(urlEscapeFunc));
 
             // Append this to the string builder
             stringBuilder.Append(path);
@@ -92,6 +107,19 @@ namespace Dapplo.HttpExtensions
 
             // Create the Uri and return it
             return uriBuilder.Uri;
+        }
+
+        /// <summary>
+        ///     Append segment(s) to the path of the specified Uri.
+        ///     When adding a segment the logic takes care that there is always one single slash separating the segments.
+        ///     Null or empty segments are ignored.
+        /// </summary>
+        /// <param name="uri">Uri to extend</param>
+        /// <param name="segments">IEnumerable of string with the segments which need to be added</param>
+        /// <returns>new Uri with segments added to the path</returns>
+        public static Uri AppendSegments(this Uri uri, IEnumerable<string> segments)
+        {
+            return uri.AppendSegments(HttpExtensionsGlobals.DefaultUriEscapeFunc, segments);
         }
 
         /// <summary>

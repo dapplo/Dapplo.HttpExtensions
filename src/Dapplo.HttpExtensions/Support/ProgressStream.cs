@@ -204,7 +204,7 @@ namespace Dapplo.HttpExtensions.Support
             OnBytesMoved(count, false);
         }
 
-#if NET45 || NET46
+#if NET461
         /// <inheritdoc />
         public override void Close()
         {

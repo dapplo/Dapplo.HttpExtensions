@@ -27,12 +27,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using Dapplo.Log;
-#if !NET45
 using System.Threading;
-#else
-using Nito.AsyncEx.AsyncLocal;
-#endif
-
 #endregion
 
 

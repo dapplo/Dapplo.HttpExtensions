@@ -25,7 +25,7 @@ using System.Net;
 
 using System.Net.Http;
 
-#if NET45 || NET46
+#if NET461
 using System.Net.Cache;
 using System.Net.Security;
 using Dapplo.Log;
@@ -42,7 +42,7 @@ namespace Dapplo.HttpExtensions.Factory
     /// </summary>
     public static class HttpMessageHandlerFactory
     {
-#if NET45 || NET46
+#if NET461
         private static readonly LogSource Log = new LogSource();
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace Dapplo.HttpExtensions.Factory
 #endif
             httpClientHandler.MaxAutomaticRedirections = httpSettings.MaxAutomaticRedirections;
 
-#if NET45 || NET46
+#if NET461
             httpClientHandler.MaxRequestContentBufferSize = httpSettings.MaxRequestContentBufferSize;
 
             if (!httpSettings.UseProxy)
@@ -119,7 +119,7 @@ namespace Dapplo.HttpExtensions.Factory
             httpClientHandler.PreAuthenticate = httpSettings.PreAuthenticate;
         }
 
-#if NET45 || NET46
+#if NET461
         /// <summary>
         ///     Apply settings on the WebRequestHandler, this also calls the SetDefaults for the underlying HttpClientHandler
         /// </summary>

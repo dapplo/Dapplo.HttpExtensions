@@ -240,7 +240,11 @@ namespace Dapplo.HttpExtensions.JsonSimple
 
                     if (type.GetTypeInfo().IsEnum || ReflectionUtils.IsNullableType(type) && Nullable.GetUnderlyingType(type).GetTypeInfo().IsEnum)
                     {
-                        return Enum.Parse(ReflectionUtils.IsNullableType(type) ? Nullable.GetUnderlyingType(type) : type, str, true);
+                        var enumType = ReflectionUtils.IsNullableType(type) ? Nullable.GetUnderlyingType(type) : type;
+                        if (enumType != null)
+                        {
+                            return Enum.Parse(enumType, str, true);
+                        }
                     }
 
                     if (type == typeof(string))
@@ -357,7 +361,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
                                     continue;
                                 }
                                 var matchRegex = new Regex(jsonExtensionDataAtrribute.Pattern ?? ".*");
-                                if (extensionPropertyInfo?.GetValue(obj) is IDictionary extensionData)
+                                if (extensionPropertyInfo.GetValue(obj) is IDictionary extensionData)
                                 {
                                     // Get the type, if possible, so we can convert
                                     var valueType = typeof(string);
@@ -498,7 +502,10 @@ namespace Dapplo.HttpExtensions.JsonSimple
                 }
                 foreach (var keyObject in value.Keys)
                 {
-                    var key = keyObject as string;
+                    if (!(keyObject is string key))
+                    {
+                        continue;
+                    }
                     output.Add(key, value[keyObject]);
                 }
             }
@@ -511,7 +518,10 @@ namespace Dapplo.HttpExtensions.JsonSimple
                 }
                 foreach (var keyObject in value.Keys)
                 {
-                    var key = keyObject as string;
+                    if (!(keyObject is string key))
+                    {
+                        continue;
+                    }
                     output.Add(key, value[keyObject]);
                 }
             }

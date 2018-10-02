@@ -25,7 +25,7 @@ using System;
 using System.IO;
 using System.Linq;
 
-#if NET45 || NET46
+#if NET461
 using System.Drawing;
 using System.Windows.Media.Imaging;
 #endif
@@ -41,7 +41,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
     {
         private static readonly Type[] NotSerializableTypes =
         {
-#if NET45 || NET46
+#if NET461
             typeof(Bitmap),
             typeof(BitmapSource),
 #endif

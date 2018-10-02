@@ -19,7 +19,7 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#if NET45 || NET46
+#if NET461
 
 #region Usings
 
@@ -55,7 +55,7 @@ namespace Dapplo.HttpExtensions.Listener
         {
             var listenUriString = listenUri.AbsoluteUri.EndsWith("/") ? listenUri.AbsoluteUri : listenUri.AbsoluteUri + "/";
             Log.Debug().WriteLine("Start listening on {0}", listenUriString);
-            var taskCompletionSource = new TaskCompletionSource<T>();
+            var taskCompletionSource = new TaskCompletionSource<T>(TaskCreationOptions.RunContinuationsAsynchronously);
 
             // ReSharper disable once UnusedVariable
             var listenTask = Task.Factory.StartNew(async () =>

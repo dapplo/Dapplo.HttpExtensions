@@ -15,7 +15,7 @@ environment:
   CoverallsRepoToken:
     secure: sVulFO20DgFcIIQPU926SJqzLWqv4EozRmXYa3MuSDz3fyFXie9wkptVMM5oz3nC
   NuGetApiKey:
-    secure: FkbOZI29wVSKdzHuFOq9tY8cq05Sy6vFKwvqYnUhDVamagkTUrjNJElPPoACP8Ov
+    secure: Fu7vXeOuWmvDK7WGNsEbTIV2vhDV4P6PiK5k1+UZOmwldhCfvUvkA4HOkml+ZE/n
 build:
   verbosity: minimal
 build_script:

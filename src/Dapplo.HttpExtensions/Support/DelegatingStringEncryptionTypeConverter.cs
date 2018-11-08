@@ -25,7 +25,7 @@
 namespace Dapplo.HttpExtensions.Support
 {
     /// <summary>
-    ///     This converter wraps the Dapplo.Ini.Converters.StringEncryptionTypeConverter
+    ///     This converter wraps the Dapplo.Config.Ini.Converters.StringEncryptionTypeConverter
     ///     As it is used in the IOAuth2Token as TypeConverter attribute, which is only used from the Dapplo.Config framework
     /// </summary>
     public class DelegatingStringEncryptionTypeConverter : DelegatingTypeConverter
@@ -33,7 +33,7 @@ namespace Dapplo.HttpExtensions.Support
 		/// <summary>
 		///     Delegating to the StringEncryptionTypeConverter
 		/// </summary>
-		public DelegatingStringEncryptionTypeConverter() : base("Dapplo.Ini", "Dapplo.Ini.Converters.StringEncryptionTypeConverter")
+		public DelegatingStringEncryptionTypeConverter() : base("Dapplo.Config.Ini", "Dapplo.Config.Ini.Converters.StringEncryptionTypeConverter")
         {
         }
     }

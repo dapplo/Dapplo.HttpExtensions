@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Description>Json.NET functionality for Dapplo.HttpExtensions</Description>
     <AssemblyTitle>Dapplo.HttpExtensions.JsonNet</AssemblyTitle>
-    <TargetFrameworks>net461</TargetFrameworks>
+    <TargetFrameworks>net461;netstandard1.3</TargetFrameworks>
     <AssemblyName>Dapplo.HttpExtensions.JsonNet</AssemblyName>
     <PackageId>Dapplo.HttpExtensions.JsonNet</PackageId>
     <PackageTags>http;rest;dapplo</PackageTags>

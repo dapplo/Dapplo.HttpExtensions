@@ -21,9 +21,7 @@
 
 #region Usings
 
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using Dapplo.HttpExtensions.Support;
 
 #endregion
 
@@ -38,9 +36,6 @@ namespace Dapplo.HttpExtensions.OAuth
         /// <summary>
         ///     Token for accessing OAuth services
         /// </summary>
-#if NET461
-        [TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
-#endif
         [Display(Description = "Contains the OAuth token (encrypted)")]
         string OAuthToken { get; set; }
 
@@ -48,18 +43,12 @@ namespace Dapplo.HttpExtensions.OAuth
         ///     OAuth token secret
         /// </summary>
         [Display(Description = "OAuth token secret (encrypted)")]
-#if NET461
-        [TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
-#endif
         string OAuthTokenSecret { get; set; }
 
         /// <summary>
         ///     OAuth token verifier
         /// </summary>
         [Display(Description = "OAuth token verifier (encrypted)")]
-#if NET461
-        [TypeConverter(typeof(DelegatingStringEncryptionTypeConverter))]
-#endif
         string OAuthTokenVerifier { get; set; }
     }
 }

@@ -50,6 +50,8 @@ namespace Dapplo.HttpExtensions
 #if NET461
             BitmapHttpContentConverter.Instance.Value,
             BitmapSourceHttpContentConverter.Instance.Value,
+#endif
+#if !NETSTANDARD1_3
             SyndicationFeedHttpContentConverter.Instance.Value,
             XDocumentHttpContentConverter.Instance.Value,
 #endif

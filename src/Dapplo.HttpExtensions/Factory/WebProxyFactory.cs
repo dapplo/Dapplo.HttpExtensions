@@ -19,8 +19,7 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#if NET461
-
+#if !NETSTANDARD1_3
 #region Usings
 
 using System.Net;
@@ -54,10 +53,9 @@ namespace Dapplo.HttpExtensions.Factory
                 : new WebProxy(httpSettings.ProxyUri, httpSettings.ProxyBypassOnLocal, httpSettings.ProxyBypassList);
             if (httpSettings.UseDefaultCredentialsForProxy)
             {
-                if (proxyToUse is WebProxy)
+                if (proxyToUse is WebProxy webProxy)
                 {
                     // Read note here: https://msdn.microsoft.com/en-us/library/system.net.webproxy.credentials.aspx
-                    var webProxy = proxyToUse as WebProxy;
                     webProxy.UseDefaultCredentials = true;
                 }
                 else
@@ -67,10 +65,9 @@ namespace Dapplo.HttpExtensions.Factory
             }
             else
             {
-                if (proxyToUse is WebProxy)
+                if (proxyToUse is WebProxy webProxy)
                 {
                     // Read note here: https://msdn.microsoft.com/en-us/library/system.net.webproxy.credentials.aspx
-                    var webProxy = proxyToUse as WebProxy;
                     webProxy.UseDefaultCredentials = false;
                     webProxy.Credentials = httpSettings.ProxyCredentials;
                 }
@@ -83,5 +80,4 @@ namespace Dapplo.HttpExtensions.Factory
         }
     }
 }
-
 #endif

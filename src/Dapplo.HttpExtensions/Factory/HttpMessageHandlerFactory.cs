@@ -22,14 +22,12 @@
 #region Usings
 
 using System.Net;
-
 using System.Net.Http;
-
-#if NET461
-using System.Net.Cache;
 using System.Net.Security;
 using Dapplo.Log;
 
+#if !NETSTANDARD1_3
+using System.Net.Cache;
 #endif
 
 #endregion
@@ -42,8 +40,8 @@ namespace Dapplo.HttpExtensions.Factory
     /// </summary>
     public static class HttpMessageHandlerFactory
     {
-#if NET461
         private static readonly LogSource Log = new LogSource();
+#if NET461
 
         /// <summary>
         ///     This creates an advanced HttpMessageHandler, used in desktop applications
@@ -53,82 +51,8 @@ namespace Dapplo.HttpExtensions.Factory
         private static HttpMessageHandler CreateHandler()
         {
             var webRequestHandler = new WebRequestHandler();
-            SetDefaults(webRequestHandler);
-            return webRequestHandler;
-        }
-#else
-/// <summary>
-///     This creates an advanced HttpMessageHandler, used in Apps
-/// </summary>
-/// <returns>HttpMessageHandler (HttpClientHandler)</returns>
-        private static HttpMessageHandler CreateHandler()
-        {
-            var httpClientHandler = new HttpClientHandler();
-            SetDefaults(httpClientHandler);
-            return httpClientHandler;
-        }
-#endif
 
-        /// <summary>
-        ///     This creates a HttpMessageHandler
-        ///     Should be the preferred method to use to create a HttpMessageHandler
-        /// </summary>
-        /// <returns>HttpMessageHandler (WebRequestHandler)</returns>
-        public static HttpMessageHandler Create()
-        {
             var httpBehaviour = HttpBehaviour.Current;
-            var baseMessageHandler = CreateHandler();
-            if (httpBehaviour.OnHttpMessageHandlerCreated != null)
-            {
-                return httpBehaviour.OnHttpMessageHandlerCreated.Invoke(baseMessageHandler);
-            }
-            return baseMessageHandler;
-        }
-
-        /// <summary>
-        ///     Apply settings on the HttpClientHandler
-        /// </summary>
-        /// <param name="httpClientHandler"></param>
-        private static void SetDefaults(HttpClientHandler httpClientHandler)
-        {
-            var httpBehaviour = HttpBehaviour.Current;
-            var httpSettings = httpBehaviour.HttpSettings ?? HttpExtensionsGlobals.HttpSettings;
-
-            httpClientHandler.AllowAutoRedirect = httpSettings.AllowAutoRedirect;
-            httpClientHandler.AutomaticDecompression = httpSettings.DefaultDecompressionMethods;
-            httpClientHandler.CookieContainer = httpSettings.UseCookies ? httpBehaviour.CookieContainer : null;
-#if PCL
-            httpClientHandler.Credentials = httpSettings.Credentials;
-#else
-            httpClientHandler.Credentials = httpSettings.UseDefaultCredentials ? CredentialCache.DefaultCredentials : httpSettings.Credentials;
-#endif
-            httpClientHandler.MaxAutomaticRedirections = httpSettings.MaxAutomaticRedirections;
-
-#if NET461
-            httpClientHandler.MaxRequestContentBufferSize = httpSettings.MaxRequestContentBufferSize;
-
-            if (!httpSettings.UseProxy)
-            {
-                httpClientHandler.Proxy = null;
-            }
-            httpClientHandler.UseProxy = httpSettings.UseProxy;
-#endif
-
-            httpClientHandler.UseCookies = httpSettings.UseCookies;
-            httpClientHandler.UseDefaultCredentials = httpSettings.UseDefaultCredentials;
-            httpClientHandler.PreAuthenticate = httpSettings.PreAuthenticate;
-        }
-
-#if NET461
-        /// <summary>
-        ///     Apply settings on the WebRequestHandler, this also calls the SetDefaults for the underlying HttpClientHandler
-        /// </summary>
-        /// <param name="webRequestHandler">WebRequestHandler to set the defaults to</param>
-        private static void SetDefaults(WebRequestHandler webRequestHandler)
-        {
-            var httpBehaviour = HttpBehaviour.Current;
-            SetDefaults(webRequestHandler as HttpClientHandler);
-
             var httpSettings = httpBehaviour.HttpSettings ?? HttpExtensionsGlobals.HttpSettings;
 
             webRequestHandler.AllowPipelining = httpSettings.AllowPipelining;
@@ -143,6 +67,7 @@ namespace Dapplo.HttpExtensions.Factory
             webRequestHandler.ContinueTimeout = httpSettings.ContinueTimeout;
             webRequestHandler.ImpersonationLevel = httpSettings.ImpersonationLevel;
             webRequestHandler.MaxResponseHeadersLength = httpSettings.MaxResponseHeadersLength;
+
             webRequestHandler.Proxy = httpSettings.UseProxy ? WebProxyFactory.Create() : null;
             webRequestHandler.ReadWriteTimeout = httpSettings.ReadWriteTimeout;
 
@@ -158,7 +83,73 @@ namespace Dapplo.HttpExtensions.Factory
                     return true;
                 };
             }
+            return webRequestHandler;
+        }
+#else
+        /// <summary>
+        ///     This creates an advanced HttpMessageHandler, used in Apps
+        /// </summary>
+        /// <returns>HttpMessageHandler (HttpClientHandler)</returns>
+        private static HttpMessageHandler CreateHandler()
+        {
+            var httpClientHandler = new HttpClientHandler();
+
+            var httpBehaviour = HttpBehaviour.Current;
+            var httpSettings = httpBehaviour.HttpSettings ?? HttpExtensionsGlobals.HttpSettings;
+
+            httpClientHandler.AllowAutoRedirect = httpSettings.AllowAutoRedirect;
+            httpClientHandler.AutomaticDecompression = httpSettings.DefaultDecompressionMethods;
+            httpClientHandler.ClientCertificateOptions = httpSettings.ClientCertificateOptions;
+            // Add certificates, if any
+            if (httpSettings.ClientCertificates?.Count > 0)
+            {
+                httpClientHandler.ClientCertificates.AddRange(httpSettings.ClientCertificates);
+            }
+            httpClientHandler.CookieContainer = httpSettings.UseCookies ? httpBehaviour.CookieContainer : null;
+            httpClientHandler.Credentials = httpSettings.UseDefaultCredentials ? CredentialCache.DefaultCredentials : httpSettings.Credentials;
+            httpClientHandler.MaxAutomaticRedirections = httpSettings.MaxAutomaticRedirections;
+            httpClientHandler.MaxConnectionsPerServer = httpSettings.MaxConnectionsPerServer;
+
+            httpClientHandler.MaxRequestContentBufferSize = httpSettings.MaxRequestContentBufferSize;
+            httpClientHandler.MaxResponseHeadersLength = httpSettings.MaxResponseHeadersLength;
+#if !NETSTANDARD1_3
+            httpClientHandler.Proxy = httpSettings.UseProxy ? WebProxyFactory.Create() : null;
+#endif
+            httpClientHandler.UseProxy = httpSettings.UseProxy;
+
+            httpClientHandler.UseCookies = httpSettings.UseCookies;
+            httpClientHandler.UseDefaultCredentials = httpSettings.UseDefaultCredentials;
+            httpClientHandler.PreAuthenticate = httpSettings.PreAuthenticate;
+            // Add logic to ignore the certificate
+            if (httpSettings.IgnoreSslCertificateErrors)
+            {
+                httpClientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) =>
+                {
+                    if (sslPolicyErrors != SslPolicyErrors.None)
+                    {
+                        Log.Warn().WriteLine("Ssl policy error {0}", sslPolicyErrors);
+                    }
+                    return true;
+                };
+            }
+            return httpClientHandler;
         }
 #endif
+
+            /// <summary>
+            ///     This creates a HttpMessageHandler
+            ///     Should be the preferred method to use to create a HttpMessageHandler
+            /// </summary>
+            /// <returns>HttpMessageHandler (WebRequestHandler)</returns>
+            public static HttpMessageHandler Create()
+        {
+            var httpBehaviour = HttpBehaviour.Current;
+            var baseMessageHandler = CreateHandler();
+            if (httpBehaviour.OnHttpMessageHandlerCreated != null)
+            {
+                return httpBehaviour.OnHttpMessageHandlerCreated.Invoke(baseMessageHandler);
+            }
+            return baseMessageHandler;
+        }
     }
 }

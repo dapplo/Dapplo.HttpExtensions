@@ -24,14 +24,13 @@
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Net.Security;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 #if NET461
 using System.Net.Cache;
 using System.Security.Principal;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
-
 #endif
 
 #endregion
@@ -101,31 +100,14 @@ namespace Dapplo.HttpExtensions.Support
             set { _userAgent = value; }
         }
 
-#if NET461
-
         /// <inheritdoc />
         public X509CertificateCollection ClientCertificates { get; set; } = new X509CertificateCollection();
-
-        /// <inheritdoc />
-        public int ReadWriteTimeout { get; set; } = 300000;
-
-        /// <inheritdoc />
-        public TokenImpersonationLevel ImpersonationLevel { get; set; } = TokenImpersonationLevel.Delegation;
 
         /// <inheritdoc />
         public int MaxResponseHeadersLength { get; set; } = 256;
 
         /// <inheritdoc />
         public long MaxRequestContentBufferSize { get; set; } = 2 * Gb - 1;
-
-        /// <inheritdoc />
-        public TimeSpan ContinueTimeout { get; set; } = TimeSpan.FromMilliseconds(350);
-
-        /// <inheritdoc />
-        public bool AllowPipelining { get; set; } = true;
-
-        /// <inheritdoc />
-        public AuthenticationLevel AuthenticationLevel { get; set; } = AuthenticationLevel.MutualAuthRequested;
 
         /// <inheritdoc />
         public bool UseProxy { get; set; } = true;
@@ -137,11 +119,21 @@ namespace Dapplo.HttpExtensions.Support
         public bool UseDefaultCredentialsForProxy { get; set; } = true;
 
         /// <inheritdoc />
-        public Uri ProxyUri { get; set; }
+        public AuthenticationLevel AuthenticationLevel { get; set; } = AuthenticationLevel.MutualAuthRequested;
 
         /// <inheritdoc />
-        public ICredentials ProxyCredentials { get; set; }
+        public bool IgnoreSslCertificateErrors { get; set; } = false;
 
+#if NETSTANDARD1_3 || NETSTANDARD2_0
+        /// <inheritdoc />
+        public int MaxConnectionsPerServer { get; set; } = int.MaxValue;
+#endif
+
+#if NET461 || NETSTANDARD2_0
+        
+        /// <inheritdoc />
+        public Uri ProxyUri { get; set; }
+    
         /// <inheritdoc />
         public bool ProxyBypassOnLocal { get; set; } = true;
 
@@ -149,10 +141,27 @@ namespace Dapplo.HttpExtensions.Support
         public string[] ProxyBypassList { get; set; }
 
         /// <inheritdoc />
-        public RequestCacheLevel RequestCacheLevel { get; set; } = RequestCacheLevel.Default;
+        public ICredentials ProxyCredentials { get; set; }
+#endif
+
+#if NET461
 
         /// <inheritdoc />
-        public bool IgnoreSslCertificateErrors { get; set; } = false;
+        public int ReadWriteTimeout { get; set; } = 300000;
+
+        /// <inheritdoc />
+        public TokenImpersonationLevel ImpersonationLevel { get; set; } = TokenImpersonationLevel.Delegation;
+
+
+        /// <inheritdoc />
+        public TimeSpan ContinueTimeout { get; set; } = TimeSpan.FromMilliseconds(350);
+
+        /// <inheritdoc />
+        public bool AllowPipelining { get; set; } = true;
+
+        /// <inheritdoc />
+        public RequestCacheLevel RequestCacheLevel { get; set; } = RequestCacheLevel.Default;
+
 
 #endif
 

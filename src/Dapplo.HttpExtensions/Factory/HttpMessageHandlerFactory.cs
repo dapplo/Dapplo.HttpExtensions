@@ -26,7 +26,7 @@ using System.Net.Http;
 using System.Net.Security;
 using Dapplo.Log;
 
-#if !NETSTANDARD1_3
+#if NET461
 using System.Net.Cache;
 #endif
 
@@ -41,61 +41,33 @@ namespace Dapplo.HttpExtensions.Factory
     public static class HttpMessageHandlerFactory
     {
         private static readonly LogSource Log = new LogSource();
-#if NET461
 
-        /// <summary>
-        ///     This creates an advanced HttpMessageHandler, used in desktop applications
-        ///     Should be preferred
-        /// </summary>
-        /// <returns>HttpMessageHandler (WebRequestHandler)</returns>
-        private static HttpMessageHandler CreateHandler()
-        {
-            var webRequestHandler = new WebRequestHandler();
-
-            var httpBehaviour = HttpBehaviour.Current;
-            var httpSettings = httpBehaviour.HttpSettings ?? HttpExtensionsGlobals.HttpSettings;
-
-            webRequestHandler.AllowPipelining = httpSettings.AllowPipelining;
-            webRequestHandler.AuthenticationLevel = httpSettings.AuthenticationLevel;
-            webRequestHandler.CachePolicy = new RequestCachePolicy(httpSettings.RequestCacheLevel);
-            webRequestHandler.ClientCertificateOptions = httpSettings.ClientCertificateOptions;
-            // Add certificates, if any
-            if (httpSettings.ClientCertificates?.Count > 0)
-            {
-                webRequestHandler.ClientCertificates.AddRange(httpSettings.ClientCertificates);
-            }
-            webRequestHandler.ContinueTimeout = httpSettings.ContinueTimeout;
-            webRequestHandler.ImpersonationLevel = httpSettings.ImpersonationLevel;
-            webRequestHandler.MaxResponseHeadersLength = httpSettings.MaxResponseHeadersLength;
-
-            webRequestHandler.Proxy = httpSettings.UseProxy ? WebProxyFactory.Create() : null;
-            webRequestHandler.ReadWriteTimeout = httpSettings.ReadWriteTimeout;
-
-            // Add logic to ignore the certificate
-            if (httpSettings.IgnoreSslCertificateErrors)
-            {
-                webRequestHandler.ServerCertificateValidationCallback = (sender, cert, chain, sslPolicyErrors) =>
-                {
-                    if (sslPolicyErrors != SslPolicyErrors.None)
-                    {
-                        Log.Warn().WriteLine("Ssl policy error {0}", sslPolicyErrors);
-                    }
-                    return true;
-                };
-            }
-            return webRequestHandler;
-        }
-#else
         /// <summary>
         ///     This creates an advanced HttpMessageHandler, used in Apps
         /// </summary>
         /// <returns>HttpMessageHandler (HttpClientHandler)</returns>
         private static HttpMessageHandler CreateHandler()
         {
+#if !NET461
             var httpClientHandler = new HttpClientHandler();
-
+#else
+            var httpClientHandler = new WebRequestHandler();
+#endif
             var httpBehaviour = HttpBehaviour.Current;
             var httpSettings = httpBehaviour.HttpSettings ?? HttpExtensionsGlobals.HttpSettings;
+
+#if NET461
+            httpClientHandler.AllowPipelining = httpSettings.AllowPipelining;
+            httpClientHandler.AuthenticationLevel = httpSettings.AuthenticationLevel;
+            httpClientHandler.ContinueTimeout = httpSettings.ContinueTimeout;
+            httpClientHandler.ImpersonationLevel = httpSettings.ImpersonationLevel;
+            httpClientHandler.ReadWriteTimeout = httpSettings.ReadWriteTimeout;
+            httpClientHandler.CachePolicy = new RequestCachePolicy(httpSettings.RequestCacheLevel);
+#else
+            httpClientHandler.MaxConnectionsPerServer = httpSettings.MaxConnectionsPerServer;
+#endif
+
+            httpClientHandler.AutomaticDecompression = httpSettings.DefaultDecompressionMethods;
 
             httpClientHandler.AllowAutoRedirect = httpSettings.AllowAutoRedirect;
             httpClientHandler.AutomaticDecompression = httpSettings.DefaultDecompressionMethods;
@@ -105,25 +77,29 @@ namespace Dapplo.HttpExtensions.Factory
             {
                 httpClientHandler.ClientCertificates.AddRange(httpSettings.ClientCertificates);
             }
-            httpClientHandler.CookieContainer = httpSettings.UseCookies ? httpBehaviour.CookieContainer : null;
             httpClientHandler.Credentials = httpSettings.UseDefaultCredentials ? CredentialCache.DefaultCredentials : httpSettings.Credentials;
             httpClientHandler.MaxAutomaticRedirections = httpSettings.MaxAutomaticRedirections;
-            httpClientHandler.MaxConnectionsPerServer = httpSettings.MaxConnectionsPerServer;
-
             httpClientHandler.MaxRequestContentBufferSize = httpSettings.MaxRequestContentBufferSize;
             httpClientHandler.MaxResponseHeadersLength = httpSettings.MaxResponseHeadersLength;
+            httpClientHandler.UseCookies = httpSettings.UseCookies;
+            httpClientHandler.CookieContainer = httpSettings.UseCookies ? httpBehaviour.CookieContainer : null;
+            httpClientHandler.UseDefaultCredentials = httpSettings.UseDefaultCredentials;
+            httpClientHandler.PreAuthenticate = httpSettings.PreAuthenticate;
+
 #if !NETSTANDARD1_3
             httpClientHandler.Proxy = httpSettings.UseProxy ? WebProxyFactory.Create() : null;
 #endif
             httpClientHandler.UseProxy = httpSettings.UseProxy;
 
-            httpClientHandler.UseCookies = httpSettings.UseCookies;
-            httpClientHandler.UseDefaultCredentials = httpSettings.UseDefaultCredentials;
-            httpClientHandler.PreAuthenticate = httpSettings.PreAuthenticate;
+
             // Add logic to ignore the certificate
             if (httpSettings.IgnoreSslCertificateErrors)
             {
+#if !NET461
                 httpClientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) =>
+#else
+                httpClientHandler.ServerCertificateValidationCallback = (sender, cert, chain, sslPolicyErrors) =>
+#endif
                 {
                     if (sslPolicyErrors != SslPolicyErrors.None)
                     {
@@ -134,7 +110,6 @@ namespace Dapplo.HttpExtensions.Factory
             }
             return httpClientHandler;
         }
-#endif
 
             /// <summary>
             ///     This creates a HttpMessageHandler

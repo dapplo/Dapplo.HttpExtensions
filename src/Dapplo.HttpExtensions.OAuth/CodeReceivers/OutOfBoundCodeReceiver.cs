@@ -90,7 +90,12 @@ namespace Dapplo.HttpExtensions.OAuth.CodeReceivers
             var authorizationUrl = uriBuilder.Uri;
             Log.Debug().WriteLine("Opening a browser with: {0}", authorizationUrl.AbsoluteUri);
             // Open the url in the default browser
-            Process.Start(authorizationUrl.AbsoluteUri);
+            var processStartInfo = new ProcessStartInfo(authorizationUrl.AbsoluteUri)
+            {
+                CreateNoWindow = true,
+                UseShellExecute = true
+            };
+            Process.Start(processStartInfo);
 
             Log.Debug().WriteLine("Waiting until a window gets a title with the state {0}", codeReceiverSettings.State);
             // Wait until a window get's a title which contains the state object

@@ -129,7 +129,12 @@ The authentication process received information from CloudServiceName. You can c
             var authorizationUrl = uriBuilder.Uri;
             Log.Debug().WriteLine("Opening a browser with: {0}", authorizationUrl.AbsoluteUri);
             // Open the url in the default browser
-            Process.Start(authorizationUrl.AbsoluteUri);
+            var processStartInfo = new ProcessStartInfo(authorizationUrl.AbsoluteUri)
+            {
+                CreateNoWindow = true,
+                UseShellExecute = true
+            };
+            Process.Start(processStartInfo);
 
             // Return result of the listening
             return await listenTask.ConfigureAwait(false);

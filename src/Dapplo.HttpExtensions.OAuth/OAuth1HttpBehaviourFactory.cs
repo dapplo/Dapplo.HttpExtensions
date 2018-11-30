@@ -19,9 +19,6 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-
-#if NET461
-
 namespace Dapplo.HttpExtensions.OAuth
 {
     /// <summary>
@@ -45,5 +42,3 @@ namespace Dapplo.HttpExtensions.OAuth
         }
     }
 }
-
-#endif

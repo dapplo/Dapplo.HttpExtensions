@@ -19,7 +19,7 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#if NET461
+#if NET461 || NETSTANDARD2_0
 
 #region Usings
 

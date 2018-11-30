@@ -19,8 +19,6 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#if NET461
-
 #region Usings
 
 using System;
@@ -98,5 +96,3 @@ namespace Dapplo.HttpExtensions.OAuth
         public OAuth1SignatureTransports SignatureTransport { get; set; } = OAuth1SignatureTransports.Headers;
     }
 }
-
-#endif

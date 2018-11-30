@@ -19,8 +19,6 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#if NET461
-
 #region Usings
 
 using System;
@@ -65,7 +63,7 @@ namespace Dapplo.HttpExtensions.OAuth
                 AuthorizeModes.TestPassThrough,
                 new PassThroughCodeReceiver()
             );
-#if NET461
+
             CodeReceivers.Add(
                 AuthorizeModes.OutOfBound,
                 new OutOfBoundCodeReceiver()
@@ -78,7 +76,6 @@ namespace Dapplo.HttpExtensions.OAuth
                 AuthorizeModes.EmbeddedBrowser,
                 new EmbeddedBrowserCodeReceiver()
             );
-#endif
         }
 
         /// <summary>
@@ -493,5 +490,3 @@ namespace Dapplo.HttpExtensions.OAuth
         }
     }
 }
-
-#endif

@@ -8,6 +8,7 @@
     <PackageProjectUrl>http://www.dapplo.net/blocks/Dapplo.HttpExtensions/</PackageProjectUrl>
     <PackageLicenseUrl>http://www.gnu.org/licenses/lgpl-3.0.en.html</PackageLicenseUrl>
 	<LangVersion>latest</LangVersion>
+	<DisableImplicitFrameworkReferences Condition="'$(TargetFramework)' == 'net461' Or '$(TargetFramework)' == 'net471'">true</DisableImplicitFrameworkReferences>
   </PropertyGroup>
 
   <PropertyGroup Condition="!$(MSBuildProjectName.Contains('Tests')) And !$(MSBuildProjectName.Contains('Example'))">
@@ -15,6 +16,9 @@
 	<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 	<IsPackable>true</IsPackable>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net461' Or '$(TargetFramework)' == 'net471'">
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\Dapplo.HttpExtensions.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
@@ -40,7 +44,7 @@
   </PropertyGroup>
   
   <ItemGroup Condition="!$(MSBuildProjectName.Contains('Tests')) And !$(MSBuildProjectName.Contains('Example'))">
-    <PackageReference Include="Nerdbank.GitVersioning" Version="2.2.13">
+    <PackageReference Include="Nerdbank.GitVersioning" Version="2.2.33">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>

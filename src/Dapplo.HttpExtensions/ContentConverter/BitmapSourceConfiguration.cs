@@ -21,16 +21,12 @@
 
 #if NET461
 
-#region Usings
-
 using System;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.Windows.Media.Imaging;
 using Dapplo.HttpExtensions.Extensions;
 using Dapplo.HttpExtensions.Support;
-
-#endregion
 
 namespace Dapplo.HttpExtensions.ContentConverter
 {

@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Description>Tests for Dapplo.HttpExtensions</Description>
     <AssemblyTitle>Dapplo.HttpExtensions.Tests</AssemblyTitle>
-    <TargetFrameworks>net471</TargetFrameworks>
+    <TargetFrameworks>net471;netcoreapp3.0</TargetFrameworks>
     <AssemblyName>Dapplo.HttpExtensions.Tests</AssemblyName>
     <Version>0.1.0.0</Version>
     <AssemblyVersion>0.1.0.0</AssemblyVersion>

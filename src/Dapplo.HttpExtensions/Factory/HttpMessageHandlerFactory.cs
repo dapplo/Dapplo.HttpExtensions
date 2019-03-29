@@ -19,8 +19,6 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region Usings
-
 using System.Net;
 using System.Net.Http;
 using System.Net.Security;
@@ -29,8 +27,6 @@ using Dapplo.Log;
 #if NET461
 using System.Net.Cache;
 #endif
-
-#endregion
 
 namespace Dapplo.HttpExtensions.Factory
 {
@@ -48,10 +44,12 @@ namespace Dapplo.HttpExtensions.Factory
         /// <returns>HttpMessageHandler (HttpClientHandler)</returns>
         private static HttpMessageHandler CreateHandler()
         {
-#if !NET461
-            var httpClientHandler = new HttpClientHandler();
-#else
+#if NET461
             var httpClientHandler = new WebRequestHandler();
+#elif NETCOREAPP3_0
+            var httpClientHandler = new SocketsHttpHandler();
+#else
+            var httpClientHandler = new HttpClientHandler();
 #endif
             var httpBehaviour = HttpBehaviour.Current;
             var httpSettings = httpBehaviour.HttpSettings ?? HttpExtensionsGlobals.HttpSettings;
@@ -71,43 +69,64 @@ namespace Dapplo.HttpExtensions.Factory
 
             httpClientHandler.AllowAutoRedirect = httpSettings.AllowAutoRedirect;
             httpClientHandler.AutomaticDecompression = httpSettings.DefaultDecompressionMethods;
-            httpClientHandler.ClientCertificateOptions = httpSettings.ClientCertificateOptions;
-            // Add certificates, if any
-            if (httpSettings.ClientCertificates?.Count > 0)
-            {
-                httpClientHandler.ClientCertificates.AddRange(httpSettings.ClientCertificates);
-            }
+
             httpClientHandler.Credentials = httpSettings.UseDefaultCredentials ? CredentialCache.DefaultCredentials : httpSettings.Credentials;
             httpClientHandler.MaxAutomaticRedirections = httpSettings.MaxAutomaticRedirections;
-            httpClientHandler.MaxRequestContentBufferSize = httpSettings.MaxRequestContentBufferSize;
             httpClientHandler.MaxResponseHeadersLength = httpSettings.MaxResponseHeadersLength;
             httpClientHandler.UseCookies = httpSettings.UseCookies;
             httpClientHandler.CookieContainer = httpSettings.UseCookies ? httpBehaviour.CookieContainer : null;
+#if !NETCOREAPP3_0
+            httpClientHandler.MaxRequestContentBufferSize = httpSettings.MaxRequestContentBufferSize;
             httpClientHandler.UseDefaultCredentials = httpSettings.UseDefaultCredentials;
+#endif
             httpClientHandler.PreAuthenticate = httpSettings.PreAuthenticate;
 
 #if !NETSTANDARD1_3
             httpClientHandler.Proxy = httpSettings.UseProxy ? WebProxyFactory.Create() : null;
 #endif
             httpClientHandler.UseProxy = httpSettings.UseProxy;
-
-
+#if NETCOREAPP3_0
+            httpClientHandler.SslOptions = new SslClientAuthenticationOptions();
+#endif
             // Add logic to ignore the certificate
             if (httpSettings.IgnoreSslCertificateErrors)
             {
-#if !NET461
-                httpClientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) =>
-#else
+#if NET461
                 httpClientHandler.ServerCertificateValidationCallback = (sender, cert, chain, sslPolicyErrors) =>
+#elif NETCOREAPP3_0
+                
+                httpClientHandler.SslOptions.RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) =>
+#else
+                httpClientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) =>
 #endif
-                {
-                    if (sslPolicyErrors != SslPolicyErrors.None)
                     {
-                        Log.Warn().WriteLine("Ssl policy error {0}", sslPolicyErrors);
-                    }
-                    return true;
+                        if (sslPolicyErrors != SslPolicyErrors.None)
+                        {
+                            Log.Warn().WriteLine("Ssl policy error {0}", sslPolicyErrors);
+                        }
+
+                        return true;
+#if !NETCOREAPP3_0
+                    };
+#else
                 };
+                
+#endif
+#endif
             }
+#if !NETCOREAPP3_0
+            httpClientHandler.ClientCertificateOptions = httpSettings.ClientCertificateOptions;
+            // Add certificates, if any
+            if (httpSettings.ClientCertificates?.Count > 0)
+            {
+                httpClientHandler.ClientCertificates.AddRange(httpSettings.ClientCertificates);
+            }
+#else
+            if (httpSettings.ClientCertificates?.Count > 0)
+            {
+                httpClientHandler.SslOptions.ClientCertificates.AddRange(httpSettings.ClientCertificates);
+            }
+#endif
             return httpClientHandler;
         }
 

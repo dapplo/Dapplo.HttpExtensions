@@ -19,16 +19,12 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#if NET461 || NETSTANDARD2_0
-
-#region Usings
+#if NET461 || NETSTANDARD2_0 || NETCOREAPP3_0
 
 using System;
 using System.Net;
 using System.Net.Sockets;
 using Dapplo.Log;
-
-#endregion
 
 namespace Dapplo.HttpExtensions.Listener
 {

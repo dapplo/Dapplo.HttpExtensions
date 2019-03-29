@@ -19,12 +19,8 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region Usings
-
 using System;
 using System.IO;
-
-#endregion
 
 namespace Dapplo.HttpExtensions.Support
 {
@@ -33,13 +29,7 @@ namespace Dapplo.HttpExtensions.Support
     /// </summary>
     public class ProgressStream : Stream
     {
-        #region Private Data Members
-
         private readonly Stream _innerStream;
-
-        #endregion
-
-        #region Constructor
 
         /// <summary>
         ///     Creates a new ProgressStream supplying the stream for it to report on.
@@ -56,10 +46,6 @@ namespace Dapplo.HttpExtensions.Support
                 throw new ArgumentNullException(nameof(streamToReportOn));
             }
         }
-
-        #endregion
-
-        #region Events
 
         /// <summary>
         ///     Called when bytes are read from the stream.
@@ -143,10 +129,6 @@ namespace Dapplo.HttpExtensions.Support
             BytesMoved?.Invoke(this, args);
         }
 
-        #endregion
-
-        #region Stream Members
-
         /// <inheritdoc />
         public override bool CanRead => _innerStream.CanRead;
 
@@ -212,7 +194,5 @@ namespace Dapplo.HttpExtensions.Support
             base.Close();
         }
 #endif
-
-        #endregion
     }
 }

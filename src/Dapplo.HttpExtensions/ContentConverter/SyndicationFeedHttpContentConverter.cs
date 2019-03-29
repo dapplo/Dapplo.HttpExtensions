@@ -21,8 +21,6 @@
 
 #if !NETSTANDARD1_3
 
-#region Usings
-
 using System;
 using System.IO;
 using System.Net.Http;
@@ -34,8 +32,6 @@ using System.Xml;
 using Dapplo.HttpExtensions.Extensions;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.Log;
-
-#endregion
 
 namespace Dapplo.HttpExtensions.ContentConverter
 {

@@ -21,8 +21,6 @@
 
 #if NET461
 
-#region Usings
-
 using System;
 using System.IO;
 using System.Net.Http;
@@ -33,8 +31,6 @@ using System.Windows.Media.Imaging;
 using Dapplo.HttpExtensions.Extensions;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.Log;
-
-#endregion
 
 namespace Dapplo.HttpExtensions.ContentConverter
 {

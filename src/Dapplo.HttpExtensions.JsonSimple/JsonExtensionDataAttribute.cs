@@ -19,11 +19,8 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region Usings
-
 using System;
 
-#endregion
 
 namespace Dapplo.HttpExtensions.JsonSimple
 {

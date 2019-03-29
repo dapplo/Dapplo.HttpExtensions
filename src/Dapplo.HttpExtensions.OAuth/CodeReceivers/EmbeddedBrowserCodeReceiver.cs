@@ -19,8 +19,6 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region Usings
-
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -31,8 +29,6 @@ using System.Windows.Forms;
 using Dapplo.HttpExtensions.Extensions;
 using Dapplo.HttpExtensions.OAuth.Desktop;
 using Dapplo.Log;
-
-#endregion
 
 namespace Dapplo.HttpExtensions.OAuth.CodeReceivers
 {

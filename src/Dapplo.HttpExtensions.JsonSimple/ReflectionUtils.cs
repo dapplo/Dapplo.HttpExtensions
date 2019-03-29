@@ -23,8 +23,6 @@
 #define SIMPLE_JSON_TYPEINFO
 #endif
 
-#region Usings
-
 using System;
 using System.CodeDom.Compiler;
 using System.Collections;
@@ -32,8 +30,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq.Expressions;
 using System.Reflection;
-
-#endregion
 
 namespace Dapplo.HttpExtensions.JsonSimple
 {

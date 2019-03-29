@@ -20,11 +20,8 @@
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
 #if !NETSTANDARD1_3
-#region Usings
 
 using System.Net;
-
-#endregion
 
 namespace Dapplo.HttpExtensions.Factory
 {

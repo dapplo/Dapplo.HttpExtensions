@@ -3,19 +3,22 @@
     <Copyright>Copyright © Dapplo 2016-2018</Copyright>
     <Authors>Dapplo</Authors>
     <PackageIconUrl>http://www.dapplo.net/favicon.ico</PackageIconUrl>
-	<RepositoryUrl>https://github.com/dapplo/Dapplo.HttpExtensions</RepositoryUrl>
+    <RepositoryUrl>https://github.com/dapplo/Dapplo.HttpExtensions</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>http://www.dapplo.net/blocks/Dapplo.HttpExtensions/</PackageProjectUrl>
     <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
-	<LangVersion>latest</LangVersion>
-	<DisableImplicitFrameworkReferences Condition="'$(TargetFramework)' == 'net461' Or '$(TargetFramework)' == 'net471'">true</DisableImplicitFrameworkReferences>
+    <LangVersion>latest</LangVersion>
+    <!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <!-- Optional: Embed source files that are not tracked by the source control manager in the PDB -->
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <DisableImplicitFrameworkReferences Condition="'$(TargetFramework)' == 'net461' Or '$(TargetFramework)' == 'net471'">true</DisableImplicitFrameworkReferences>
   </PropertyGroup>
 
   <PropertyGroup Condition="!$(MSBuildProjectName.Contains('Tests')) And !$(MSBuildProjectName.Contains('Example'))">
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-	<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-	<IsPackable>true</IsPackable>
-	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IsPackable>true</IsPackable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(TargetFramework)' == 'net461' Or '$(TargetFramework)' == 'net471'">
@@ -26,7 +29,7 @@
   
   <PropertyGroup Condition="$(MSBuildProjectName.Contains('Tests')) Or $(MSBuildProjectName.Contains('Example'))">
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
-	<IsPackable>false</IsPackable>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>  
 	
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
@@ -38,12 +41,12 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-	<Optimize>true</Optimize>
-	<DebugType>embedded</DebugType>
+    <Optimize>true</Optimize>
+    <DebugType>embedded</DebugType>
     <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
   
-  <ItemGroup Condition="!$(MSBuildProjectName.Contains('Test')) And !$(MSBuildProjectName.Contains('Example'))">
+  <ItemGroup Condition="!$(MSBuildProjectName.Contains('Test'))">
     <PackageReference Include="Nerdbank.GitVersioning" Version="2.3.167">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>

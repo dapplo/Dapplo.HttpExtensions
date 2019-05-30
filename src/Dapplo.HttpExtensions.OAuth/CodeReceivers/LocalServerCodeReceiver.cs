@@ -129,7 +129,6 @@ The authentication process received information from CloudServiceName. You can c
             // Open the url in the default browser
             var processStartInfo = new ProcessStartInfo(authorizationUrl.AbsoluteUri)
             {
-                CreateNoWindow = true,
                 UseShellExecute = true
             };
             Process.Start(processStartInfo);

@@ -12,10 +12,10 @@
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Dapplo.Log" Version="1.3.21" />
-    <PackageReference Include="Dapplo.Windows" Version="0.8.36" />
-    <PackageReference Include="Dapplo.Windows.Dpi" Version="0.8.36" />
-    <PackageReference Include="Dapplo.Windows.EmbeddedBrowser" Version="0.8.36" />
+    <PackageReference Include="Dapplo.Log" Version="1.3.26" />
+    <PackageReference Include="Dapplo.Windows" Version="0.9.7" />
+    <PackageReference Include="Dapplo.Windows.Dpi" Version="0.9.7" />
+    <PackageReference Include="Dapplo.Windows.EmbeddedBrowser" Version="0.9.7" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Dapplo.HttpExtensions\Dapplo.HttpExtensions.csproj" />

@@ -1,9 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <Description>Tests for Dapplo.HttpExtensions</Description>
     <AssemblyTitle>Dapplo.HttpExtensions.Tests</AssemblyTitle>
     <TargetFrameworks>netcoreapp3.0</TargetFrameworks>
     <AssemblyName>Dapplo.HttpExtensions.Tests</AssemblyName>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />

@@ -97,7 +97,7 @@ namespace Dapplo.HttpExtensions.OAuth.CodeReceivers
 
             Log.Debug().WriteLine("Waiting until a window gets a title with the state {0}", codeReceiverSettings.State);
             // Wait until a window get's a title which contains the state object
-            var title = await WinEventHook.WindowTileChangeObservable()
+            var title = await WinEventHook.WindowTitleChangeObservable()
                 .Select(info => InteropWindowFactory.CreateFor(info.Handle).Fill())
                 .Where(interopWindow => !string.IsNullOrEmpty(interopWindow?.Caption))
                 .Where(interopWindow => interopWindow.Caption.Contains(codeReceiverSettings.State))

@@ -43,7 +43,7 @@ namespace Dapplo.HttpExtensions
         /// </summary>
         public static IList<IHttpContentConverter> HttpContentConverters { get; set; } = new List<IHttpContentConverter>
         {
-#if NET461
+#if NET461 || NETCOREAPP3_0
             BitmapHttpContentConverter.Instance.Value,
             BitmapSourceHttpContentConverter.Instance.Value,
 #endif

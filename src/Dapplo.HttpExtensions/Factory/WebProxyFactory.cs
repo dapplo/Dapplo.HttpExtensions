@@ -22,6 +22,9 @@
 #if !NETSTANDARD1_3
 
 using System.Net;
+#if NETCOREAPP3_0
+using System.Net.Http;
+#endif
 
 namespace Dapplo.HttpExtensions.Factory
 {
@@ -45,8 +48,13 @@ namespace Dapplo.HttpExtensions.Factory
             {
                 return null;
             }
-            var proxyToUse = httpSettings.UseDefaultProxy
-                ? WebRequest.GetSystemWebProxy()
+
+            var proxyToUse = httpSettings.UseDefaultProxy ?
+#if NETCOREAPP3_0
+                HttpClient.DefaultProxy
+#else
+                WebRequest.GetSystemWebProxy()
+#endif
                 : new WebProxy(httpSettings.ProxyUri, httpSettings.ProxyBypassOnLocal, httpSettings.ProxyBypassList);
             if (httpSettings.UseDefaultCredentialsForProxy)
             {
@@ -57,7 +65,14 @@ namespace Dapplo.HttpExtensions.Factory
                 }
                 else
                 {
-                    proxyToUse.Credentials = CredentialCache.DefaultCredentials;
+#if NETCOREAPP3_0
+                    if (!httpSettings.UseDefaultProxy)
+                    {
+                        proxyToUse.Credentials = CredentialCache.DefaultCredentials;
+                    }
+#else
+                        proxyToUse.Credentials = CredentialCache.DefaultCredentials;
+#endif
                 }
             }
             else
@@ -73,7 +88,7 @@ namespace Dapplo.HttpExtensions.Factory
                     proxyToUse.Credentials = httpSettings.ProxyCredentials;
                 }
             }
-            return proxyToUse;
+                    return proxyToUse;
         }
     }
 }

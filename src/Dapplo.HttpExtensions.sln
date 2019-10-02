@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29324.140
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dapplo.HttpExtensions", "Dapplo.HttpExtensions\Dapplo.HttpExtensions.csproj", "{B3CD22AA-764E-4EF3-AA9D-FD6879518505}"
 EndProject
@@ -25,6 +25,8 @@ Global
 		{B3CD22AA-764E-4EF3-AA9D-FD6879518505}.Release|Any CPU.Build.0 = Release|Any CPU
 		{03AB37FF-1220-4ECE-9964-FA6070C778D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{03AB37FF-1220-4ECE-9964-FA6070C778D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03AB37FF-1220-4ECE-9964-FA6070C778D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03AB37FF-1220-4ECE-9964-FA6070C778D3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7926C6FC-F8D4-48E1-AD0F-B2887CF8D1A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7926C6FC-F8D4-48E1-AD0F-B2887CF8D1A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7926C6FC-F8D4-48E1-AD0F-B2887CF8D1A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -40,5 +42,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4ACBA968-C79C-4D89-AB8F-4029D63F3290}
 	EndGlobalSection
 EndGlobal

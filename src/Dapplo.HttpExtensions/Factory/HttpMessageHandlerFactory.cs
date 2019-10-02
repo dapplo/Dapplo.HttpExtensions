@@ -19,8 +19,6 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region Usings
-
 using System.Net;
 using System.Net.Http;
 using System.Net.Security;
@@ -29,8 +27,6 @@ using Dapplo.Log;
 #if NET461
 using System.Net.Cache;
 #endif
-
-#endregion
 
 namespace Dapplo.HttpExtensions.Factory
 {
@@ -48,10 +44,10 @@ namespace Dapplo.HttpExtensions.Factory
         /// <returns>HttpMessageHandler (HttpClientHandler)</returns>
         private static HttpMessageHandler CreateHandler()
         {
-#if !NET461
-            var httpClientHandler = new HttpClientHandler();
-#else
+#if NET461
             var httpClientHandler = new WebRequestHandler();
+#else
+            var httpClientHandler = new HttpClientHandler();
 #endif
             var httpBehaviour = HttpBehaviour.Current;
             var httpSettings = httpBehaviour.HttpSettings ?? HttpExtensionsGlobals.HttpSettings;
@@ -68,7 +64,6 @@ namespace Dapplo.HttpExtensions.Factory
 #endif
 
             httpClientHandler.AutomaticDecompression = httpSettings.DefaultDecompressionMethods;
-
             httpClientHandler.AllowAutoRedirect = httpSettings.AllowAutoRedirect;
             httpClientHandler.AutomaticDecompression = httpSettings.DefaultDecompressionMethods;
             httpClientHandler.ClientCertificateOptions = httpSettings.ClientCertificateOptions;

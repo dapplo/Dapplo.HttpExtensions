@@ -19,9 +19,7 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#if NET461
-
-#region Usings
+#if NET461 || NETCOREAPP3_0
 
 using System;
 using System.IO;
@@ -33,8 +31,6 @@ using System.Windows.Media.Imaging;
 using Dapplo.HttpExtensions.Extensions;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.Log;
-
-#endregion
 
 namespace Dapplo.HttpExtensions.ContentConverter
 {

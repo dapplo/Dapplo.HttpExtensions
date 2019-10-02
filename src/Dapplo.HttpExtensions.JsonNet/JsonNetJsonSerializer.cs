@@ -19,8 +19,6 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region Usings
-
 using System;
 using System.IO;
 using System.Linq;
@@ -29,8 +27,6 @@ using Newtonsoft.Json;
 using System.Drawing;
 using System.Windows.Media.Imaging;
 #endif
-
-#endregion
 
 namespace Dapplo.HttpExtensions.JsonNet
 {

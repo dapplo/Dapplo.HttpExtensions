@@ -53,8 +53,6 @@
 #define SIMPLE_JSON_TYPEINFO
 #endif
 
-#region Usings
-
 using System;
 using System.CodeDom.Compiler;
 using System.Collections;
@@ -70,8 +68,6 @@ using System.Text.RegularExpressions;
 #endif
 #if SIMPLE_JSON_DYNAMIC
 #endif
-
-#endregion
 
 // ReSharper disable LoopCanBeConvertedToQuery
 // ReSharper disable RedundantExplicitArrayCreation

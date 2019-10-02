@@ -19,8 +19,6 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region Usings
-
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -35,8 +33,6 @@ using Dapplo.HttpExtensions.Extensions;
 using Dapplo.HttpExtensions.Factory;
 using Dapplo.HttpExtensions.OAuth.CodeReceivers;
 using Dapplo.Log;
-
-#endregion
 
 namespace Dapplo.HttpExtensions.OAuth
 {
@@ -440,8 +436,11 @@ namespace Dapplo.HttpExtensions.OAuth
                     // Generate Signature and add it to the parameters
                     var keySha1 = string.Format(CultureInfo.InvariantCulture, "{0}&{1}", Uri.EscapeDataString(_oAuth1Settings.ClientSecret), Uri.EscapeDataString(secret));
                     Log.Verbose().WriteLine("Signing with key {0}", keySha1);
-                    var hmacsha1 = new HMACSHA1 {Key = Encoding.UTF8.GetBytes(keySha1)};
-                    var signature = ComputeHash(hmacsha1, signatureBase.ToString());
+                    string signature;
+                    using (var hashAlgorithm = new HMACSHA1 {Key = Encoding.UTF8.GetBytes(keySha1)})
+                    {
+                        signature = ComputeHash(hashAlgorithm, signatureBase.ToString());
+                    }
                     parameters.Add(OAuth1Parameters.Signature.EnumValueOf(), signature);
                     break;
                 default:
@@ -471,9 +470,9 @@ namespace Dapplo.HttpExtensions.OAuth
                 {
                     var requestObject = httpRequestMessage.Properties[propertyName];
                     var formattedKey = $"\"{propertyName}\"";
-                    if (requestObject is HttpContent)
+                    if (requestObject is HttpContent httpContent)
                     {
-                        multipartFormDataContent.Add(requestObject as HttpContent, formattedKey);
+                        multipartFormDataContent.Add(httpContent, formattedKey);
                     }
                     else
                     {

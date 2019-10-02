@@ -19,18 +19,16 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region Usings
-
 using System;
 using System.Drawing;
+#if NET461
 using System.Net.Cache;
+#endif
 using System.Threading.Tasks;
 using Dapplo.Log;
 using Dapplo.Log.XUnit;
 using Xunit;
 using Xunit.Abstractions;
-
-#endregion
 
 namespace Dapplo.HttpExtensions.Tests
 {
@@ -44,7 +42,9 @@ namespace Dapplo.HttpExtensions.Tests
         public HttpBehaviourExtensionsTests(ITestOutputHelper testOutputHelper)
         {
             LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
+#if NET461
             HttpExtensionsGlobals.HttpSettings.RequestCacheLevel = RequestCacheLevel.NoCacheNoStore;
+#endif
         }
 
         /// <summary>

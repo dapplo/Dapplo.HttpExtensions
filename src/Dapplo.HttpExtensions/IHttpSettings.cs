@@ -19,8 +19,6 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region Usings
-
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -33,8 +31,6 @@ using System.Security.Cryptography.X509Certificates;
 using System.Net.Cache;
 using System.Security.Principal;
 #endif
-
-#endregion
 
 namespace Dapplo.HttpExtensions
 {
@@ -183,7 +179,7 @@ namespace Dapplo.HttpExtensions
         [IgnoreDataMember]
         X509CertificateCollection ClientCertificates { get; set; }
 
-#if NETSTANDARD1_3 || NETSTANDARD2_0
+#if NETSTANDARD1_3 || NETSTANDARD2_0 || NETCOREAPP3_0
         /// <summary>
         ///     For more details, click
         ///     <a href="https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpclienthandler.maxconnectionsperserver">here</a>
@@ -193,7 +189,7 @@ namespace Dapplo.HttpExtensions
         int MaxConnectionsPerServer { get; set; }
 
 #endif
-#if NET461 || NETSTANDARD2_0
+#if NET461 || NETSTANDARD2_0 || NETCOREAPP3_0
         /// <summary>
         ///     The Uri for the proxy to use, when the UseDefaultProxy is set to false
         /// </summary>
@@ -261,7 +257,6 @@ namespace Dapplo.HttpExtensions
         [DataMember(EmitDefaultValue = true)]
         RequestCacheLevel RequestCacheLevel { get; set; }
 
-    
         /// <summary>
         ///     For more details, click
         ///     <a href="https://msdn.microsoft.com/en-us/library/system.net.http.webrequesthandler.readwritetimeout.aspx">here</a>

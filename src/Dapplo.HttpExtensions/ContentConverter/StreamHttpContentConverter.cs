@@ -19,10 +19,6 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region using
-
-#region Usings
-
 using System;
 using System.IO;
 using System.Net.Http;
@@ -31,14 +27,10 @@ using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.Log;
 
-#endregion
-
 #if NETSTANDARD1_3
 using System.Reflection;
 
 #endif
-
-#endregion
 
 namespace Dapplo.HttpExtensions.ContentConverter
 {

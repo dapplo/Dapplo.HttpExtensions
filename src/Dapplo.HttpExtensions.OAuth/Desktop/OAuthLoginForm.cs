@@ -19,8 +19,6 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region Usings
-
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -29,8 +27,6 @@ using Dapplo.Log;
 using Dapplo.Windows.Dpi.Forms;
 using Dapplo.Windows.EmbeddedBrowser;
 using Dapplo.Windows.User32;
-
-#endregion
 
 namespace Dapplo.HttpExtensions.OAuth.Desktop
 {

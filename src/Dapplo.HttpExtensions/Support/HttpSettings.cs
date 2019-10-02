@@ -19,8 +19,6 @@
 //  You should have a copy of the GNU Lesser General Public License
 //  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
-#region Usings
-
 using System;
 using System.Net;
 using System.Net.Http;
@@ -32,8 +30,6 @@ using System.Text;
 using System.Net.Cache;
 using System.Security.Principal;
 #endif
-
-#endregion
 
 namespace Dapplo.HttpExtensions.Support
 {
@@ -124,13 +120,13 @@ namespace Dapplo.HttpExtensions.Support
         /// <inheritdoc />
         public bool IgnoreSslCertificateErrors { get; set; } = false;
 
-#if NETSTANDARD1_3 || NETSTANDARD2_0
+#if NETSTANDARD1_3 || NETSTANDARD2_0 || NETCOREAPP3_0
         /// <inheritdoc />
         public int MaxConnectionsPerServer { get; set; } = int.MaxValue;
 #endif
 
-#if NET461 || NETSTANDARD2_0
-        
+#if NET461 || NETSTANDARD2_0 || NETCOREAPP3_0
+
         /// <inheritdoc />
         public Uri ProxyUri { get; set; }
     

@@ -4,18 +4,18 @@
 using System;
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json;
+using System.Text.Json;
 #if NET461
 using System.Drawing;
 using System.Windows.Media.Imaging;
 #endif
 
-namespace Dapplo.HttpExtensions.JsonNet
+namespace Dapplo.HttpExtensions.SystemTextJson
 {
     /// <summary>
-    ///     Made to have Dapplo.HttpExtension use Json.NET
+    ///     Made to have Dapplo.HttpExtension use System.Text.Json
     /// </summary>
-    public class JsonNetJsonSerializer : IJsonSerializer
+    public class SystemTextJsonSerializer : IJsonSerializer
     {
         private static readonly Type[] NotSerializableTypes =
         {
@@ -35,19 +35,16 @@ namespace Dapplo.HttpExtensions.JsonNet
         {
             if (force || HttpExtensionsGlobals.JsonSerializer != null)
             {
-                HttpExtensionsGlobals.JsonSerializer = new JsonNetJsonSerializer();
+                HttpExtensionsGlobals.JsonSerializer = new SystemTextJsonSerializer();
             }
         }
 
         /// <summary>
-        ///     The JsonSerializerSettings used in the JsonNetJsonSerializer
+        ///     The JsonSerializerOptions used in the JsonSerializer
         /// </summary>
-        public JsonSerializerSettings Settings { get; set; } = new JsonSerializerSettings
+        public JsonSerializerOptions Options { get; set; } = new JsonSerializerOptions
         {
-            DateParseHandling = DateParseHandling.None,
-            NullValueHandling = NullValueHandling.Ignore,
-            DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate,
-            ContractResolver = new ReadOnlyConsideringContractResolver()
+            IgnoreNullValues = true, PropertyNameCaseInsensitive = true
         };
 
 
@@ -74,23 +71,23 @@ namespace Dapplo.HttpExtensions.JsonNet
         /// <summary>
         /// Deserialize the specified json string into the target type
         /// </summary>
-        /// <param name="targetType"></param>
-        /// <param name="jsonString"></param>
-        /// <returns></returns>
+        /// <param name="targetType">Type</param>
+        /// <param name="jsonString">string</param>
+        /// <returns>object</returns>
         public object Deserialize(Type targetType, string jsonString)
         {
-            return JsonConvert.DeserializeObject(jsonString, targetType, Settings);
+            return JsonSerializer.Deserialize(jsonString, targetType, Options);
         }
 
         /// <summary>
         /// Serialize the passed object into a json string
         /// </summary>
-        /// <param name="jsonObject"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
+        /// <param name="jsonObject">object of type T</param>
+        /// <typeparam name="T">type for the object to serialize</typeparam>
+        /// <returns>string</returns>
         public string Serialize<T>(T jsonObject)
         {
-            return JsonConvert.SerializeObject(jsonObject, Settings);
+            return JsonSerializer.Serialize(jsonObject, Options);
         }
     }
 }

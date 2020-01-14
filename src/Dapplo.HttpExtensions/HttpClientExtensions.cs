@@ -1,23 +1,5 @@
-﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016-2019 Dapplo
-// 
-//  For more information see: http://dapplo.net/
-//  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
-// 
-//  This file is part of Dapplo.HttpExtensions
-// 
-//  Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU Lesser General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-// 
-//  Dapplo.HttpExtensions is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU Lesser General Public License for more details.
-// 
-//  You should have a copy of the GNU Lesser General Public License
-//  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
+﻿// Copyright (c) Dapplo and contributors. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
 using System.Net.Http;
@@ -68,10 +50,8 @@ namespace Dapplo.HttpExtensions
                 throw new ArgumentNullException(nameof(uri));
             }
 
-            using (var httpRequestMessage = HttpRequestMessageFactory.CreateDelete<TResponse>(uri))
-            {
-                return await httpRequestMessage.SendAsync<TResponse>(httpClient, cancellationToken).ConfigureAwait(false);
-            }
+            using var httpRequestMessage = HttpRequestMessageFactory.CreateDelete<TResponse>(uri);
+            return await httpRequestMessage.SendAsync<TResponse>(httpClient, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -88,10 +68,8 @@ namespace Dapplo.HttpExtensions
                 throw new ArgumentNullException(nameof(uri));
             }
 
-            using (var httpRequestMessage = HttpRequestMessageFactory.CreateDelete(uri))
-            {
-                await httpRequestMessage.SendAsync(httpClient, cancellationToken).ConfigureAwait(false);
-            }
+            using var httpRequestMessage = HttpRequestMessageFactory.CreateDelete(uri);
+            await httpRequestMessage.SendAsync(httpClient, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -113,21 +91,19 @@ namespace Dapplo.HttpExtensions
             }
             var httpBehaviour = HttpBehaviour.Current;
 
-            using (var httpRequestMessage = HttpRequestMessageFactory.CreateGet<TResponse>(uri))
+            using var httpRequestMessage = HttpRequestMessageFactory.CreateGet<TResponse>(uri);
+            var httpResponseMessage = await client.SendAsync(httpRequestMessage, httpBehaviour.HttpCompletionOption, cancellationToken).ConfigureAwait(false);
+            try
             {
-                var httpResponseMessage = await client.SendAsync(httpRequestMessage, httpBehaviour.HttpCompletionOption, cancellationToken).ConfigureAwait(false);
-                try
+                return await httpResponseMessage.GetAsAsync<TResponse>(cancellationToken).ConfigureAwait(false);
+            }
+            finally
+            {
+                var resultType = typeof(TResponse);
+                // Quick exit if the caller just wants the HttpResponseMessage
+                if (resultType != typeof(HttpResponseMessage))
                 {
-                    return await httpResponseMessage.GetAsAsync<TResponse>(cancellationToken).ConfigureAwait(false);
-                }
-                finally
-                {
-                    var resultType = typeof(TResponse);
-                    // Quick exit if the caller just wants the HttpResponseMessage
-                    if (resultType != typeof(HttpResponseMessage))
-                    {
-                        httpResponseMessage.Dispose();
-                    }
+                    httpResponseMessage.Dispose();
                 }
             }
         }
@@ -146,14 +122,11 @@ namespace Dapplo.HttpExtensions
                 throw new ArgumentNullException(nameof(uri));
             }
             Log.Verbose().WriteLine("Requesting headers for: {0}", uri);
-            using (var httpRequestMessage = HttpRequestMessageFactory.CreateHead(uri))
-            using (
-                var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken)
-                    .ConfigureAwait(false))
-            {
-                await httpResponseMessage.HandleErrorAsync().ConfigureAwait(false);
-                return httpResponseMessage.Content.Headers;
-            }
+            using var httpRequestMessage = HttpRequestMessageFactory.CreateHead(uri);
+            using var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken)
+                .ConfigureAwait(false);
+            await httpResponseMessage.HandleErrorAsync().ConfigureAwait(false);
+            return httpResponseMessage.Content.Headers;
         }
 
         /// <summary>
@@ -182,10 +155,8 @@ namespace Dapplo.HttpExtensions
                 Log.Warn().WriteLine("No content supplied, this is ok but unusual.");
             }
 
-            using (var httpRequestMessage = HttpRequestMessageFactory.CreatePatch<TResponse>(uri, content))
-            {
-                return await httpRequestMessage.SendAsync<TResponse>(httpClient, cancellationToken).ConfigureAwait(false);
-            }
+            using var httpRequestMessage = HttpRequestMessageFactory.CreatePatch<TResponse>(uri, content);
+            return await httpRequestMessage.SendAsync<TResponse>(httpClient, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -206,10 +177,8 @@ namespace Dapplo.HttpExtensions
                 Log.Warn().WriteLine("No content supplied, this is ok but unusual.");
             }
 
-            using (var httpRequestMessage = HttpRequestMessageFactory.CreatePatch(uri, content))
-            {
-                await httpRequestMessage.SendAsync(httpClient, cancellationToken).ConfigureAwait(false);
-            }
+            using var httpRequestMessage = HttpRequestMessageFactory.CreatePatch(uri, content);
+            await httpRequestMessage.SendAsync(httpClient, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -238,10 +207,8 @@ namespace Dapplo.HttpExtensions
                 Log.Warn().WriteLine("No content supplied, this is ok but unusual.");
             }
 
-            using (var httpRequestMessage = HttpRequestMessageFactory.CreatePost<TResponse>(uri, content))
-            {
-                return await httpRequestMessage.SendAsync<TResponse>(httpClient, cancellationToken).ConfigureAwait(false);
-            }
+            using var httpRequestMessage = HttpRequestMessageFactory.CreatePost<TResponse>(uri, content);
+            return await httpRequestMessage.SendAsync<TResponse>(httpClient, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -262,10 +229,8 @@ namespace Dapplo.HttpExtensions
                 Log.Warn().WriteLine("No content supplied, this is ok but unusual.");
             }
 
-            using (var httpRequestMessage = HttpRequestMessageFactory.CreatePost(uri, content))
-            {
-                await httpRequestMessage.SendAsync(httpClient, cancellationToken).ConfigureAwait(false);
-            }
+            using var httpRequestMessage = HttpRequestMessageFactory.CreatePost(uri, content);
+            await httpRequestMessage.SendAsync(httpClient, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -293,10 +258,8 @@ namespace Dapplo.HttpExtensions
                 Log.Warn().WriteLine("No content supplied, this is ok but unusual.");
             }
 
-            using (var httpRequestMessage = HttpRequestMessageFactory.CreatePut<TResponse>(uri, content))
-            {
-                return await httpRequestMessage.SendAsync<TResponse>(httpClient, cancellationToken).ConfigureAwait(false);
-            }
+            using var httpRequestMessage = HttpRequestMessageFactory.CreatePut<TResponse>(uri, content);
+            return await httpRequestMessage.SendAsync<TResponse>(httpClient, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -318,10 +281,8 @@ namespace Dapplo.HttpExtensions
                 Log.Warn().WriteLine("No content supplied, this is ok but unusual.");
             }
 
-            using (var httpRequestMessage = HttpRequestMessageFactory.CreatePut(uri, content))
-            {
-                await httpRequestMessage.SendAsync(httpClient, cancellationToken).ConfigureAwait(false);
-            }
+            using var httpRequestMessage = HttpRequestMessageFactory.CreatePut(uri, content);
+            await httpRequestMessage.SendAsync(httpClient, cancellationToken).ConfigureAwait(false);
         }
     }
 }

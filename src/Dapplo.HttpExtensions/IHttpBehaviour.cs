@@ -1,23 +1,5 @@
-//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016-2019 Dapplo
-// 
-//  For more information see: http://dapplo.net/
-//  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
-// 
-//  This file is part of Dapplo.HttpExtensions
-// 
-//  Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU Lesser General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-// 
-//  Dapplo.HttpExtensions is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU Lesser General Public License for more details.
-// 
-//  You should have a copy of the GNU Lesser General Public License
-//  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
+// Copyright (c) Dapplo and contributors. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
 using System.Collections.Generic;
@@ -97,7 +79,7 @@ namespace Dapplo.HttpExtensions
         /// <summary>
         ///     An Func which can modify the HttpRequestMessage right before it's used to start the request.
         ///     This can be used to add a specific header, which should not be for all requests.
-        ///     As the called func has access to HttpRequestMessage with the content, uri and method this is quite usefull, it can
+        ///     As the called func has access to HttpRequestMessage with the content, uri and method this is quite useful, it can
         ///     return a completely different HttpRequestMessage
         /// </summary>
         Func<HttpRequestMessage, HttpRequestMessage> OnHttpRequestMessageCreated { get; }
@@ -122,7 +104,7 @@ namespace Dapplo.HttpExtensions
         Action<float> UploadProgress { get; }
 
         /// <summary>
-        ///     Whenever a post is made to upload memorystream or bitmaps, this value is used to decide:
+        ///     Whenever a post is made to upload memory stream or bitmaps, this value is used to decide:
         ///     true: ProgressStream is used, instead of Stream
         /// </summary>
         bool UseProgressStream { get; }
@@ -134,7 +116,7 @@ namespace Dapplo.HttpExtensions
         bool ValidateResponseContentType { get; }
 
         /// <summary>
-        ///     This cookie container will be assed when creating the HttpMessageHandler and HttpSettings.UseCookies is true
+        ///     This cookie container will be assessed when creating the HttpMessageHandler and HttpSettings.UseCookies is true
         /// </summary>
         CookieContainer CookieContainer { get; }
 

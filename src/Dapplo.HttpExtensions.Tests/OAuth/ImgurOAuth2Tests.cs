@@ -1,23 +1,5 @@
-﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016-2019 Dapplo
-// 
-//  For more information see: http://dapplo.net/
-//  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
-// 
-//  This file is part of Dapplo.HttpExtensions
-// 
-//  Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU Lesser General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-// 
-//  Dapplo.HttpExtensions is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU Lesser General Public License for more details.
-// 
-//  You should have a copy of the GNU Lesser General Public License
-//  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
+﻿// Copyright (c) Dapplo and contributors. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
 using System.Collections.Generic;
@@ -87,28 +69,26 @@ namespace Dapplo.HttpExtensions.Tests.OAuth
         {
             var creditsUri = ApiUri.AppendSegments("3", "credits.json");
             _oAuthHttpBehaviour.MakeCurrent();
-            using (var client = HttpClientFactory.Create(creditsUri))
+            using var client = HttpClientFactory.Create(creditsUri);
+            var response = await client.GetAsync(creditsUri, token).ConfigureAwait(false);
+            await response.HandleErrorAsync().ConfigureAwait(false);
+            var creditsJson = await response.GetAsAsync<dynamic>(token).ConfigureAwait(false);
+            if ((creditsJson != null) && creditsJson.ContainsKey("data"))
             {
-                var response = await client.GetAsync(creditsUri, token).ConfigureAwait(false);
-                await response.HandleErrorAsync().ConfigureAwait(false);
-                var creditsJson = await response.GetAsAsync<dynamic>(token).ConfigureAwait(false);
-                if ((creditsJson != null) && creditsJson.ContainsKey("data"))
+                dynamic data = creditsJson.data;
+                if (data.ContainsKey("ClientRemaining"))
                 {
-                    dynamic data = creditsJson.data;
-                    if (data.ContainsKey("ClientRemaining"))
-                    {
-                        Log.Debug().WriteLine("{0}={1}", "ClientRemaining", (int)data.ClientRemaining);
-                        return (int)data.ClientRemaining;
-                    }
-                    if (data.ContainsKey("UserRemaining"))
-                    {
-                        Log.Debug().WriteLine("{0}={1}", "UserRemaining", (int)data.UserRemaining);
-                        return (int) data.UserRemaining;
-                    }
+                    Log.Debug().WriteLine("{0}={1}", "ClientRemaining", (int)data.ClientRemaining);
+                    return (int)data.ClientRemaining;
                 }
-
-                return -1;
+                if (data.ContainsKey("UserRemaining"))
+                {
+                    Log.Debug().WriteLine("{0}={1}", "UserRemaining", (int)data.UserRemaining);
+                    return (int) data.UserRemaining;
+                }
             }
+
+            return -1;
         }
 
         /// <summary>

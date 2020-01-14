@@ -1,23 +1,5 @@
-﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016-2019 Dapplo
-// 
-//  For more information see: http://dapplo.net/
-//  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
-// 
-//  This file is part of Dapplo.HttpExtensions
-// 
-//  Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU Lesser General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-// 
-//  Dapplo.HttpExtensions is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU Lesser General Public License for more details.
-// 
-//  You should have a copy of the GNU Lesser General Public License
-//  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
+﻿// Copyright (c) Dapplo and contributors. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 #if NET461 || NETCOREAPP3_0
 
@@ -73,23 +55,21 @@ namespace Dapplo.HttpExtensions.ContentConverter
             {
                 throw new NotSupportedException("CanConvertFromHttpContent resulted in false, this is not supposed to be called.");
             }
-            using (
-                var memoryStream =
-                    (MemoryStream)
-                    await StreamHttpContentConverter.Instance.Value.ConvertFromHttpContentAsync(typeof(MemoryStream), httpContent, cancellationToken)
-                        .ConfigureAwait(false))
-            {
-                Log.Debug().WriteLine("Creating a BitmapImage from the MemoryStream.");
-                var bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                bitmap.StreamSource = memoryStream;
-                bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                bitmap.EndInit();
 
-                // This is very important to make the bitmap usable in the UI thread:
-                bitmap.Freeze();
-                return bitmap;
-            }
+            using var memoryStream =
+                (MemoryStream)
+                await StreamHttpContentConverter.Instance.Value.ConvertFromHttpContentAsync(typeof(MemoryStream), httpContent, cancellationToken)
+                    .ConfigureAwait(false);
+            Log.Debug().WriteLine("Creating a BitmapImage from the MemoryStream.");
+            var bitmap = new BitmapImage();
+            bitmap.BeginInit();
+            bitmap.StreamSource = memoryStream;
+            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+            bitmap.EndInit();
+
+            // This is very important to make the bitmap usable in the UI thread:
+            bitmap.Freeze();
+            return bitmap;
         }
 
         /// <inheritdoc />

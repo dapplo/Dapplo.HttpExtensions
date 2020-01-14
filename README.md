@@ -2,7 +2,7 @@ dapplo.httpextensions
 =====================
 Work in progress
 
-- Documentation will arive [here](http://www.dapplo.net/blocks/Dapplo.HttpExtensions) some time in the future.
+- Documentation [here](http://www.dapplo.net/Dapplo.HttpExtensions)
 - Current build status: [![Build Status](https://dev.azure.com/Dapplo/Dapplo%20framework/_apis/build/status/dapplo.Dapplo.HttpExtensions?branchName=master)](https://dev.azure.com/Dapplo/Dapplo%20framework/_build/latest?definitionId=9&branchName=master)
 - Coverage Status: [![Coverage Status](https://coveralls.io/repos/github/dapplo/Dapplo.HttpExtensions/badge.svg?branch=master)](https://coveralls.io/github/dapplo/Dapplo.HttpExtensions?branch=master)
 - NuGet package: [![NuGet package](https://img.shields.io/nuget/v/Dapplo.HttpExtensions.svg)](https://www.nuget.org/packages/Dapplo.HttpExtensions)

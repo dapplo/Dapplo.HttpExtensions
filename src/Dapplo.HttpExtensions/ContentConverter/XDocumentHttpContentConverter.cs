@@ -1,23 +1,5 @@
-﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016-2019 Dapplo
-// 
-//  For more information see: http://dapplo.net/
-//  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
-// 
-//  This file is part of Dapplo.HttpExtensions
-// 
-//  Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU Lesser General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-// 
-//  Dapplo.HttpExtensions is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU Lesser General Public License for more details.
-// 
-//  You should have a copy of the GNU Lesser General Public License
-//  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
+﻿// Copyright (c) Dapplo and contributors. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 #if !NETSTANDARD1_3
 
@@ -65,10 +47,8 @@ namespace Dapplo.HttpExtensions.ContentConverter
             }
             Log.Debug().WriteLine("Retrieving the content as XDocument, Content-Type: {0}", httpContent.Headers.ContentType);
 
-            using (var contentStream = await httpContent.ReadAsStreamAsync().ConfigureAwait(false))
-            {
-                return XDocument.Load(contentStream);
-            }
+            using var contentStream = await httpContent.ReadAsStreamAsync().ConfigureAwait(false);
+            return XDocument.Load(contentStream);
         }
 
         /// <inheritdoc />
@@ -84,14 +64,13 @@ namespace Dapplo.HttpExtensions.ContentConverter
             {
                 return null;
             }
-            using (var stringWriter = new StringWriter())
-            using (var xmlTextWriter = new XmlTextWriter(stringWriter))
-            {
-                xDocument.WriteTo(xmlTextWriter);
-                var httpContent = new StringContent(stringWriter.ToString());
-                httpContent.SetContentType($"{MediaTypes.Xml.EnumValueOf()}; charset={stringWriter.Encoding.EncodingName}");
-                return httpContent;
-            }
+
+            using var stringWriter = new StringWriter();
+            using var xmlTextWriter = new XmlTextWriter(stringWriter);
+            xDocument.WriteTo(xmlTextWriter);
+            var httpContent = new StringContent(stringWriter.ToString());
+            httpContent.SetContentType($"{MediaTypes.Xml.EnumValueOf()}; charset={stringWriter.Encoding.EncodingName}");
+            return httpContent;
         }
 
         /// <inheritdoc />

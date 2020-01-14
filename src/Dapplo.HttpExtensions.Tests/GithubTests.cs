@@ -1,30 +1,14 @@
-﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016-2019 Dapplo
-// 
-//  For more information see: http://dapplo.net/
-//  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
-// 
-//  This file is part of Dapplo.HttpExtensions
-// 
-//  Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU Lesser General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-// 
-//  Dapplo.HttpExtensions is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU Lesser General Public License for more details.
-// 
-//  You should have a copy of the GNU Lesser General Public License
-//  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
+﻿// Copyright (c) Dapplo and contributors. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Dapplo.HttpExtensions.JsonNet;
 using Dapplo.HttpExtensions.JsonSimple;
+using Dapplo.HttpExtensions.SystemTextJson;
 using Dapplo.HttpExtensions.Tests.TestEntities;
 using Dapplo.Log;
 using Dapplo.Log.XUnit;
@@ -38,12 +22,26 @@ namespace Dapplo.HttpExtensions.Tests
     /// </summary>
     public class GithubTests
     {
+        private readonly Uri _releasesUri;
+
         public GithubTests(ITestOutputHelper testOutputHelper)
         {
             LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
-            SimpleJsonSerializer.RegisterGlobally();
+            //SystemTextJsonSerializer.RegisterGlobally();
+            //SimpleJsonSerializer.RegisterGlobally();
 
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+            var githubApiUri = new Uri("https://api.github.com");
+            _releasesUri = githubApiUri.AppendSegments("repos", "dapplo", "Dapplo.HttpExtensions", "releases");
+
+            // This is needed when running in AppVeyor, as AppVeyor has multiple request to GitHub, the rate-limit is exceeded.
+            var username = Environment.GetEnvironmentVariable("github_username");
+            var password = Environment.GetEnvironmentVariable("github_token");
+            if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
+            {
+                _releasesUri = _releasesUri.SetCredentials(username, password);
+            }
         }
 
         /// <summary>
@@ -51,20 +49,13 @@ namespace Dapplo.HttpExtensions.Tests
         /// </summary>
         /// <returns></returns>
         [Fact]
-        public async Task TestGetAsJsonAsync_GitHubApiReleases()
+        public async Task TestGetAsJsonAsync_GitHubApiReleases_SimpleJsonSerializer()
         {
-            var githubApiUri = new Uri("https://api.github.com");
-            var releasesUri = githubApiUri.AppendSegments("repos", "dapplo", "Dapplo.HttpExtensions", "releases");
+            var behaviour = HttpBehaviour.Current as IChangeableHttpBehaviour;
+            Assert.NotNull(behaviour);
+            behaviour.JsonSerializer = new SimpleJsonSerializer();
 
-            // This is needed when running in AppVeyor, as AppVeyor has multiple request to GitHub, the rate-limit is exceeded.
-            var username = Environment.GetEnvironmentVariable("github_username");
-            var password = Environment.GetEnvironmentVariable("github_token");
-            if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
-            {
-                releasesUri = releasesUri.SetCredentials(username, password);
-            }
-
-            var releases = await releasesUri.GetAsAsync<HttpResponse<List<GitHubRelease>, GitHubError>>();
+            var releases = await _releasesUri.GetAsAsync<HttpResponse<List<GitHubRelease>, GitHubError>>();
             Assert.NotNull(releases);
             Assert.False(releases.HasError, $"{releases.StatusCode}: {releases.ErrorResponse?.Message} {releases.ErrorResponse?.DocumentationUrl}");
 
@@ -73,6 +64,53 @@ namespace Dapplo.HttpExtensions.Tests
                 .OrderByDescending(x => x.PublishedAt)
                 .FirstOrDefault();
             Assert.NotNull(latestRelease);
+            Assert.NotEmpty(latestRelease.HtmlUrl);
+        }
+
+        /// <summary>
+        ///     To make sure we test some of the functionality, we call the GitHub API to get the releases for this project.
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task TestGetAsJsonAsync_GitHubApiReleases_SystemTextJsonSerializer()
+        {
+            var behaviour = HttpBehaviour.Current as IChangeableHttpBehaviour;
+            Assert.NotNull(behaviour);
+            behaviour.JsonSerializer = new SystemTextJsonSerializer();
+
+            var releases = await _releasesUri.GetAsAsync<HttpResponse<List<GitHubRelease>, GitHubError>>();
+            Assert.NotNull(releases);
+            Assert.False(releases.HasError, $"{releases.StatusCode}: {releases.ErrorResponse?.Message} {releases.ErrorResponse?.DocumentationUrl}");
+
+            var latestRelease = releases.Response
+                .Where(x => !x.Prerelease)
+                .OrderByDescending(x => x.PublishedAt)
+                .FirstOrDefault();
+            Assert.NotNull(latestRelease);
+            Assert.NotEmpty(latestRelease.HtmlUrl);
+        }
+
+        /// <summary>
+        ///     To make sure we test some of the functionality, we call the GitHub API to get the releases for this project.
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task TestGetAsJsonAsync_GitHubApiReleases_JsonNetJsonSerializer()
+        {
+            var behaviour = HttpBehaviour.Current as IChangeableHttpBehaviour;
+            Assert.NotNull(behaviour);
+            behaviour.JsonSerializer = new JsonNetJsonSerializer();
+
+            var releases = await _releasesUri.GetAsAsync<HttpResponse<List<GitHubRelease>, GitHubError>>();
+            Assert.NotNull(releases);
+            Assert.False(releases.HasError, $"{releases.StatusCode}: {releases.ErrorResponse?.Message} {releases.ErrorResponse?.DocumentationUrl}");
+
+            var latestRelease = releases.Response
+                .Where(x => !x.Prerelease)
+                .OrderByDescending(x => x.PublishedAt)
+                .FirstOrDefault();
+            Assert.NotNull(latestRelease);
+            Assert.NotEmpty(latestRelease.HtmlUrl);
         }
     }
 }

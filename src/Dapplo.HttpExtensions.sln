@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dapplo.HttpExtensions.JsonN
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dapplo.HttpExtensions.OAuth", "Dapplo.HttpExtensions.OAuth\Dapplo.HttpExtensions.OAuth.csproj", "{69948D3C-A983-4E71-A8D3-37BD904F9723}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dapplo.HttpExtensions.SystemTextJson", "Dapplo.HttpExtensions.SystemTextJson\Dapplo.HttpExtensions.SystemTextJson.csproj", "{6AF56316-CD64-4F15-9248-E2C0CD09BB42}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{69948D3C-A983-4E71-A8D3-37BD904F9723}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69948D3C-A983-4E71-A8D3-37BD904F9723}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69948D3C-A983-4E71-A8D3-37BD904F9723}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AF56316-CD64-4F15-9248-E2C0CD09BB42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AF56316-CD64-4F15-9248-E2C0CD09BB42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AF56316-CD64-4F15-9248-E2C0CD09BB42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AF56316-CD64-4F15-9248-E2C0CD09BB42}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

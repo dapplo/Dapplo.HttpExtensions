@@ -1,23 +1,5 @@
-﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016-2019 Dapplo
-// 
-//  For more information see: http://dapplo.net/
-//  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
-// 
-//  This file is part of Dapplo.HttpExtensions
-// 
-//  Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU Lesser General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-// 
-//  Dapplo.HttpExtensions is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU Lesser General Public License for more details.
-// 
-//  You should have a copy of the GNU Lesser General Public License
-//  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
+﻿// Copyright (c) Dapplo and contributors. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 #if NET461 || NETSTANDARD2_0 || NETCOREAPP3_0
 
@@ -56,49 +38,47 @@ namespace Dapplo.HttpExtensions.Listener
             // ReSharper disable once UnusedVariable
             var listenTask = Task.Factory.StartNew(async () =>
             {
-                using (var httpListener = new HttpListener())
+                using var httpListener = new HttpListener();
+                try
                 {
-                    try
+                    // Add the URI to listen to, this SHOULD be localhost to prevent a lot of problemens with rights
+                    httpListener.Prefixes.Add(listenUriString);
+                    // Start listening
+                    httpListener.Start();
+                    Log.Debug().WriteLine("Started listening on {0}", listenUriString);
+
+                    // Make the listener stop if the token is cancelled.
+                    // This registratrion is disposed before the httpListener is disposed:
+                    // ReSharper disable once AccessToDisposedClosure
+                    var cancellationTokenRegistration = cancellationToken.Register(() => { httpListener.Stop(); });
+
+                    // Get the context
+                    var httpListenerContext = await httpListener.GetContextAsync().ConfigureAwait(false);
+
+                    // Call the httpListenerContextHandler with the context we got for the result
+                    var result = await httpListenerContextHandler(httpListenerContext).ConfigureAwait(false);
+
+                    // Dispose the registration, so the stop isn't called on a disposed httpListener
+                    cancellationTokenRegistration.Dispose();
+
+                    // Set the result to the TaskCompletionSource, so the await on the task finishes
+                    taskCompletionSource.TrySetResult(result);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error().WriteLine(ex, "Error while wait for or processing a request");
+
+                    // Check if cancel was requested, is so set the taskCompletionSource as cancelled
+                    if (cancellationToken.IsCancellationRequested)
                     {
-                        // Add the URI to listen to, this SHOULD be localhost to prevent a lot of problemens with rights
-                        httpListener.Prefixes.Add(listenUriString);
-                        // Start listening
-                        httpListener.Start();
-                        Log.Debug().WriteLine("Started listening on {0}", listenUriString);
-
-                        // Make the listener stop if the token is cancelled.
-                        // This registratrion is disposed before the httpListener is disposed:
-                        // ReSharper disable once AccessToDisposedClosure
-                        var cancellationTokenRegistration = cancellationToken.Register(() => { httpListener.Stop(); });
-
-                        // Get the context
-                        var httpListenerContext = await httpListener.GetContextAsync().ConfigureAwait(false);
-
-                        // Call the httpListenerContextHandler with the context we got for the result
-                        var result = await httpListenerContextHandler(httpListenerContext).ConfigureAwait(false);
-
-                        // Dispose the registration, so the stop isn't called on a disposed httpListener
-                        cancellationTokenRegistration.Dispose();
-
-                        // Set the result to the TaskCompletionSource, so the await on the task finishes
-                        taskCompletionSource.TrySetResult(result);
+                        taskCompletionSource.TrySetCanceled();
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        Log.Error().WriteLine(ex, "Error while wait for or processing a request");
-
-                        // Check if cancel was requested, is so set the taskCompletionSource as cancelled
-                        if (cancellationToken.IsCancellationRequested)
-                        {
-                            taskCompletionSource.TrySetCanceled();
-                        }
-                        else
-                        {
-                            // Not cancelled, so we use the exception
-                            taskCompletionSource.TrySetException(ex);
-                        }
-                        throw;
+                        // Not cancelled, so we use the exception
+                        taskCompletionSource.TrySetException(ex);
                     }
+                    throw;
                 }
             }, cancellationToken, TaskCreationOptions.LongRunning, TaskScheduler.Default).ConfigureAwait(false);
 

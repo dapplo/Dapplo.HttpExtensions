@@ -1,23 +1,5 @@
-﻿//  Dapplo - building blocks for desktop applications
-//  Copyright (C) 2016-2019 Dapplo
-// 
-//  For more information see: http://dapplo.net/
-//  Dapplo repositories are hosted on GitHub: https://github.com/dapplo
-// 
-//  This file is part of Dapplo.HttpExtensions
-// 
-//  Dapplo.HttpExtensions is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU Lesser General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-// 
-//  Dapplo.HttpExtensions is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU Lesser General Public License for more details.
-// 
-//  You should have a copy of the GNU Lesser General Public License
-//  along with Dapplo.HttpExtensions. If not, see <http://www.gnu.org/licenses/lgpl.txt>.
+﻿// Copyright (c) Dapplo and contributors. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 #if NET461 || NETSTANDARD2_0 || NETCOREAPP3_0
 
@@ -61,24 +43,20 @@ namespace Dapplo.HttpExtensions.Listener
                 httpContent = HttpContentFactory.Create(content);
             }
 
-            using (var response = httpListenerContext.Response)
+            using var response = httpListenerContext.Response;
+            if (httpContent is null)
             {
-                if (httpContent is null)
-                {
-                    Log.Error().WriteLine("Nothing to respond with...");
-                    response.StatusCode = (int) HttpStatusCode.InternalServerError;
-                    return;
-                }
-                // Write to response stream.
-                response.ContentLength64 = httpContent.Headers?.ContentLength ?? 0;
-                response.ContentType = httpContent.GetContentType();
-                response.StatusCode = (int) HttpStatusCode.OK;
-                Log.Debug().WriteLine("Responding with {0}", response.ContentType);
-                using (var stream = response.OutputStream)
-                {
-                    await httpContent.CopyToAsync(stream).ConfigureAwait(false);
-                }
+                Log.Error().WriteLine("Nothing to respond with...");
+                response.StatusCode = (int) HttpStatusCode.InternalServerError;
+                return;
             }
+            // Write to response stream.
+            response.ContentLength64 = httpContent.Headers?.ContentLength ?? 0;
+            response.ContentType = httpContent.GetContentType();
+            response.StatusCode = (int) HttpStatusCode.OK;
+            Log.Debug().WriteLine("Responding with {0}", response.ContentType);
+            using var stream = response.OutputStream;
+            await httpContent.CopyToAsync(stream).ConfigureAwait(false);
         }
     }
 }

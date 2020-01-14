@@ -47,7 +47,7 @@ stages:
         arguments: '--configuration $(buildConfiguration) /p:Platform="$(buildPlatform)"'
 
     - task: CopyFiles@2
-      displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+      displayName: 'Copy Files to ArtifactStagingDirectory'
       inputs:
         SourceFolder: '$(System.DefaultWorkingDirectory)'
         Contents: |
@@ -71,7 +71,7 @@ stages:
       displayName: "docfx build"
 
     - task: CopyFiles@2
-      displayName: 'Copy generated documentation to: $(Build.ArtifactStagingDirectory)/site'
+      displayName: 'Copy generated documentation to ArtifactStagingDirectory'
       inputs:
         SourceFolder: '$(System.DefaultWorkingDirectory)/doc/_site'
         TargetFolder: '$(Build.ArtifactStagingDirectory)/site'
@@ -79,7 +79,7 @@ stages:
     - publish: $(Build.ArtifactStagingDirectory)
       artifact: drop
 
-    - powershell: |
+    - script: |
         git config --local user.name "Robin Krom"
         git config --local user.email robin@dapplo.net
         git config --local core.autocrlf false
@@ -87,15 +87,18 @@ stages:
         # Create a branch to work in
         git checkout -b docfx
         # Remove the .gitignore to make sure this doesn't cause issues
-        del $(System.DefaultWorkingDirectory)/.gitignore
+        del %DefaultWorkingDirectory%/.gitignore
         # Add all the files from the generated document, ignore warnings
-        git add $(System.DefaultWorkingDirectory)/doc/_site 2>&1 | %{ "$_" }
-        git commit -m "Generated documentation for $env:Build.BuildNumber"
+        git add $(System.DefaultWorkingDirectory)/doc/_site
+        git commit -m "Generated documentation for %BuildNumber%"
         # create a local gh-pages branch containing the splitted output folder
         git subtree split --prefix doc/_site -b gh-pages
         # force the push of the gh-pages branch to the remote gh-pages branch at origin
         git push -f origin gh-pages:gh-pages
       condition: ne(variables['Build.Reason'], 'PullRequest')
+      env:
+        BuildNumber: $(Build.BuildNumber)
+        WorkingDirectory: $(System.DefaultWorkingDirectory)
       displayName: "docfx publish"
 
 - stage: Deploy

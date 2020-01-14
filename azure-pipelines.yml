@@ -80,6 +80,7 @@ stages:
       artifact: drop
 
     - script: |
+        @echo on
         git config --local user.name "Robin Krom"
         git config --local user.email robin@dapplo.net
         git config --local core.autocrlf false
@@ -92,7 +93,7 @@ stages:
         git add doc/_site
         git commit -m "Generated documentation for %BuildNumber%"
         rem create a local gh-pages branch containing the splitted output folder
-        git subtree split --prefix doc/_site -b gh-pages HEAD~4
+        git subtree split --prefix doc/_site -b gh-pages
         rem force the push of the gh-pages branch to the remote gh-pages branch at origin
         git push -f origin gh-pages:gh-pages
       condition: ne(variables['Build.Reason'], 'PullRequest')

@@ -80,12 +80,16 @@ stages:
       artifact: drop
 
     - powershell: |
+        git config --local user.name "Robin Krom"
+        git config --local user.email robin@dapplo.net
+        git config --local core.autocrlf false
+        git config --local core.safecrlf false
         # Create a branch to work in
         git checkout -b docfx
         # Remove the .gitignore to make sure this doesn't cause issues
         del $(System.DefaultWorkingDirectory)/.gitignore
-        # Add all the files from the generated document
-        git add $(System.DefaultWorkingDirectory)/doc/_site
+        # Add all the files from the generated document, ignore warnings
+        git add $(System.DefaultWorkingDirectory)/doc/_site 2>&1 | %{ "$_" }
         git commit -m "Generated documentation for $env:Build.BuildNumber"
         # create a local gh-pages branch containing the splitted output folder
         git subtree split --prefix doc/_site -b gh-pages

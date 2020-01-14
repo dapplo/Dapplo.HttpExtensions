@@ -92,6 +92,7 @@ stages:
         # force the push of the gh-pages branch to the remote gh-pages branch at origin
         git push -f origin gh-pages:gh-pages
       condition: ne(variables['Build.Reason'], 'PullRequest')
+      displayName: "docfx publish"
 
 - stage: Deploy
   jobs:

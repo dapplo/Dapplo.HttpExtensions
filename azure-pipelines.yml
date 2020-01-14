@@ -24,6 +24,9 @@ stages:
       buildConfiguration: 'Release'
 
     steps:
+    - checkout: self
+      persistCredentials: true
+  
     - task: NuGetToolInstaller@1
 
     - task: UseDotNet@2

@@ -84,16 +84,16 @@ stages:
         git config --local user.email robin@dapplo.net
         git config --local core.autocrlf false
         git config --local core.safecrlf false
-        # Create a branch to work in
+        rem Create a branch to work in
         git checkout -b docfx
-        # Remove the .gitignore to make sure this doesn't cause issues
-        del %DefaultWorkingDirectory%/.gitignore
-        # Add all the files from the generated document, ignore warnings
-        git add $(System.DefaultWorkingDirectory)/doc/_site
+        rem Remove the .gitignore to make sure this doesn't cause issues
+        del "%DefaultWorkingDirectory%/.gitignore"
+        rem Add all the files from the generated document, ignore warnings
+        git add "$(System.DefaultWorkingDirectory)/doc/_site"
         git commit -m "Generated documentation for %BuildNumber%"
-        # create a local gh-pages branch containing the splitted output folder
-        git subtree split --prefix doc/_site -b gh-pages
-        # force the push of the gh-pages branch to the remote gh-pages branch at origin
+        rem create a local gh-pages branch containing the splitted output folder
+        git subtree split --prefix doc/_site -b gh-pages HEAD~4
+        rem force the push of the gh-pages branch to the remote gh-pages branch at origin
         git push -f origin gh-pages:gh-pages
       condition: ne(variables['Build.Reason'], 'PullRequest')
       env:

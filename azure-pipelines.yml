@@ -87,7 +87,7 @@ stages:
         rem Create a branch to work in
         git checkout -b docfx
         rem Remove the .gitignore to make sure this doesn't cause issues
-        del "%DefaultWorkingDirectory%/.gitignore"
+        del "%WorkingDirectory%/.gitignore"
         rem Add all the files from the generated document, ignore warnings
         git add "$(System.DefaultWorkingDirectory)/doc/_site"
         git commit -m "Generated documentation for %BuildNumber%"

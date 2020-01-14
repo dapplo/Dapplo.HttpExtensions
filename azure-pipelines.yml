@@ -89,7 +89,7 @@ stages:
         rem Remove the .gitignore to make sure this doesn't cause issues
         del .gitignore
         rem Add all the files from the generated document, ignore warnings
-        git add /doc/_site
+        git add doc/_site
         git commit -m "Generated documentation for %BuildNumber%"
         rem create a local gh-pages branch containing the splitted output folder
         git subtree split --prefix doc/_site -b gh-pages HEAD~4

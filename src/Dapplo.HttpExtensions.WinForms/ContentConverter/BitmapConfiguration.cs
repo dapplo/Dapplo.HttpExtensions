@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Dapplo and contributors. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-#if NET461 || NETCOREAPP3_0
+#if NET461 || NETCOREAPP3_1
 
 using System.Collections.Generic;
 using System.Drawing.Imaging;
@@ -10,7 +10,7 @@ using Dapplo.HttpExtensions.Extensions;
 using Dapplo.HttpExtensions.Support;
 using Dapplo.Log;
 
-namespace Dapplo.HttpExtensions.ContentConverter
+namespace Dapplo.HttpExtensions.WinForms.ContentConverter
 {
     /// <summary>
     ///     This is a configuration class for the BitmapHttpContentConverter

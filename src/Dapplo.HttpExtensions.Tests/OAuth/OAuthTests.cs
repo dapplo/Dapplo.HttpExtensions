@@ -51,10 +51,10 @@ namespace Dapplo.HttpExtensions.Tests.OAuth
         }
 
         /// <summary>
-        ///     This will test Oauth with a EmbeddedBrowser "code" receiver against an oauth server provided by Photo bucket
+        ///     This will test Oauth with http://term.ie/oauth/example/
         /// </summary>
         /// <returns>Task</returns>
-        [Fact]
+        //[Fact] // Disabled as term.ie is no longer available
         public async Task TestOAuthHttpMessageHandler_Get()
         {
             var userInformationUri = OAuthTestServerUri.AppendSegments("echo_api.php").ExtendQuery("name", "dapplo");

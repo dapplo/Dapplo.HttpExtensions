@@ -15,6 +15,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dapplo.HttpExtensions.OAuth
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dapplo.HttpExtensions.SystemTextJson", "Dapplo.HttpExtensions.SystemTextJson\Dapplo.HttpExtensions.SystemTextJson.csproj", "{6AF56316-CD64-4F15-9248-E2C0CD09BB42}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dapplo.HttpExtensions.WinForms", "Dapplo.HttpExtensions.WinForms\Dapplo.HttpExtensions.WinForms.csproj", "{1E579820-EB3C-4018-831F-F9D0C4F60616}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dapplo.HttpExtensions.Wpf", "Dapplo.HttpExtensions.Wpf\Dapplo.HttpExtensions.Wpf.csproj", "{114DC192-32E4-4497-957D-2CAA25B7EF90}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +49,14 @@ Global
 		{6AF56316-CD64-4F15-9248-E2C0CD09BB42}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6AF56316-CD64-4F15-9248-E2C0CD09BB42}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6AF56316-CD64-4F15-9248-E2C0CD09BB42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E579820-EB3C-4018-831F-F9D0C4F60616}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E579820-EB3C-4018-831F-F9D0C4F60616}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E579820-EB3C-4018-831F-F9D0C4F60616}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E579820-EB3C-4018-831F-F9D0C4F60616}.Release|Any CPU.Build.0 = Release|Any CPU
+		{114DC192-32E4-4497-957D-2CAA25B7EF90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{114DC192-32E4-4497-957D-2CAA25B7EF90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{114DC192-32E4-4497-957D-2CAA25B7EF90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{114DC192-32E4-4497-957D-2CAA25B7EF90}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

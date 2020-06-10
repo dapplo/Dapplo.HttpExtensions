@@ -5,8 +5,8 @@ using System.Drawing.Imaging;
 #if NET461
 using System.Net.Cache;
 #endif
-using Dapplo.HttpExtensions.ContentConverter;
 using Dapplo.HttpExtensions.Extensions;
+using Dapplo.HttpExtensions.WinForms.ContentConverter;
 using Dapplo.Log;
 using Dapplo.Log.XUnit;
 using Xunit;

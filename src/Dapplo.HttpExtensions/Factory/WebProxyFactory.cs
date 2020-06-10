@@ -4,7 +4,7 @@
 #if !NETSTANDARD1_3
 
 using System.Net;
-#if NETCOREAPP3_0
+#if NETCOREAPP3_1
 using System.Net.Http;
 #endif
 
@@ -32,7 +32,7 @@ namespace Dapplo.HttpExtensions.Factory
             }
 
             var proxyToUse = httpSettings.UseDefaultProxy ?
-#if NETCOREAPP3_0
+#if NETCOREAPP3_1
                 HttpClient.DefaultProxy
 #else
                 WebRequest.GetSystemWebProxy()
@@ -47,7 +47,7 @@ namespace Dapplo.HttpExtensions.Factory
                 }
                 else
                 {
-#if NETCOREAPP3_0
+#if NETCOREAPP3_1
                     if (!httpSettings.UseDefaultProxy)
                     {
                         proxyToUse.Credentials = CredentialCache.DefaultCredentials;

@@ -102,12 +102,12 @@ namespace Dapplo.HttpExtensions.Support
         /// <inheritdoc />
         public bool IgnoreSslCertificateErrors { get; set; } = false;
 
-#if NETSTANDARD1_3 || NETSTANDARD2_0 || NETCOREAPP3_0
+#if NETSTANDARD1_3 || NETSTANDARD2_0 || NETCOREAPP3_1
         /// <inheritdoc />
         public int MaxConnectionsPerServer { get; set; } = int.MaxValue;
 #endif
 
-#if NET461 || NETSTANDARD2_0 || NETCOREAPP3_0
+#if NET461 || NETSTANDARD2_0 || NETCOREAPP3_1
 
         /// <inheritdoc />
         public Uri ProxyUri { get; set; }

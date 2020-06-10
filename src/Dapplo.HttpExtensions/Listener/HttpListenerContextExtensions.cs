@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Dapplo and contributors. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-#if NET461 || NETSTANDARD2_0 || NETCOREAPP3_0
+#if NET461 || NETSTANDARD2_0 || NETCOREAPP3_1
 
 using System.Net;
 using System.Net.Http;
@@ -21,7 +21,7 @@ namespace Dapplo.HttpExtensions.Listener
 
         /// <summary>
         ///     This writes the supplied content to the response of the httpListenerContext
-        ///     It's actually a bit overkill, as it convers to HttpContent and writes this to a stream
+        ///     It's actually a bit overkill, as it converts to HttpContent and writes this to a stream
         ///     But performance and memory usage are currently not our main concern for the HttpListener
         /// </summary>
         /// <typeparam name="TContent">Type of the content</typeparam>
@@ -29,9 +29,7 @@ namespace Dapplo.HttpExtensions.Listener
         /// <param name="content">TContent object</param>
         /// <param name="cancellationToken">CancellationToken</param>
         /// <returns>Task</returns>
-        public static async Task RespondAsync<TContent>(this HttpListenerContext httpListenerContext, TContent content,
-            CancellationToken cancellationToken = default)
-            where TContent : class
+        public static async Task RespondAsync<TContent>(this HttpListenerContext httpListenerContext, TContent content, CancellationToken cancellationToken = default) where TContent : class
         {
             HttpContent httpContent;
             if (typeof(HttpContent).IsAssignableFrom(typeof(TContent)))
@@ -56,7 +54,10 @@ namespace Dapplo.HttpExtensions.Listener
             response.StatusCode = (int) HttpStatusCode.OK;
             Log.Debug().WriteLine("Responding with {0}", response.ContentType);
             using var stream = response.OutputStream;
-            await httpContent.CopyToAsync(stream).ConfigureAwait(false);
+            if (!cancellationToken.IsCancellationRequested)
+            {
+                await httpContent.CopyToAsync(stream).ConfigureAwait(false);
+            }
         }
     }
 }

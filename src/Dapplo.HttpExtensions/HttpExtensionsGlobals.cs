@@ -25,10 +25,6 @@ namespace Dapplo.HttpExtensions
         /// </summary>
         public static IList<IHttpContentConverter> HttpContentConverters { get; set; } = new List<IHttpContentConverter>
         {
-#if NET461 || NETCOREAPP3_0
-            BitmapHttpContentConverter.Instance.Value,
-            BitmapSourceHttpContentConverter.Instance.Value,
-#endif
 #if !NETSTANDARD1_3
             SyndicationFeedHttpContentConverter.Instance.Value,
             XDocumentHttpContentConverter.Instance.Value,

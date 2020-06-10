@@ -15,6 +15,8 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Xml.Linq;
 using Dapplo.HttpExtensions.Support;
+using Dapplo.HttpExtensions.WinForms.ContentConverter;
+using Dapplo.HttpExtensions.Wpf.ContentConverter;
 using Dapplo.Log;
 using Dapplo.Log.XUnit;
 using Xunit;
@@ -32,6 +34,8 @@ namespace Dapplo.HttpExtensions.Tests
 
         public UriActionExtensionsTests(ITestOutputHelper testOutputHelper)
         {
+            BitmapHttpContentConverter.RegisterGlobally();
+            BitmapSourceHttpContentConverter.RegisterGlobally();
             LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
 #if NET461
             HttpExtensionsGlobals.HttpSettings.RequestCacheLevel = RequestCacheLevel.NoCacheNoStore;
@@ -42,12 +46,12 @@ namespace Dapplo.HttpExtensions.Tests
         ///     Test basic authentication
         /// </summary>
         [Fact]
-        public async Task TestBasicAuthAsync()
+        public Task TestBasicAuthAsync()
         {
             const string password = @"pass\w";
             const string username = "usern";
             var authUri = _httpBinUri.AppendSegments("basic-auth", username, password).SetCredentials(username, password);
-            await authUri.GetAsAsync<string>();
+            return authUri.GetAsAsync<string>();
         }
 
         /// <summary>
@@ -171,27 +175,27 @@ namespace Dapplo.HttpExtensions.Tests
         ///     Test LastModified
         /// </summary>
         [Fact]
-        public async Task TestLastModified()
+        public Task TestLastModified()
         {
-            await new Uri("http://nu.nl").LastModifiedAsync();
+            return new Uri("http://nu.nl").LastModifiedAsync();
         }
 
         /// <summary>
         ///     Test POST
         /// </summary>
         [Fact]
-        public async Task TestPost()
+        public Task TestPost()
         {
-            await new Uri("https://httpbin.org/post").PostAsync(null);
+            return new Uri("https://httpbin.org/post").PostAsync(null);
         }
 
         /// <summary>
         ///     Test PUT without response
         /// </summary>
         [Fact]
-        public async Task TestPut()
+        public Task TestPut()
         {
-            await new Uri("https://httpbin.org/put").PutAsync(null);
+            return new Uri("https://httpbin.org/put").PutAsync(null);
         }
 
         /// <summary>

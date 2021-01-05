@@ -111,6 +111,7 @@ stages:
       displayName: "docfx publish"
 
 - stage: Deploy
+  condition: ne(variables['Build.Reason'], 'PullRequest')
   jobs:
   - deployment: DeployNuGet
     pool:

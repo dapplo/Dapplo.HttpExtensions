@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-#if NET461
+#if NETFRAMEWORK
 using System.Net.Cache;
 #endif
 using System.Threading.Tasks;
@@ -22,7 +22,7 @@ namespace Dapplo.HttpExtensions.Tests
         public HttpRequestMessageExtensionsTests(ITestOutputHelper testOutputHelper)
         {
             LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
-#if NET461
+#if NETFRAMEWORK
             HttpExtensionsGlobals.HttpSettings.RequestCacheLevel = RequestCacheLevel.NoCacheNoStore;
 #endif
         }

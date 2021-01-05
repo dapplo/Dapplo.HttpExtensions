@@ -44,15 +44,13 @@ namespace Dapplo.HttpExtensions
         /// <param name="uri">Uri to send the delete to</param>
         /// <param name="cancellationToken">CancellationToken</param>
         /// <returns>Task</returns>
-        public static async Task DeleteAsync(this Uri uri, CancellationToken cancellationToken = default)
+        public static Task DeleteAsync(this Uri uri, CancellationToken cancellationToken = default)
         {
             if (uri is null)
             {
                 throw new ArgumentNullException(nameof(uri));
             }
-
-            using var client = HttpClientFactory.Create(uri);
-            await client.DeleteAsync(uri, cancellationToken).ConfigureAwait(false);
+            return uri.DeleteAsync<HttpResponse>(cancellationToken);
         }
 
         /// <summary>

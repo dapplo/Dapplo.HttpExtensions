@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Net.Security;
 using Dapplo.Log;
 
-#if NET461
+#if NETFRAMEWORK
 using System.Net.Cache;
 #endif
 
@@ -26,7 +26,7 @@ namespace Dapplo.HttpExtensions.Factory
         /// <returns>HttpMessageHandler (HttpClientHandler)</returns>
         private static HttpMessageHandler CreateHandler()
         {
-#if NET461
+#if NETFRAMEWORK
             var httpClientHandler = new WebRequestHandler();
 #else
             var httpClientHandler = new HttpClientHandler();
@@ -34,7 +34,7 @@ namespace Dapplo.HttpExtensions.Factory
             var httpBehaviour = HttpBehaviour.Current;
             var httpSettings = httpBehaviour.HttpSettings ?? HttpExtensionsGlobals.HttpSettings;
 
-#if NET461
+#if NETFRAMEWORK
             httpClientHandler.AllowPipelining = httpSettings.AllowPipelining;
             httpClientHandler.AuthenticationLevel = httpSettings.AuthenticationLevel;
             httpClientHandler.ContinueTimeout = httpSettings.ContinueTimeout;
@@ -72,7 +72,7 @@ namespace Dapplo.HttpExtensions.Factory
             // Add logic to ignore the certificate
             if (httpSettings.IgnoreSslCertificateErrors)
             {
-#if !NET461
+#if !NETFRAMEWORK
                 httpClientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) =>
 #else
                 httpClientHandler.ServerCertificateValidationCallback = (sender, cert, chain, sslPolicyErrors) =>

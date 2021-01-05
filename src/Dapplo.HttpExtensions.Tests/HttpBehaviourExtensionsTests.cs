@@ -3,10 +3,11 @@
 
 using System;
 using System.Drawing;
-#if NET461
+#if NETFRAMEWORK
 using System.Net.Cache;
 #endif
 using System.Threading.Tasks;
+using Dapplo.HttpExtensions.WinForms.ContentConverter;
 using Dapplo.Log;
 using Dapplo.Log.XUnit;
 using Xunit;
@@ -24,7 +25,8 @@ namespace Dapplo.HttpExtensions.Tests
         public HttpBehaviourExtensionsTests(ITestOutputHelper testOutputHelper)
         {
             LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
-#if NET461
+            BitmapHttpContentConverter.RegisterGlobally();
+#if NETFRAMEWORK
             HttpExtensionsGlobals.HttpSettings.RequestCacheLevel = RequestCacheLevel.NoCacheNoStore;
 #endif
         }

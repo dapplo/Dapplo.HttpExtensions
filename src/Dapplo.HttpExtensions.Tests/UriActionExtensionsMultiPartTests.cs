@@ -3,7 +3,7 @@
 
 using System;
 using System.IO;
-#if NET461
+#if NETFRAMEWORK
 using System.Net.Cache;
 #endif
 using System.Threading.Tasks;
@@ -24,7 +24,7 @@ namespace Dapplo.HttpExtensions.Tests
         public UriActionExtensionsMultiPartTests(ITestOutputHelper testOutputHelper)
         {
             LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
-#if NET461
+#if NETFRAMEWORK
             HttpExtensionsGlobals.HttpSettings.RequestCacheLevel = RequestCacheLevel.NoCacheNoStore;
 #endif
         }

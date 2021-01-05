@@ -344,13 +344,16 @@ namespace Dapplo.HttpExtensions.OAuth
         {
             // TODO: Use IHttpRequestConfiguration here
 
-
+#if NET5_0
+            var parameters = new Dictionary<string, object>(httpRequestMessage.Options);
+#else
             var parameters = new Dictionary<string, object>(httpRequestMessage.Properties);
+#endif
             // Build the signature base
             var signatureBase = new StringBuilder();
 
             // Add Method to signature base
-            signatureBase.Append(httpRequestMessage.Method).Append("&");
+            signatureBase.Append(httpRequestMessage.Method).Append('&');
 
             // Add normalized URL, most of it is already normalized by using AbsoluteUri, but we need the Uri without Query and Fragment
             var normalizedUri = new UriBuilder(httpRequestMessage.RequestUri)
@@ -358,7 +361,7 @@ namespace Dapplo.HttpExtensions.OAuth
                 Query = "",
                 Fragment = ""
             };
-            signatureBase.Append(Uri.EscapeDataString(normalizedUri.Uri.AbsoluteUri)).Append("&");
+            signatureBase.Append(Uri.EscapeDataString(normalizedUri.Uri.AbsoluteUri)).Append('&');
 
             // Add normalized parameters
             parameters.Add(OAuth1Parameters.Version.EnumValueOf(), "1.0");
@@ -444,13 +447,26 @@ namespace Dapplo.HttpExtensions.OAuth
                 httpRequestMessage.SetAuthorization("OAuth", authorizationHeaderValues);
 
             }
-
+            
+#if NET5_0
+            if (httpRequestMessage.Method == HttpMethod.Post && httpRequestMessage.Options.Any())
+#else
             if (httpRequestMessage.Method == HttpMethod.Post && httpRequestMessage.Properties.Count > 0)
+#endif
             {
                 var multipartFormDataContent = new MultipartFormDataContent();
-                foreach (var propertyName in httpRequestMessage.Properties.Keys)
+#if NET5_0
+                foreach (var option in httpRequestMessage.Options)
                 {
-                    var requestObject = httpRequestMessage.Properties[propertyName];
+                    var propertyName = option.Key;
+                    var requestObject = option.Value;
+
+#else
+                    foreach (var propertyName in httpRequestMessage.Properties.Keys)
+                    {
+                        var requestObject = httpRequestMessage.Properties[propertyName];
+#endif
+
                     var formattedKey = $"\"{propertyName}\"";
                     if (requestObject is HttpContent httpContent)
                     {

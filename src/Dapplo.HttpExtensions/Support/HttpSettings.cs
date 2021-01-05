@@ -8,7 +8,7 @@ using System.Net.Security;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-#if NET461
+#if NETFRAMEWORK
 using System.Net.Cache;
 using System.Security.Principal;
 #endif
@@ -102,12 +102,12 @@ namespace Dapplo.HttpExtensions.Support
         /// <inheritdoc />
         public bool IgnoreSslCertificateErrors { get; set; } = false;
 
-#if NETSTANDARD1_3 || NETSTANDARD2_0 || NETCOREAPP3_1
+#if NETSTANDARD1_3 || NETSTANDARD2_0 || NETCOREAPP3_1 || NET5_0
         /// <inheritdoc />
         public int MaxConnectionsPerServer { get; set; } = int.MaxValue;
 #endif
 
-#if NET461 || NETSTANDARD2_0 || NETCOREAPP3_1
+#if NETFRAMEWORK || NETSTANDARD2_0 || NETCOREAPP3_1 || NET5_0
 
         /// <inheritdoc />
         public Uri ProxyUri { get; set; }
@@ -122,7 +122,7 @@ namespace Dapplo.HttpExtensions.Support
         public ICredentials ProxyCredentials { get; set; }
 #endif
 
-#if NET461
+#if NETFRAMEWORK
 
         /// <inheritdoc />
         public int ReadWriteTimeout { get; set; } = 300000;

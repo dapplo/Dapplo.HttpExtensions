@@ -42,12 +42,19 @@ namespace Dapplo.HttpExtensions.Factory
                 Content = HttpContentFactory.Create(contentType, content),
                 Version = configuration.HttpMessageVersion
             };
-
+#if NET5_0
+            // Set supplied Properties from the HttpRequestMessageConfiguration
+            foreach (var key in configuration.Properties.Keys)
+            {
+                httpRequestMessage.Options.Set(new HttpRequestOptionsKey<object>(key), configuration.Properties[key]);
+            }
+#else
             // Set supplied Properties from the HttpRequestMessageConfiguration
             foreach (var key in configuration.Properties.Keys)
             {
                 httpRequestMessage.Properties.Add(key, configuration.Properties[key]);
             }
+#endif
 
             // if the type has a HttpAttribute with HttpPart.Request
             if (contentType?.GetTypeInfo().GetCustomAttribute<HttpRequestAttribute>() != null)

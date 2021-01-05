@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-#if NET461
+#if NETFRAMEWORK
 using System.Net.Cache;
 #endif
 using System.Net.Http;
@@ -37,7 +37,7 @@ namespace Dapplo.HttpExtensions.Tests
             BitmapHttpContentConverter.RegisterGlobally();
             BitmapSourceHttpContentConverter.RegisterGlobally();
             LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
-#if NET461
+#if NETFRAMEWORK
             HttpExtensionsGlobals.HttpSettings.RequestCacheLevel = RequestCacheLevel.NoCacheNoStore;
 #endif
         }
@@ -58,7 +58,7 @@ namespace Dapplo.HttpExtensions.Tests
         ///     Test DELETE
         /// </summary>
         [Fact]
-        public async Task TestDelete()
+        public async Task TestDeleteAsync()
         {
             var result = await new Uri("https://httpbin.org/delete").DeleteAsync<dynamic>();
             Assert.NotNull(result);
@@ -214,7 +214,7 @@ namespace Dapplo.HttpExtensions.Tests
         [Fact]
         public async Task TestRedirectAndFollow()
         {
-            var result = await new Uri("https://httpbin.org/redirect/5").GetAsAsync<string>();
+            var result = await new Uri("https://nghttp2.org/httpbin/redirect/5").GetAsAsync<string>();
             Assert.NotNull(result);
         }
 

@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Dapplo and contributors. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-#if NET461 || NETCOREAPP3_1
+#if NETFRAMEWORK || NETCOREAPP3_1 || NET5_0
 
 using System;
 using System.IO;
@@ -102,7 +102,7 @@ namespace Dapplo.HttpExtensions.Wpf.ContentConverter
                 return null;
             }
 
-            if (!(content is BitmapSource bitmapSource))
+            if (content is not BitmapSource bitmapSource)
             {
                 return null;
             }

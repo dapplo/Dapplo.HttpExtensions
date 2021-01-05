@@ -168,7 +168,7 @@ namespace Dapplo.HttpExtensions.Support
             OnBytesMoved(count, false);
         }
 
-#if NET461
+#if NETFRAMEWORK
         /// <inheritdoc />
         public override void Close()
         {

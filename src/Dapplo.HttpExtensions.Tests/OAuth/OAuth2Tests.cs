@@ -19,7 +19,7 @@ namespace Dapplo.HttpExtensions.Tests.OAuth
     /// </summary>
     public class OAuth2Tests
     {
-        private static readonly Uri GoogleApiUri = new Uri("https://www.googleapis.com");
+        private static readonly Uri GoogleApiUri = new("https://www.googleapis.com");
         private readonly IHttpBehaviour _oAuthHttpBehaviour;
 
         public OAuth2Tests(ITestOutputHelper testOutputHelper)

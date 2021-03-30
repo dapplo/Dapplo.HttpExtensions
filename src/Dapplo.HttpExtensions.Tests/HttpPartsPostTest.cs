@@ -20,8 +20,8 @@ namespace Dapplo.HttpExtensions.Tests
     /// </summary>
     public class HttpPartsPostTest
     {
-        private static readonly LogSource Log = new LogSource();
-        private static readonly Uri RequestBinUri = new Uri("http://httpbin.org");
+        private static readonly LogSource Log = new();
+        private static readonly Uri RequestBinUri = new("http://httpbin.org");
 
         public HttpPartsPostTest(ITestOutputHelper testOutputHelper)
         {

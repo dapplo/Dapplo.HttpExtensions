@@ -20,7 +20,7 @@ namespace Dapplo.HttpExtensions.Tests
     /// </summary>
     public class HttpBehaviourExtensionsTests
     {
-        private readonly Uri _bitmapUri = new Uri("http://httpbin.org/image/png");
+        private readonly Uri _bitmapUri = new("http://httpbin.org/image/png");
 
         public HttpBehaviourExtensionsTests(ITestOutputHelper testOutputHelper)
         {

@@ -18,7 +18,7 @@ namespace Dapplo.HttpExtensions.Factory
     /// </summary>
     public static class HttpMessageHandlerFactory
     {
-        private static readonly LogSource Log = new LogSource();
+        private static readonly LogSource Log = new();
 
         /// <summary>
         ///     This creates an advanced HttpMessageHandler, used in Apps

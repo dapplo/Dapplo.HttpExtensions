@@ -1,0 +1,1382 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class HttpRequestMessageFactory
+   | Dapplo.HttpExtensions </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class HttpRequestMessageFactory
+   | Dapplo.HttpExtensions ">
+    <meta name="generator" content="docfx 2.58.0.0">
+    
+    <link rel="shortcut icon" href="../images/favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc">
+    <meta property="docfx:tocrel" content="toc">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/d.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+                <ul class="nav level1 navbar-nav">
+                  <li class="">
+                    <a href="../articles/intro.html" title="Articles" class="">Articles</a>
+                  </li>
+                  <li class="active">
+                    <a href="../api/index.html" title="Api Documentation" class="active">Api Documentation</a>
+                  </li>
+                </ul>
+            </div>
+          </div>
+        </nav>        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div>
+              <div class="sidefilter">
+                <form class="toc-filter">
+                  <span class="glyphicon glyphicon-filter filter-icon"></span>
+                  <input type="text" id="toc_filter_input" placeholder="Enter here to filter..." onkeypress="if(event.keyCode==13) {return false;}">
+                </form>
+              </div>
+              <div class="sidetoc">
+                <div class="toc" id="toc">
+                  
+                  <ul class="nav level1">
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="Dapplo.HttpExtensions.html" title="Dapplo.HttpExtensions" class="">Dapplo.HttpExtensions</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.AuthorizationExtensions.html" title="AuthorizationExtensions" class="">AuthorizationExtensions</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.HttpBehaviour.html" title="HttpBehaviour" class="">HttpBehaviour</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.HttpBehaviourExtensions.html" title="HttpBehaviourExtensions" class="">HttpBehaviourExtensions</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.HttpClientExtensions.html" title="HttpClientExtensions" class="">HttpClientExtensions</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.HttpContentExtensions.html" title="HttpContentExtensions" class="">HttpContentExtensions</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.HttpExtensionsGlobals.html" title="HttpExtensionsGlobals" class="">HttpExtensionsGlobals</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.HttpRequestMessageConfiguration.html" title="HttpRequestMessageConfiguration" class="">HttpRequestMessageConfiguration</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.HttpRequestMessageExtensions.html" title="HttpRequestMessageExtensions" class="">HttpRequestMessageExtensions</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.HttpResponse.html" title="HttpResponse" class="">HttpResponse</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.HttpResponse-2.html" title="HttpResponse&lt;TResponse, TErrorResponse&gt;" class="">HttpResponse&lt;TResponse, TErrorResponse&gt;</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.HttpResponse-1.html" title="HttpResponse&lt;TResponse&gt;" class="">HttpResponse&lt;TResponse&gt;</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.HttpResponseMessageExtensions.html" title="HttpResponseMessageExtensions" class="">HttpResponseMessageExtensions</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.HttpResponseWithError-1.html" title="HttpResponseWithError&lt;TErrorResponse&gt;" class="">HttpResponseWithError&lt;TErrorResponse&gt;</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.IChangeableHttpBehaviour.html" title="IChangeableHttpBehaviour" class="">IChangeableHttpBehaviour</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.IHttpBehaviour.html" title="IHttpBehaviour" class="">IHttpBehaviour</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.IHttpContentConverter.html" title="IHttpContentConverter" class="">IHttpContentConverter</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.IHttpRequestConfiguration.html" title="IHttpRequestConfiguration" class="">IHttpRequestConfiguration</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.IHttpSettings.html" title="IHttpSettings" class="">IHttpSettings</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.IJsonSerializer.html" title="IJsonSerializer" class="">IJsonSerializer</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.MiscExtensions.html" title="MiscExtensions" class="">MiscExtensions</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.UriActionExtensions.html" title="UriActionExtensions" class="">UriActionExtensions</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.UriModifyExtensions.html" title="UriModifyExtensions" class="">UriModifyExtensions</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.UriParseExtensions.html" title="UriParseExtensions" class="">UriParseExtensions</a>
+                          </li>
+                        </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="Dapplo.HttpExtensions.ContentConverter.html" title="Dapplo.HttpExtensions.ContentConverter" class="">Dapplo.HttpExtensions.ContentConverter</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.ContentConverter.ByteArrayHttpContentConverter.html" title="ByteArrayHttpContentConverter" class="">ByteArrayHttpContentConverter</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.ContentConverter.DefaultJsonHttpContentConverter.html" title="DefaultJsonHttpContentConverter" class="">DefaultJsonHttpContentConverter</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.ContentConverter.DefaultJsonHttpContentConverterConfiguration.html" title="DefaultJsonHttpContentConverterConfiguration" class="">DefaultJsonHttpContentConverterConfiguration</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.ContentConverter.FormUriEncodedContentConverter.html" title="FormUriEncodedContentConverter" class="">FormUriEncodedContentConverter</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.ContentConverter.StreamHttpContentConverter.html" title="StreamHttpContentConverter" class="">StreamHttpContentConverter</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.ContentConverter.StringConfiguration.html" title="StringConfiguration" class="">StringConfiguration</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.ContentConverter.StringHttpContentConverter.html" title="StringHttpContentConverter" class="">StringHttpContentConverter</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.ContentConverter.SyndicationFeedHttpContentConverter.html" title="SyndicationFeedHttpContentConverter" class="">SyndicationFeedHttpContentConverter</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.ContentConverter.XDocumentHttpContentConverter.html" title="XDocumentHttpContentConverter" class="">XDocumentHttpContentConverter</a>
+                          </li>
+                        </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="Dapplo.HttpExtensions.Extensions.html" title="Dapplo.HttpExtensions.Extensions" class="">Dapplo.HttpExtensions.Extensions</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.Extensions.EnumExtensions.html" title="EnumExtensions" class="">EnumExtensions</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.Extensions.HttpBehaviourExtensions.html" title="HttpBehaviourExtensions" class="">HttpBehaviourExtensions</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.Extensions.StringExtensions.html" title="StringExtensions" class="">StringExtensions</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.Extensions.TypeExtensions.html" title="TypeExtensions" class="">TypeExtensions</a>
+                          </li>
+                        </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="Dapplo.HttpExtensions.Factory.html" title="Dapplo.HttpExtensions.Factory" class="">Dapplo.HttpExtensions.Factory</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.Factory.HttpClientFactory.html" title="HttpClientFactory" class="">HttpClientFactory</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.Factory.HttpContentFactory.html" title="HttpContentFactory" class="">HttpContentFactory</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.Factory.HttpMessageHandlerFactory.html" title="HttpMessageHandlerFactory" class="">HttpMessageHandlerFactory</a>
+                          </li>
+                          <li class="active">
+                            <a href="Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.html" title="HttpRequestMessageFactory" class="active">HttpRequestMessageFactory</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.Factory.WebProxyFactory.html" title="WebProxyFactory" class="">WebProxyFactory</a>
+                          </li>
+                        </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="Dapplo.HttpExtensions.JsonNet.html" title="Dapplo.HttpExtensions.JsonNet" class="">Dapplo.HttpExtensions.JsonNet</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.JsonNet.JsonNetJsonSerializer.html" title="JsonNetJsonSerializer" class="">JsonNetJsonSerializer</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.JsonNet.ReadOnlyConsideringContractResolver.html" title="ReadOnlyConsideringContractResolver" class="">ReadOnlyConsideringContractResolver</a>
+                          </li>
+                        </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="Dapplo.HttpExtensions.JsonSimple.html" title="Dapplo.HttpExtensions.JsonSimple" class="">Dapplo.HttpExtensions.JsonSimple</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.JsonSimple.DataContractJsonSerializerStrategy.html" title="DataContractJsonSerializerStrategy" class="">DataContractJsonSerializerStrategy</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.JsonSimple.DefaultJsonHttpContentConverter.html" title="DefaultJsonHttpContentConverter" class="">DefaultJsonHttpContentConverter</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.JsonSimple.IJsonSerializerStrategy.html" title="IJsonSerializerStrategy" class="">IJsonSerializerStrategy</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.JsonSimple.JsonExtensionDataAttribute.html" title="JsonExtensionDataAttribute" class="">JsonExtensionDataAttribute</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.JsonSimple.PocoJsonSerializerStrategy.html" title="PocoJsonSerializerStrategy" class="">PocoJsonSerializerStrategy</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.JsonSimple.SimpleJson.html" title="SimpleJson" class="">SimpleJson</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.JsonSimple.SimpleJsonSerializer.html" title="SimpleJsonSerializer" class="">SimpleJsonSerializer</a>
+                          </li>
+                        </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="Dapplo.HttpExtensions.Listener.html" title="Dapplo.HttpExtensions.Listener" class="">Dapplo.HttpExtensions.Listener</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.Listener.HttpListenerContextExtensions.html" title="HttpListenerContextExtensions" class="">HttpListenerContextExtensions</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.Listener.ListenerPortExtensions.html" title="ListenerPortExtensions" class="">ListenerPortExtensions</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.Listener.UriHttpListenerExtensions.html" title="UriHttpListenerExtensions" class="">UriHttpListenerExtensions</a>
+                          </li>
+                        </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="Dapplo.HttpExtensions.OAuth.html" title="Dapplo.HttpExtensions.OAuth" class="">Dapplo.HttpExtensions.OAuth</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.OAuth.AuthorizeModes.html" title="AuthorizeModes" class="">AuthorizeModes</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.OAuth.BaseOAuthSettings.html" title="BaseOAuthSettings" class="">BaseOAuthSettings</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.OAuth.GrantTypes.html" title="GrantTypes" class="">GrantTypes</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.OAuth.ICodeReceiverSettings.html" title="ICodeReceiverSettings" class="">ICodeReceiverSettings</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.OAuth.IOAuth1Token.html" title="IOAuth1Token" class="">IOAuth1Token</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.OAuth.IOAuth2Token.html" title="IOAuth2Token" class="">IOAuth2Token</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.OAuth.IOAuthCodeReceiver.html" title="IOAuthCodeReceiver" class="">IOAuthCodeReceiver</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.OAuth.OAuth1HttpBehaviour.html" title="OAuth1HttpBehaviour" class="">OAuth1HttpBehaviour</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.OAuth.OAuth1HttpBehaviourFactory.html" title="OAuth1HttpBehaviourFactory" class="">OAuth1HttpBehaviourFactory</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.OAuth.OAuth1HttpMessageHandler.html" title="OAuth1HttpMessageHandler" class="">OAuth1HttpMessageHandler</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.OAuth.OAuth1Parameters.html" title="OAuth1Parameters" class="">OAuth1Parameters</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.OAuth.OAuth1RequestConfiguration.html" title="OAuth1RequestConfiguration" class="">OAuth1RequestConfiguration</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.OAuth.OAuth1Settings.html" title="OAuth1Settings" class="">OAuth1Settings</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.OAuth.OAuth1SignatureTransports.html" title="OAuth1SignatureTransports" class="">OAuth1SignatureTransports</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.OAuth.OAuth1SignatureTypes.html" title="OAuth1SignatureTypes" class="">OAuth1SignatureTypes</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.OAuth.OAuth1Token.html" title="OAuth1Token" class="">OAuth1Token</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.OAuth.OAuth2HttpBehaviourFactory.html" title="OAuth2HttpBehaviourFactory" class="">OAuth2HttpBehaviourFactory</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.OAuth.OAuth2HttpMessageHandler.html" title="OAuth2HttpMessageHandler" class="">OAuth2HttpMessageHandler</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.OAuth.OAuth2Settings.html" title="OAuth2Settings" class="">OAuth2Settings</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.OAuth.OAuth2TokenResponse.html" title="OAuth2TokenResponse" class="">OAuth2TokenResponse</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.OAuth.OAuthExtensions.html" title="OAuthExtensions" class="">OAuthExtensions</a>
+                          </li>
+                        </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="Dapplo.HttpExtensions.OAuth.CodeReceivers.html" title="Dapplo.HttpExtensions.OAuth.CodeReceivers" class="">Dapplo.HttpExtensions.OAuth.CodeReceivers</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.OAuth.CodeReceivers.EmbeddedBrowserCodeReceiver.html" title="EmbeddedBrowserCodeReceiver" class="">EmbeddedBrowserCodeReceiver</a>
+                          </li>
+                        </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="Dapplo.HttpExtensions.OAuth.Desktop.html" title="Dapplo.HttpExtensions.OAuth.Desktop" class="">Dapplo.HttpExtensions.OAuth.Desktop</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.OAuth.Desktop.OAuthLoginForm.html" title="OAuthLoginForm" class="">OAuthLoginForm</a>
+                          </li>
+                        </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="Dapplo.HttpExtensions.Support.html" title="Dapplo.HttpExtensions.Support" class="">Dapplo.HttpExtensions.Support</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.Support.HttpPartAttribute.html" title="HttpPartAttribute" class="">HttpPartAttribute</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.Support.HttpParts.html" title="HttpParts" class="">HttpParts</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.Support.HttpRequestAttribute.html" title="HttpRequestAttribute" class="">HttpRequestAttribute</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.Support.HttpResponseAttribute.html" title="HttpResponseAttribute" class="">HttpResponseAttribute</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.Support.HttpSettings.html" title="HttpSettings" class="">HttpSettings</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.Support.MediaTypes.html" title="MediaTypes" class="">MediaTypes</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.Support.ProgressStream.html" title="ProgressStream" class="">ProgressStream</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.Support.ProgressStreamReport.html" title="ProgressStreamReport" class="">ProgressStreamReport</a>
+                          </li>
+                        </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="Dapplo.HttpExtensions.SystemTextJson.html" title="Dapplo.HttpExtensions.SystemTextJson" class="">Dapplo.HttpExtensions.SystemTextJson</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.SystemTextJson.SystemTextJsonSerializer.html" title="SystemTextJsonSerializer" class="">SystemTextJsonSerializer</a>
+                          </li>
+                        </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="Dapplo.HttpExtensions.WinForms.ContentConverter.html" title="Dapplo.HttpExtensions.WinForms.ContentConverter" class="">Dapplo.HttpExtensions.WinForms.ContentConverter</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.WinForms.ContentConverter.BitmapConfiguration.html" title="BitmapConfiguration" class="">BitmapConfiguration</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.WinForms.ContentConverter.BitmapHttpContentConverter.html" title="BitmapHttpContentConverter" class="">BitmapHttpContentConverter</a>
+                          </li>
+                        </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="Dapplo.HttpExtensions.Wpf.ContentConverter.html" title="Dapplo.HttpExtensions.Wpf.ContentConverter" class="">Dapplo.HttpExtensions.Wpf.ContentConverter</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.Wpf.ContentConverter.BitmapSourceConfiguration.html" title="BitmapSourceConfiguration" class="">BitmapSourceConfiguration</a>
+                          </li>
+                          <li class="">
+                            <a href="Dapplo.HttpExtensions.Wpf.ContentConverter.BitmapSourceHttpContentConverter.html" title="BitmapSourceHttpContentConverter" class="">BitmapSourceHttpContentConverter</a>
+                          </li>
+                        </ul>  </li>
+                  </ul>        </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory">
+  
+  
+  <h1 id="Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory" data-uid="Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory" class="text-break">Class HttpRequestMessageFactory
+  </h1>
+  <div class="markdown level0 summary"><p>Dapplo.HttpExtension uses the HttpRequestMessage to send the requests.
+This makes it a lot more flexible to use Accept headers and other stuff
+This is the factory for it.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">HttpRequestMessageFactory</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">System.Object.ToString()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Dapplo.HttpExtensions.Factory.html">Dapplo.HttpExtensions.Factory</a></h6>
+  <h6><strong>Assembly</strong>: Dapplo.HttpExtensions.dll</h6>
+  <h5 id="Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class HttpRequestMessageFactory</code></pre>
+  </div>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/new/master/apiSpec/new?filename=Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_Create_System_Net_Http_HttpMethod_System_Uri_System_Type_System_Type_System_Object_.md&amp;value=---%0Auid%3A%20Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.Create(System.Net.Http.HttpMethod%2CSystem.Uri%2CSystem.Type%2CSystem.Type%2CSystem.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/blob/master/src/Dapplo.HttpExtensions/Factory/HttpRequestMessageFactory.cs/#L33">View Source</a>
+  </span>
+  <a id="Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_Create_" data-uid="Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.Create*"></a>
+  <h4 id="Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_Create_System_Net_Http_HttpMethod_System_Uri_System_Type_System_Type_System_Object_" data-uid="Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.Create(System.Net.Http.HttpMethod,System.Uri,System.Type,System.Type,System.Object)">Create(HttpMethod, Uri, Type, Type, Object)</h4>
+  <div class="markdown level1 summary"><p>Create a HttpRequestMessage for the specified method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static HttpRequestMessage Create(HttpMethod method, Uri requestUri, Type resultType = null, Type contentType = null, object content = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Net.Http.HttpMethod</span></td>
+        <td><span class="parametername">method</span></td>
+        <td><p>Method to create the request message for</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Uri</span></td>
+        <td><span class="parametername">requestUri</span></td>
+        <td><p>the target uri for this message</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">resultType</span></td>
+        <td><p>Type</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Type</span></td>
+        <td><span class="parametername">contentType</span></td>
+        <td><p>Type</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">content</span></td>
+        <td><p>content to convert to HttpContent</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Net.Http.HttpRequestMessage</span></td>
+        <td><p>HttpRequestMessage</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/new/master/apiSpec/new?filename=Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_Create__1_System_Net_Http_HttpMethod_System_Uri_.md&amp;value=---%0Auid%3A%20Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.Create%60%601(System.Net.Http.HttpMethod%2CSystem.Uri)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/blob/master/src/Dapplo.HttpExtensions/Factory/HttpRequestMessageFactory.cs/#L108">View Source</a>
+  </span>
+  <a id="Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_Create_" data-uid="Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.Create*"></a>
+  <h4 id="Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_Create__1_System_Net_Http_HttpMethod_System_Uri_" data-uid="Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.Create``1(System.Net.Http.HttpMethod,System.Uri)">Create&lt;TResponse&gt;(HttpMethod, Uri)</h4>
+  <div class="markdown level1 summary"><p>Create a HttpRequestMessage for the specified method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static HttpRequestMessage Create&lt;TResponse&gt;(HttpMethod method, Uri requestUri)
+    where TResponse : class</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Net.Http.HttpMethod</span></td>
+        <td><span class="parametername">method</span></td>
+        <td><p>Method to create the request message for</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Uri</span></td>
+        <td><span class="parametername">requestUri</span></td>
+        <td><p>the target uri for this message</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Net.Http.HttpRequestMessage</span></td>
+        <td><p>HttpRequestMessage</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TResponse</span></td>
+        <td><p>The type for the response, this modifies the Accept headers</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/new/master/apiSpec/new?filename=Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_Create__2_System_Net_Http_HttpMethod_System_Uri___1_.md&amp;value=---%0Auid%3A%20Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.Create%60%602(System.Net.Http.HttpMethod%2CSystem.Uri%2C%60%601)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/blob/master/src/Dapplo.HttpExtensions/Factory/HttpRequestMessageFactory.cs/#L95">View Source</a>
+  </span>
+  <a id="Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_Create_" data-uid="Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.Create*"></a>
+  <h4 id="Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_Create__2_System_Net_Http_HttpMethod_System_Uri___1_" data-uid="Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.Create``2(System.Net.Http.HttpMethod,System.Uri,``1)">Create&lt;TResponse, TContent&gt;(HttpMethod, Uri, TContent)</h4>
+  <div class="markdown level1 summary"><p>Create a HttpRequestMessage for the specified method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static HttpRequestMessage Create&lt;TResponse, TContent&gt;(HttpMethod method, Uri requestUri, TContent content = null)
+    where TResponse : class where TContent : class</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Net.Http.HttpMethod</span></td>
+        <td><span class="parametername">method</span></td>
+        <td><p>Method to create the request message for</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Uri</span></td>
+        <td><span class="parametername">requestUri</span></td>
+        <td><p>the target uri for this message</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">TContent</span></td>
+        <td><span class="parametername">content</span></td>
+        <td><p>HttpContent</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Net.Http.HttpRequestMessage</span></td>
+        <td><p>HttpRequestMessage</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TResponse</span></td>
+        <td><p>The type for the response, this modifies the Accept headers</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="parametername">TContent</span></td>
+        <td><p>The type of the content (for put / post)</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/new/master/apiSpec/new?filename=Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreateDelete_System_Uri_.md&amp;value=---%0Auid%3A%20Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreateDelete(System.Uri)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/blob/master/src/Dapplo.HttpExtensions/Factory/HttpRequestMessageFactory.cs/#L131">View Source</a>
+  </span>
+  <a id="Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreateDelete_" data-uid="Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreateDelete*"></a>
+  <h4 id="Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreateDelete_System_Uri_" data-uid="Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreateDelete(System.Uri)">CreateDelete(Uri)</h4>
+  <div class="markdown level1 summary"><p>Create a HttpRequestMessage for the DELETE method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static HttpRequestMessage CreateDelete(Uri requestUri)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Uri</span></td>
+        <td><span class="parametername">requestUri</span></td>
+        <td><p>the target uri for this message</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Net.Http.HttpRequestMessage</span></td>
+        <td><p>HttpRequestMessage</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/new/master/apiSpec/new?filename=Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreateDelete__1_System_Uri_.md&amp;value=---%0Auid%3A%20Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreateDelete%60%601(System.Uri)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/blob/master/src/Dapplo.HttpExtensions/Factory/HttpRequestMessageFactory.cs/#L120">View Source</a>
+  </span>
+  <a id="Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreateDelete_" data-uid="Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreateDelete*"></a>
+  <h4 id="Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreateDelete__1_System_Uri_" data-uid="Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreateDelete``1(System.Uri)">CreateDelete&lt;TResponse&gt;(Uri)</h4>
+  <div class="markdown level1 summary"><p>Create a HttpRequestMessage for the DELETE method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static HttpRequestMessage CreateDelete&lt;TResponse&gt;(Uri requestUri)
+    where TResponse : class</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Uri</span></td>
+        <td><span class="parametername">requestUri</span></td>
+        <td><p>the target uri for this message</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Net.Http.HttpRequestMessage</span></td>
+        <td><p>HttpRequestMessage</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TResponse</span></td>
+        <td><p>The type for the response, this modifies the Accep headers</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/new/master/apiSpec/new?filename=Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreateGet__1_System_Uri_.md&amp;value=---%0Auid%3A%20Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreateGet%60%601(System.Uri)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/blob/master/src/Dapplo.HttpExtensions/Factory/HttpRequestMessageFactory.cs/#L142">View Source</a>
+  </span>
+  <a id="Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreateGet_" data-uid="Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreateGet*"></a>
+  <h4 id="Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreateGet__1_System_Uri_" data-uid="Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreateGet``1(System.Uri)">CreateGet&lt;TResponse&gt;(Uri)</h4>
+  <div class="markdown level1 summary"><p>Create a HttpRequestMessage for the GET method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static HttpRequestMessage CreateGet&lt;TResponse&gt;(Uri requestUri)
+    where TResponse : class</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Uri</span></td>
+        <td><span class="parametername">requestUri</span></td>
+        <td><p>the target uri for this message</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Net.Http.HttpRequestMessage</span></td>
+        <td><p>HttpRequestMessage</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TResponse</span></td>
+        <td><p>The type for the response, this modifies the Accept headers</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/new/master/apiSpec/new?filename=Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreateHead_System_Uri_.md&amp;value=---%0Auid%3A%20Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreateHead(System.Uri)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/blob/master/src/Dapplo.HttpExtensions/Factory/HttpRequestMessageFactory.cs/#L153">View Source</a>
+  </span>
+  <a id="Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreateHead_" data-uid="Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreateHead*"></a>
+  <h4 id="Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreateHead_System_Uri_" data-uid="Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreateHead(System.Uri)">CreateHead(Uri)</h4>
+  <div class="markdown level1 summary"><p>Create a HttpRequestMessage for the HEAD method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static HttpRequestMessage CreateHead(Uri requestUri)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Uri</span></td>
+        <td><span class="parametername">requestUri</span></td>
+        <td><p>the target uri for this message</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Net.Http.HttpRequestMessage</span></td>
+        <td><p>HttpRequestMessage</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/new/master/apiSpec/new?filename=Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreatePatch_System_Uri_System_Object_.md&amp;value=---%0Auid%3A%20Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreatePatch(System.Uri%2CSystem.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/blob/master/src/Dapplo.HttpExtensions/Factory/HttpRequestMessageFactory.cs/#L177">View Source</a>
+  </span>
+  <a id="Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreatePatch_" data-uid="Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreatePatch*"></a>
+  <h4 id="Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreatePatch_System_Uri_System_Object_" data-uid="Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreatePatch(System.Uri,System.Object)">CreatePatch(Uri, Object)</h4>
+  <div class="markdown level1 summary"><p>Create a HttpRequestMessage for the PATCH method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static HttpRequestMessage CreatePatch(Uri requestUri, object content = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Uri</span></td>
+        <td><span class="parametername">requestUri</span></td>
+        <td><p>the target uri for this message</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">content</span></td>
+        <td><p>HttpContent</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Net.Http.HttpRequestMessage</span></td>
+        <td><p>HttpRequestMessage</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/new/master/apiSpec/new?filename=Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreatePatch__1_System_Uri_System_Object_.md&amp;value=---%0Auid%3A%20Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreatePatch%60%601(System.Uri%2CSystem.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/blob/master/src/Dapplo.HttpExtensions/Factory/HttpRequestMessageFactory.cs/#L165">View Source</a>
+  </span>
+  <a id="Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreatePatch_" data-uid="Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreatePatch*"></a>
+  <h4 id="Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreatePatch__1_System_Uri_System_Object_" data-uid="Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreatePatch``1(System.Uri,System.Object)">CreatePatch&lt;TResponse&gt;(Uri, Object)</h4>
+  <div class="markdown level1 summary"><p>Create a HttpRequestMessage for the PATCH method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static HttpRequestMessage CreatePatch&lt;TResponse&gt;(Uri requestUri, object content = null)
+    where TResponse : class</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Uri</span></td>
+        <td><span class="parametername">requestUri</span></td>
+        <td><p>the target uri for this message</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">content</span></td>
+        <td><p>HttpContent</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Net.Http.HttpRequestMessage</span></td>
+        <td><p>HttpRequestMessage</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TResponse</span></td>
+        <td><p>The type for the response, this modifies the Accept headers</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/new/master/apiSpec/new?filename=Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreatePost_System_Uri_System_Object_.md&amp;value=---%0Auid%3A%20Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreatePost(System.Uri%2CSystem.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/blob/master/src/Dapplo.HttpExtensions/Factory/HttpRequestMessageFactory.cs/#L201">View Source</a>
+  </span>
+  <a id="Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreatePost_" data-uid="Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreatePost*"></a>
+  <h4 id="Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreatePost_System_Uri_System_Object_" data-uid="Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreatePost(System.Uri,System.Object)">CreatePost(Uri, Object)</h4>
+  <div class="markdown level1 summary"><p>Create a HttpRequestMessage for the POST method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static HttpRequestMessage CreatePost(Uri requestUri, object content = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Uri</span></td>
+        <td><span class="parametername">requestUri</span></td>
+        <td><p>the target uri for this message</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">content</span></td>
+        <td><p>HttpContent</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Net.Http.HttpRequestMessage</span></td>
+        <td><p>HttpRequestMessage</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/new/master/apiSpec/new?filename=Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreatePost__1_System_Uri_System_Object_.md&amp;value=---%0Auid%3A%20Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreatePost%60%601(System.Uri%2CSystem.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/blob/master/src/Dapplo.HttpExtensions/Factory/HttpRequestMessageFactory.cs/#L189">View Source</a>
+  </span>
+  <a id="Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreatePost_" data-uid="Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreatePost*"></a>
+  <h4 id="Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreatePost__1_System_Uri_System_Object_" data-uid="Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreatePost``1(System.Uri,System.Object)">CreatePost&lt;TResponse&gt;(Uri, Object)</h4>
+  <div class="markdown level1 summary"><p>Create a HttpRequestMessage for the POST method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static HttpRequestMessage CreatePost&lt;TResponse&gt;(Uri requestUri, object content = null)
+    where TResponse : class</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Uri</span></td>
+        <td><span class="parametername">requestUri</span></td>
+        <td><p>the target uri for this message</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">content</span></td>
+        <td><p>HttpContent</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Net.Http.HttpRequestMessage</span></td>
+        <td><p>HttpRequestMessage</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TResponse</span></td>
+        <td><p>The type for the response, this modifies the Accept headers</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/new/master/apiSpec/new?filename=Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreatePut_System_Uri_System_Object_.md&amp;value=---%0Auid%3A%20Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreatePut(System.Uri%2CSystem.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/blob/master/src/Dapplo.HttpExtensions/Factory/HttpRequestMessageFactory.cs/#L225">View Source</a>
+  </span>
+  <a id="Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreatePut_" data-uid="Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreatePut*"></a>
+  <h4 id="Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreatePut_System_Uri_System_Object_" data-uid="Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreatePut(System.Uri,System.Object)">CreatePut(Uri, Object)</h4>
+  <div class="markdown level1 summary"><p>Create a HttpRequestMessage for the PUT method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static HttpRequestMessage CreatePut(Uri requestUri, object content = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Uri</span></td>
+        <td><span class="parametername">requestUri</span></td>
+        <td><p>the target uri for this message</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">content</span></td>
+        <td><p>HttpContent</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Net.Http.HttpRequestMessage</span></td>
+        <td><p>HttpRequestMessage</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/new/master/apiSpec/new?filename=Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreatePut__1_System_Uri_System_Object_.md&amp;value=---%0Auid%3A%20Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreatePut%60%601(System.Uri%2CSystem.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/blob/master/src/Dapplo.HttpExtensions/Factory/HttpRequestMessageFactory.cs/#L213">View Source</a>
+  </span>
+  <a id="Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreatePut_" data-uid="Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreatePut*"></a>
+  <h4 id="Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory_CreatePut__1_System_Uri_System_Object_" data-uid="Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory.CreatePut``1(System.Uri,System.Object)">CreatePut&lt;TResponse&gt;(Uri, Object)</h4>
+  <div class="markdown level1 summary"><p>Create a HttpRequestMessage for the PUT method</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static HttpRequestMessage CreatePut&lt;TResponse&gt;(Uri requestUri, object content = null)
+    where TResponse : class</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Uri</span></td>
+        <td><span class="parametername">requestUri</span></td>
+        <td><p>the target uri for this message</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Object</span></td>
+        <td><span class="parametername">content</span></td>
+        <td><p>HttpContent</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Net.Http.HttpRequestMessage</span></td>
+        <td><p>HttpRequestMessage</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TResponse</span></td>
+        <td><p>The type for the response, this modifies the Accept headers</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/new/master/apiSpec/new?filename=Dapplo_HttpExtensions_Factory_HttpRequestMessageFactory.md&amp;value=---%0Auid%3A%20Dapplo.HttpExtensions.Factory.HttpRequestMessageFactory%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/blob/master/src/Dapplo.HttpExtensions/Factory/HttpRequestMessageFactory.cs/#L20" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            Copyright © Dapplo
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

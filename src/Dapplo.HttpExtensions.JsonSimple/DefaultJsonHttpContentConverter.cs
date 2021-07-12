@@ -33,6 +33,7 @@ namespace Dapplo.HttpExtensions.JsonSimple
         static DefaultJsonHttpContentConverter()
         {
             SupportedContentTypes.Add(MediaTypes.Json.EnumValueOf());
+            SupportedContentTypes.Add(MediaTypes.TxtJson.EnumValueOf());
         }
 
         /// <summary>

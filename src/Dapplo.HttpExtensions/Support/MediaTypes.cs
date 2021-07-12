@@ -35,6 +35,12 @@ namespace Dapplo.HttpExtensions.Support
         /// </summary>
         [EnumMember(Value = "text/plain")] Txt,
 
+
+        /// <summary>
+        ///     Used for json
+        /// </summary>
+        [EnumMember(Value = "text/json")] TxtJson,
+
         /// <summary>
         ///     Used for a www form which is url encoded
         /// </summary>

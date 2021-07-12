@@ -39,7 +39,7 @@ stages:
       displayName: 'Use .NET Core sdk 5.0.1'
       inputs:
         packageType: sdk
-        version: 5.0.201
+        version: 5.0.301
 
     - task: DotNetCoreCLI@2
       displayName: Test

@@ -20,10 +20,10 @@ namespace Dapplo.HttpExtensions.ContentConverter
             MediaTypes.Txt.EnumValueOf(),
             MediaTypes.Html.EnumValueOf(),
             MediaTypes.Xml.EnumValueOf(),
+            MediaTypes.TxtJson.EnumValueOf(),
             MediaTypes.Json.EnumValueOf(),
             MediaTypes.XmlReadable.EnumValueOf()
         };
-
 
         /// <summary>
         ///     Name of the configuration, this should be unique and usually is the type of the object

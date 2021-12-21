@@ -302,7 +302,7 @@ namespace Dapplo.HttpExtensions.OAuth
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken)
         {
             // Make sure the first call does the authorization, and all others wait for it.
-            await _oAuth1Settings.Lock.WaitAsync().ConfigureAwait(false);
+            await _oAuth1Settings.Lock.WaitAsync(CancellationToken.None).ConfigureAwait(false);
             try
             {
                 if (string.IsNullOrEmpty(_oAuth1Settings.Token.OAuthToken))
@@ -344,7 +344,7 @@ namespace Dapplo.HttpExtensions.OAuth
         {
             // TODO: Use IHttpRequestConfiguration here
 
-#if NET5_0
+#if NET5_0 || NET6_0
             var parameters = new Dictionary<string, object>(httpRequestMessage.Options);
 #else
             var parameters = new Dictionary<string, object>(httpRequestMessage.Properties);
@@ -447,22 +447,22 @@ namespace Dapplo.HttpExtensions.OAuth
                 httpRequestMessage.SetAuthorization("OAuth", authorizationHeaderValues);
 
             }
-            
-#if NET5_0
+
+#if NET5_0 || NET6_0
             if (httpRequestMessage.Method == HttpMethod.Post && httpRequestMessage.Options.Any())
 #else
             if (httpRequestMessage.Method == HttpMethod.Post && httpRequestMessage.Properties.Count > 0)
 #endif
             {
                 var multipartFormDataContent = new MultipartFormDataContent();
-#if NET5_0
+#if NET5_0 || NET6_0
                 foreach (var option in httpRequestMessage.Options)
                 {
                     var propertyName = option.Key;
                     var requestObject = option.Value;
 
 #else
-                    foreach (var propertyName in httpRequestMessage.Properties.Keys)
+                foreach (var propertyName in httpRequestMessage.Properties.Keys)
                     {
                         var requestObject = httpRequestMessage.Properties[propertyName];
 #endif

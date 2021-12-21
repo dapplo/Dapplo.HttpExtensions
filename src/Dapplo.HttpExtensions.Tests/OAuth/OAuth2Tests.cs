@@ -50,7 +50,9 @@ namespace Dapplo.HttpExtensions.Tests.OAuth
         /// </summary>
         /// <returns>Task</returns>
         //[Fact]
+#pragma warning disable xUnit1013 // Public method should be marked as test
         public async Task TestOAuth2HttpMessageHandler()
+#pragma warning restore xUnit1013 // Public method should be marked as test
         {
             var calendarApiUri = GoogleApiUri.AppendSegments("calendar", "v3");
             // Make sure you use your special IHttpBehaviour before the requests which need OAuth

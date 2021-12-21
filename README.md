@@ -1,6 +1,5 @@
 dapplo.httpextensions
 =====================
-Work in progress
 
 - Documentation [here](http://www.dapplo.net/Dapplo.HttpExtensions)
 - Current build status: [![Build Status](https://dev.azure.com/Dapplo/Dapplo%20framework/_apis/build/status/dapplo.Dapplo.HttpExtensions?branchName=master)](https://dev.azure.com/Dapplo/Dapplo%20framework/_build/latest?definitionId=9&branchName=master)

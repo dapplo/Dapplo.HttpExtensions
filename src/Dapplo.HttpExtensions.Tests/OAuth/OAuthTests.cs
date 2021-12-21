@@ -19,7 +19,7 @@ namespace Dapplo.HttpExtensions.Tests.OAuth
     /// </summary>
     public class OAuthTests
     {
-        private static readonly Uri OAuthTestServerUri = new Uri("http://term.ie/oauth/example/");
+        private static readonly Uri OAuthTestServerUri = new("http://term.ie/oauth/example/");
         private readonly IHttpBehaviour _oAuthHttpBehaviour;
 
         public OAuthTests(ITestOutputHelper testOutputHelper)
@@ -55,7 +55,9 @@ namespace Dapplo.HttpExtensions.Tests.OAuth
         /// </summary>
         /// <returns>Task</returns>
         //[Fact] // Disabled as term.ie is no longer available
+#pragma warning disable xUnit1013 // Public method should be marked as test
         public async Task TestOAuthHttpMessageHandler_Get()
+#pragma warning restore xUnit1013 // Public method should be marked as test
         {
             var userInformationUri = OAuthTestServerUri.AppendSegments("echo_api.php").ExtendQuery("name", "dapplo");
 

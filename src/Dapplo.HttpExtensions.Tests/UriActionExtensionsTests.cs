@@ -29,8 +29,10 @@ namespace Dapplo.HttpExtensions.Tests
     /// </summary>
     public class UriActionExtensionsTests
     {
+#pragma warning disable IDE0090 // Use 'new(...)'
         private static readonly LogSource Log = new LogSource();
-        private readonly Uri _httpBinUri = new Uri("http://httpbin.org");
+#pragma warning restore IDE0090 // Use 'new(...)'
+        private readonly Uri _httpBinUri = new("http://httpbin.org");
 
         public UriActionExtensionsTests(ITestOutputHelper testOutputHelper)
         {
@@ -242,6 +244,27 @@ namespace Dapplo.HttpExtensions.Tests
             var result = await new Uri("https://httpbin.org/user-agent").GetAsAsync<IDictionary<string, string>>();
             Assert.NotNull(result);
             Assert.Equal(HttpExtensionsGlobals.HttpSettings.DefaultUserAgent, result["user-agent"]);
+        }
+
+        /// <summary>
+        ///     Test user-agent
+        /// </summary>
+        [Fact]
+        public async Task TestUrlEncodedFormData()
+        {
+            Dictionary<string, string> values = new();
+            //var f = "h5=1&_time=1626124814580&alias=liveme&videoid=16261222677467284812&area=us&vali=XjMJleNrbmw2ybp&risk_token=t345a9757d0ab68f1feb87c38417e5230";
+            values["h5"] = "1";
+            values["time"] = "1626124814580";
+            values["risk_token"] = "t345a9757d0ab68f1feb87c38417e5230";
+            values["alias"] = "liveme";
+            values["area"] = "us";
+            values["videoid"] = "16261222677467284812";
+
+
+            var result = await new Uri("https://httpbin.org/anything").PostAsync<string>(values);
+
+            Assert.NotNull(result);
         }
     }
 }

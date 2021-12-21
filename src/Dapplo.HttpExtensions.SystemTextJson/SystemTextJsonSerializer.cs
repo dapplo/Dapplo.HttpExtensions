@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 #if NETFRAMEWORK
 using System.Drawing;
 using System.Windows.Media.Imaging;
@@ -44,7 +45,7 @@ namespace Dapplo.HttpExtensions.SystemTextJson
         /// </summary>
         public JsonSerializerOptions Options { get; set; } = new JsonSerializerOptions
         {
-            IgnoreNullValues = true, PropertyNameCaseInsensitive = true
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
 
 

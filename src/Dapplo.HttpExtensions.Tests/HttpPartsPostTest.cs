@@ -8,6 +8,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Dapplo.HttpExtensions.JsonSimple;
 using Dapplo.HttpExtensions.Tests.TestEntities;
+using Dapplo.HttpExtensions.WinForms.ContentConverter;
+using Dapplo.HttpExtensions.Wpf.ContentConverter;
 using Dapplo.Log;
 using Dapplo.Log.XUnit;
 using Xunit;
@@ -27,6 +29,8 @@ public class HttpPartsPostTest
     {
         LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
         SimpleJsonSerializer.RegisterGlobally();
+        BitmapHttpContentConverter.RegisterGlobally();
+        BitmapSourceHttpContentConverter.RegisterGlobally();
     }
 
     /// <summary>

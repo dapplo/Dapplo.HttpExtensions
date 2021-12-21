@@ -3,17 +3,16 @@
 
 using System;
 
-namespace Dapplo.HttpExtensions.JsonSimple
+namespace Dapplo.HttpExtensions.JsonSimple;
+
+/// <summary>
+///     Use this attribute on a IDictionary to be able to receive all data which cannot be matched in the target type
+/// </summary>
+[AttributeUsage(AttributeTargets.Property)]
+public class JsonExtensionDataAttribute : Attribute
 {
     /// <summary>
-    ///     Use this attribute on a IDictionary to be able to receive all data which cannot be matched in the target type
+    ///     Specify a regex to match the property names of the Json content
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property)]
-    public class JsonExtensionDataAttribute : Attribute
-    {
-        /// <summary>
-        ///     Specify a regex to match the property names of the Json content
-        /// </summary>
-        public string Pattern { get; set; }
-    }
+    public string Pattern { get; set; }
 }

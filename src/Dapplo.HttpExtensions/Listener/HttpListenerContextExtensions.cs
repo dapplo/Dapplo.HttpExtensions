@@ -3,12 +3,7 @@
 
 #if NETFRAMEWORK || NETSTANDARD2_0 || NETCOREAPP3_1 || NET5_0 || NET6_0
 
-using System.Net;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 using Dapplo.HttpExtensions.Factory;
-using Dapplo.Log;
 
 namespace Dapplo.HttpExtensions.Listener
 {

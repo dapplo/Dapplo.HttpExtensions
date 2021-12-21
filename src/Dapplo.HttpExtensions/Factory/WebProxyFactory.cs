@@ -3,9 +3,7 @@
 
 #if !NETSTANDARD1_3
 
-using System.Net;
 #if NETCOREAPP3_1 || NET5_0 || NET6_0
-using System.Net.Http;
 #endif
 
 namespace Dapplo.HttpExtensions.Factory

@@ -3,18 +3,17 @@
 
 using System.Runtime.Serialization;
 
-namespace Dapplo.HttpExtensions.Tests.TestEntities
-{
-    /// <summary>
-    ///     Container for errors from GitHub
-    /// </summary>
-    [DataContract]
-    public class GitHubError
-    {
-        [DataMember(Name = "documentation_url")]
-        public string DocumentationUrl { get; set; }
+namespace Dapplo.HttpExtensions.Tests.TestEntities;
 
-        [DataMember(Name = "message")]
-        public string Message { get; set; }
-    }
+/// <summary>
+///     Container for errors from GitHub
+/// </summary>
+[DataContract]
+public class GitHubError
+{
+    [DataMember(Name = "documentation_url")]
+    public string DocumentationUrl { get; set; }
+
+    [DataMember(Name = "message")]
+    public string Message { get; set; }
 }

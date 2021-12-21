@@ -1,11 +1,6 @@
 ﻿// Copyright (c) Dapplo and contributors. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Net;
-using System.Net.Http;
-using System.Net.Security;
-using Dapplo.Log;
-
 #if NETFRAMEWORK
 using System.Net.Cache;
 #endif

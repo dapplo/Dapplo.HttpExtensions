@@ -12,31 +12,30 @@ using Dapplo.Log.XUnit;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Dapplo.HttpExtensions.Tests
+namespace Dapplo.HttpExtensions.Tests;
+
+public class HttpRequestConfigurationTests
 {
-    public class HttpRequestConfigurationTests
+    public HttpRequestConfigurationTests(ITestOutputHelper testOutputHelper)
     {
-        public HttpRequestConfigurationTests(ITestOutputHelper testOutputHelper)
-        {
-            LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
+        LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
 #if NETFRAMEWORK
             HttpExtensionsGlobals.HttpSettings.RequestCacheLevel = RequestCacheLevel.NoCacheNoStore;
 #endif
-        }
+    }
 
-        /// <summary>
-        ///     Test posting, using Bitmap
-        /// </summary>
-        [Fact]
-        public void Test_GetSet()
-        {
-            var httpBehaviour = HttpBehaviour.Current;
-            var testConfig = new BitmapConfiguration {Format = ImageFormat.Gif};
-            Assert.Equal(ImageFormat.Gif, testConfig.Format);
-            httpBehaviour.SetConfig(testConfig);
-            Assert.Equal(ImageFormat.Gif, testConfig.Format);
-            var retrievedConfig = httpBehaviour.GetConfig<BitmapConfiguration>();
-            Assert.Equal(ImageFormat.Gif, retrievedConfig.Format);
-        }
+    /// <summary>
+    ///     Test posting, using Bitmap
+    /// </summary>
+    [Fact]
+    public void Test_GetSet()
+    {
+        var httpBehaviour = HttpBehaviour.Current;
+        var testConfig = new BitmapConfiguration {Format = ImageFormat.Gif};
+        Assert.Equal(ImageFormat.Gif, testConfig.Format);
+        httpBehaviour.SetConfig(testConfig);
+        Assert.Equal(ImageFormat.Gif, testConfig.Format);
+        var retrievedConfig = httpBehaviour.GetConfig<BitmapConfiguration>();
+        Assert.Equal(ImageFormat.Gif, retrievedConfig.Format);
     }
 }

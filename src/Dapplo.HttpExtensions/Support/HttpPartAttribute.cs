@@ -1,34 +1,31 @@
 ﻿// Copyright (c) Dapplo and contributors. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
+namespace Dapplo.HttpExtensions.Support;
 
-namespace Dapplo.HttpExtensions.Support
+/// <summary>
+///     This attribute marks a property in a HttpRequestAttributed or HttpResponseAttribute class as being a part for
+///     processing
+/// </summary>
+[AttributeUsage(AttributeTargets.Property)]
+public class HttpPartAttribute : Attribute
 {
     /// <summary>
-    ///     This attribute marks a property in a HttpRequestAttributed or HttpResponseAttribute class as being a part for
-    ///     processing
+    ///     Constructor
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property)]
-    public class HttpPartAttribute : Attribute
+    /// <param name="part">HttpParts</param>
+    public HttpPartAttribute(HttpParts part)
     {
-        /// <summary>
-        ///     Constructor
-        /// </summary>
-        /// <param name="part">HttpParts</param>
-        public HttpPartAttribute(HttpParts part)
-        {
-            Part = part;
-        }
-
-        /// <summary>
-        ///     Order of the content when using multi-part content
-        /// </summary>
-        public int Order { get; set; }
-
-        /// <summary>
-        ///     Use this to specify what the property is representing
-        /// </summary>
-        public HttpParts Part { get; set; }
+        Part = part;
     }
+
+    /// <summary>
+    ///     Order of the content when using multi-part content
+    /// </summary>
+    public int Order { get; set; }
+
+    /// <summary>
+    ///     Use this to specify what the property is representing
+    /// </summary>
+    public HttpParts Part { get; set; }
 }

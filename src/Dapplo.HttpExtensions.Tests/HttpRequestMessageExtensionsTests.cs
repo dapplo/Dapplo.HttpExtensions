@@ -12,31 +12,30 @@ using Dapplo.Log.XUnit;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Dapplo.HttpExtensions.Tests
+namespace Dapplo.HttpExtensions.Tests;
+
+/// <summary>
+///     Testing HttpRequestMessageExtensions
+/// </summary>
+public class HttpRequestMessageExtensionsTests
 {
-    /// <summary>
-    ///     Testing HttpRequestMessageExtensions
-    /// </summary>
-    public class HttpRequestMessageExtensionsTests
+    public HttpRequestMessageExtensionsTests(ITestOutputHelper testOutputHelper)
     {
-        public HttpRequestMessageExtensionsTests(ITestOutputHelper testOutputHelper)
-        {
-            LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
+        LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
 #if NETFRAMEWORK
             HttpExtensionsGlobals.HttpSettings.RequestCacheLevel = RequestCacheLevel.NoCacheNoStore;
 #endif
-        }
+    }
 
-        /// <summary>
-        ///     Test getting the uri as Bitmap
-        /// </summary>
-        [Fact]
-        public async Task TestSendAsync()
-        {
-            var testUri = new Uri("http://httpbin.org/xml");
-            var httpRequestMessage = HttpRequestMessageFactory.CreateGet<string>(testUri);
-            var result = await httpRequestMessage.SendAsync<string>();
-            Assert.NotNull(result);
-        }
+    /// <summary>
+    ///     Test getting the uri as Bitmap
+    /// </summary>
+    [Fact]
+    public async Task TestSendAsync()
+    {
+        var testUri = new Uri("http://httpbin.org/xml");
+        var httpRequestMessage = HttpRequestMessageFactory.CreateGet<string>(testUri);
+        var result = await httpRequestMessage.SendAsync<string>();
+        Assert.NotNull(result);
     }
 }

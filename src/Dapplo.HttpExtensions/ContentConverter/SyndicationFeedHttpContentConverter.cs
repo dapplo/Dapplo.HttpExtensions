@@ -3,17 +3,12 @@
 
 #if !NETSTANDARD1_3
 
-using System;
 using System.IO;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.ServiceModel.Syndication;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Xml;
 using Dapplo.HttpExtensions.Extensions;
 using Dapplo.HttpExtensions.Support;
-using Dapplo.Log;
 
 namespace Dapplo.HttpExtensions.ContentConverter
 {

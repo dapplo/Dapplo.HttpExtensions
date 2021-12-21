@@ -1,18 +1,11 @@
 ﻿// Copyright (c) Dapplo and contributors. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
-using System.Net;
-using System.Net.Http;
-using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
-#if !NETSTANDARD1_3
-using System.Net.Cache;
-using System.Security.Principal;
-#endif
+
 
 namespace Dapplo.HttpExtensions
 {

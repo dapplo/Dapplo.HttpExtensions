@@ -12,33 +12,32 @@ using Dapplo.Log.XUnit;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Dapplo.HttpExtensions.Tests
-{
-    /// <summary>
-    ///     Should write some tests which use http://httpbin.org/
-    /// </summary>
-    public class UriActionExtensionsMultiPartTests
-    {
-        private readonly Uri _bitmapUri = new Uri("http://getgreenshot.org/assets/greenshot-logo.png");
+namespace Dapplo.HttpExtensions.Tests;
 
-        public UriActionExtensionsMultiPartTests(ITestOutputHelper testOutputHelper)
-        {
-            LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
+/// <summary>
+///     Should write some tests which use http://httpbin.org/
+/// </summary>
+public class UriActionExtensionsMultiPartTests
+{
+    private readonly Uri _bitmapUri = new Uri("http://getgreenshot.org/assets/greenshot-logo.png");
+
+    public UriActionExtensionsMultiPartTests(ITestOutputHelper testOutputHelper)
+    {
+        LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
 #if NETFRAMEWORK
             HttpExtensionsGlobals.HttpSettings.RequestCacheLevel = RequestCacheLevel.NoCacheNoStore;
 #endif
-        }
+    }
 
-        /// <summary>
-        ///     Test getting the Uri as MemoryStream
-        /// </summary>
-        /// <returns></returns>
-        [Fact]
-        public async Task TestGetAsAsyncMemoryStream()
-        {
-            var stream = await _bitmapUri.GetAsAsync<MemoryStream>();
-            Assert.NotNull(stream);
-            Assert.True(stream.Length > 0);
-        }
+    /// <summary>
+    ///     Test getting the Uri as MemoryStream
+    /// </summary>
+    /// <returns></returns>
+    [Fact]
+    public async Task TestGetAsAsyncMemoryStream()
+    {
+        var stream = await _bitmapUri.GetAsAsync<MemoryStream>();
+        Assert.NotNull(stream);
+        Assert.True(stream.Length > 0);
     }
 }

@@ -5,19 +5,18 @@ using System;
 using System.CodeDom.Compiler;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Dapplo.HttpExtensions.JsonSimple
-{
-    [GeneratedCode("simple-json", "1.0.0")]
+namespace Dapplo.HttpExtensions.JsonSimple;
+
+[GeneratedCode("simple-json", "1.0.0")]
 #if SIMPLE_JSON_INTERNAL
 	internal
 #else
-    public
+public
 #endif
-        interface IJsonSerializerStrategy
-    {
-        [SuppressMessage("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate", Justification = "Need to support .NET 2")]
-        bool TrySerializeNonPrimitiveObject(object input, out object output);
+    interface IJsonSerializerStrategy
+{
+    [SuppressMessage("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate", Justification = "Need to support .NET 2")]
+    bool TrySerializeNonPrimitiveObject(object input, out object output);
 
-        object DeserializeObject(object value, Type type);
-    }
+    object DeserializeObject(object value, Type type);
 }

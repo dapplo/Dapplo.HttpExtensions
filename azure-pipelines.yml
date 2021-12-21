@@ -36,6 +36,12 @@ stages:
         version: 3.1.416
 
     - task: UseDotNet@2
+      displayName: 'Use .NET Core sdk 5.0.13'
+      inputs:
+        packageType: sdk
+        version: 5.0.404
+
+    - task: UseDotNet@2
       displayName: 'Use .NET Core sdk 6.0.1'
       inputs:
         packageType: sdk

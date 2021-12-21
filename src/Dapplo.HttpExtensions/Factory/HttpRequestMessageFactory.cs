@@ -39,11 +39,11 @@ public static class HttpRequestMessageFactory
             Version = configuration.HttpMessageVersion
         };
 #if NET5_0 || NET6_0
-            // Set supplied Properties from the HttpRequestMessageConfiguration
-            foreach (var key in configuration.Properties.Keys)
-            {
-                httpRequestMessage.Options.Set(new HttpRequestOptionsKey<object>(key), configuration.Properties[key]);
-            }
+        // Set supplied Properties from the HttpRequestMessageConfiguration
+        foreach (var key in configuration.Properties.Keys)
+        {
+            httpRequestMessage.Options.Set(new HttpRequestOptionsKey<object>(key), configuration.Properties[key]);
+        }
 #else
         // Set supplied Properties from the HttpRequestMessageConfiguration
         foreach (var key in configuration.Properties.Keys)

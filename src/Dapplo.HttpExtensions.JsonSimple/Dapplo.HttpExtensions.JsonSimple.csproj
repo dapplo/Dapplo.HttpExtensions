@@ -2,14 +2,14 @@
   <PropertyGroup>
     <Description>Simple functionality for Dapplo.HttpExtensions</Description>
     <AssemblyTitle>Dapplo.HttpExtensions.JsonSimple</AssemblyTitle>
-    <TargetFrameworks>netstandard1.3;netstandard2.0;net461</TargetFrameworks>
+    <TargetFrameworks>netstandard1.3;netstandard2.0;net471</TargetFrameworks>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <AssemblyName>Dapplo.HttpExtensions.JsonSimple</AssemblyName>
     <PackageId>Dapplo.HttpExtensions.JsonSimple</PackageId>
     <PackageTags>http;rest;dapplo</PackageTags>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Dapplo.Log" Version="1.4.1" />
+    <PackageReference Include="Dapplo.Log" Version="2.0.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Dapplo.HttpExtensions\Dapplo.HttpExtensions.csproj" />

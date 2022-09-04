@@ -336,7 +336,7 @@ public class OAuth1HttpMessageHandler : DelegatingHandler
     {
         // TODO: Use IHttpRequestConfiguration here
 
-#if NET5_0 || NET6_0
+#if NET6_0
             var parameters = new Dictionary<string, object>(httpRequestMessage.Options);
 #else
         var parameters = new Dictionary<string, object>(httpRequestMessage.Properties);
@@ -440,14 +440,14 @@ public class OAuth1HttpMessageHandler : DelegatingHandler
 
         }
 
-#if NET5_0 || NET6_0
+#if NET6_0
             if (httpRequestMessage.Method == HttpMethod.Post && httpRequestMessage.Options.Any())
 #else
         if (httpRequestMessage.Method == HttpMethod.Post && httpRequestMessage.Properties.Count > 0)
 #endif
         {
             var multipartFormDataContent = new MultipartFormDataContent();
-#if NET5_0 || NET6_0
+#if NET6_0
                 foreach (var option in httpRequestMessage.Options)
                 {
                     var propertyName = option.Key;

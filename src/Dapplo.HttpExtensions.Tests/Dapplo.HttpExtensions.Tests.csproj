@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>Tests for Dapplo.HttpExtensions</Description>
-    <TargetFrameworks>netcoreapp3.1;net5.0-windows;net6.0-windows</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net6.0-windows</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
@@ -10,11 +10,11 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Dapplo.Config.Ini" Version="2.3.0" />
-    <PackageReference Include="Dapplo.Log" Version="1.4.1" />
-    <PackageReference Include="Dapplo.Log.XUnit" Version="1.4.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
-    <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+    <PackageReference Include="Dapplo.Log" Version="2.0.1" />
+    <PackageReference Include="Dapplo.Log.XUnit" Version="2.0.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.1" />
+    <PackageReference Include="xunit" Version="2.4.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
 	  <PrivateAssets>all</PrivateAssets>
 	  <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
 	</PackageReference>
@@ -33,7 +33,7 @@
     <ProjectReference Include="..\Dapplo.HttpExtensions.JsonNet\Dapplo.HttpExtensions.JsonNet.csproj" />
     <ProjectReference Include="..\Dapplo.HttpExtensions.JsonSimple\Dapplo.HttpExtensions.JsonSimple.csproj" />
   </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1' Or $(TargetFramework.StartsWith('net5')) Or $(TargetFramework.StartsWith('net6'))">
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1' Or $(TargetFramework.StartsWith('net6'))">
     <PackageReference Include="System.Collections.Concurrent" Version="4.3.0" />
     <PackageReference Include="System.ComponentModel" Version="4.3.0" />
     <PackageReference Include="System.ComponentModel.Primitives" Version="4.3.0" />
@@ -45,7 +45,7 @@
     <PackageReference Include="System.Runtime.Extensions" Version="4.3.1" />
     <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
-    <PackageReference Include="System.ServiceModel.Syndication" Version="5.0.0" />
+    <PackageReference Include="System.ServiceModel.Syndication" Version="6.0.0" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
     <Reference Include="System" />

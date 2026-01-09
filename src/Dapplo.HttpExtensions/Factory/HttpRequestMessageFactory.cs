@@ -69,7 +69,7 @@ public static class HttpRequestMessageFactory
 
         if (resultType != null && httpBehaviour.HttpContentConverters != null)
         {
-            foreach (var httpContentConverter in httpBehaviour.HttpContentConverters)
+            foreach (var httpContentConverter in httpBehaviour.HttpContentConverters.ToList())
             {
                 httpContentConverter.AddAcceptHeadersForType(resultType, httpRequestMessage);
             }

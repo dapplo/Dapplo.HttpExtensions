@@ -3,7 +3,7 @@ dapplo.httpextensions
 
 - Documentation [here](http://www.dapplo.net/Dapplo.HttpExtensions)
 - Current build status: [![Build Status](https://dev.azure.com/Dapplo/Dapplo%20framework/_apis/build/status/dapplo.Dapplo.HttpExtensions?branchName=master)](https://dev.azure.com/Dapplo/Dapplo%20framework/_build/latest?definitionId=9&branchName=master)
-- Coverage Status: [![Coverage Status](https://coveralls.io/repos/github/dapplo/Dapplo.HttpExtensions/badge.svg?branch=master)](https://coveralls.io/github/dapplo/Dapplo.HttpExtensions?branch=master)
+- Coverage Status: [![Coverage Status](https://coveralls.io/repos/github/dapplo/Dapplo.HttpExtensions/badge.svg?branch=master)](https://coveralls.io/github/dapplo/Dapplo.HttpExtensions?branch=master) [![Coverage Status](https://coveralls.io/repos/github/dapplo/Dapplo.Windows/badge.svg?branch=master)](https://coveralls.io/github/dapplo/Dapplo.Windows?branch=master)
 - NuGet package: [![NuGet package](https://img.shields.io/nuget/v/Dapplo.HttpExtensions.svg)](https://www.nuget.org/packages/Dapplo.HttpExtensions)
 
 Sometimes you just want to access a service in the internet or on a local server.

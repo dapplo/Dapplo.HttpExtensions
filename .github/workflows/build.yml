@@ -42,18 +42,16 @@ jobs:
       run: dotnet restore ${{ env.SOLUTION }}
     
     - name: Test
-      run: dotnet test ${{ env.SOLUTION }} --configuration ${{ env.BUILD_CONFIGURATION }} /p:Platform="${{ env.BUILD_PLATFORM}}" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
+      run: dotnet test ${{ env.SOLUTION }} --configuration ${{ env.BUILD_CONFIGURATION }} /p:Platform="${{ env.BUILD_PLATFORM}}" /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
     
     - name: Build
       run: dotnet build ${{ env.solution }} --configuration ${{ env.BUILD_CONFIGURATION }} /p:Platform="${{ env.BUILD_PLATFORM }}" --no-restore
-    
-    - name: Upload coverage to Codecov
+
+    - name: Upload coverage to Coveralls
       if: github.event_name != 'pull_request'
-      uses: codecov/codecov-action@v5
+      uses: coverallsapp/github-action@v2
       with:
-        files: 'src\Dapplo.HttpExtensions.Tests\coverage.net10.0-windows.cobertura.xml'
-        token: ${{ secrets.CODECOV_TOKEN }}
-        slug: dapplo/Dapplo.HttpExtensions
+        github-token: ${{ secrets.COVERALLS_SECRET }}
         fail_ci_if_error: false
     
     - name: Install DocFX

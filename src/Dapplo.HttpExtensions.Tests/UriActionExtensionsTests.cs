@@ -61,7 +61,7 @@ public class UriActionExtensionsTests
     [Fact]
     public async Task TestDeleteAsync()
     {
-        var result = await new Uri("https://httpbin.org/delete").DeleteAsync<dynamic>(TestContext.Current.CancellationToken);
+        var result = await new Uri("https://httpbin.org/delete").DeleteAsync<string>(TestContext.Current.CancellationToken);
         Assert.NotNull(result);
     }
 

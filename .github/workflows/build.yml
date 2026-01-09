@@ -40,12 +40,12 @@ jobs:
     
     - name: Restore dependencies
       run: dotnet restore ${{ env.SOLUTION }}
-    
-    - name: Test
-      run: dotnet test ${{ env.SOLUTION }} --configuration ${{ env.BUILD_CONFIGURATION }} /p:Platform="${{ env.BUILD_PLATFORM}}" /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
-    
+
     - name: Build
       run: dotnet build ${{ env.solution }} --configuration ${{ env.BUILD_CONFIGURATION }} /p:Platform="${{ env.BUILD_PLATFORM }}" --no-restore
+
+    - name: Test
+      run: dotnet test ${{ env.SOLUTION }} --configuration ${{ env.BUILD_CONFIGURATION }} /p:Platform="${{ env.BUILD_PLATFORM}}" /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
 
     - name: Upload coverage to Coveralls
       if: github.event_name != 'pull_request'
@@ -53,6 +53,7 @@ jobs:
       with:
         github-token: ${{ secrets.COVERALLS_SECRET }}
         fail_ci_if_error: false
+        file: src/Dapplo.HttpExtensions.Tests/coverage.net10.0-windows.info
     
     - name: Install DocFX
       run: choco install docfx -y

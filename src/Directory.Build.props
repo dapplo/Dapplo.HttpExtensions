@@ -10,8 +10,6 @@
     <LangVersion>latest</LangVersion>
     <!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <!-- Optional: Embed source files that are not tracked by the source control manager in the PDB -->
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <DisableImplicitFrameworkReferences Condition="$(TargetFramework.StartsWith('net4'))">true</DisableImplicitFrameworkReferences>
   </PropertyGroup>
 
@@ -42,8 +40,8 @@
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <Optimize>true</Optimize>
-    <DebugType>embedded</DebugType>
-    <DebugSymbols>True</DebugSymbols>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
   
   <ItemGroup Condition="!$(MSBuildProjectName.Contains('Tests')) And !$(MSBuildProjectName.Contains('Example'))">

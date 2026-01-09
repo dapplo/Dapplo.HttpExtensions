@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>A library extensions to simplify HTTP usage.</Description>
-    <TargetFrameworks>net481;netstandard2.0;net10.0</TargetFrameworks>
+    <TargetFrameworks>net481;netstandard2.0;net10.0;net8.0</TargetFrameworks>
     <PackageTags>http;rest;dapplo</PackageTags>
   </PropertyGroup>
   <ItemGroup>
@@ -21,7 +21,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' Or $(TargetFramework.StartsWith('net10'))">
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' Or $(TargetFramework.StartsWith('net10')) Or $(TargetFramework.StartsWith('net8'))">
     <PackageReference Include="System.ServiceModel.Syndication" Version="10.0.1" />
   </ItemGroup>
 </Project>

@@ -154,7 +154,7 @@ namespace Dapplo.HttpExtensions
         [IgnoreDataMember]
         X509CertificateCollection ClientCertificates { get; set; }
 
-#if NETSTANDARD2_0 || NET10_0
+#if NETSTANDARD2_0 || NET10_0 || NET8_0
         /// <summary>
         ///     For more details, click
         ///     <a href="https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpclienthandler.maxconnectionsperserver">here</a>
@@ -164,7 +164,7 @@ namespace Dapplo.HttpExtensions
         int MaxConnectionsPerServer { get; set; }
 
 #endif
-#if NETFRAMEWORK || NETSTANDARD2_0 || NET10_0
+#if NETFRAMEWORK || NETSTANDARD2_0 || NET10_0 || NET8_0
         /// <summary>
         ///     The Uri for the proxy to use, when the UseDefaultProxy is set to false
         /// </summary>

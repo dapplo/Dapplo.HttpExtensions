@@ -25,7 +25,7 @@ namespace Dapplo.HttpExtensions.Factory
             }
 
             var proxyToUse = httpSettings.UseDefaultProxy ?
-#if NET10_0
+#if NET10_0 || NET8_0
                 HttpClient.DefaultProxy
 #else
                 WebRequest.GetSystemWebProxy()
@@ -40,7 +40,7 @@ namespace Dapplo.HttpExtensions.Factory
                 }
                 else
                 {
-#if NET10_0
+#if NET10_0 || NET8_0
                     if (!httpSettings.UseDefaultProxy)
                     {
                         proxyToUse.Credentials = CredentialCache.DefaultCredentials;

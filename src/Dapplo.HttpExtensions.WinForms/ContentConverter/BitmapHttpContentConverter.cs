@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Dapplo and contributors. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-#if NETFRAMEWORK || NET10_0
+#if NETFRAMEWORK || NET10_0 || NET8_0
 
 using System;
 using System.Drawing;

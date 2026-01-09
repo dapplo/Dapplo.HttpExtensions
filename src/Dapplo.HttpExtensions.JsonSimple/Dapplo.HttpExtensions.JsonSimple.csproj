@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Description>Simple functionality for Dapplo.HttpExtensions</Description>
     <AssemblyTitle>Dapplo.HttpExtensions.JsonSimple</AssemblyTitle>
-    <TargetFrameworks>netstandard2.0;net481</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net481;net10.0;net8.0</TargetFrameworks>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <AssemblyName>Dapplo.HttpExtensions.JsonSimple</AssemblyName>
     <PackageId>Dapplo.HttpExtensions.JsonSimple</PackageId>

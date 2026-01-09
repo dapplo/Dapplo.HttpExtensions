@@ -98,12 +98,12 @@ namespace Dapplo.HttpExtensions.Support
         /// <inheritdoc />
         public bool IgnoreSslCertificateErrors { get; set; } = false;
 
-#if NETSTANDARD2_0 || NET10_0
+#if NETSTANDARD2_0 || NET10_0 || NET8_0
         /// <inheritdoc />
         public int MaxConnectionsPerServer { get; set; } = int.MaxValue;
 #endif
 
-#if NETFRAMEWORK || NETSTANDARD2_0 || NET10_0
+#if NETFRAMEWORK || NETSTANDARD2_0 || NET10_0 || NET8_0
 
         /// <inheritdoc />
         public Uri ProxyUri { get; set; }

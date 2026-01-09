@@ -1,15 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <Description>An OAuth extension for Dapplo.HttpExtensions</Description>
-    <TargetFrameworks>net481;net10.0-windows</TargetFrameworks>
+    <TargetFrameworks>net481;net10.0-windows;net8.0-windows</TargetFrameworks>
     <PackageTags>http;rest;dapplo</PackageTags>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Dapplo.Log" Version="3.0.17" />
-    <PackageReference Include="Dapplo.Windows" Version="1.0.73" />
-    <PackageReference Include="Dapplo.Windows.Dpi" Version="1.0.73" />
-    <PackageReference Include="Dapplo.Windows.EmbeddedBrowser" Version="1.0.73" />
+    <PackageReference Include="Dapplo.Windows" Version="2.0.1" />
+    <PackageReference Include="Dapplo.Windows.Dpi" Version="2.0.1" />
+    <PackageReference Include="Dapplo.Windows.EmbeddedBrowser" Version="2.0.1" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>

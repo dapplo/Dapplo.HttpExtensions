@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>System.Text.Json functionality for Dapplo.HttpExtensions</Description>
-    <TargetFrameworks>net481;netstandard2.0;net10.0</TargetFrameworks>
+    <TargetFrameworks>net481;netstandard2.0;net10.0;net8.0</TargetFrameworks>
     <PackageTags>http;rest;dapplo</PackageTags>
   </PropertyGroup>
   <ItemGroup>

@@ -1,19 +1,18 @@
 ﻿// Copyright (c) Dapplo and contributors. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 using Dapplo.HttpExtensions.JsonNet;
 using Dapplo.HttpExtensions.JsonSimple;
 using Dapplo.HttpExtensions.SystemTextJson;
 using Dapplo.HttpExtensions.Tests.TestEntities;
 using Dapplo.Log;
 using Dapplo.Log.XUnit;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Dapplo.HttpExtensions.Tests;
 
@@ -30,7 +29,7 @@ public class GithubTests
         //SystemTextJsonSerializer.RegisterGlobally();
         //SimpleJsonSerializer.RegisterGlobally();
 
-        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+        //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
         var githubApiUri = new Uri("https://api.github.com");
         _releasesUri = githubApiUri.AppendSegments("repos", "dapplo", "Dapplo.HttpExtensions", "releases");
@@ -55,7 +54,7 @@ public class GithubTests
         Assert.NotNull(behaviour);
         behaviour.JsonSerializer = new SimpleJsonSerializer();
 
-        var releases = await _releasesUri.GetAsAsync<HttpResponse<List<GitHubRelease>, GitHubError>>();
+        var releases = await _releasesUri.GetAsAsync<HttpResponse<List<GitHubRelease>, GitHubError>>(TestContext.Current.CancellationToken);
         Assert.NotNull(releases);
         Assert.False(releases.HasError, $"{releases.StatusCode}: {releases.ErrorResponse?.Message} {releases.ErrorResponse?.DocumentationUrl}");
 
@@ -78,7 +77,7 @@ public class GithubTests
         Assert.NotNull(behaviour);
         behaviour.JsonSerializer = new SystemTextJsonSerializer();
 
-        var releases = await _releasesUri.GetAsAsync<HttpResponse<List<GitHubRelease>, GitHubError>>();
+        var releases = await _releasesUri.GetAsAsync<HttpResponse<List<GitHubRelease>, GitHubError>>(TestContext.Current.CancellationToken);
         Assert.NotNull(releases);
         Assert.False(releases.HasError, $"{releases.StatusCode}: {releases.ErrorResponse?.Message} {releases.ErrorResponse?.DocumentationUrl}");
 
@@ -101,7 +100,7 @@ public class GithubTests
         Assert.NotNull(behaviour);
         behaviour.JsonSerializer = new JsonNetJsonSerializer();
 
-        var releases = await _releasesUri.GetAsAsync<HttpResponse<List<GitHubRelease>, GitHubError>>();
+        var releases = await _releasesUri.GetAsAsync<HttpResponse<List<GitHubRelease>, GitHubError>>(TestContext.Current.CancellationToken);
         Assert.NotNull(releases);
         Assert.False(releases.HasError, $"{releases.StatusCode}: {releases.ErrorResponse?.Message} {releases.ErrorResponse?.DocumentationUrl}");
 

@@ -10,8 +10,5 @@ global using System.Text;
 global using Dapplo.Log;
 global using System.Threading;
 global using System.Threading.Tasks;
-
-#if !NETSTANDARD1_3
 global using System.Net.Cache;
 global using System.Security.Principal;
-#endif

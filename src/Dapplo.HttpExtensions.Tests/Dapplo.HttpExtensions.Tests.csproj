@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>Tests for Dapplo.HttpExtensions</Description>
-    <TargetFrameworks>netcoreapp3.1;net6.0-windows</TargetFrameworks>
+    <TargetFrameworks>net10.0-windows</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
@@ -10,16 +10,16 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Dapplo.Config.Ini" Version="2.3.0" />
-    <PackageReference Include="Dapplo.Log" Version="2.0.1" />
-    <PackageReference Include="Dapplo.Log.XUnit" Version="2.0.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.1" />
-    <PackageReference Include="xunit" Version="2.4.2" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+    <PackageReference Include="Dapplo.Log" Version="3.0.17" />
+    <PackageReference Include="Dapplo.Log.XUnit" Version="3.0.17" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+    <PackageReference Include="xunit.v3" Version="3.2.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
 	  <PrivateAssets>all</PrivateAssets>
 	  <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
 	</PackageReference>
-    <PackageReference Include="Xunit.StaFact" Version="1.1.11" />
-    <PackageReference Include="coverlet.msbuild" Version="3.1.2">
+    <PackageReference Include="Xunit.StaFact" Version="3.0.13" />
+    <PackageReference Include="coverlet.msbuild" Version="6.0.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
@@ -32,20 +32,6 @@
     <ProjectReference Include="..\Dapplo.HttpExtensions.OAuth\Dapplo.HttpExtensions.OAuth.csproj" />
     <ProjectReference Include="..\Dapplo.HttpExtensions.JsonNet\Dapplo.HttpExtensions.JsonNet.csproj" />
     <ProjectReference Include="..\Dapplo.HttpExtensions.JsonSimple\Dapplo.HttpExtensions.JsonSimple.csproj" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1' Or $(TargetFramework.StartsWith('net6'))">
-    <PackageReference Include="System.Collections.Concurrent" Version="4.3.0" />
-    <PackageReference Include="System.ComponentModel" Version="4.3.0" />
-    <PackageReference Include="System.ComponentModel.Primitives" Version="4.3.0" />
-    <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
-    <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />
-    <PackageReference Include="System.IO.Compression" Version="4.3.0" />
-    <PackageReference Include="System.ObjectModel" Version="4.3.0" />
-    <PackageReference Include="System.Reflection" Version="4.3.0" />
-    <PackageReference Include="System.Runtime.Extensions" Version="4.3.1" />
-    <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
-    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
-    <PackageReference Include="System.ServiceModel.Syndication" Version="6.0.0" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
     <Reference Include="System" />

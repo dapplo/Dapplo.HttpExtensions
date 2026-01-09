@@ -10,7 +10,6 @@ using Dapplo.HttpExtensions.Factory;
 using Dapplo.Log;
 using Dapplo.Log.XUnit;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Dapplo.HttpExtensions.Tests;
 
@@ -35,7 +34,7 @@ public class HttpRequestMessageExtensionsTests
     {
         var testUri = new Uri("http://httpbin.org/xml");
         var httpRequestMessage = HttpRequestMessageFactory.CreateGet<string>(testUri);
-        var result = await httpRequestMessage.SendAsync<string>();
+        var result = await httpRequestMessage.SendAsync<string>(TestContext.Current.CancellationToken);
         Assert.NotNull(result);
     }
 }

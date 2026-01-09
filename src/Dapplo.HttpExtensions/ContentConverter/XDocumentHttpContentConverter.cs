@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Dapplo and contributors. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-#if !NETSTANDARD1_3
-
 using System.IO;
 using System.Net.Http.Headers;
 using System.Xml;
@@ -89,5 +87,3 @@ namespace Dapplo.HttpExtensions.ContentConverter
         }
     }
 }
-
-#endif

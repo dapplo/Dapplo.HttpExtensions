@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using Dapplo.Log;
 using Dapplo.Log.XUnit;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Dapplo.HttpExtensions.Tests;
 
@@ -36,7 +35,7 @@ public class UriActionExtensionsMultiPartTests
     [Fact]
     public async Task TestGetAsAsyncMemoryStream()
     {
-        var stream = await _bitmapUri.GetAsAsync<MemoryStream>();
+        var stream = await _bitmapUri.GetAsAsync<MemoryStream>(TestContext.Current.CancellationToken);
         Assert.NotNull(stream);
         Assert.True(stream.Length > 0);
     }

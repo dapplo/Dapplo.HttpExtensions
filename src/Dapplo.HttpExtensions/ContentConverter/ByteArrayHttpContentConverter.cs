@@ -42,7 +42,7 @@ public class ByteArrayHttpContentConverter : IHttpContentConverter
             throw new NotSupportedException("CanConvertFromHttpContent resulted in false, this is not supposed to be called.");
         }
         Log.Debug().WriteLine("Retrieving the content as byte[], Content-Type: {0}", httpContent.Headers.ContentType);
-#if NET471 || NETCOREAPP3_1 || NETSTANDARD1_3 || NETSTANDARD2_0
+#if NET481 || NETSTANDARD2_0
         return await httpContent.ReadAsByteArrayAsync().ConfigureAwait(false);
 #else
         return await httpContent.ReadAsByteArrayAsync(cancellationToken).ConfigureAwait(false);

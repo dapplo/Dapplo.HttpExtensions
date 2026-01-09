@@ -1,11 +1,6 @@
 ﻿// Copyright (c) Dapplo and contributors. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-#if !NETSTANDARD1_3
-
-#if NETCOREAPP3_1 || NET6_0
-#endif
-
 namespace Dapplo.HttpExtensions.Factory
 {
     /// <summary>
@@ -30,7 +25,7 @@ namespace Dapplo.HttpExtensions.Factory
             }
 
             var proxyToUse = httpSettings.UseDefaultProxy ?
-#if NETCOREAPP3_1 || NET6_0
+#if NET10_0
                 HttpClient.DefaultProxy
 #else
                 WebRequest.GetSystemWebProxy()
@@ -45,7 +40,7 @@ namespace Dapplo.HttpExtensions.Factory
                 }
                 else
                 {
-#if NETCOREAPP3_1 || NET6_0
+#if NET10_0
                     if (!httpSettings.UseDefaultProxy)
                     {
                         proxyToUse.Credentials = CredentialCache.DefaultCredentials;
@@ -72,4 +67,3 @@ namespace Dapplo.HttpExtensions.Factory
         }
     }
 }
-#endif

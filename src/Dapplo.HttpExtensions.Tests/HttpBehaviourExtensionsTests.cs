@@ -11,7 +11,6 @@ using Dapplo.HttpExtensions.WinForms.ContentConverter;
 using Dapplo.Log;
 using Dapplo.Log.XUnit;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Dapplo.HttpExtensions.Tests;
 
@@ -95,9 +94,9 @@ public class HttpBehaviourExtensionsTests
 
         testBehaviour.MakeCurrent();
 
-        using (var bitmap = await _bitmapUri.GetAsAsync<Bitmap>())
+        using (var bitmap = await _bitmapUri.GetAsAsync<Bitmap>(TestContext.Current.CancellationToken))
         {
-            await new Uri("https://httpbin.org/post").PostAsync(bitmap);
+            await new Uri("https://httpbin.org/post").PostAsync(bitmap, TestContext.Current.CancellationToken);
         }
         Assert.True(testChainOnHttpContentCreated1);
         Assert.True(testChainOnHttpContentCreated2);

@@ -4,11 +4,6 @@
 using System.IO;
 using Dapplo.HttpExtensions.Support;
 
-#if NETSTANDARD1_3
-using System.Reflection;
-
-#endif
-
 namespace Dapplo.HttpExtensions.ContentConverter
 {
     /// <summary>

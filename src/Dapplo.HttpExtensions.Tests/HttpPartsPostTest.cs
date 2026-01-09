@@ -13,7 +13,6 @@ using Dapplo.HttpExtensions.Wpf.ContentConverter;
 using Dapplo.Log;
 using Dapplo.Log.XUnit;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Dapplo.HttpExtensions.Tests;
 
@@ -59,7 +58,7 @@ public class HttpPartsPostTest
             JsonInformation = new GitHubError {DocumentationUrl = "http://test.de", Message = "Hello"}
         };
         testObject.Headers.Add("Name", "Dapplo");
-        var result = await testUri.PostAsync<dynamic>(testObject);
+        var result = await testUri.PostAsync<dynamic>(testObject, TestContext.Current.CancellationToken);
         Assert.NotNull(result);
         Assert.True(hasProgress);
     }
@@ -90,7 +89,7 @@ public class HttpPartsPostTest
             JsonInformation = new GitHubError {DocumentationUrl = "http://test.de", Message = "Hello"}
         };
         testObject.Headers.Add("Name", "Dapplo");
-        var result = await testUri.PostAsync<dynamic>(testObject);
+        var result = await testUri.PostAsync<dynamic>(testObject, TestContext.Current.CancellationToken);
         Assert.NotNull(result);
         Assert.True(hasProgress);
     }

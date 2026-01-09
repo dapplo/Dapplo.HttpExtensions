@@ -10,7 +10,6 @@ using Dapplo.HttpExtensions.WinForms.ContentConverter;
 using Dapplo.Log;
 using Dapplo.Log.XUnit;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Dapplo.HttpExtensions.Tests;
 

@@ -58,9 +58,7 @@ namespace Dapplo.HttpExtensions.Factory
             httpClientHandler.UseDefaultCredentials = httpSettings.UseDefaultCredentials;
             httpClientHandler.PreAuthenticate = httpSettings.PreAuthenticate;
 
-#if !NETSTANDARD1_3
             httpClientHandler.Proxy = httpSettings.UseProxy ? WebProxyFactory.Create() : null;
-#endif
             httpClientHandler.UseProxy = httpSettings.UseProxy;
 
 

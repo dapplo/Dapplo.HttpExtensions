@@ -6,7 +6,6 @@ using Dapplo.HttpExtensions.Listener;
 using Dapplo.Log;
 using Dapplo.Log.XUnit;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Dapplo.HttpExtensions.Tests.Support;
 
@@ -29,11 +28,11 @@ public class UriHttpListenerExtensionsTests
             var result = httpListenerRequest.Url.QueryToDictionary();
             await httpListenerContext.RespondAsync("OK");
             return result;
-        });
+        }, TestContext.Current.CancellationToken);
         // Do we need a delay for the listener to be ready?
         //await Task.Delay(100);
         var testUri = listenUri.ExtendQuery("name", "dapplo");
-        var okResponse = await testUri.GetAsAsync<string>();
+        var okResponse = await testUri.GetAsAsync<string>(TestContext.Current.CancellationToken);
         Assert.Equal("OK", okResponse);
         var actionResult = await listenTask;
         Assert.True(actionResult.ContainsKey("name"));

@@ -1,31 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>System.Text.Json functionality for Dapplo.HttpExtensions</Description>
-    <TargetFrameworks>net471;netstandard2.0;net6.0</TargetFrameworks>
+    <TargetFrameworks>net481;netstandard2.0;net10.0</TargetFrameworks>
     <PackageTags>http;rest;dapplo</PackageTags>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Dapplo.Log" Version="2.0.1" />
-    <PackageReference Include="System.Text.Json" Version="6.0.5" />
+    <PackageReference Include="Dapplo.Log" Version="3.0.17" />
+    <PackageReference Include="System.Text.Json" Version="10.0.1" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageReference Include="System.Reflection.TypeExtensions" Version="4.7.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Dapplo.HttpExtensions\Dapplo.HttpExtensions.csproj" />
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-    <PackageReference Include="Microsoft.NETCore.Portable.Compatibility" Version="1.0.1" />
-    <PackageReference Include="System.Collections.Concurrent" Version="4.3.0" />
-    <PackageReference Include="System.ComponentModel" Version="4.3.0" />
-    <PackageReference Include="System.ComponentModel.Primitives" Version="4.3.0" />
-    <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
-    <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />
-    <PackageReference Include="System.IO.Compression" Version="4.3.0" />
-    <PackageReference Include="System.ObjectModel" Version="4.3.0" />
-    <PackageReference Include="System.Reflection" Version="4.3.0" />
-    <PackageReference Include="System.Runtime.Extensions" Version="4.3.1" />
-    <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
-    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
     <Reference Include="System" />

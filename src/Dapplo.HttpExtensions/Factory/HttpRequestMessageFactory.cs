@@ -38,7 +38,7 @@ public static class HttpRequestMessageFactory
             Content = HttpContentFactory.Create(contentType, content),
             Version = configuration.HttpMessageVersion
         };
-#if NET6_0
+#if NET10_0
         // Set supplied Properties from the HttpRequestMessageConfiguration
         foreach (var key in configuration.Properties.Keys)
         {

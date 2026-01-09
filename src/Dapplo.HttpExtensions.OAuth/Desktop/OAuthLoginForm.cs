@@ -1,11 +1,12 @@
 ﻿// Copyright (c) Dapplo and contributors. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Drawing;
-using System.Windows.Forms;
 using Dapplo.Windows.Dpi.Forms;
 using Dapplo.Windows.EmbeddedBrowser;
 using Dapplo.Windows.User32;
+using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace Dapplo.HttpExtensions.OAuth.Desktop;
 
@@ -49,6 +50,7 @@ public sealed partial class OAuthLoginForm : DpiAwareForm
     /// <summary>
     ///     the parameters which were supplied in the uri-callback from the server are stored here
     /// </summary>
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public IDictionary<string, string> CallbackParameters { get; set; }
 
     /// <summary>

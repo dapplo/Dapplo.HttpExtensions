@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Dapplo and contributors. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-#if NETFRAMEWORK || NETSTANDARD2_0 || NETCOREAPP3_1 || NET6_0
-
 using System.Net.Sockets;
 
 namespace Dapplo.HttpExtensions.Listener
@@ -62,5 +60,3 @@ namespace Dapplo.HttpExtensions.Listener
         }
     }
 }
-
-#endif

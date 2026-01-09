@@ -20,7 +20,6 @@ using Dapplo.HttpExtensions.Wpf.ContentConverter;
 using Dapplo.Log;
 using Dapplo.Log.XUnit;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Dapplo.HttpExtensions.Tests;
 
@@ -53,7 +52,7 @@ public class UriActionExtensionsTests
         const string password = @"pass\w";
         const string username = "usern";
         var authUri = _httpBinUri.AppendSegments("basic-auth", username, password).SetCredentials(username, password);
-        return authUri.GetAsAsync<string>();
+        return authUri.GetAsAsync<string>(TestContext.Current.CancellationToken);
     }
 
     /// <summary>
@@ -62,7 +61,7 @@ public class UriActionExtensionsTests
     [Fact]
     public async Task TestDeleteAsync()
     {
-        var result = await new Uri("https://httpbin.org/delete").DeleteAsync<dynamic>();
+        var result = await new Uri("https://httpbin.org/delete").DeleteAsync<dynamic>(TestContext.Current.CancellationToken);
         Assert.NotNull(result);
     }
 
@@ -72,7 +71,7 @@ public class UriActionExtensionsTests
     [Fact]
     public async Task TestGetAsAsync204()
     {
-        var result = await new Uri("https://httpbin.org/status/204").GetAsAsync<string>();
+        var result = await new Uri("https://httpbin.org/status/204").GetAsAsync<string>(TestContext.Current.CancellationToken);
         Assert.Null(result);
     }
 
@@ -89,7 +88,7 @@ public class UriActionExtensionsTests
         downloadBehaviour.DownloadProgress += progress => { Log.Info().WriteLine("Progress {0}", (int) (progress * 100)); };
         downloadBehaviour.MakeCurrent();
 
-        var bitmap = await bitmapUri.GetAsAsync<Bitmap>();
+        var bitmap = await bitmapUri.GetAsAsync<Bitmap>(TestContext.Current.CancellationToken);
         Assert.NotNull(bitmap);
         Assert.True(bitmap.Width > 0);
         Assert.True(bitmap.Height > 0);
@@ -113,7 +112,7 @@ public class UriActionExtensionsTests
         };
         uploadBehaviour.MakeCurrent();
 
-        var bitmap = await bitmapUri.GetAsAsync<BitmapSource>();
+        var bitmap = await bitmapUri.GetAsAsync<BitmapSource>(TestContext.Current.CancellationToken);
         Assert.NotNull(bitmap);
         Assert.True(bitmap.Width > 0);
         Assert.True(bitmap.Height > 0);
@@ -127,7 +126,7 @@ public class UriActionExtensionsTests
     public async Task TestGetAsAsyncMemoryStream()
     {
         var bitmapUri = _httpBinUri.AppendSegments("image", "png");
-        var stream = await bitmapUri.GetAsAsync<MemoryStream>();
+        var stream = await bitmapUri.GetAsAsync<MemoryStream>(TestContext.Current.CancellationToken);
         Assert.NotNull(stream);
         Assert.True(stream.Length > 0);
     }
@@ -138,7 +137,7 @@ public class UriActionExtensionsTests
     [Fact]
     public async Task TestGetAsAsyncSyndicationFeed()
     {
-        var feed = await new Uri("https://blogs.msdn.microsoft.com/dotnet/feed/").GetAsAsync<SyndicationFeed>();
+        var feed = await new Uri("https://blogs.msdn.microsoft.com/dotnet/feed/").GetAsAsync<SyndicationFeed>(TestContext.Current.CancellationToken);
         Assert.NotNull(feed);
         Assert.True(feed.Items.Any());
     }
@@ -149,7 +148,7 @@ public class UriActionExtensionsTests
     [Fact]
     public async Task TestGetAsAsyncXDocument()
     {
-        var xDocument = await new Uri("http://httpbin.org/xml").GetAsAsync<XDocument>();
+        var xDocument = await new Uri("http://httpbin.org/xml").GetAsAsync<XDocument>(TestContext.Current.CancellationToken);
         Assert.NotNull(xDocument);
         Assert.True(xDocument.Nodes().Any());
     }
@@ -160,7 +159,7 @@ public class UriActionExtensionsTests
     [Fact]
     public async Task TestHandleErrorAsync()
     {
-        await Assert.ThrowsAsync<HttpRequestException>(async () => await new Uri("https://httpbin.orgf").HeadAsync());
+        await Assert.ThrowsAsync<HttpRequestException>(async () => await new Uri("https://httpbin.orgf").HeadAsync(TestContext.Current.CancellationToken));
     }
 
     /// <summary>
@@ -169,7 +168,7 @@ public class UriActionExtensionsTests
     [Fact]
     public async Task TestHead()
     {
-        var result = await new Uri("https://httpbin.org").HeadAsync();
+        var result = await new Uri("https://httpbin.org").HeadAsync(TestContext.Current.CancellationToken);
         Assert.Contains("text/html", result.ContentType.MediaType);
     }
 
@@ -179,7 +178,7 @@ public class UriActionExtensionsTests
     [Fact]
     public Task TestLastModified()
     {
-        return new Uri("http://nu.nl").LastModifiedAsync();
+        return new Uri("http://nu.nl").LastModifiedAsync(TestContext.Current.CancellationToken);
     }
 
     /// <summary>
@@ -188,7 +187,7 @@ public class UriActionExtensionsTests
     [Fact]
     public Task TestPost()
     {
-        return new Uri("https://httpbin.org/post").PostAsync(null);
+        return new Uri("https://httpbin.org/post").PostAsync(null, TestContext.Current.CancellationToken);
     }
 
     /// <summary>
@@ -197,7 +196,7 @@ public class UriActionExtensionsTests
     [Fact]
     public Task TestPut()
     {
-        return new Uri("https://httpbin.org/put").PutAsync(null);
+        return new Uri("https://httpbin.org/put").PutAsync(null, TestContext.Current.CancellationToken);
     }
 
     /// <summary>
@@ -206,7 +205,7 @@ public class UriActionExtensionsTests
     [Fact]
     public async Task TestPut_Response()
     {
-        var result = await new Uri("https://httpbin.org/put").PutAsync<dynamic>(null);
+        var result = await new Uri("https://httpbin.org/put").PutAsync<dynamic>(null, TestContext.Current.CancellationToken);
         Assert.NotNull(result);
     }
 
@@ -216,7 +215,7 @@ public class UriActionExtensionsTests
     [Fact]
     public async Task TestRedirectAndFollow()
     {
-        var result = await new Uri("https://nghttp2.org/httpbin/redirect/5").GetAsAsync<string>();
+        var result = await new Uri("https://nghttp2.org/httpbin/redirect/5").GetAsAsync<string>(TestContext.Current.CancellationToken);
         Assert.NotNull(result);
     }
 
@@ -232,7 +231,7 @@ public class UriActionExtensionsTests
         };
         behavior.HttpSettings.AllowAutoRedirect = false;
         behavior.MakeCurrent();
-        await Assert.ThrowsAsync<HttpRequestException>(async () => await new Uri("https://httpbin.org/redirect/2").GetAsAsync<string>());
+        await Assert.ThrowsAsync<HttpRequestException>(async () => await new Uri("https://httpbin.org/redirect/2").GetAsAsync<string>(TestContext.Current.CancellationToken));
     }
 
     /// <summary>
@@ -241,7 +240,7 @@ public class UriActionExtensionsTests
     [Fact]
     public async Task TestUserAgent()
     {
-        var result = await new Uri("https://httpbin.org/user-agent").GetAsAsync<IDictionary<string, string>>();
+        var result = await new Uri("https://httpbin.org/user-agent").GetAsAsync<IDictionary<string, string>>(TestContext.Current.CancellationToken);
         Assert.NotNull(result);
         Assert.Equal(HttpExtensionsGlobals.HttpSettings.DefaultUserAgent, result["user-agent"]);
     }
@@ -262,7 +261,7 @@ public class UriActionExtensionsTests
         values["videoid"] = "16261222677467284812";
 
 
-        var result = await new Uri("https://httpbin.org/anything").PostAsync<string>(values);
+        var result = await new Uri("https://httpbin.org/anything").PostAsync<string>(values, TestContext.Current.CancellationToken);
 
         Assert.NotNull(result);
     }

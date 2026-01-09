@@ -5,10 +5,6 @@ using System.Net.Http.Headers;
 using Dapplo.HttpExtensions.Extensions;
 using Dapplo.HttpExtensions.Support;
 
-#if NETSTANDARD1_3
-using System.Reflection;
-#endif
-
 namespace Dapplo.HttpExtensions.ContentConverter
 {
     /// <summary>

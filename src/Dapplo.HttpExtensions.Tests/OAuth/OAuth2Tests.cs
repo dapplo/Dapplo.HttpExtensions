@@ -9,7 +9,6 @@ using Dapplo.HttpExtensions.OAuth;
 using Dapplo.Log;
 using Dapplo.Log.XUnit;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Dapplo.HttpExtensions.Tests.OAuth;
 

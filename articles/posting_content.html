@@ -1,0 +1,190 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Posting content | Dapplo.HttpExtensions </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Posting content | Dapplo.HttpExtensions ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="../images/favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc">
+    <meta property="docfx:tocrel" content="toc">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/d.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+                <ul class="nav level1 navbar-nav">
+                  <li class="active">
+                    <a href="../articles/intro.html" title="Articles" class="active">Articles</a>
+                  </li>
+                  <li class="">
+                    <a href="../api/" title="Api Documentation" class="">Api Documentation</a>
+                  </li>
+                </ul>
+            </div>
+          </div>
+        </nav>        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div>
+              <div class="sidefilter">
+                <form class="toc-filter">
+                  <span class="glyphicon glyphicon-filter filter-icon"></span>
+                  <input type="text" id="toc_filter_input" placeholder="Enter here to filter..." onkeypress="if(event.keyCode==13) {return false;}">
+                </form>
+              </div>
+              <div class="sidetoc">
+                <div class="toc" id="toc">
+                  
+                  <ul class="nav level1">
+                    <li class="">
+                      <a href="intro.html" title="Introduction" class="">Introduction</a>
+                    </li>
+                    <li class="active">
+                      <a href="posting_content.html" title="Posting content" class="active">Posting content</a>
+                    </li>
+                  </ul>        </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="posting-content">Posting content</h1>
+
+<p>The library tries to take a lot of work away from the developer, and tries to use sane defaults for it&#39;s behaviour.</p>
+<p>You can just post a System.Drawing.Bitmap, and the library will generate a binary upload with the mimetype being &quot;imgage/png&quot;
+The configuration for this can be modified by using the BitmapConfiguration and settings this on the used HttpBehaviour.
+For instance, if you like the default to be gif, use the following line:
+<code>HttpBehaviour.Current.SetConfig(new BitmapConfiguration {Format = ImageFormat.Gif});</code>
+There are converters for BitmapSource, XDocument, SyndicationFeed, Stream, byte[], or a IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt; (e.g. IDictionary&lt;string, string&gt;)</p>
+<p>Also posting JSON is quite easy, but you will need to have a serializer.
+By adding Dapplo.HttpExtensions.JsonNet you can configure this with one line:
+<code>HttpExtensionsGlobals.JsonSerializer = new JsonNetJsonSerializer();</code>
+Or</p>
+<pre><code class="lang-JsonNetJsonSerializer.RegisterGlobally();```">
+Now if you would do something like this:
+</code></pre><p>var exampleUri = new Uri(&quot;<a href="https://myserver/api/create">https://myserver/api/create</a>&quot;);
+var someObject = ....</p>
+<p>exampleUri.PostAsync<string>(someObject);<p>
+<pre><code>
+In this case, the library tries to serialize someObject by every means possible, and will when you did not add other &quot;converters&quot; use JsonNetJsonSerializer.
+In this case it uses Json.NET to serialize the object, and will create a &quot;string&quot; content with json and use the mimetype &quot;application/json&quot;.
+
+To have more control over the content which is posted, you can supply a self created HttpContent object.
+There is a factory to do the heavy lifting, allowing more controll, here an example which specifies a different mimetype:
+var content = HttpContentFactory.Create(someObject);
+content.SetContentType(&quot;application/json-patch+json&quot;);
+
+Sending is than easy:
+```exampleUri.PostAsync&lt;string&gt;(content);```
+
+You can also &quot;post&quot; an implementation of a custom class, where you can use your own properties.
+Here is an example to generate a multipart request with a json and a png:
+</code></pre><pre><code>[HttpRequest]
+public class MyMultiPartRequest&lt;TBitmap&gt;
+{
+    [HttpPart(HttpParts.RequestMultipartName, Order = 1)]
+    public string BitmapContentName { get; set; } = &quot;File&quot;;
+
+    [HttpPart(HttpParts.RequestContentType, Order = 1)]
+    public string BitmapContentType { get; set; } = &quot;image/png&quot;;
+
+    [HttpPart(HttpParts.RequestMultipartFilename, Order = 1)]
+    public string BitmapFileName { get; set; } = &quot;empty.png&quot;;
+
+    [HttpPart(HttpParts.RequestContentType, Order = 0)]
+    public string ContentType { get; set; } = &quot;application/json&quot;;
+
+    [HttpPart(HttpParts.RequestHeaders)]
+    public IDictionary&lt;string, string&gt; Headers { get; } = new Dictionary&lt;string, string&gt;();
+
+    [HttpPart(HttpParts.RequestContent, Order = 0)]
+    public object JsonInformation { get; set; }
+
+    [HttpPart(HttpParts.RequestContent, Order = 1)]
+    public TBitmap OurBitmap { get; set; }
+}
+</code></pre><p>```</p>
+</string></article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/blob/master/doc/articles/posting_content.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            Copyright © Dapplo
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -14,7 +14,9 @@ using System.ServiceModel.Syndication;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Xml.Linq;
+using Dapplo.HttpExtensions.JsonSimple;
 using Dapplo.HttpExtensions.Support;
+using Dapplo.HttpExtensions.SystemTextJson;
 using Dapplo.HttpExtensions.WinForms.ContentConverter;
 using Dapplo.HttpExtensions.Wpf.ContentConverter;
 using Dapplo.Log;
@@ -37,6 +39,9 @@ public class UriActionExtensionsTests
     {
         BitmapHttpContentConverter.RegisterGlobally();
         BitmapSourceHttpContentConverter.RegisterGlobally();
+        var behaviour = HttpBehaviour.Current as IChangeableHttpBehaviour;
+        Assert.NotNull(behaviour);
+        behaviour.JsonSerializer = new SystemTextJsonSerializer();
         LogSettings.RegisterDefaultLogger<XUnitLogger>(LogLevels.Verbose, testOutputHelper);
 #if NETFRAMEWORK
             HttpExtensionsGlobals.HttpSettings.RequestCacheLevel = RequestCacheLevel.NoCacheNoStore;
@@ -205,6 +210,9 @@ public class UriActionExtensionsTests
     [Fact]
     public async Task TestPut_Response()
     {
+        var behaviour = HttpBehaviour.Current as IChangeableHttpBehaviour;
+        Assert.NotNull(behaviour);
+        behaviour.JsonSerializer = new SimpleJsonSerializer();
         var result = await new Uri("https://httpbin.org/put").PutAsync<dynamic>(null, TestContext.Current.CancellationToken);
         Assert.NotNull(result);
     }

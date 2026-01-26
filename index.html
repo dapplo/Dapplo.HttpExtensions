@@ -1,0 +1,149 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Dapplo.HttpExtensions | Dapplo.HttpExtensions </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Dapplo.HttpExtensions | Dapplo.HttpExtensions ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="stylesheet" href="styles/docfx.vendor.css">
+    <link rel="stylesheet" href="styles/docfx.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <meta property="docfx:navrel" content="toc">
+    <meta property="docfx:tocrel" content="toc">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="index.html">
+                <img id="logo" class="svg" src="images/d.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+                <ul class="nav level1 navbar-nav">
+                  <li class="">
+                    <a href="articles/intro.html" title="Articles" class="">Articles</a>
+                  </li>
+                  <li class="">
+                    <a href="api/" title="Api Documentation" class="">Api Documentation</a>
+                  </li>
+                </ul>
+            </div>
+          </div>
+        </nav>        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        <div class="article row grid">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="dapplohttpextensions">Dapplo.HttpExtensions</h1>
+
+<ul>
+<li>Current build status: <a href="https://ci.appveyor.com/project/dapplo/dapplo-httpextensions"><img src="https://ci.appveyor.com/api/projects/status/y4n7u63336vhuy46?svg=true" alt="Build status"></a></li>
+<li>Coverage Status: <a href="https://coveralls.io/github/dapplo/Dapplo.HttpExtensions?branch=master"><img src="https://coveralls.io/repos/github/dapplo/Dapplo.HttpExtensions/badge.svg?branch=master" alt="Coverage Status"></a></li>
+<li>NuGet package: <a href="https://www.nuget.org/packages/Dapplo.HttpExtensions"><img src="https://img.shields.io/nuget/v/Dapplo.HttpExtensions.svg" alt="NuGet package"></a></li>
+</ul>
+<p>Sometimes you just want to access a service in the internet or on a local server.
+This project helps you to deal with a lot of difficult stuff, like having a default proxy or even making a specify proxy possible.
+Also it can handle Json communication, which a lot of REST based APIs use.</p>
+<p>A short example:</p>
+<pre><code>    using Dapplo.HttpExtensions;
+
+    var uri = new Uri(&quot;http://myserver/&quot;);
+    var response = await uri.GetAsAsync&lt;string&gt;();
+</code></pre><p>A more &quot;complex&quot; example of how you can use this, is available in the test. </p>
+<p>There is a test with calling a JSON Service (GitHub): <a href="https://github.com/dapplo/Dapplo.HttpExtensions/blob/master/Dapplo.HttpExtensions.Test/UriActionExtensionsTests.cs">UriActionExtensionsTests.TestGetAsJsonAsync_GitHubApiReleases</a>.</p>
+<p>There is also an OAuth test: <a href="https://github.com/dapplo/Dapplo.HttpExtensions/blob/master/Dapplo.HttpExtensions.Test/OAuth/OAuthTests.cs">OAuth/OAuthTests.TestOAuthHttpMessageHandler</a>.
+This is not running during the build, as it needs &quot;human&quot; interaction with a browser.</p>
+<p>Some of the features:</p>
+<ol>
+<li>Fluent API</li>
+<li>Progress support, for uploading and downloading</li>
+<li>Typed access to Http content (e.g. GetAsAsync<bitmap> )</bitmap></li>
+<li>Typed upload</li>
+<li>Json support, in two variants:<ol>
+<li><a href="https://github.com/facebook-csharp-sdk/simple-json">SimpleJson</a> via nuget package Dapplo.HttpExtensions.JsonSimple and call SimpleJsonSerializer.RegisterGlobally() or set IHttpBehavior.JsonSerializer to new SimpleJsonSerializer();</li>
+<li>install nuget package Dapplo.HttpExtensions.JsonNet and call JsonNetJsonSerializer.RegisterGlobally(); or set IHttpBehavior.JsonSerializer to new JsonNetJsonSerializer();</li>
+</ol>
+</li>
+<li>OAuth 1 &amp; 2 via nuget package Dapplo.HttpExtensions.OAuth, this is currently work in process but with some servers it should already be usable.</li>
+</ol>
+<p>Notes:
+This project uses async code, and tries to conform to the Task-bases Asynchronous Pattern (TAP). Just so you know why sometimes the method name look odd... Meaning all async methods have names which end with Async and (where possible) accept a CancellationToken. This is the final parameter, as adviced here: <a href="https://blogs.msdn.microsoft.com/andrewarnottms/2014/03/19/recommended-patterns-for-cancellationtoken/">https://blogs.msdn.microsoft.com/andrewarnottms/2014/03/19/recommended-patterns-for-cancellationtoken/</a></p>
+<p>API Changes, with every 0.x change the signatures have changed:
+In 0.2.x a HttpBehaviour object was added to prevent future signature changes as much as possible.
+In 0.3.x a lot of previous method were combined. (GetAsMemoryStream -&gt; GetAsAsync<memorystream>, GetAsStringAsync -&gt; GetAsAsync<string>)
+In 0.4.x the IHttpBehaviour was removed again, it&#39;s now passed via the CallContext. If you need to a specific behaviour for a call, than you will need to call MakeCurrent() on the behaviour before the call.
+In 0.5.x The configuration logic for the converters was changed
+In 0.6.x the Json and OAuth support were removed from the main package<p>
+</string></memorystream></article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/dapplo/Dapplo.HttpExtensions/blob/master/doc/index.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            Copyright © Dapplo
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="styles/docfx.js"></script>
+    <script type="text/javascript" src="styles/main.js"></script>
+  </body>
+</html>
